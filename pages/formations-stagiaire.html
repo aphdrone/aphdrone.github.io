@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Mes formations — APH Drone</title>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700;800&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../assets/css/shared.css"/>
+<style>
+.formations-wrap{min-height:calc(100vh - var(--header-h));background:var(--grey);padding:52px 0}
+.page-banner{background:#fff;border-bottom:1px solid var(--grey-m);padding:24px 0;margin-bottom:40px}
+.stagiaire-info{font-family:var(--font);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--main);margin-bottom:6px}
+.stagiaire-titre{font-family:var(--font);font-size:1.4rem;font-weight:800;color:var(--black)}
+.formations-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+.formation-card{background:#fff;border:1px solid var(--grey-m);padding:0;overflow:hidden;transition:.2s}
+.formation-card.unlocked{border-color:var(--main)}
+.formation-card.unlocked:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.08)}
+.formation-card.locked{opacity:.55;cursor:not-allowed}
+.card-top{padding:24px 24px 20px;display:flex;align-items:flex-start;gap:16px}
+.card-icon{width:44px;height:44px;border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:20px}
+.card-icon.unlocked-icon{background:var(--main)}
+.card-icon.locked-icon{background:var(--grey-m)}
+.card-body h3{font-family:var(--font);font-size:14px;font-weight:800;color:var(--black);margin-bottom:6px;line-height:1.3}
+.card-body p{font-size:12px;color:var(--text-l);line-height:1.6}
+.card-footer{padding:14px 24px;border-top:1px solid var(--grey-m);display:flex;align-items:center;justify-content:space-between}
+.card-footer.unlocked-footer{background:var(--main)}
+.card-footer.locked-footer{background:var(--grey)}
+.btn-acceder{display:inline-flex;align-items:center;gap:8px;color:#fff;font-family:var(--font);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;text-decoration:none;transition:.2s}
+.btn-acceder:hover{gap:14px}
+.badge-lock{font-family:var(--font);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-l)}
+.badge-unlock{font-family:var(--font);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.8)}
+.btn-retour{display:inline-flex;align-items:center;gap:8px;font-family:var(--font);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-l);text-decoration:none;margin-bottom:28px;transition:.2s}
+.btn-retour:hover{color:var(--main)}
+.section-label{font-family:var(--font);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text-l);margin-bottom:20px;padding-bottom:10px;border-bottom:1px solid var(--grey-m)}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div style="position:fixed;top:0;left:0;right:0;z-index:1000">
+  <div class="header-top">
+    <div class="container">
+      <div class="header-top-links">
+        <a href="../pages/apropos.html">À propos</a>
+        <a href="../pages/certifications.html">Certifications</a>
+        <a href="../pages/equipements.html">Équipements</a>
+        <a href="../pages/zone-intervention.html">Zone d'intervention</a>
+        <a href="../pages/contact.html" class="tel">✆ 06 95 39 07 76</a>
+      </div>
+    </div>
+  </div>
+  <div class="header-main">
+    <div class="container">
+      <a href="../index.html" class="logo"><span class="logo-text">APH Drone</span></a>
+      <nav class="main-nav" id="mainNav">
+        <ul class="nav-list">
+          <li class="nav-item"><a href="../pages/contact.html">Contact</a></li>
+          <li class="nav-item"><a href="../pages/espace-stagiaires.html">Espace stagiaires</a></li>
+        </ul>
+      </nav>
+      <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</div>
+
+<div class="side-btns">
+  <a href="../pages/contact.html" class="side-btn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+    <span>Télécharger<br/>nos documentations</span>
+  </a>
+  <a href="../pages/espace-stagiaires.html" class="side-btn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    <span>Espace<br/>stagiaires</span>
+  </a>
+</div>
+
+<!-- CONTENU -->
+<div class="formations-wrap">
+  <div class="page-banner">
+    <div class="container" style="display:flex;align-items:center;justify-content:space-between">
+      <div>
+        <p class="stagiaire-info" id="infoNom">Espace stagiaire</p>
+        <h1 class="stagiaire-titre">Mes supports de cours</h1>
+      </div>
+      <a href="../pages/espace-stagiaires.html" class="btn-retour">← Retour à mon espace</a>
+    </div>
+  </div>
+
+  <div class="container">
+    <p class="section-label" id="sectionLabel">Catalogue des formations</p>
+    <div class="formations-grid" id="formationsGrid">
+      <!-- Généré par JS -->
+    </div>
+  </div>
+</div>
+
+<script src="../assets/js/main.js"></script>
+<script>
+
+// ════════════════════════════════════════════════════════════
+//  CATALOGUE COMPLET DES FORMATIONS
+// ════════════════════════════════════════════════════════════
+const CATALOGUE = [
+  { id:"initiation-a1a3",    titre:"Initiation au Télépilotage A1/A3",         duree:"1 jour",  icone:"🚁", desc:"Théorie, réglementation et pratique de vol en catégorie ouverte A1/A3." },
+  { id:"bapd-a2",            titre:"BAPD — Catégorie Ouverte A2",               duree:"2 jours", icone:"📋", desc:"Brevet d'Aptitude de Pilote de Drone pour voler en sous-catégorie A2." },
+  { id:"cats-sts",           titre:"Préparation CATS — STS-01 / STS-02",        duree:"5 jours", icone:"🎓", desc:"Formation complète pour l'examen CATS et les scénarios standard STS-01 et STS-02." },
+  { id:"vol-nuit",           titre:"Vol de nuit & captation nocturne",           duree:"2 jours", icone:"🌙", desc:"Spécificités du vol nocturne, réglages capteurs, post-production." },
+  { id:"thermographie",      titre:"Thermographie par drone",                   duree:"2 jours", icone:"🌡️", desc:"Diagnostics bâtiment et photovoltaïques avec capteur H20T." },
+  { id:"agriculture",        titre:"Agriculture & Arboriculture de précision",  duree:"2 jours", icone:"🌾", desc:"Imagerie multispectrale, NDVI, prescription d'intrants, pulvérisation ciblée." },
+  { id:"cartographie",       titre:"Cartographie & Modélisation 3D",            duree:"2 jours", icone:"🗺️", desc:"Orthophoto, nuage de points, modèle numérique de surface." },
+  { id:"inspection",         titre:"Inspection technique par drone",             duree:"1 jour",  icone:"🔍", desc:"Toitures, façades, ouvrages d'art — images géo-référencées." },
+  { id:"securite-secours",   titre:"Sécurité, Recherche & Secours",             duree:"3 jours", icone:"🚒", desc:"Scénarios opérationnels SDIS — personne disparue, noyade, incendie, accident." },
+  { id:"maitrise-pilotage",  titre:"Maîtrise opérationnelle & perfectionnement",duree:"2 jours", icone:"🎮", desc:"Automatisation des missions, vols en conditions difficiles." },
+  { id:"sylviculture",       titre:"Sylviculture, faune & biodiversité",        duree:"1 jour",  icone:"🌲", desc:"Inventaires faunistiques, suivi forestier, cartographie de végétation." },
+  { id:"donnees",            titre:"Données exploitables & géolocalisation",    duree:"1 jour",  icone:"📡", desc:"RTK, GCP, logiciels SIG, formats de sortie." },
+  { id:"maj-reglementaire",  titre:"Mise à niveau réglementaire DGAC/EASA",    duree:"½ jour",  icone:"⚖️", desc:"Évolutions du règlement EU 2019/947 et conformité DGAC." },
+  { id:"sora-pdra",          titre:"Catégorie spécifique — SORA & PDRA",       duree:"2 jours", icone:"📊", desc:"Évaluation des risques, SAIL, OSOs, TMPR, dossier DGAC." },
+  { id:"changer-carriere",   titre:"Changer de carrière — métiers du drone",   duree:"1 jour",  icone:"🔄", desc:"Parcours de formation, débouchés, financement." },
+];
+
+// ════════════════════════════════════════════════════════════
+//  LECTURE DU STAGIAIRE DEPUIS L'URL
+//  La page espace-stagiaires.html passe les infos via
+//  sessionStorage pour éviter de les mettre dans l'URL
+// ════════════════════════════════════════════════════════════
+const data = JSON.parse(sessionStorage.getItem('aph_stagiaire') || 'null');
+
+if (!data) {
+  // Pas connecté → retour à l'espace stagiaires
+  window.location.href = '../pages/espace-stagiaires.html';
+} else {
+  document.getElementById('infoNom').textContent = data.nom;
+  document.getElementById('sectionLabel').textContent =
+    `${data.formations_debloquees.length} formation(s) débloquée(s) sur ${CATALOGUE.length}`;
+
+  const grid = document.getElementById('formationsGrid');
+
+  CATALOGUE.forEach(f => {
+    const formation_data = data.formations_debloquees.find(fd => fd.id === f.id);
+    const unlocked = !!formation_data;
+
+    if (unlocked) {
+      grid.innerHTML += `
+        <a href="${formation_data.drive}" target="_blank" class="formation-card unlocked" style="text-decoration:none">
+          <div class="card-top">
+            <div class="card-icon unlocked-icon" style="font-size:22px">${f.icone}</div>
+            <div class="card-body">
+              <h3>${f.titre}</h3>
+              <p>${f.desc}</p>
+            </div>
+          </div>
+          <div class="card-footer unlocked-footer">
+            <span class="badge-unlock">✅ Débloqué — ${f.duree}</span>
+            <span class="btn-acceder">Accéder →</span>
+          </div>
+        </a>`;
+    } else {
+      grid.innerHTML += `
+        <div class="formation-card locked">
+          <div class="card-top">
+            <div class="card-icon locked-icon" style="font-size:22px">${f.icone}</div>
+            <div class="card-body">
+              <h3>${f.titre}</h3>
+              <p>${f.desc}</p>
+            </div>
+          </div>
+          <div class="card-footer locked-footer">
+            <span class="badge-lock">🔒 Non inscrit — ${f.duree}</span>
+          </div>
+        </div>`;
+    }
+  });
+}
+</script>
+</body>
+</html>
