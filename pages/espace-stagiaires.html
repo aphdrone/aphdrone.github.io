@@ -287,6 +287,15 @@ const STAGIAIRES = {
 //  LOGIQUE DE CONNEXION
 // ═══════════════════════════════════════════════════════════
 
+// Vérifier si déjà connecté
+const saved = localStorage.getItem('aph_stagiaire');
+if (saved) {
+  const stagiaire = JSON.parse(saved);
+  if (STAGIAIRES[Object.keys(STAGIAIRES).find(k => STAGIAIRES[k].nom === stagiaire.nom)]) {
+    afficherEspace(stagiaire);
+  }
+}
+
 function connexion() {
   const code = document.getElementById('codeInput').value.trim().toUpperCase();
   const stagiaire = STAGIAIRES[code];
@@ -297,6 +306,11 @@ function connexion() {
     return;
   }
 
+  localStorage.setItem('aph_stagiaire', JSON.stringify(stagiaire));
+  afficherEspace(stagiaire);
+}
+
+function afficherEspace(stagiaire) {
   // Connexion OK
   document.getElementById('loginWrap').style.display = 'none';
   document.getElementById('stagiairesWrap').style.display = 'block';
@@ -307,7 +321,7 @@ function connexion() {
   grid.innerHTML = '';
 
   // Sauvegarder en session
-  sessionStorage.setItem('aph_stagiaire', JSON.stringify(stagiaire));
+  localStorage.setItem('aph_stagiaire', JSON.stringify(stagiaire));
 
   // ── SECTION FORMALITÉS ──────────────────────────────────
   grid.innerHTML += `<div class="section-titre" style="grid-column:1/-1">📁 Formalités</div>`;
@@ -356,8 +370,11 @@ function connexion() {
     </a>`;
 }
 
+}
+
 function deconnexion() {
   document.getElementById('stagiairesWrap').style.display = 'none';
+  localStorage.removeItem('aph_stagiaire');
   document.getElementById('loginWrap').style.display = 'flex';
   document.getElementById('codeInput').value = '';
   document.getElementById('loginError').style.display = 'none';
