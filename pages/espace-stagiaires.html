@@ -287,14 +287,20 @@ const STAGIAIRES = {
 //  LOGIQUE DE CONNEXION
 // ═══════════════════════════════════════════════════════════
 
-// Vérifier si déjà connecté
-const saved = localStorage.getItem('aph_stagiaire');
-if (saved) {
-  const stagiaire = JSON.parse(saved);
-  if (STAGIAIRES[Object.keys(STAGIAIRES).find(k => STAGIAIRES[k].nom === stagiaire.nom)]) {
-    afficherEspace(stagiaire);
+// Vérifier si déjà connecté au chargement de la page
+document.addEventListener('DOMContentLoaded', function() {
+  const saved = localStorage.getItem('aph_stagiaire');
+  if (saved) {
+    try {
+      const stagiaire = JSON.parse(saved);
+      if (stagiaire && stagiaire.nom) {
+        afficherEspace(stagiaire);
+      }
+    } catch(e) {
+      localStorage.removeItem('aph_stagiaire');
+    }
   }
-}
+});
 
 function connexion() {
   const code = document.getElementById('codeInput').value.trim().toUpperCase();
