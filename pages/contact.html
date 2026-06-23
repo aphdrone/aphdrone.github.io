@@ -6,6 +6,63 @@
 <title>Contact — APH Drone</title>
 <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700;800&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="../assets/css/shared.css"/>
+<style>
+/* ===== PAGE CONTACT ===== */
+.contact-intro{background:var(--grey);padding:52px 0 40px;border-bottom:1px solid var(--grey-m)}
+.contact-intro-text{font-size:15px;color:var(--text-l);line-height:1.8;margin-top:12px}
+
+/* BLOC ADRESSE */
+.contact-block{background:#fff;border:1px solid var(--grey-m);padding:32px 28px}
+.contact-block h3{font-family:var(--font);font-size:16px;font-weight:800;color:var(--main);margin-bottom:10px;padding-bottom:10px;border-bottom:2px solid var(--main);display:inline-block}
+.contact-block address{font-style:normal;font-size:14px;color:var(--text);line-height:2;margin-top:20px}
+.contact-block a{color:var(--main);font-weight:700;text-decoration:none}
+.contact-block a:hover{color:var(--main-d);text-decoration:underline}
+
+/* CARTE */
+.map-wrap{width:100%;height:320px;border:1px solid var(--grey-m);overflow:hidden;margin-top:0}
+.map-wrap iframe{width:100%;height:100%;border:none;display:block}
+
+/* FORMULAIRE */
+.contact-form-section{padding:72px 0}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:flex-start}
+.form-intro h2{font-family:var(--font);font-size:clamp(1.5rem,2.5vw,2rem);font-weight:800;color:var(--black);margin-bottom:14px}
+.form-intro p{font-size:14px;color:var(--text-l);line-height:1.8}
+.form-intro .delai{display:inline-flex;align-items:center;gap:8px;margin-top:20px;background:var(--grey);padding:12px 18px;font-family:var(--font);font-size:12px;font-weight:700;color:var(--main);text-transform:uppercase;letter-spacing:.06em}
+
+/* FORM */
+.contact-form{display:flex;flex-direction:column;gap:0}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form-group{display:flex;flex-direction:column;margin-bottom:16px}
+.form-group label{font-family:var(--font);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text);margin-bottom:6px}
+.form-group label span{color:#8b1a1a}
+.form-group input,
+.form-group select,
+.form-group textarea{border:1px solid var(--grey-m);padding:12px 14px;font-family:var(--body);font-size:13px;color:var(--text);background:#fff;outline:none;transition:.2s;width:100%}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus{border-color:var(--main);box-shadow:0 0 0 3px rgba(122,143,165,.12)}
+.form-group textarea{resize:vertical;min-height:120px}
+.form-group select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px}
+.form-civilite{display:flex;gap:12px}
+.form-civilite label{display:flex;align-items:center;gap:6px;font-family:var(--font);font-size:12px;font-weight:600;color:var(--text);cursor:pointer;text-transform:none;letter-spacing:0}
+.form-civilite input[type=radio]{accent-color:var(--main);width:15px;height:15px}
+.form-checkboxes{display:flex;flex-direction:column;gap:8px;margin-top:4px}
+.form-checkboxes label{display:flex;align-items:flex-start;gap:10px;font-family:var(--font);font-size:12px;font-weight:600;color:var(--text);cursor:pointer;text-transform:none;letter-spacing:0;line-height:1.4}
+.form-checkboxes input[type=checkbox]{accent-color:var(--main);width:15px;height:15px;flex-shrink:0;margin-top:1px}
+.form-rgpd{font-size:12px;color:var(--text-l);line-height:1.6;margin-top:8px;padding-top:16px;border-top:1px solid var(--grey-m)}
+.btn-submit{background:var(--main);color:#fff;border:none;padding:16px 40px;font-family:var(--font);font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;cursor:pointer;transition:.2s;margin-top:8px;align-self:flex-start}
+.btn-submit:hover{background:var(--main-d)}
+
+/* SECTION ADRESSE EN BAS */
+.contact-locations{padding:72px 0;background:var(--grey)}
+.locations-grid{display:grid;grid-template-columns:1fr;gap:32px;max-width:600px}
+
+@media(max-width:768px){
+  .contact-grid{grid-template-columns:1fr}
+  .form-row{grid-template-columns:1fr}
+  .locations-grid{grid-template-columns:1fr}
+}
+</style>
 </head>
 <body>
 
@@ -18,7 +75,7 @@
         <a href="../pages/certifications.html">Certifications</a>
         <a href="../pages/equipements.html">Équipements</a>
         <a href="../pages/zone-intervention.html">Zone d'intervention</a>
-        <a href="../pages/contact.html" class="tel">✆ 06 XX XX XX XX</a>
+        <a href="../pages/contact.html" class="tel">✆ 06 95 39 07 76</a>
       </div>
     </div>
   </div>
@@ -53,14 +110,6 @@
               <li><a href="../pages/prestations/thermographie.html">Thermographie</a></li>
               <li><a href="../pages/prestations/photo-video.html">Photo &amp; vidéo aérienne</a></li>
               <li><a href="../pages/prestations/services-prestataires.html">Services aux prestataires drone</a></li>
-              <li class="has-submenu"><a href="../pages/prestations/autres.html">Autres prestations</a>
-                <ul class="submenu">
-                  <li><a href="../pages/prestations/conseil-audit.html">Conseil &amp; audit opérationnel</a></li>
-                  <li><a href="../pages/prestations/telepilote-mission.html">Télépilote en mission</a></li>
-                  <li><a href="../pages/prestations/formateur-agree.html">Formateur agréé</a></li>
-                  <li><a href="../pages/prestations/sora-pdra.html">Expert SORA / PDRA</a></li>
-                </ul>
-              </li>
             </ul>
           </li>
           <li class="nav-item has-dropdown">
@@ -70,21 +119,9 @@
               <li><a href="../pages/formations/bapd-a2.html">BAPD — Catégorie A2</a></li>
               <li><a href="../pages/formations/cats-sts.html">Préparation CATS STS-01/02</a></li>
               <li><a href="../pages/formations/vol-nuit.html">Vol de nuit</a></li>
-              <li><a href="../pages/formations/sylviculture.html">Sylviculture &amp; biodiversité</a></li>
-              <li><a href="../pages/formations/maitrise-pilotage.html">Maîtrise opérationnelle</a></li>
               <li><a href="../pages/formations/thermographie.html">Thermographie</a></li>
-              <li><a href="../pages/formations/donnees-exploitables.html">Données exploitables</a></li>
-              <li><a href="../pages/formations/inspection.html">Inspection technique</a></li>
-              <li><a href="../pages/formations/cartographie.html">Cartographie &amp; 3D</a></li>
               <li><a href="../pages/formations/agriculture.html">Agriculture &amp; Arboriculture</a></li>
               <li><a href="../pages/formations/securite-secours.html">Sécurité, Recherche &amp; Secours</a></li>
-              <li class="has-submenu"><a href="../pages/formations/autres.html">Autres formations</a>
-                <ul class="submenu">
-                  <li><a href="../pages/formations/maj-reglementaire.html">Mise à niveau réglementaire</a></li>
-                  <li><a href="../pages/formations/sora-pdra.html">Catégorie spécifique SORA &amp; PDRA</a></li>
-                  <li><a href="../pages/formations/changer-carriere.html">Changer de carrière</a></li>
-                </ul>
-              </li>
             </ul>
           </li>
           <li class="nav-item has-dropdown">
@@ -97,12 +134,8 @@
               <li><a href="../pages/outils/qcm.html">QCM</a></li>
             </ul>
           </li>
-          <li class="nav-item">
-            <a href="../pages/actualites.html">Actualités</a>
-          </li>
-          <li class="nav-item  active">
-            <a href="../pages/contact.html">Contact</a>
-          </li>
+          <li class="nav-item"><a href="../pages/actualites.html">Actualités</a></li>
+          <li class="nav-item active"><a href="../pages/contact.html">Contact</a></li>
         </ul>
       </nav>
       <button class="burger" id="burger" aria-label="Menu">
@@ -124,8 +157,8 @@
   </a>
 </div>
 
-<!-- ========== PAGE HERO ========== -->
-<section class="page-hero">
+<!-- ========== INTRO ========== -->
+<section class="contact-intro">
   <div class="container">
     <div class="breadcrumb">
       <a href="../index.html">Accueil</a>
@@ -133,31 +166,177 @@
       <span style="color:var(--text)">Contact</span>
     </div>
     <p class="page-tag">Contactez-nous</p>
-    <h1 class="page-title">Demande de devis &amp; contact</h1>
-    <p class="page-intro">Un projet, une question, un besoin de formation ? Répondons-vous sous 48 heures.</p>
+    <h1 class="page-title">Notre équipe est à votre disposition</h1>
+    <p class="contact-intro-text">Devis, renseignements sur nos formations ou prestations — nous vous répondons sous 48 h.</p>
   </div>
 </section>
 
-    <!-- PLACEHOLDER — À REMPLACER PAR LE CONTENU DÉFINITIF -->
-    <section class="section-pad">
-      <div class="container">
-        <div style="background:var(--grey);border-left:4px solid var(--main);padding:32px 40px;max-width:700px">
-          <p style="font-family:var(--font);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--main);margin-bottom:12px">Contenu à venir</p>
-          <p style="font-size:14px;color:var(--text-l);line-height:1.8">Formulaire de contact, coordonnées téléphoniques, carte OpenStreetMap.</p>
+<!-- ========== LOCALISATION ========== -->
+<section class="contact-locations">
+  <div class="container">
+    <p class="section-tag">Notre base</p>
+    <h2 class="section-title" style="margin-bottom:40px">APH Drone est basé en Haute-Saône</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:stretch">
+
+      <!-- Carte -->
+      <div class="map-wrap">
+        <iframe
+          src="https://www.openstreetmap.org/export/embed.html?bbox=6.3500%2C47.8100%2C6.3900%2C47.8300&layer=mapnik&marker=47.8197%2C6.3703"
+          allowfullscreen
+          loading="lazy"
+          title="APH Drone — Luxeuil-les-Bains">
+        </iframe>
+      </div>
+
+      <!-- Adresse -->
+      <div class="contact-block">
+        <h3>APH Drone SARL</h3>
+        <address>
+          44 rue Georges Moulimard<br/>
+          70300 Luxeuil-les-Bains<br/>
+          France<br/><br/>
+          <a href="tel:+33695390776">Tél : +33 (0)6 95 39 07 76</a><br/>
+          <a href="mailto:aphdrone@gmail.com">aphdrone@gmail.com</a><br/><br/>
+          <strong>Zone d'intervention :</strong><br/>
+          Bourgogne-Franche-Comté<br/>
+          et régions limitrophes
+        </address>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ========== FORMULAIRE ========== -->
+<section class="contact-form-section">
+  <div class="container">
+    <div class="contact-grid">
+
+      <!-- Intro gauche -->
+      <div class="form-intro">
+        <p class="section-tag">Formulaire de contact</p>
+        <h2>Un projet ? Une question ?<br/>Écrivez-nous.</h2>
+        <p>Que vous ayez besoin d'un devis pour une prestation drone, d'informations sur nos formations ou d'un renseignement réglementaire, nous vous répondons dans les meilleurs délais.</p>
+        <div class="delai">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Réponse garantie sous 48 h
+        </div>
+
+        <div style="margin-top:40px;padding-top:32px;border-top:1px solid var(--grey-m)">
+          <p style="font-family:var(--font);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text);margin-bottom:16px">Contact direct</p>
+          <p style="font-size:14px;line-height:2">
+            <a href="tel:+33695390776" style="color:var(--main);font-weight:700">+33 (0)6 95 39 07 76</a><br/>
+            <a href="mailto:aphdrone@gmail.com" style="color:var(--main);font-weight:700">aphdrone@gmail.com</a>
+          </p>
         </div>
       </div>
-    </section>
 
-<!-- CTA BAND -->
-<section class="cta-band">
-  <div class="container">
-    <div>
-      <h2>Un projet drone ?</h2>
-      <p>Devis gratuit sous 48 h — intervention Bourgogne-Franche-Comté</p>
-    </div>
-    <div class="cta-actions">
-      <a href="../pages/contact.html" class="btn-cta">Nous contacter</a>
-      <a href="../pages/prestations.html" class="btn-cta-out">Voir les prestations</a>
+      <!-- Formulaire droite -->
+      <form class="contact-form" action="https://formspree.io/f/VOTRE_ID" method="POST">
+
+        <div class="form-group">
+          <label>Civilité <span>*</span></label>
+          <div class="form-civilite">
+            <label><input type="radio" name="civilite" value="M." required/> M.</label>
+            <label><input type="radio" name="civilite" value="Mme"/> Mme</label>
+            <label><input type="radio" name="civilite" value="Non précisé"/> Non précisé</label>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="nom">Nom <span>*</span></label>
+            <input type="text" id="nom" name="nom" placeholder="Votre nom" required/>
+          </div>
+          <div class="form-group">
+            <label for="prenom">Prénom <span>*</span></label>
+            <input type="text" id="prenom" name="prenom" placeholder="Votre prénom" required/>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="email">Email <span>*</span></label>
+            <input type="email" id="email" name="email" placeholder="votre@email.fr" required/>
+          </div>
+          <div class="form-group">
+            <label for="tel">Téléphone</label>
+            <input type="tel" id="tel" name="telephone" placeholder="06 XX XX XX XX"/>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="societe">Société / Organisme</label>
+          <input type="text" id="societe" name="societe" placeholder="Nom de votre structure (optionnel)"/>
+        </div>
+
+        <div class="form-group">
+          <label for="sujet">Sujet de votre demande <span>*</span></label>
+          <select id="sujet" name="sujet" required>
+            <option value="" disabled selected>Sélectionnez un sujet</option>
+            <optgroup label="Prestations drone">
+              <option>Demande de devis — Inspection technique</option>
+              <option>Demande de devis — Thermographie</option>
+              <option>Demande de devis — Agriculture / Pulvérisation</option>
+              <option>Demande de devis — Cartographie / Modélisation 3D</option>
+              <option>Demande de devis — Surveillance / Sécurité</option>
+              <option>Demande de devis — Photo &amp; vidéo aérienne</option>
+              <option>Demande de devis — Autre prestation</option>
+            </optgroup>
+            <optgroup label="Formations">
+              <option>Formation — Initiation A1/A3</option>
+              <option>Formation — BAPD Catégorie A2</option>
+              <option>Formation — CATS STS-01/STS-02</option>
+              <option>Formation — Vol de nuit</option>
+              <option>Formation — Thermographie</option>
+              <option>Formation — Agriculture de précision</option>
+              <option>Formation — Sécurité &amp; Secours (SDIS)</option>
+              <option>Formation — Autre</option>
+            </optgroup>
+            <optgroup label="Autre">
+              <option>Renseignement réglementaire</option>
+              <option>Partenariat / Sous-traitance</option>
+              <option>Autre demande</option>
+            </optgroup>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="message">Votre message <span>*</span></label>
+          <textarea id="message" name="message" placeholder="Décrivez votre projet, votre besoin, ou posez votre question..." required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Comment nous avez-vous connu ?</label>
+          <select name="source">
+            <option value="" disabled selected>Sélectionnez</option>
+            <option>Moteur de recherche (Google, Bing…)</option>
+            <option>Recommandation / Bouche à oreille</option>
+            <option>Réseaux sociaux</option>
+            <option>Salon ou événement professionnel</option>
+            <option>SDIS / Pompiers</option>
+            <option>Autre</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <div class="form-checkboxes">
+            <label>
+              <input type="checkbox" name="rgpd" required/>
+              J'accepte que mes données soient utilisées pour traiter ma demande. <span style="color:#8b1a1a">*</span>
+            </label>
+            <label>
+              <input type="checkbox" name="newsletter"/>
+              J'accepte de recevoir les actualités et offres d'APH Drone (optionnel).
+            </label>
+          </div>
+        </div>
+
+        <p class="form-rgpd">Vos données sont traitées par APH Drone SARL conformément au RGPD. Elles ne sont jamais cédées à des tiers. Vous disposez d'un droit d'accès, de rectification et de suppression en nous contactant à <a href="mailto:aphdrone@gmail.com" style="color:var(--main)">aphdrone@gmail.com</a>.</p>
+
+        <button type="submit" class="btn-submit">Envoyer ma demande →</button>
+
+      </form>
     </div>
   </div>
 </section>
@@ -170,8 +349,8 @@
         <div class="footer-col">
           <p class="logo-text" style="color:#fff;margin-bottom:14px">APH Drone</p>
           <p class="footer-brand-text">Opérateur drone professionnel certifié DGAC.<br/>Haute-Saône — Bourgogne-Franche-Comté.</p>
-          <p class="footer-phone">✆ 06 XX XX XX XX</p>
-          <p style="font-size:12px;color:rgba(255,255,255,.5)">contact@aphdrone.fr</p>
+          <p class="footer-phone">✆ 06 95 39 07 76</p>
+          <p style="font-size:12px;color:rgba(255,255,255,.5)">aphdrone@gmail.com</p>
         </div>
         <div class="footer-col">
           <h4>APH Drone</h4>
@@ -207,7 +386,7 @@
           <h4 style="margin-top:18px">Contact</h4>
           <ul>
             <li><a href="../pages/contact.html">Formulaire de contact</a></li>
-            <li><a href="mailto:contact@aphdrone.fr">contact@aphdrone.fr</a></li>
+            <li><a href="mailto:aphdrone@gmail.com">aphdrone@gmail.com</a></li>
           </ul>
         </div>
       </div>
@@ -224,7 +403,6 @@
       <div class="footer-social">
         <a href="#" aria-label="LinkedIn"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg></a>
         <a href="#" aria-label="Facebook"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg></a>
-        <a href="#" aria-label="YouTube"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M22.54 6.42a2.78 2.78 0 00-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 00-1.95 1.96A29 29 0 001 12a29 29 0 00.46 5.58A2.78 2.78 0 003.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 001.95-1.95A29 29 0 0023 12a29 29 0 00-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="white"/></svg></a>
         <a href="#" aria-label="Instagram"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
       </div>
     </div>
