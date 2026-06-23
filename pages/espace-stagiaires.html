@@ -210,7 +210,14 @@ const STAGIAIRES = {
   // Pour modifier : remplacez AREMPLACER_XXXX par le vrai lien Google Drive du stagiaire
   // Pour ajouter  : copiez une ligne, changez le code, le nom, la formation et le lien
 
-  "SC2024":  { nom:"Salif Coulibaly",  formation:"CATS STS-01/02", drive:"https://drive.google.com/drive/folders/1CSRD90Wuojgigici99GPgmK7yolIslCQ?usp=drive_link" },
+  "SC2024":  {
+    nom:"Salif Coulibaly",
+    formations_debloquees:[
+      { id:"cats-sts",    drive:"https://drive.google.com/drive/folders/1CSRD90Wuojgigici99GPgmK7yolIslCQ?usp=drive_link" },
+      // Ajouter d'autres formations ici si besoin :
+      // { id:"vol-nuit", drive:"https://drive.google.com/..." },
+    ]
+  },
   "LM202401": { nom:"Lucas Martin", formation:"Initiation A1/A3", drive:"https://drive.google.com/drive/folders/AREMPLACER_LM202401" },
   "EB202402": { nom:"Emma Bernard", formation:"BAPD Catégorie A2", drive:"https://drive.google.com/drive/folders/AREMPLACER_EB202402" },
   "ND202403": { nom:"Noah Dubois", formation:"CATS STS-01/02", drive:"https://drive.google.com/drive/folders/AREMPLACER_ND202403" },
@@ -299,22 +306,25 @@ function connexion() {
   const grid = document.getElementById('docGrid');
   grid.innerHTML = '';
 
-  // Carte principale → dossier Drive
+  // Sauvegarder en session pour la page formations-stagiaire
+  sessionStorage.setItem('aph_stagiaire', JSON.stringify(stagiaire));
+
+  // Carte Support de cours → page formations-stagiaire.html
   grid.innerHTML += `
-    <a href="${stagiaire.drive}" target="_blank" class="doc-card" style="border-color:var(--main);grid-column:1/-1">
+    <a href="../pages/formations-stagiaire.html" class="doc-card" style="border-color:var(--main);grid-column:1/-1;text-decoration:none">
       <div class="doc-icon" style="background:var(--main);color:#fff">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
       </div>
       <div>
-        <h3>Mon dossier de formation — ${stagiaire.formation}</h3>
-        <p>Accédez à tous vos documents sur Google Drive</p>
+        <h3>Mes supports de cours</h3>
+        <p>Accédez à vos formations débloquées — ${stagiaire.formations_debloquees.length} formation(s) disponible(s)</p>
       </div>
     </a>`;
 
   // Cartes documents
   DOCS_DEFAUT.forEach(doc => {
     grid.innerHTML += `
-      <a href="${stagiaire.drive}" target="_blank" class="doc-card">
+      <a href="../pages/formations-stagiaire.html" class="doc-card" style="text-decoration:none">
         <div class="doc-icon" style="font-size:20px">${doc.icone}</div>
         <div>
           <h3>${doc.titre}</h3>
