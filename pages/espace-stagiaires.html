@@ -7,96 +7,36 @@
 <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700;800&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="../assets/css/shared.css"/>
 <style>
-.login-wrap{
-  min-height:calc(100vh - var(--header-h));
-  display:flex;align-items:center;justify-content:center;
-  background:var(--grey);padding:40px 24px;
-}
-.login-box{
-  background:#fff;
-  border:1px solid var(--grey-m);
-  border-top:4px solid var(--main);
-  padding:48px 40px;
-  width:100%;max-width:420px;
-}
-.login-logo{
-  font-family:var(--font);font-size:11px;font-weight:700;
-  text-transform:uppercase;letter-spacing:.14em;color:var(--main);
-  margin-bottom:24px;
-}
-.login-box h1{
-  font-family:var(--font);font-size:1.5rem;font-weight:800;
-  color:var(--black);margin-bottom:8px;
-}
-.login-box p{
-  font-size:13px;color:var(--text-l);line-height:1.7;margin-bottom:32px;
-}
-.login-label{
-  font-family:var(--font);font-size:11px;font-weight:700;
-  text-transform:uppercase;letter-spacing:.08em;color:var(--text);
-  display:block;margin-bottom:8px;
-}
-.login-input{
-  width:100%;border:1px solid var(--grey-m);padding:14px 16px;
-  font-family:var(--body);font-size:14px;color:var(--text);
-  outline:none;transition:.2s;letter-spacing:.12em;
-  text-transform:uppercase;
-}
-.login-input:focus{border-color:var(--main);box-shadow:0 0 0 3px rgba(122,143,165,.12)}
-.login-btn{
-  width:100%;margin-top:16px;
-  background:var(--main);color:#fff;border:none;
-  padding:16px;font-family:var(--font);font-size:12px;
-  font-weight:800;text-transform:uppercase;letter-spacing:.12em;
-  cursor:pointer;transition:.2s;
-}
+.login-wrap{min-height:calc(100vh - var(--header-h));display:flex;align-items:center;justify-content:center;background:var(--grey);padding:40px 24px}
+.login-box{background:#fff;border:1px solid var(--grey-m);border-top:4px solid var(--main);padding:48px 40px;width:100%;max-width:420px}
+.login-tag{font-family:var(--font);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--main);margin-bottom:24px}
+.login-box h1{font-family:var(--font);font-size:1.5rem;font-weight:800;color:var(--black);margin-bottom:8px}
+.login-box p{font-size:13px;color:var(--text-l);line-height:1.7;margin-bottom:32px}
+.login-label{font-family:var(--font);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text);display:block;margin-bottom:8px}
+.login-input{width:100%;border:1px solid var(--grey-m);padding:14px 16px;font-family:var(--body);font-size:14px;color:var(--text);outline:none;transition:.2s;letter-spacing:.12em;text-transform:uppercase}
+.login-input:focus{border-color:var(--main)}
+.login-btn{width:100%;margin-top:16px;background:var(--main);color:#fff;border:none;padding:16px;font-family:var(--font);font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;cursor:pointer;transition:.2s}
 .login-btn:hover{background:var(--main-d)}
-.login-error{
-  display:none;margin-top:14px;
-  background:#fff0f0;border-left:3px solid #8b1a1a;
-  padding:10px 14px;font-size:13px;color:#8b1a1a;
-}
-.login-contact{
-  margin-top:24px;padding-top:20px;
-  border-top:1px solid var(--grey-m);
-  font-size:12px;color:var(--text-l);text-align:center;
-}
+.login-error{display:none;margin-top:14px;background:#fff0f0;border-left:3px solid #8b1a1a;padding:10px 14px;font-size:13px;color:#8b1a1a}
+.login-contact{margin-top:24px;padding-top:20px;border-top:1px solid var(--grey-m);font-size:12px;color:var(--text-l);text-align:center}
 .login-contact a{color:var(--main);font-weight:700}
-
-/* Espace connecté */
-.stagiaire-wrap{display:none;min-height:calc(100vh - var(--header-h));background:var(--grey);padding:52px 0}
+.stagiaire-wrap{display:none;min-height:calc(100vh - var(--header-h));background:var(--grey);padding-bottom:52px}
 .stagiaire-header{background:#fff;border-bottom:1px solid var(--grey-m);padding:20px 0;margin-bottom:40px}
 .stagiaire-nom{font-family:var(--font);font-size:1.2rem;font-weight:800;color:var(--black)}
 .stagiaire-tag{font-family:var(--font);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--main);margin-bottom:6px}
 .doc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
-.doc-card{
-  background:#fff;border:1px solid var(--grey-m);padding:24px 20px;
-  text-decoration:none;color:var(--text);transition:.2s;display:flex;
-  align-items:flex-start;gap:14px;
-}
+.section-titre{font-family:var(--font);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--main);padding:8px 0 6px;border-bottom:2px solid var(--main);margin-top:16px;grid-column:1/-1}
+.doc-card{background:#fff;border:1px solid var(--grey-m);padding:20px;text-decoration:none;color:var(--text);display:flex;align-items:flex-start;gap:14px;transition:.2s}
 .doc-card:hover{border-color:var(--main);transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,.06)}
-.doc-icon{flex-shrink:0;width:40px;height:40px;background:var(--grey);
-  display:flex;align-items:center;justify-content:center;color:var(--main)}
+.doc-icon{flex-shrink:0;font-size:22px}
 .doc-card h3{font-family:var(--font);font-size:13px;font-weight:800;color:var(--black);margin-bottom:4px}
 .doc-card p{font-size:12px;color:var(--text-l);line-height:1.5}
-.section-titre{
-  font-family:var(--font);font-size:11px;font-weight:700;
-  text-transform:uppercase;letter-spacing:.12em;color:var(--main);
-  padding:8px 0 6px;border-bottom:2px solid var(--main);
-  margin-top:8px;
-}
-.btn-logout{
-  background:none;border:1px solid var(--grey-m);padding:8px 18px;
-  font-family:var(--font);font-size:11px;font-weight:700;
-  text-transform:uppercase;letter-spacing:.08em;color:var(--text-l);
-  cursor:pointer;transition:.2s;
-}
+.btn-logout{background:none;border:1px solid var(--grey-m);padding:8px 18px;font-family:var(--font);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-l);cursor:pointer;transition:.2s}
 .btn-logout:hover{border-color:var(--main);color:var(--main)}
 </style>
 </head>
 <body>
 
-<!-- ========== HEADER ========== -->
 <div style="position:fixed;top:0;left:0;right:0;z-index:1000">
   <div class="header-top">
     <div class="container">
@@ -111,43 +51,11 @@
   </div>
   <div class="header-main">
     <div class="container">
-      <a href="../index.html" class="logo">
-        <span class="logo-text">APH Drone</span>
-      </a>
+      <a href="../index.html" class="logo"><span class="logo-text">APH Drone</span></a>
       <nav class="main-nav" id="mainNav">
         <ul class="nav-list">
-          <li class="nav-item has-dropdown">
-            <a href="#">APH Drone <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></a>
-            <ul class="dropdown">
-              <li><a href="../pages/apropos.html">À propos</a></li>
-              <li><a href="../pages/certifications.html">Certifications</a></li>
-              <li><a href="../pages/equipements.html">Équipements</a></li>
-              <li><a href="../pages/zone-intervention.html">Zone d'intervention</a></li>
-              <li><a href="../pages/temoignages.html">Témoignages</a></li>
-            </ul>
-          </li>
-          <li class="nav-item has-dropdown">
-            <a href="../pages/prestations.html">Prestations <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></a>
-            <ul class="dropdown">
-              <li><a href="../pages/prestations/inspection.html">Inspection technique</a></li>
-              <li><a href="../pages/prestations/thermographie.html">Thermographie</a></li>
-              <li><a href="../pages/prestations/agriculture.html">Agriculture de précision</a></li>
-              <li><a href="../pages/prestations/cartographie.html">Cartographie &amp; 3D</a></li>
-              <li><a href="../pages/prestations/surveillance.html">Surveillance</a></li>
-              <li><a href="../pages/prestations/photo-video.html">Photo &amp; vidéo</a></li>
-            </ul>
-          </li>
-          <li class="nav-item has-dropdown">
-            <a href="../pages/formations.html">Formations <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></a>
-            <ul class="dropdown">
-              <li><a href="../pages/formations/cats-sts.html">CATS STS</a></li>
-              <li><a href="../pages/formations/vol-nuit.html">Vol de nuit</a></li>
-              <li><a href="../pages/formations/securite-secours.html">Sécurité &amp; Secours</a></li>
-              <li><a href="../pages/formations/initiation-a1a3.html">Initiation A1/A3</a></li>
-            </ul>
-          </li>
-          <li class="nav-item"><a href="../pages/actualites.html">Actualités</a></li>
           <li class="nav-item"><a href="../pages/contact.html">Contact</a></li>
+          <li class="nav-item active"><a href="../pages/espace-stagiaires.html">Espace stagiaires</a></li>
         </ul>
       </nav>
       <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
@@ -155,7 +63,6 @@
   </div>
 </div>
 
-<!-- Boutons fixes -->
 <div class="side-btns">
   <a href="../pages/contact.html" class="side-btn">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -167,21 +74,21 @@
   </a>
 </div>
 
-<!-- ========== ÉCRAN DE CONNEXION ========== -->
+<!-- ÉCRAN CONNEXION -->
 <div class="login-wrap" id="loginWrap">
   <div class="login-box">
-    <p class="login-logo">APH Drone — Formation</p>
+    <p class="login-tag">APH Drone — Formation</p>
     <h1>Espace stagiaires</h1>
     <p>Saisissez votre code d'accès personnel pour accéder à vos documents de formation.</p>
     <label class="login-label" for="codeInput">Votre code d'accès</label>
-    <input type="text" id="codeInput" class="login-input" placeholder="Ex : SC2024" autocomplete="off" autocapitalize="characters"/>
-    <button class="login-btn" onclick="connexion()">Accéder à mon espace →</button>
+    <input type="text" id="codeInput" class="login-input" placeholder="Ex : SC2024" autocomplete="off"/>
+    <button class="login-btn" id="loginBtn">Accéder à mon espace →</button>
     <div class="login-error" id="loginError">Code incorrect. Vérifiez votre code ou contactez APH Drone.</div>
     <p class="login-contact">Code perdu ? <a href="mailto:aphdrone@gmail.com">aphdrone@gmail.com</a> — <a href="tel:+33695390776">06 95 39 07 76</a></p>
   </div>
 </div>
 
-<!-- ========== ESPACE CONNECTÉ ========== -->
+<!-- ESPACE CONNECTÉ -->
 <div class="stagiaire-wrap" id="stagiairesWrap">
   <div class="stagiaire-header">
     <div class="container" style="display:flex;align-items:center;justify-content:space-between">
@@ -189,206 +96,133 @@
         <p class="stagiaire-tag">Espace personnel</p>
         <p class="stagiaire-nom" id="stagiaireNom">Bonjour,</p>
       </div>
-      <button class="btn-logout" onclick="deconnexion()">Se déconnecter</button>
+      <button class="btn-logout" id="logoutBtn">Se déconnecter</button>
     </div>
   </div>
   <div class="container">
-    <div class="doc-grid" id="docGrid">
-      <!-- Rempli dynamiquement -->
-    </div>
+    <div class="doc-grid" id="docGrid"></div>
   </div>
 </div>
 
 <script src="../assets/js/main.js"></script>
 <script>
 
-// ═══════════════════════════════════════════════════════════
-//  LISTE DES STAGIAIRES
-//  Pour ajouter un stagiaire :
-//  1. Créer un dossier Google Drive partagé pour lui
-//  2. Copier le lien de partage
-//  3. Ajouter une ligne dans le tableau ci-dessous
-// ═══════════════════════════════════════════════════════════
-
 const STAGIAIRES = {
-
-  // CODE       NOM COMPLET              FORMATION                   LIEN GOOGLE DRIVE
-  // Pour modifier : remplacez AREMPLACER_XXXX par le vrai lien Google Drive du stagiaire
-  // Pour ajouter  : copiez une ligne, changez le code, le nom, la formation et le lien
-
-  "SC2024":  {
-    nom:"Salif Coulibaly",
-    formations_debloquees:[
-      { id:"cats-sts",    drive:"https://drive.google.com/drive/folders/1CSRD90Wuojgigici99GPgmK7yolIslCQ?usp=drive_link" },
-      // Ajouter d'autres formations ici si besoin :
-      // { id:"vol-nuit", drive:"https://drive.google.com/..." },
+  "SC2024": {
+    nom: "Salif Coulibaly",
+    formations_debloquees: [
+      { id:"cats-sts", drive:"https://drive.google.com/drive/folders/1CSRD90Wuojgigici99GPgmK7yolIslCQ?usp=drive_link" }
     ]
   },
-  "LM202401": { nom:"Lucas Martin", formation:"Initiation A1/A3", drive:"https://drive.google.com/drive/folders/AREMPLACER_LM202401" },
-  "EB202402": { nom:"Emma Bernard", formation:"BAPD Catégorie A2", drive:"https://drive.google.com/drive/folders/AREMPLACER_EB202402" },
-  "ND202403": { nom:"Noah Dubois", formation:"CATS STS-01/02", drive:"https://drive.google.com/drive/folders/AREMPLACER_ND202403" },
-  "LT202404": { nom:"Léa Thomas", formation:"Vol de nuit", drive:"https://drive.google.com/drive/folders/AREMPLACER_LT202404" },
-  "HR202405": { nom:"Hugo Robert", formation:"Thermographie", drive:"https://drive.google.com/drive/folders/AREMPLACER_HR202405" },
-  "CR202406": { nom:"Chloé Richard", formation:"Agriculture de précision", drive:"https://drive.google.com/drive/folders/AREMPLACER_CR202406" },
-  "LP202407": { nom:"Louis Petit", formation:"Sécurité, Recherche & Secours", drive:"https://drive.google.com/drive/folders/AREMPLACER_LP202407" },
-  "CD202408": { nom:"Camille Durand", formation:"Maîtrise opérationnelle", drive:"https://drive.google.com/drive/folders/AREMPLACER_CD202408" },
-  "EL202409": { nom:"Ethan Leroy", formation:"Initiation A1/A3", drive:"https://drive.google.com/drive/folders/AREMPLACER_EL202409" },
-  "MM202410": { nom:"Manon Moreau", formation:"BAPD Catégorie A2", drive:"https://drive.google.com/drive/folders/AREMPLACER_MM202410" },
-  "TS202411": { nom:"Théo Simon", formation:"CATS STS-01/02", drive:"https://drive.google.com/drive/folders/AREMPLACER_TS202411" },
-  "IL202412": { nom:"Inès Laurent", formation:"Vol de nuit", drive:"https://drive.google.com/drive/folders/AREMPLACER_IL202412" },
-  "ML202513": { nom:"Maxime Lefebvre", formation:"Thermographie", drive:"https://drive.google.com/drive/folders/AREMPLACER_ML202513" },
-  "JM202514": { nom:"Jade Michel", formation:"Agriculture de précision", drive:"https://drive.google.com/drive/folders/AREMPLACER_JM202514" },
-  "AG202515": { nom:"Antoine Garcia", formation:"Sécurité, Recherche & Secours", drive:"https://drive.google.com/drive/folders/AREMPLACER_AG202515" },
-  "LD202516": { nom:"Lucie David", formation:"Maîtrise opérationnelle", drive:"https://drive.google.com/drive/folders/AREMPLACER_LD202516" },
-  "RB202517": { nom:"Raphaël Bertrand", formation:"Initiation A1/A3", drive:"https://drive.google.com/drive/folders/AREMPLACER_RB202517" },
-  "AR202518": { nom:"Anaïs Roux", formation:"BAPD Catégorie A2", drive:"https://drive.google.com/drive/folders/AREMPLACER_AR202518" },
-  "BV202519": { nom:"Baptiste Vincent", formation:"CATS STS-01/02", drive:"https://drive.google.com/drive/folders/AREMPLACER_BV202519" },
-  "CF202520": { nom:"Clara Fournier", formation:"Vol de nuit", drive:"https://drive.google.com/drive/folders/AREMPLACER_CF202520" },
-  "AM202521": { nom:"Alexis Morel", formation:"Thermographie", drive:"https://drive.google.com/drive/folders/AREMPLACER_AM202521" },
-  "ZG202522": { nom:"Zoé Girard", formation:"Agriculture de précision", drive:"https://drive.google.com/drive/folders/AREMPLACER_ZG202522" },
-  "QA202523": { nom:"Quentin Andre", formation:"Sécurité, Recherche & Secours", drive:"https://drive.google.com/drive/folders/AREMPLACER_QA202523" },
-  "PL202524": { nom:"Pauline Lefevre", formation:"Maîtrise opérationnelle", drive:"https://drive.google.com/drive/folders/AREMPLACER_PL202524" },
-  "RM202625": { nom:"Romain Mercier", formation:"Initiation A1/A3", drive:"https://drive.google.com/drive/folders/AREMPLACER_RM202625" },
-  "SD202626": { nom:"Sophie Dupont", formation:"BAPD Catégorie A2", drive:"https://drive.google.com/drive/folders/AREMPLACER_SD202626" },
-  "NL202627": { nom:"Nicolas Lambert", formation:"CATS STS-01/02", drive:"https://drive.google.com/drive/folders/AREMPLACER_NL202627" },
-  "MB202628": { nom:"Marine Bonnet", formation:"Vol de nuit", drive:"https://drive.google.com/drive/folders/AREMPLACER_MB202628" },
-  "JF202629": { nom:"Julien François", formation:"Thermographie", drive:"https://drive.google.com/drive/folders/AREMPLACER_JF202629" },
-  "AM202630": { nom:"Amandine Martinez", formation:"Agriculture de précision", drive:"https://drive.google.com/drive/folders/AREMPLACER_AM202630" },
-  "PL202631": { nom:"Pierre Legrand", formation:"Sécurité, Recherche & Secours", drive:"https://drive.google.com/drive/folders/AREMPLACER_PL202631" },
-  "AG202632": { nom:"Audrey Garnier", formation:"Maîtrise opérationnelle", drive:"https://drive.google.com/drive/folders/AREMPLACER_AG202632" },
-  "CF202633": { nom:"Clément Faure", formation:"Initiation A1/A3", drive:"https://drive.google.com/drive/folders/AREMPLACER_CF202633" },
-  "LR202634": { nom:"Laure Rousseau", formation:"BAPD Catégorie A2", drive:"https://drive.google.com/drive/folders/AREMPLACER_LR202634" },
-  "SB202635": { nom:"Sébastien Blanc", formation:"CATS STS-01/02", drive:"https://drive.google.com/drive/folders/AREMPLACER_SB202635" },
-  "MG202636": { nom:"Mathilde Guerin", formation:"Vol de nuit", drive:"https://drive.google.com/drive/folders/AREMPLACER_MG202636" },
-  "FM202737": { nom:"Florian Muller", formation:"Thermographie", drive:"https://drive.google.com/drive/folders/AREMPLACER_FM202737" },
-  "EH202738": { nom:"Elodie Henry", formation:"Agriculture de précision", drive:"https://drive.google.com/drive/folders/AREMPLACER_EH202738" },
-  "AR202739": { nom:"Alexis Roussel", formation:"Sécurité, Recherche & Secours", drive:"https://drive.google.com/drive/folders/AREMPLACER_AR202739" },
-  "CN202740": { nom:"Céline Nicolas", formation:"Maîtrise opérationnelle", drive:"https://drive.google.com/drive/folders/AREMPLACER_CN202740" },
-  "DP202741": { nom:"Damien Perrin", formation:"Initiation A1/A3", drive:"https://drive.google.com/drive/folders/AREMPLACER_DP202741" },
-  "VM202742": { nom:"Virginie Morin", formation:"BAPD Catégorie A2", drive:"https://drive.google.com/drive/folders/AREMPLACER_VM202742" },
-  "AM202743": { nom:"Arnaud Mathieu", formation:"CATS STS-01/02", drive:"https://drive.google.com/drive/folders/AREMPLACER_AM202743" },
-  "NC202744": { nom:"Nathalie Clement", formation:"Vol de nuit", drive:"https://drive.google.com/drive/folders/AREMPLACER_NC202744" },
-  "BG202745": { nom:"Benoît Gauthier", formation:"Thermographie", drive:"https://drive.google.com/drive/folders/AREMPLACER_BG202745" },
-  "SD202746": { nom:"Stéphanie Dumont", formation:"Agriculture de précision", drive:"https://drive.google.com/drive/folders/AREMPLACER_SD202746" },
-  "KL202747": { nom:"Kevin Lopez", formation:"Sécurité, Recherche & Secours", drive:"https://drive.google.com/drive/folders/AREMPLACER_KL202747" },
-  "AF202748": { nom:"Aurélie Fontaine", formation:"Maîtrise opérationnelle", drive:"https://drive.google.com/drive/folders/AREMPLACER_AF202748" },
-  "TC202849": { nom:"Thibault Chevalier", formation:"Initiation A1/A3", drive:"https://drive.google.com/drive/folders/AREMPLACER_TC202849" },
-  "MR202850": { nom:"Mélanie Robin", formation:"BAPD Catégorie A2", drive:"https://drive.google.com/drive/folders/AREMPLACER_MR202850" }
-
+  "LM202401": { nom:"Lucas Martin",      formations_debloquees:[{ id:"initiation-a1a3", drive:"#" }] },
+  "EB202402": { nom:"Emma Bernard",      formations_debloquees:[{ id:"bapd-a2",         drive:"#" }] },
+  "ND202403": { nom:"Noah Dubois",       formations_debloquees:[{ id:"cats-sts",        drive:"#" }] },
+  "LT202404": { nom:"Léa Thomas",        formations_debloquees:[{ id:"vol-nuit",        drive:"#" }] },
+  "HR202405": { nom:"Hugo Robert",       formations_debloquees:[{ id:"thermographie",   drive:"#" }] },
+  "CR202406": { nom:"Chloé Richard",     formations_debloquees:[{ id:"agriculture",     drive:"#" }] },
+  "LP202407": { nom:"Louis Petit",       formations_debloquees:[{ id:"securite-secours",drive:"#" }] },
+  "CD202408": { nom:"Camille Durand",    formations_debloquees:[{ id:"maitrise-pilotage",drive:"#" }] },
+  "EL202409": { nom:"Ethan Leroy",       formations_debloquees:[{ id:"initiation-a1a3", drive:"#" }] },
+  "MM202410": { nom:"Manon Moreau",      formations_debloquees:[{ id:"bapd-a2",         drive:"#" }] },
+  "TS202411": { nom:"Théo Simon",        formations_debloquees:[{ id:"cats-sts",        drive:"#" }] },
+  "IL202412": { nom:"Inès Laurent",      formations_debloquees:[{ id:"vol-nuit",        drive:"#" }] },
+  "ML202513": { nom:"Maxime Lefebvre",   formations_debloquees:[{ id:"thermographie",   drive:"#" }] },
+  "JM202514": { nom:"Jade Michel",       formations_debloquees:[{ id:"agriculture",     drive:"#" }] },
+  "AG202515": { nom:"Antoine Garcia",    formations_debloquees:[{ id:"securite-secours",drive:"#" }] },
+  "LD202516": { nom:"Lucie David",       formations_debloquees:[{ id:"maitrise-pilotage",drive:"#" }] },
+  "RB202517": { nom:"Raphaël Bertrand",  formations_debloquees:[{ id:"initiation-a1a3", drive:"#" }] },
+  "AR202518": { nom:"Anaïs Roux",        formations_debloquees:[{ id:"bapd-a2",         drive:"#" }] },
+  "BV202519": { nom:"Baptiste Vincent",  formations_debloquees:[{ id:"cats-sts",        drive:"#" }] },
+  "CF202520": { nom:"Clara Fournier",    formations_debloquees:[{ id:"vol-nuit",        drive:"#" }] },
+  "AM202521": { nom:"Alexis Morel",      formations_debloquees:[{ id:"thermographie",   drive:"#" }] },
+  "ZG202522": { nom:"Zoé Girard",        formations_debloquees:[{ id:"agriculture",     drive:"#" }] },
+  "QA202523": { nom:"Quentin Andre",     formations_debloquees:[{ id:"securite-secours",drive:"#" }] },
+  "PL202524": { nom:"Pauline Lefevre",   formations_debloquees:[{ id:"maitrise-pilotage",drive:"#" }] },
+  "RM202625": { nom:"Romain Mercier",    formations_debloquees:[{ id:"initiation-a1a3", drive:"#" }] },
+  "SD202626": { nom:"Sophie Dupont",     formations_debloquees:[{ id:"bapd-a2",         drive:"#" }] },
+  "NL202627": { nom:"Nicolas Lambert",   formations_debloquees:[{ id:"cats-sts",        drive:"#" }] },
+  "MB202628": { nom:"Marine Bonnet",     formations_debloquees:[{ id:"vol-nuit",        drive:"#" }] },
+  "JF202629": { nom:"Julien François",   formations_debloquees:[{ id:"thermographie",   drive:"#" }] },
+  "AM202630": { nom:"Amandine Martinez", formations_debloquees:[{ id:"agriculture",     drive:"#" }] },
+  "PL202631": { nom:"Pierre Legrand",    formations_debloquees:[{ id:"securite-secours",drive:"#" }] },
+  "AG202632": { nom:"Audrey Garnier",    formations_debloquees:[{ id:"maitrise-pilotage",drive:"#" }] },
+  "CF202633": { nom:"Clément Faure",     formations_debloquees:[{ id:"initiation-a1a3", drive:"#" }] },
+  "LR202634": { nom:"Laure Rousseau",    formations_debloquees:[{ id:"bapd-a2",         drive:"#" }] },
+  "SB202635": { nom:"Sébastien Blanc",   formations_debloquees:[{ id:"cats-sts",        drive:"#" }] },
+  "MG202636": { nom:"Mathilde Guerin",   formations_debloquees:[{ id:"vol-nuit",        drive:"#" }] },
+  "FM202737": { nom:"Florian Muller",    formations_debloquees:[{ id:"thermographie",   drive:"#" }] },
+  "EH202738": { nom:"Elodie Henry",      formations_debloquees:[{ id:"agriculture",     drive:"#" }] },
+  "AR202739": { nom:"Alexis Roussel",    formations_debloquees:[{ id:"securite-secours",drive:"#" }] },
+  "CN202740": { nom:"Céline Nicolas",    formations_debloquees:[{ id:"maitrise-pilotage",drive:"#" }] },
+  "DP202741": { nom:"Damien Perrin",     formations_debloquees:[{ id:"initiation-a1a3", drive:"#" }] },
+  "VM202742": { nom:"Virginie Morin",    formations_debloquees:[{ id:"bapd-a2",         drive:"#" }] },
+  "AM202743": { nom:"Arnaud Mathieu",    formations_debloquees:[{ id:"cats-sts",        drive:"#" }] },
+  "NC202744": { nom:"Nathalie Clement",  formations_debloquees:[{ id:"vol-nuit",        drive:"#" }] },
+  "BG202745": { nom:"Benoît Gauthier",   formations_debloquees:[{ id:"thermographie",   drive:"#" }] },
+  "SD202746": { nom:"Stéphanie Dumont",  formations_debloquees:[{ id:"agriculture",     drive:"#" }] },
+  "KL202747": { nom:"Kevin Lopez",       formations_debloquees:[{ id:"securite-secours",drive:"#" }] },
+  "AF202748": { nom:"Aurélie Fontaine",  formations_debloquees:[{ id:"maitrise-pilotage",drive:"#" }] },
+  "TC202849": { nom:"Thibault Chevalier",formations_debloquees:[{ id:"initiation-a1a3", drive:"#" }] },
+  "MR202850": { nom:"Mélanie Robin",     formations_debloquees:[{ id:"bapd-a2",         drive:"#" }] }
 };
 
-// ═══════════════════════════════════════════════════════════
-//  DOCUMENTS DISPONIBLES PAR DÉFAUT DANS CHAQUE ESPACE
-// ═══════════════════════════════════════════════════════════
+function afficherEspace(stagiaire) {
+  document.getElementById('loginWrap').style.display = 'none';
+  document.getElementById('stagiairesWrap').style.display = 'block';
+  document.getElementById('stagiaireNom').textContent = 'Bonjour, ' + stagiaire.nom + ' \uD83D\uDC4B';
+  localStorage.setItem('aph_stagiaire', JSON.stringify(stagiaire));
 
-// (DOCS_DEFAUT supprimé — cartes gérées directement ci-dessous)
+  const grid = document.getElementById('docGrid');
+  grid.innerHTML = '';
 
-// ═══════════════════════════════════════════════════════════
-//  LOGIQUE DE CONNEXION
-// ═══════════════════════════════════════════════════════════
+  grid.innerHTML += '<div class="section-titre">📁 Formalités</div>';
+  grid.innerHTML += '<a href="../pages/stagiaires/reglement-interieur.html" class="doc-card"><div class="doc-icon">📜</div><div><h3>Règlement intérieur</h3><p>Règles de fonctionnement durant la formation</p></div></a>';
+  grid.innerHTML += '<a href="../pages/stagiaires/formulaire-satisfaction.html" class="doc-card"><div class="doc-icon">⭐</div><div><h3>Formulaire de satisfaction</h3><p>Donnez votre avis sur la formation suivie</p></div></a>';
+  grid.innerHTML += '<a href="../pages/stagiaires/formulaire-reclamation.html" class="doc-card"><div class="doc-icon">📝</div><div><h3>Formulaire de réclamation</h3><p>Signalez un problème ou déposez une réclamation</p></div></a>';
+  grid.innerHTML += '<a href="../pages/stagiaires/formulaire-cresus.html" class="doc-card"><div class="doc-icon">📋</div><div><h3>Formulaire CRESUS</h3><p>Questionnaire de recueil des éléments stagiaire</p></div></a>';
+  grid.innerHTML += '<a href="../pages/stagiaires/attestation-presence.html" class="doc-card"><div class="doc-icon">🏅</div><div><h3>Attestation de présence</h3><p>Téléchargez votre attestation de présence</p></div></a>';
 
-// Vérifier si déjà connecté au chargement de la page
-document.addEventListener('DOMContentLoaded', function() {
-  const saved = localStorage.getItem('aph_stagiaire');
-  if (saved) {
-    try {
-      const stagiaire = JSON.parse(saved);
-      if (stagiaire && stagiaire.nom) {
-        afficherEspace(stagiaire);
-      }
-    } catch(e) {
-      localStorage.removeItem('aph_stagiaire');
-    }
-  }
-});
+  grid.innerHTML += '<div class="section-titre">📚 Supports de cours</div>';
+  grid.innerHTML += '<a href="../pages/formations-stagiaire.html" class="doc-card" style="border-color:var(--main);grid-column:1/-1"><div class="doc-icon">🎓</div><div><h3>Mes formations</h3><p>Accédez à vos supports de cours — ' + stagiaire.formations_debloquees.length + ' formation(s) débloquée(s)</p></div></a>';
 
-function connexion() {
-  const code = document.getElementById('codeInput').value.trim().toUpperCase();
-  const stagiaire = STAGIAIRES[code];
+  grid.innerHTML += '<div class="section-titre">💻 E-Learning</div>';
+  grid.innerHTML += '<a href="../pages/stagiaires/elearning.html" class="doc-card"><div class="doc-icon">🖥️</div><div><h3>Espace E-Learning</h3><p>Modules de formation en ligne et QCM</p></div></a>';
+}
 
+document.getElementById('loginBtn').addEventListener('click', function() {
+  var code = document.getElementById('codeInput').value.trim().toUpperCase();
+  var stagiaire = STAGIAIRES[code];
   if (!stagiaire) {
     document.getElementById('loginError').style.display = 'block';
     document.getElementById('codeInput').style.borderColor = '#8b1a1a';
     return;
   }
-
-  localStorage.setItem('aph_stagiaire', JSON.stringify(stagiaire));
   afficherEspace(stagiaire);
-}
+});
 
-function afficherEspace(stagiaire) {
-  // Connexion OK
-  document.getElementById('loginWrap').style.display = 'none';
-  document.getElementById('stagiairesWrap').style.display = 'block';
-  document.getElementById('stagiaireNom').textContent = 'Bonjour, ' + stagiaire.nom + ' 👋';
+document.getElementById('codeInput').addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') document.getElementById('loginBtn').click();
+});
 
-  // Construire les cartes documents
-  const grid = document.getElementById('docGrid');
-  grid.innerHTML = '';
-
-  // Sauvegarder en session
-  localStorage.setItem('aph_stagiaire', JSON.stringify(stagiaire));
-
-  // ── SECTION FORMALITÉS ──────────────────────────────────
-  grid.innerHTML += `<div class="section-titre" style="grid-column:1/-1">📁 Formalités</div>`;
-
-  grid.innerHTML += `
-    <a href="../pages/stagiaires/reglement-interieur.html" class="doc-card" style="text-decoration:none">
-      <div class="doc-icon" style="font-size:22px">📜</div>
-      <div><h3>Règlement intérieur</h3><p>Règles de fonctionnement et de conduite durant la formation</p></div>
-    </a>
-    <a href="../pages/stagiaires/formulaire-satisfaction.html" class="doc-card" style="text-decoration:none">
-      <div class="doc-icon" style="font-size:22px">⭐</div>
-      <div><h3>Formulaire de satisfaction</h3><p>Donnez votre avis sur la formation suivie</p></div>
-    </a>
-    <a href="../pages/stagiaires/formulaire-reclamation.html" class="doc-card" style="text-decoration:none">
-      <div class="doc-icon" style="font-size:22px">📝</div>
-      <div><h3>Formulaire de réclamation</h3><p>Signalez un problème ou déposez une réclamation</p></div>
-    </a>
-    <a href="../pages/stagiaires/formulaire-cresus.html" class="doc-card" style="text-decoration:none">
-      <div class="doc-icon" style="font-size:22px">📋</div>
-      <div><h3>Formulaire CRESUS</h3><p>Questionnaire de recueil des éléments stagiaire</p></div>
-    </a>
-    <a href="../pages/stagiaires/attestation-presence.html" class="doc-card" style="text-decoration:none">
-      <div class="doc-icon" style="font-size:22px">🏅</div>
-      <div><h3>Attestation de présence</h3><p>Téléchargez votre attestation de présence en formation</p></div>
-    </a>`;
-
-  // ── SECTION SUPPORTS DE COURS ───────────────────────────
-  grid.innerHTML += `<div class="section-titre" style="grid-column:1/-1">📚 Supports de cours</div>`;
-
-  grid.innerHTML += `
-    <a href="../pages/formations-stagiaire.html" class="doc-card" style="border-color:var(--main);grid-column:1/-1;text-decoration:none">
-      <div class="doc-icon" style="background:var(--main);color:#fff;font-size:22px">🎓</div>
-      <div>
-        <h3>Mes formations</h3>
-        <p>Accédez à vos supports de cours — ${stagiaire.formations_debloquees.length} formation(s) débloquée(s)</p>
-      </div>
-    </a>`;
-
-  // ── SECTION E-LEARNING ──────────────────────────────────
-  grid.innerHTML += `<div class="section-titre" style="grid-column:1/-1">💻 E-Learning</div>`;
-
-  grid.innerHTML += `
-    <a href="../pages/stagiaires/elearning.html" class="doc-card" style="text-decoration:none">
-      <div class="doc-icon" style="font-size:22px">🖥️</div>
-      <div><h3>Espace E-Learning</h3><p>Accédez à vos modules de formation en ligne</p></div>
-    </a>`;
-}
-
-function deconnexion() {
-  document.getElementById('stagiairesWrap').style.display = 'none';
+document.getElementById('logoutBtn').addEventListener('click', function() {
   localStorage.removeItem('aph_stagiaire');
+  document.getElementById('stagiairesWrap').style.display = 'none';
   document.getElementById('loginWrap').style.display = 'flex';
   document.getElementById('codeInput').value = '';
   document.getElementById('loginError').style.display = 'none';
   document.getElementById('codeInput').style.borderColor = '';
-}
-
-// Connexion avec touche Entrée
-document.getElementById('codeInput').addEventListener('keypress', function(e){
-  if(e.key === 'Enter') connexion();
 });
+
+// Reconnexion automatique si déjà connecté
+var saved = localStorage.getItem('aph_stagiaire');
+if (saved) {
+  try {
+    var stagiaire = JSON.parse(saved);
+    if (stagiaire && stagiaire.nom) afficherEspace(stagiaire);
+  } catch(e) {
+    localStorage.removeItem('aph_stagiaire');
+  }
+}
 
 </script>
 </body>
