@@ -4,12 +4,95 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>BAPD — Catégorie Ouverte A2 — APH Drone</title>
-<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700;800&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700;800;900&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="../../assets/css/shared.css"/>
+<style>
+.f-hero{position:relative;min-height:520px;background:linear-gradient(to bottom,rgba(10,20,35,.55) 0%,rgba(10,20,35,.85) 100%),url('https://images.unsplash.com/photo-1527977966376-1c8408f9f108?w=1600&q=80') center/cover no-repeat;display:flex;flex-direction:column;justify-content:flex-end;padding:0 0 52px}
+.f-breadcrumb{position:absolute;top:32px;left:0;right:0;font-family:var(--font);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.55);padding:0 48px}
+.f-breadcrumb a{color:rgba(255,255,255,.55);text-decoration:none}
+.f-breadcrumb a:hover{color:#fff}
+.f-breadcrumb span{margin:0 6px}
+.f-hero-content{padding:0 48px}
+.f-tag{display:inline-block;font-family:var(--font);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.18em;color:var(--main-l);margin-bottom:14px}
+.f-title{font-family:var(--font);font-size:clamp(2rem,5vw,3.8rem);font-weight:900;color:#fff;line-height:1.05;text-transform:uppercase;font-style:italic;margin-bottom:16px;max-width:800px}
+.f-intro{font-size:15px;color:rgba(255,255,255,.75);line-height:1.7;max-width:620px;margin-bottom:36px}
+.f-meta{display:flex;gap:0;flex-wrap:wrap}
+.f-meta-item{display:flex;align-items:flex-start;gap:12px;padding:16px 28px;border-left:3px solid var(--main);margin-right:2px;background:rgba(255,255,255,.06);backdrop-filter:blur(8px)}
+.f-meta-item svg{flex-shrink:0;color:var(--main-l);margin-top:2px}
+.f-meta-label{font-family:var(--font);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.5);margin-bottom:4px}
+.f-meta-val{font-family:var(--font);font-size:14px;font-weight:700;color:#fff}
+.f-meta-link{font-family:var(--font);font-size:13px;font-weight:700;color:var(--main-l);text-decoration:none}
+.f-meta-link:hover{color:#fff;text-decoration:underline}
+.f-layout{display:grid;grid-template-columns:1fr 340px;gap:48px;padding:64px 48px;max-width:1200px;margin:0 auto}
+.f-section{margin-bottom:52px}
+.f-section h2{font-family:var(--font);font-size:clamp(1.4rem,2.5vw,1.8rem);font-weight:800;color:var(--black);margin-bottom:8px}
+.f-section-sub{font-family:var(--font);font-size:14px;font-weight:700;color:var(--main);margin-bottom:20px}
+.f-section p{font-size:14px;color:var(--text-l);line-height:1.85;margin-bottom:14px}
+.f-section ul{margin:0 0 14px 20px}
+.f-section ul li{font-size:14px;color:var(--text-l);line-height:1.8;margin-bottom:4px}
+.prog-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}
+.prog-item{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;background:var(--grey);border-left:3px solid var(--main);transition:.2s}
+.prog-item:hover{background:#fff;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.prog-num{font-family:var(--font);font-size:11px;font-weight:800;color:var(--main);flex-shrink:0;margin-top:2px}
+.prog-text{font-family:var(--font);font-size:12px;font-weight:700;color:var(--black);line-height:1.4}
+.prog-text span{display:block;font-weight:400;color:var(--text-l);font-size:11px;margin-top:2px}
+.day-badge{display:inline-block;background:var(--main);color:#fff;font-family:var(--font);font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;padding:2px 8px;margin-bottom:10px}
+.accordion{border:1px solid var(--grey-m);margin-bottom:4px;overflow:hidden}
+.accordion-head{display:flex;align-items:center;justify-content:space-between;padding:18px 24px;background:var(--black);cursor:pointer;font-family:var(--font);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#fff;transition:background .2s}
+.accordion-head:hover{background:#2a2a2a}
+.accordion-head svg{transition:transform .3s;flex-shrink:0}
+.accordion-head.open svg{transform:rotate(180deg)}
+.accordion-body{display:none;padding:24px;background:#fff;font-size:14px;color:var(--text-l);line-height:1.8}
+.accordion-body.open{display:block}
+.accordion-body ul{margin:8px 0 0 18px}
+.accordion-body ul li{margin-bottom:6px}
+.obj-highlight{font-family:var(--font);font-size:15px;font-weight:700;color:var(--main);line-height:1.7;margin-bottom:20px;padding-left:20px;border-left:3px solid var(--main)}
+.prérequis-box{background:var(--grey);border:1px solid var(--grey-m);padding:20px 24px;margin-bottom:20px}
+.prérequis-box h3{font-family:var(--font);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--main);margin-bottom:12px}
+.prérequis-box ul{margin:0 0 0 18px}
+.sidebar-card{background:#fff;border:1px solid var(--grey-m);border-top:4px solid var(--main);padding:28px 24px;margin-bottom:20px;box-shadow:0 2px 16px rgba(0,0,0,.05);position:sticky;top:120px}
+.sidebar-price{font-family:var(--font);font-size:36px;font-weight:800;color:var(--black);margin-bottom:4px}
+.sidebar-price span{font-size:16px;font-weight:600;color:var(--text-l)}
+.sidebar-price-sub{font-size:12px;color:var(--text-l);margin-bottom:24px}
+.sidebar-items{list-style:none;padding:0;margin:0 0 24px}
+.sidebar-items li{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--grey-m);font-size:13px;color:var(--text)}
+.sidebar-items li:last-child{border:none}
+.sidebar-items li svg{color:var(--main);flex-shrink:0}
+.btn-inscription{display:block;width:100%;background:var(--main);color:#fff;border:none;padding:16px;font-family:var(--font);font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;cursor:pointer;transition:.2s;text-align:center;text-decoration:none;margin-bottom:12px}
+.btn-inscription:hover{background:var(--main-d);transform:translateY(-1px);box-shadow:0 4px 16px rgba(90,111,130,.3)}
+.btn-contact{display:block;width:100%;background:none;color:var(--main);border:2px solid var(--main);padding:14px;font-family:var(--font);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;cursor:pointer;transition:.2s;text-align:center;text-decoration:none}
+.btn-contact:hover{background:var(--main);color:#fff}
+.sidebar-note{font-size:11px;color:var(--text-l);text-align:center;margin-top:14px;line-height:1.5}
+.f-form-section{background:var(--black);padding:72px 48px}
+.f-form-section h2{font-family:var(--font);font-size:clamp(1.5rem,3vw,2.2rem);font-weight:800;color:#fff;margin-bottom:8px}
+.f-form-section p{font-size:14px;color:rgba(255,255,255,.6);margin-bottom:36px}
+.f-form{max-width:760px}
+.f-form-card{background:#fff;border-radius:12px;padding:28px 28px 20px;margin-bottom:16px}
+.f-form-card h3{font-family:var(--font);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text-l);margin-bottom:20px}
+.f-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.f-group{display:flex;flex-direction:column}
+.f-group label{font-size:12px;color:var(--text);margin-bottom:5px;font-weight:500}
+.f-group label span{color:var(--main)}
+.f-group input,.f-group select,.f-group textarea{border:1px solid var(--grey-m);border-radius:6px;padding:11px 14px;font-size:13px;font-family:var(--body);outline:none;transition:.2s;background:var(--grey);width:100%;box-sizing:border-box}
+.f-group input:focus,.f-group select:focus,.f-group textarea:focus{border-color:var(--main);background:#fff}
+.f-group textarea{min-height:90px;resize:vertical}
+.f-group select{appearance:none}
+.f-submit{background:var(--main);color:#fff;border:none;border-radius:8px;padding:16px 48px;font-family:var(--font);font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;cursor:pointer;transition:.2s;margin-top:8px}
+.f-submit:hover{background:var(--main-d);transform:translateY(-1px)}
+@media(max-width:900px){
+  .f-layout{grid-template-columns:1fr;padding:40px 24px}
+  .f-hero-content,.f-breadcrumb{padding:0 24px}
+  .f-meta{flex-direction:column}
+  .prog-grid{grid-template-columns:1fr}
+  .f-form-section{padding:48px 24px}
+  .f-row{grid-template-columns:1fr}
+  .f-sidebar{order:-1}
+  .sidebar-card{position:static}
+}
+</style>
 </head>
 <body>
 
-<!-- ========== HEADER ========== -->
 <div style="position:fixed;top:0;left:0;right:0;z-index:1000">
   <div class="header-top">
     <div class="container">
@@ -19,12 +102,6 @@
         <a href="../../pages/equipements.html">Équipements</a>
         <a href="../../pages/zone-intervention.html">Zone d'intervention</a>
         <a href="../../pages/contact.html" class="tel">✆ 06 95 39 07 76</a>
-      </div>
-      <div class="header-search">
-        <input type="text" placeholder="Rechercher"/>
-        <button aria-label="Rechercher">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-        </button>
       </div>
     </div>
   </div>
@@ -41,45 +118,36 @@
               <li><a href="../../pages/apropos.html">À propos</a></li>
               <li><a href="../../pages/equipe.html">L'équipe</a></li>
               <li><a href="../../pages/zone-intervention.html">Zone d'intervention</a></li>
-              <li><a href="../../pages/hebergement.html">Hébergement &amp; Restauration</a></li>
-              <li><a href="../../pages/partenaires.html">Nos partenaires et clients</a></li>
-              <li><a href="../../pages/temoignages.html">Témoignages</a></li>
+              <li><a href="../../pages/partenaires.html">Nos partenaires</a></li>
               <li><a href="../../pages/actualites.html">Actualités</a></li>
-              <li><a href="../../pages/recrutement.html">Recrutement</a></li>
+            </ul>
+          </li>
+          <li class="nav-item has-dropdown active">
+            <a href="../../pages/formations.html">Formations <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></a>
+            <ul class="dropdown">
+              <li><a href="../../pages/formations/initiation-a1a3.html">Initiation A1/A3</a></li>
+              <li><a href="../../pages/formations/bapd-a2.html" style="color:var(--main);font-weight:700">BAPD — Catégorie A2</a></li>
+              <li><a href="../../pages/formations/cats-sts.html">Préparation CATS STS</a></li>
+              <li><a href="../../pages/formations/vol-nuit.html">Vol de nuit</a></li>
+              <li><a href="../../pages/formations/thermographie.html">Thermographie</a></li>
+              <li><a href="../../pages/formations/agriculture.html">Agriculture de précision</a></li>
+              <li><a href="../../pages/formations/securite-secours.html">Sécurité &amp; Secours</a></li>
             </ul>
           </li>
           <li class="nav-item has-dropdown">
             <a href="../../pages/prestations.html">Prestations <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></a>
             <ul class="dropdown">
-              <li><a href="../../pages/prestations/cartographie.html">Cartographie &amp; Modélisation 3D</a></li>
-              <li><a href="../../pages/prestations/surveillance.html">Surveillance &amp; Sécurité</a></li>
-              <li><a href="../../pages/prestations/environnement.html">Environnement</a></li>
-              <li><a href="../../pages/prestations/agriculture.html">Agriculture de précision</a></li>
-              <li><a href="../../pages/prestations/inspection.html">Inspection technique</a></li>
+              <li><a href="../../pages/prestations/inspection.html">Inspection</a></li>
               <li><a href="../../pages/prestations/thermographie.html">Thermographie</a></li>
-              <li><a href="../../pages/prestations/photo-video.html">Photo &amp; vidéo aérienne</a></li>
-              <li><a href="../../pages/prestations/services-prestataires.html">Services aux prestataires drone</a></li>
-            </ul>
-          </li>
-          <li class="nav-item has-dropdown">
-            <a href="../../pages/formations.html">Formations <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></a>
-            <ul class="dropdown">
-              <li><a href="../../pages/formations/initiation-a1a3.html">Initiation A1/A3</a></li>
-              <li><a href="../../pages/formations/bapd-a2.html">BAPD — Catégorie A2</a></li>
-              <li><a href="../../pages/formations/cats-sts.html">Préparation CATS STS-01/02</a></li>
-              <li><a href="../../pages/formations/vol-nuit.html">Vol de nuit</a></li>
-              <li><a href="../../pages/formations/thermographie.html">Thermographie</a></li>
-              <li><a href="../../pages/formations/agriculture.html">Agriculture &amp; Arboriculture</a></li>
-              <li><a href="../../pages/formations/securite-secours.html">Sécurité, Recherche &amp; Secours</a></li>
+              <li><a href="../../pages/prestations/agriculture.html">Agriculture</a></li>
+              <li><a href="../../pages/prestations/cartographie.html">Cartographie</a></li>
             </ul>
           </li>
           <li class="nav-item has-dropdown">
             <a href="#">Outils en ligne <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></a>
             <ul class="dropdown">
-              <li><a href="../../pages/outils/reglementation.html">Réglementation</a></li>
               <li><a href="../../pages/outils/meteo.html">Préparation MÉTÉO</a></li>
-              <li><a href="../../pages/outils/preparation-vol.html">Préparation de vol</a></li>
-              <li><a href="../../pages/outils/elearning.html">Drone e-learning</a></li>
+              <li><a href="../../pages/outils/reglementation.html">Réglementation</a></li>
               <li><a href="../../pages/outils/qcm.html">QCM</a></li>
             </ul>
           </li>
@@ -89,63 +157,339 @@
           <li class="nav-item"><a href="../../pages/espace-clients.html" style="color:var(--main);font-weight:800">Espace clients</a></li>
         </ul>
       </nav>
-      <button class="burger" id="burger" aria-label="Menu">
-        <span></span><span></span><span></span>
-      </button>
+      <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
     </div>
   </div>
 </div>
 
-<!-- ========== PAGE HERO ========== -->
-<section class="page-hero">
-  <div class="container">
-    <div class="breadcrumb">
-      <a href="../../index.html">Accueil</a>
-      <span>›</span>
-      <a href="../../pages/formations.html">Formations</a>
-        <span>›</span>
-        <span style="color:var(--text)">BAPD — Catégorie Ouverte A2</span>
+<!-- HERO -->
+<section class="f-hero">
+  <div class="f-breadcrumb">
+    <a href="../../index.html">Accueil</a><span>›</span>
+    <a href="../../pages/formations.html">Formations</a><span>›</span>
+    BAPD — Catégorie Ouverte A2
+  </div>
+  <div class="f-hero-content">
+    <p class="f-tag">Formation — Catégorie Ouverte A2</p>
+    <h1 class="f-title">Brevet d'Aptitude<br/>de Pilote de Drone —<br/>Catégorie Ouverte A2</h1>
+    <p class="f-intro">Théorie approfondie, formation pratique déclarative et préparation à l'examen OPEN A2 — obtenez votre BAPD pour voler à proximité des personnes en toute légalité.</p>
+    <div class="f-meta">
+      <div class="f-meta-item">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <div><div class="f-meta-label">Rentrée</div><a href="#inscription" class="f-meta-link">Voir les dates →</a></div>
+      </div>
+      <div class="f-meta-item">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <div><div class="f-meta-label">Durée</div><div class="f-meta-val">3 jours</div></div>
+      </div>
+      <div class="f-meta-item">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+        <div><div class="f-meta-label">Effectif</div><div class="f-meta-val">6 stagiaires max</div></div>
+      </div>
+      <div class="f-meta-item">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+        <div><div class="f-meta-label">Admission</div><div class="f-meta-val">Dès 14 ans</div></div>
+      </div>
     </div>
-    <p class="page-tag">Formation</p>
-    <h1 class="page-title">BAPD — Catégorie Ouverte A2</h1>
-    <p class="page-intro">Préparez et passez le Brevet d'Aptitude de Pilote de Drone pour voler en sous-catégorie A2.</p>
   </div>
 </section>
 
-    <!-- PLACEHOLDER — À REMPLACER PAR LE CONTENU DÉFINITIF -->
-    <section class="section-pad">
-      <div class="container">
-        <div style="background:var(--grey);border-left:4px solid var(--main);padding:32px 40px;max-width:700px">
-          <p style="font-family:var(--font);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--main);margin-bottom:12px">Contenu à venir</p>
-          <p style="font-size:14px;color:var(--text-l);line-height:1.8">Programme 2 jours, QCM DGAC, pratique vol, tarif, attestation BAPD.</p>
+<!-- CONTENU -->
+<div class="f-layout">
+  <main class="f-main">
+
+    <!-- PRÉREQUIS -->
+    <div class="f-section">
+      <div class="prérequis-box">
+        <h3>⚠️ Prérequis obligatoire</h3>
+        <ul>
+          <li>Être titulaire de l'<strong>attestation OPEN A1/A3</strong> (formation gratuite sur AlphaTango) — obligatoire avant d'entrer en formation BAPD</li>
+          <li>Âge minimum : <strong>14 ans</strong></li>
+          <li>Aucune expérience préalable de vol requise</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- PROGRAMME -->
+    <div class="f-section">
+      <h2>Programme — 3 jours</h2>
+      <p class="f-section-sub">Formation théorique approfondie + pratique déclarative + préparation examen</p>
+
+      <div style="margin-bottom:20px">
+        <div class="day-badge">Jour 1 — Théorie réglementaire</div>
+        <div class="prog-grid" style="margin-top:0">
+          <div class="prog-item">
+            <span class="prog-num">01</span>
+            <div class="prog-text">Réglementation EASA / DGAC approfondie<span>Règlement EU 2019/947 — sous-catégorie A2 en détail</span></div>
+          </div>
+          <div class="prog-item">
+            <span class="prog-num">02</span>
+            <div class="prog-text">Drones de classe C2<span>Caractéristiques, obligations du constructeur, marquage CE</span></div>
+          </div>
+          <div class="prog-item">
+            <span class="prog-num">03</span>
+            <div class="prog-text">Distances de sécurité & zones peuplées<span>30 m / 5 m mode basse vitesse — rassemblements interdits</span></div>
+          </div>
+          <div class="prog-item">
+            <span class="prog-num">04</span>
+            <div class="prog-text">Espace aérien & restrictions<span>Zones CTR, géofencing avancé, Alpha Tango pratique</span></div>
+          </div>
         </div>
       </div>
-    </section>
 
-<!-- CTA BAND -->
-<section class="cta-band">
-  <div class="container">
-    <div>
-      <h2>Un projet drone ?</h2>
-      <p>Devis gratuit sous 48 h — intervention Bourgogne-Franche-Comté</p>
+      <div style="margin-bottom:20px">
+        <div class="day-badge">Jour 2 — Technique & météo</div>
+        <div class="prog-grid" style="margin-top:0">
+          <div class="prog-item">
+            <span class="prog-num">05</span>
+            <div class="prog-text">Météorologie opérationnelle avancée<span>METAR/TAF, vents en altitude, phénomènes dangereux</span></div>
+          </div>
+          <div class="prog-item">
+            <span class="prog-num">06</span>
+            <div class="prog-text">Performances de vol de l'UAS<span>Endurance, résistance au vent, limites constructeur</span></div>
+          </div>
+          <div class="prog-item">
+            <span class="prog-num">07</span>
+            <div class="prog-text">Gestion des risques & atténuation<span>Évaluation des risques au sol et en vol — SORA simplifié</span></div>
+          </div>
+          <div class="prog-item">
+            <span class="prog-num">08</span>
+            <div class="prog-text">Facteurs humains & limitations<span>Charge de travail, vigilance, gestion du stress en vol</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="day-badge">Jour 3 — Pratique & examen blanc</div>
+        <div class="prog-grid" style="margin-top:0">
+          <div class="prog-item">
+            <span class="prog-num">09</span>
+            <div class="prog-text">Formation pratique déclarative (BAPD)<span>Vol commenté à proximité de structures, gestion des distances</span></div>
+          </div>
+          <div class="prog-item">
+            <span class="prog-num">10</span>
+            <div class="prog-text">Vols en mode basse vitesse<span>Approche à 5 m des personnes — protocoles et sécurité</span></div>
+          </div>
+          <div class="prog-item">
+            <span class="prog-num">11</span>
+            <div class="prog-text">Examen blanc OPEN A2<span>30 QCM dans les conditions réelles — correction commentée</span></div>
+          </div>
+          <div class="prog-item">
+            <span class="prog-num">12</span>
+            <div class="prog-text">Inscription & debriefing final<span>Procédure Alpha Tango, conseils pour l'examen officiel</span></div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="cta-actions">
-      <a href="../../pages/contact.html" class="btn-cta">Nous contacter</a>
-      <a href="../../pages/prestations.html" class="btn-cta-out">Voir les prestations</a>
+
+    <!-- ACCORDÉONS -->
+    <div class="f-section">
+
+      <div class="accordion">
+        <div class="accordion-head" onclick="toggleAcc(this)">
+          CONDITIONS D'ADMISSION
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="accordion-body">
+          <p>La formation BAPD est accessible à toute personne titulaire de l'attestation OPEN A1/A3.</p>
+          <ul>
+            <li>Âge minimum : <strong>14 ans</strong></li>
+            <li><strong>Attestation OPEN A1/A3 obligatoire</strong> — formation gratuite sur AlphaTango (prévoir 2-3h)</li>
+            <li>Aucune expérience préalable de vol n'est exigée</li>
+            <li>Drone de classe C2 recommandé pour la partie pratique (non obligatoire)</li>
+          </ul>
+          <p style="margin-top:12px;font-size:13px;background:#f0f7ff;padding:10px 14px;border-left:3px solid var(--main)">💡 Vous n'avez pas encore l'attestation A1/A3 ? Vous pouvez la passer gratuitement sur <a href="https://alphatango.aviation-civile.gouv.fr" target="_blank" style="color:var(--main)">Alpha Tango</a> avant votre inscription.</p>
+        </div>
+      </div>
+
+      <div class="accordion">
+        <div class="accordion-head" onclick="toggleAcc(this)">
+          LIEU DE FORMATION
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="accordion-body">
+          <p><strong>APH Drone SARL</strong><br/>44 rue Georges Moulimard<br/>70300 Luxeuil-les-Bains</p>
+          <p>La partie pratique se déroule sur un terrain de vol sécurisé à proximité de Luxeuil-les-Bains, permettant les exercices de vol à proximité de structures en toute sécurité et conformément à la réglementation DGAC.</p>
+          <p>Formation <strong>intra-entreprise</strong> possible sur votre site — <a href="../../pages/contact.html" style="color:var(--main)">nous contacter</a>.</p>
+        </div>
+      </div>
+
+      <div class="accordion">
+        <div class="accordion-head" onclick="toggleAcc(this)">
+          CALENDRIER DES SESSIONS
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="accordion-body">
+          <p>Les sessions sont organisées <strong>sur demande</strong>, en groupe de 2 à 6 personnes, avec un délai minimum de réservation de 7 jours.</p>
+          <ul>
+            <li>Sessions disponibles toute l'année (hors conditions météo défavorables pour la pratique)</li>
+            <li>3 journées consécutives ou fractionnées selon accord</li>
+            <li>Annulation gratuite jusqu'à 48h avant le début</li>
+          </ul>
+          <p>Pour les prochaines dates, <a href="#inscription" style="color:var(--main)">contactez-nous via le formulaire</a>.</p>
+        </div>
+      </div>
+
+      <div class="accordion">
+        <div class="accordion-head" onclick="toggleAcc(this)">
+          ET APRÈS LA FORMATION ?
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="accordion-body">
+          <p>À l'issue de la formation, vous serez prêt à passer l'<strong>examen OPEN A2 (BAPD)</strong> directement sur Alpha Tango :</p>
+          <ul>
+            <li>30 questions à choix multiples — 1 heure maximum</li>
+            <li>75 % de bonnes réponses requis (≤ 7 erreurs)</li>
+            <li>Examen passable en ligne ou en centre agréé</li>
+            <li>Coût de l'examen : <strong>30 €</strong> (non inclus dans la formation)</li>
+            <li>Validité du BAPD : <strong>5 ans</strong> — reconnu dans toute l'Union Européenne</li>
+          </ul>
+          <p style="margin-top:12px;font-size:13px;background:#e8f5e9;padding:10px 14px;border-left:3px solid #43a047">✅ Le BAPD vous ouvre l'accès à la sous-catégorie A2 : vol à 30 m des personnes (5 m en mode basse vitesse) avec un drone de classe C2.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- OBJECTIFS -->
+    <div class="f-section">
+      <h2>Les objectifs de la formation</h2>
+      <p class="f-section-sub">À l'issue de ces 3 jours, le stagiaire sera capable de :</p>
+      <p class="obj-highlight">Passer et réussir l'examen OPEN A2 et voler légalement en sous-catégorie A2 à proximité des personnes, avec un drone de classe C2, dans toute l'Union Européenne.</p>
+      <ul>
+        <li>Maîtriser les spécificités réglementaires de la sous-catégorie A2</li>
+        <li>Préparer et conduire un vol A2 à proximité de zones peuplées</li>
+        <li>Appliquer les distances de sécurité (30 m / 5 m basse vitesse)</li>
+        <li>Réaliser la formation pratique déclarative BAPD</li>
+        <li>S'inscrire et passer l'examen OPEN A2 sur Alpha Tango</li>
+        <li>Gérer les risques spécifiques aux vols en milieu semi-urbanisé</li>
+      </ul>
+    </div>
+
+  </main>
+
+  <!-- SIDEBAR -->
+  <aside class="f-sidebar">
+    <div class="sidebar-card">
+      <div class="sidebar-price">590 € <span>HT</span></div>
+      <div class="sidebar-price-sub">par stagiaire — TVA non applicable (art. 293B CGI)</div>
+      <ul class="sidebar-items">
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>3 jours de formation complète</li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Support de cours inclus</li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Formation pratique déclarative</li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Examen blanc OPEN A2 inclus</li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Attestation de formation</li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>6 stagiaires maximum</li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Formateur certifié DGAC</li>
+        <li style="color:var(--text-l)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:#b0bec5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Examen OPEN A2 non inclus (30 €)</li>
+      </ul>
+      <a href="#inscription" class="btn-inscription">S'inscrire →</a>
+      <a href="../../pages/contact.html" class="btn-contact">Demander un devis</a>
+      <p class="sidebar-note">Prérequis : attestation OPEN A1/A3 obligatoire avant la formation</p>
+    </div>
+  </aside>
+
+</div>
+
+<!-- FORMULAIRE -->
+<section class="f-form-section" id="inscription">
+  <div style="max-width:760px;margin:0 auto">
+    <h2>Contact & Inscription</h2>
+    <p>Notre équipe vous répond sous 48h pour confirmer votre inscription et vérifier que vous disposez bien de l'attestation A1/A3 requise.</p>
+    <div class="f-form">
+      <form action="https://formspree.io/f/xrewbond" method="POST">
+        <input type="hidden" name="formation" value="BAPD — Catégorie Ouverte A2"/>
+        <div class="f-form-card">
+          <h3>Informations personnelles</h3>
+          <div style="margin-bottom:14px">
+            <label style="font-size:12px;color:#6b7280;display:block;margin-bottom:6px">Civilité <span style="color:var(--main)">*</span></label>
+            <select name="civilite" required style="width:100%;border:1px solid #e8edf2;border-radius:6px;padding:11px 14px;font-size:13px;background:#f5f7fa;outline:none">
+              <option value="">Sélectionnez</option>
+              <option>M.</option>
+              <option>Mme</option>
+            </select>
+          </div>
+          <div class="f-row">
+            <div class="f-group"><label>Nom <span>*</span></label><input type="text" name="nom" required placeholder="Votre nom"/></div>
+            <div class="f-group"><label>Prénom <span>*</span></label><input type="text" name="prenom" required placeholder="Votre prénom"/></div>
+          </div>
+          <div class="f-row">
+            <div class="f-group"><label>Date de naissance <span>*</span></label><input type="date" name="naissance" required/></div>
+            <div class="f-group"><label>Email <span>*</span></label><input type="email" name="email" required placeholder="votre@email.fr"/></div>
+          </div>
+          <div class="f-row">
+            <div class="f-group"><label>Téléphone <span>*</span></label><input type="tel" name="telephone" required placeholder="06 XX XX XX XX"/></div>
+            <div class="f-group"><label>Département</label><input type="text" name="departement" placeholder="Ex : 70 — Haute-Saône"/></div>
+          </div>
+        </div>
+        <div class="f-form-card">
+          <h3>Votre demande</h3>
+          <div class="f-row">
+            <div class="f-group">
+              <label>Attestation A1/A3 obtenue ? <span>*</span></label>
+              <select name="attestation_a1a3" required>
+                <option value="">Sélectionnez</option>
+                <option>Oui — je la possède déjà</option>
+                <option>Non — je vais la passer avant</option>
+                <option>En cours</option>
+              </select>
+            </div>
+            <div class="f-group">
+              <label>Date(s) souhaitée(s)</label>
+              <input type="text" name="dates" placeholder="Ex : courant septembre 2025"/>
+            </div>
+          </div>
+          <div class="f-row">
+            <div class="f-group">
+              <label>Drone de classe C2 disponible ?</label>
+              <select name="drone_c2">
+                <option value="">Sélectionnez</option>
+                <option>Oui — je l'apporterai</option>
+                <option>Non</option>
+                <option>En cours d'achat</option>
+              </select>
+            </div>
+            <div class="f-group">
+              <label>Objectif professionnel ?</label>
+              <select name="objectif">
+                <option value="">Sélectionnez</option>
+                <option>Loisir / personnel</option>
+                <option>Professionnel — salarié</option>
+                <option>Professionnel — indépendant</option>
+                <option>Préparation CATS STS</option>
+              </select>
+            </div>
+          </div>
+          <div class="f-group" style="margin-bottom:0">
+            <label>Message / question</label>
+            <textarea name="message" placeholder="Précisez votre projet, votre niveau actuel ou toute autre information utile..."></textarea>
+          </div>
+        </div>
+        <button type="submit" class="f-submit">Envoyer ma demande →</button>
+      </form>
     </div>
   </div>
 </section>
 
-<!-- ========== FOOTER ========== -->
+<!-- FOOTER -->
 <footer id="footer">
   <div class="footer-main">
     <div class="container">
       <div class="footer-grid">
         <div class="footer-col">
           <p class="logo-text" style="color:#fff;margin-bottom:14px">APH Drone</p>
-          <p class="footer-brand-text">Opérateur drone professionnel certifié DGAC.<br/>Haute-Saône — Bourgogne-Franche-Comté.</p>
-          <p class="footer-phone">✆ 06 XX XX XX XX</p>
-          <p style="font-size:12px;color:rgba(255,255,255,.5)">contact@aphdrone.fr</p>
+          <p class="footer-brand-text">Opérateur drone professionnel certifié DGAC — France.</p>
+          <p class="footer-phone">✆ 06 95 39 07 76</p>
+          <p style="font-size:12px;color:rgba(255,255,255,.5)">aphdrone@gmail.com</p>
+        </div>
+        <div class="footer-col">
+          <h4>Formations</h4>
+          <ul>
+            <li><a href="../../pages/formations/initiation-a1a3.html">Initiation A1/A3</a></li>
+            <li><a href="../../pages/formations/bapd-a2.html">BAPD A2</a></li>
+            <li><a href="../../pages/formations/cats-sts.html">CATS STS</a></li>
+            <li><a href="../../pages/formations/vol-nuit.html">Vol de nuit</a></li>
+            <li><a href="../../pages/formations/securite-secours.html">Sécurité &amp; Secours</a></li>
+          </ul>
         </div>
         <div class="footer-col">
           <h4>APH Drone</h4>
@@ -153,35 +497,19 @@
             <li><a href="../../pages/apropos.html">À propos</a></li>
             <li><a href="../../pages/certifications.html">Certifications</a></li>
             <li><a href="../../pages/equipements.html">Équipements</a></li>
-            <li><a href="../../pages/zone-intervention.html">Zone d'intervention</a></li>
-            <li><a href="../../pages/temoignages.html">Témoignages</a></li>
-            <li><a href="../../pages/actualites.html">Actualités</a></li>
+            <li><a href="../../pages/contact.html">Contact</a></li>
           </ul>
         </div>
         <div class="footer-col">
-          <h4>Prestations</h4>
+          <h4>Espaces</h4>
           <ul>
-            <li><a href="../../pages/prestations/inspection.html">Inspection</a></li>
-            <li><a href="../../pages/prestations/thermographie.html">Thermographie</a></li>
-            <li><a href="../../pages/prestations/agriculture.html">Agriculture</a></li>
-            <li><a href="../../pages/prestations/cartographie.html">Cartographie</a></li>
-            <li><a href="../../pages/prestations/surveillance.html">Surveillance</a></li>
-            <li><a href="../../pages/prestations/photo-video.html">Photo &amp; vidéo</a></li>
+            <li><a href="../../pages/espace-stagiaires.html">Espace stagiaires</a></li>
+            <li><a href="../../pages/espace-clients.html">Espace clients</a></li>
           </ul>
-        </div>
-        <div class="footer-col">
-          <h4>Formations</h4>
+          <h4 style="margin-top:18px">Légal</h4>
           <ul>
-            <li><a href="../../pages/formations/cats-sts.html">CATS STS</a></li>
-            <li><a href="../../pages/formations/vol-nuit.html">Vol de nuit</a></li>
-            <li><a href="../../pages/formations/securite-secours.html">SDIS / Secours</a></li>
-            <li><a href="../../pages/formations/initiation-a1a3.html">Initiation A1/A3</a></li>
-            <li><a href="../../pages/formations/bapd-a2.html">BAPD A2</a></li>
-          </ul>
-          <h4 style="margin-top:18px">Contact</h4>
-          <ul>
-            <li><a href="../../pages/contact.html">Formulaire de contact</a></li>
-            <li><a href="mailto:contact@aphdrone.fr">contact@aphdrone.fr</a></li>
+            <li><a href="../../pages/mentions-legales.html">Mentions légales</a></li>
+            <li><a href="../../pages/confidentialite.html">Confidentialité</a></li>
           </ul>
         </div>
       </div>
@@ -190,29 +518,19 @@
   <div class="footer-bottom">
     <div class="container">
       <p class="footer-copyright">Copyright © 2024–2026 APH Drone SARL</p>
-      <div class="footer-legal">
-        <a href="../../pages/mentions-legales.html">Mentions légales</a>
-        <a href="../../pages/confidentialite.html">Confidentialité</a>
-        <a href="../../pages/cookies.html">Cookies</a>
-      </div>
-      <div class="footer-social">
-        <a href="#" aria-label="LinkedIn"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg></a>
-        <a href="#" aria-label="Facebook"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg></a>
-        <a href="#" aria-label="YouTube"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M22.54 6.42a2.78 2.78 0 00-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 00-1.95 1.96A29 29 0 001 12a29 29 0 00.46 5.58A2.78 2.78 0 003.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 001.95-1.95A29 29 0 0023 12a29 29 0 00-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="white"/></svg></a>
-        <a href="#" aria-label="Instagram"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
-      </div>
     </div>
   </div>
 </footer>
 
-<div class="cookie-banner" id="cookieBanner">
-  <p>Nous utilisons des cookies pour améliorer votre expérience. <a href="../../pages/cookies.html">En savoir plus</a></p>
-  <div class="cookie-actions">
-    <button class="btn-cookie-ok" id="cookieOk">Accepter</button>
-    <button class="btn-cookie-no" id="cookieNo">Refuser</button>
-  </div>
-</div>
-
 <script src="../../assets/js/main.js"></script>
+<script>
+function toggleAcc(head) {
+  const body = head.nextElementSibling;
+  const isOpen = body.classList.contains('open');
+  document.querySelectorAll('.accordion-body').forEach(b => b.classList.remove('open'));
+  document.querySelectorAll('.accordion-head').forEach(h => h.classList.remove('open'));
+  if (!isOpen) { body.classList.add('open'); head.classList.add('open'); }
+}
+</script>
 </body>
 </html>
