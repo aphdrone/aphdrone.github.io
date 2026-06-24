@@ -63,11 +63,10 @@ font-weight:500;
 
 /* DROPDOWNS */
 nav .has-dropdown{position:relative;}
-nav .has-dropdown:hover .dropdown{display:block;}
 nav .dropdown{
   display:none;
   position:absolute;
-  top:100%;
+  top:calc(100% + 10px);
   left:0;
   background:rgba(11,31,58,.97);
   min-width:240px;
@@ -75,6 +74,7 @@ nav .dropdown{
   z-index:9999;
   border-top:2px solid #4A90E2;
 }
+nav .dropdown.open{display:block;}
 nav .dropdown li{list-style:none;}
 nav .dropdown li a{
   display:block;
@@ -387,5 +387,22 @@ Centre de formation et expertise drone professionnelle.
 
 </footer>
 
+<script>
+// Dropdowns
+document.querySelectorAll('.has-dropdown > a').forEach(function(link){
+  link.addEventListener('click', function(e){
+    e.preventDefault();
+    var dropdown = this.nextElementSibling;
+    var isOpen = dropdown.classList.contains('open');
+    document.querySelectorAll('.dropdown').forEach(function(d){ d.classList.remove('open'); });
+    if(!isOpen){ dropdown.classList.add('open'); }
+  });
+});
+document.addEventListener('click', function(e){
+  if(!e.target.closest('.has-dropdown')){
+    document.querySelectorAll('.dropdown').forEach(function(d){ d.classList.remove('open'); });
+  }
+});
+</script>
 </body>
 </html>
