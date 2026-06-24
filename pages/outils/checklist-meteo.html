@@ -435,6 +435,8 @@ function soumettre() {
   btn.disabled=true; btn.textContent='Envoi en cours...';
   const now = new Date();
   const checked = document.querySelectorAll('.cl-list input:checked').length;
+  const itemsLabels = ['Vent inférieur au seuil opérationnel','Visibilité suffisante (VLOS)','Plafond nuageux acceptable','Absence de précipitations','Température dans les limites constructeur',"Absence d'orage prévu sur la zone",'Indice KP ≤ 4','Vents en altitude cohérents','NOTAMs consultés','Fenêtre de vol compatible','TAF consulté','Plan de vol déposé si requis','TEMSI France consultée','WINTEM consultée'];
+  const items = itemsLabels.map((label,i) => ({label, checked: !!document.getElementById('c'+(i+1)) && document.getElementById('c'+(i+1)).checked}));
   fetch(SCRIPT_URL,{
     method:'POST',mode:'no-cors',
     headers:{'Content-Type':'application/json'},
@@ -445,6 +447,7 @@ function soumettre() {
       drone:document.getElementById('drone').value||'—',
       lieu:document.getElementById('lieu').value||'—',
       score:checked+'/14 — '+(verdict==='ok'?'Autorisé':verdict==='warn'?'Sous conditions':'Reporté'),
+      items: items,
       signature:canvas.toDataURL('image/png')
     })
   })
