@@ -29,6 +29,9 @@ color:#222;
 overflow-x:hidden;
 }
 
+nav{position:static;}
+nav ul{position:relative;}
+
 header{
 position:fixed;
 top:0;
@@ -75,7 +78,7 @@ nav .dropdown{
   visibility:hidden;
   transform:translateY(6px);
   transition:.2s;
-  z-index:999;
+  z-index:9999;
 }
 nav .has-dropdown:hover .dropdown{opacity:1;visibility:visible;transform:translateY(0);}
 nav .dropdown li{list-style:none;}
