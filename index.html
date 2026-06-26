@@ -201,8 +201,9 @@ flex-direction:column;
 
 /* ── Section header avec boutons ── */
 .section-header{
-  display:flex;align-items:center;justify-content:space-between;
-  flex-wrap:wrap;gap:16px;margin-bottom:32px;
+  display:flex;flex-direction:column;
+  align-items:flex-start;gap:16px;
+  margin-bottom:32px;
 }
 .section-header .section-title{margin-bottom:0;}
 .section-btns{display:flex;gap:12px;}
@@ -586,7 +587,7 @@ padding:60px 10% 0;
           <li><a href="pages/recrutement.html">Recrutement</a></li>
         </ul>
       </li>
-      <li class="has-dropdown"><a href="pages/prestations.html">Prestations</a>
+      <li class="has-dropdown"><a href="prestations.html">Prestations</a>
         <ul class="dropdown">
           <li><a href="pages/prestations/surveillance.html">Surveillance & Sécurité</a></li>
           <li><a href="pages/prestations/agriculture.html">Agriculture de précision</a></li>
@@ -600,7 +601,7 @@ padding:60px 10% 0;
           <li><a href="pages/prestations/photo-video.html">Photo &amp; Vidéo</a></li>
         </ul>
       </li>
-      <li class="has-dropdown"><a href="pages/formations.html">Formations</a>
+      <li class="has-dropdown"><a href="formations.html">Formations</a>
         <ul class="dropdown">
           <li><a href="pages/formations/initiation-a1a3.html">Initiation A1/A3</a></li>
           <li><a href="pages/formations/bapd-a2.html">BAPD — Catégorie A2</a></li>
@@ -676,7 +677,7 @@ cartographie, thermographie, inspection, agriculture,
 sécurité et missions spécialisées.
 </p>
 
-<a href="pages/formations.html" class="btn btn-primary">
+<a href="formations.html" class="btn btn-primary">
 Découvrir les formations
 </a>
 
@@ -779,11 +780,11 @@ Demander un devis
 
 <!-- ═══ CARROUSEL PRESTATIONS ═══ -->
 <section class="section">
-<div class="section-header">
-  <h2 class="section-title">Nos Prestations</h2>
-  <div class="section-btns">
-    <a href="pages/prestations.html" class="btn-section btn-section--primary">Découvrir</a>
-    <a href="pages/espace-clients.html" class="btn-section btn-section--outline">Espace Professionnel</a>
+<div style="margin-bottom:32px;">
+  <h2 class="section-title" style="margin-bottom:16px;">Nos Prestations</h2>
+  <div style="display:flex;gap:12px;">
+    <a href="prestations.html" class="btn-section btn-section--primary">Découvrir</a>
+    <a href="login.html" class="btn-section btn-section--outline">Espace Professionnel</a>
   </div>
 </div>
 <div class="carousel-track">
@@ -879,11 +880,11 @@ Demander un devis
 
 <!-- ═══ CARROUSEL FORMATIONS ═══ -->
 <section class="section">
-<div class="section-header">
-  <h2 class="section-title">Nos Formations</h2>
-  <div class="section-btns">
-    <a href="pages/formations.html" class="btn-section btn-section--primary">Découvrir</a>
-    <a href="pages/espace-stagiaires.html" class="btn-section btn-section--outline">Espace Stagiaire</a>
+<div style="margin-bottom:32px;">
+  <h2 class="section-title" style="margin-bottom:16px;">Nos Formations</h2>
+  <div style="display:flex;gap:12px;">
+    <a href="formations.html" class="btn-section btn-section--primary">Découvrir</a>
+    <a href="login.html" class="btn-section btn-section--outline">Espace Stagiaire</a>
   </div>
 </div>
 <div class="carousel-track">
