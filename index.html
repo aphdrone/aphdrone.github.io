@@ -310,12 +310,14 @@ font-weight:700;
   font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
   color:var(--accent);margin-bottom:10px;
 }
-.actu-grid{
-  display:grid;
-  grid-template-columns:1.6fr 1fr 1fr;
-  gap:28px;
-  align-items:start;
+.actu-track{
+  display:flex;
+  gap:24px;
+  overflow-x:auto;
+  scrollbar-width:none;
+  padding-bottom:12px;
 }
+.actu-track::-webkit-scrollbar{display:none;}
 .actu-card{
   background:#fff;
   border-radius:16px;
@@ -323,31 +325,43 @@ font-weight:700;
   box-shadow:0 8px 32px rgba(0,0,0,.07);
   transition:.35s;
   display:flex;flex-direction:column;
+  flex-shrink:0;
 }
 .actu-card:hover{transform:translateY(-6px);box-shadow:0 16px 48px rgba(0,0,0,.12);}
+.actu-card--lg{width:420px;}
+.actu-card--md{width:300px;}
+.actu-card--sm{width:250px;}
 .actu-img{
   position:relative;
-  width:100%;height:200px;
+  width:100%;
   background:#e8edf4;
   display:flex;align-items:center;justify-content:center;
   overflow:hidden;flex-shrink:0;
 }
-.actu-card--featured .actu-img{height:260px;}
+.actu-card--lg .actu-img{height:240px;}
+.actu-card--md .actu-img{height:180px;}
+.actu-card--sm .actu-img{height:150px;}
 .actu-img img{width:100%;height:100%;object-fit:cover;}
 .actu-img-placeholder{font-size:11px;color:#7a8fa5;letter-spacing:.06em;text-transform:uppercase;}
 .actu-tag{
   position:absolute;top:14px;left:14px;
-  background:var(--secondary);color:white;
+  color:white;
   font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
   padding:4px 10px;border-radius:20px;
 }
+.actu-tag--bleu{background:var(--secondary);}
 .actu-tag--vert{background:#16a34a;}
 .actu-tag--rouge{background:#dc2626;}
-.actu-body{padding:24px 26px 28px;flex:1;display:flex;flex-direction:column;}
-.actu-date{font-size:11px;color:#7a8fa5;font-weight:500;letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;display:block;}
-.actu-title{font-size:1rem;font-weight:700;color:var(--primary);line-height:1.4;margin-bottom:12px;}
-.actu-card--featured .actu-title{font-size:1.2rem;}
-.actu-excerpt{font-size:.85rem;color:#555;line-height:1.7;flex:1;margin-bottom:18px;}
+.actu-tag--orange{background:#ea580c;}
+.actu-tag--violet{background:#7c3aed;}
+.actu-body{padding:22px 24px 26px;flex:1;display:flex;flex-direction:column;}
+.actu-date{font-size:11px;color:#7a8fa5;font-weight:500;letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px;display:block;}
+.actu-title{font-weight:700;color:var(--primary);line-height:1.4;margin-bottom:10px;}
+.actu-card--lg .actu-title{font-size:1.15rem;}
+.actu-card--md .actu-title{font-size:.95rem;}
+.actu-card--sm .actu-title{font-size:.88rem;}
+.actu-excerpt{font-size:.83rem;color:#555;line-height:1.7;flex:1;margin-bottom:16px;}
+.actu-card--sm .actu-excerpt{display:none;}
 .actu-lire{
   display:inline-flex;align-items:center;gap:6px;
   font-size:.82rem;font-weight:600;color:var(--secondary);
@@ -1145,13 +1159,13 @@ Découvrir nos formations
     </div>
     <a href="pages/actualites.html" class="btn-section btn-section--outline">Toutes les actualités</a>
   </div>
-  <div class="actu-grid">
+  <div class="actu-track">
 
-    <!-- ACTU 1 — modifier librement -->
-    <article class="actu-card reveal actu-card--featured">
+    <!-- ACTU 1 — grande -->
+    <article class="actu-card actu-card--lg reveal">
       <div class="actu-img">
         <span class="actu-img-placeholder">Photo</span>
-        <span class="actu-tag">Formation</span>
+        <span class="actu-tag actu-tag--bleu">Formation</span>
       </div>
       <div class="actu-body">
         <time class="actu-date">Juin 2026</time>
@@ -1161,38 +1175,76 @@ Découvrir nos formations
       </div>
     </article>
 
-    <!-- ACTU 2 — modifier librement -->
-    <article class="actu-card reveal">
+    <!-- ACTU 2 — petite -->
+    <article class="actu-card actu-card--sm reveal">
       <div class="actu-img">
         <span class="actu-img-placeholder">Photo</span>
         <span class="actu-tag actu-tag--vert">Mission</span>
       </div>
       <div class="actu-body">
         <time class="actu-date">Mai 2026</time>
-        <h3 class="actu-title">Intervention thermographique sur site industriel en Haute-Saône</h3>
-        <p class="actu-excerpt">Diagnostic complet de toiture et installation électrique réalisé pour un client industriel local grâce à notre caméra infrarouge.</p>
+        <h3 class="actu-title">Thermographie sur site industriel en Haute-Saône</h3>
         <a href="pages/prestations/thermographie.html" class="actu-lire">Lire la suite <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
       </div>
     </article>
 
-    <!-- ACTU 3 — modifier librement -->
-    <article class="actu-card reveal">
+    <!-- ACTU 3 — moyenne -->
+    <article class="actu-card actu-card--md reveal">
       <div class="actu-img">
         <span class="actu-img-placeholder">Photo</span>
         <span class="actu-tag actu-tag--rouge">Réglementation</span>
       </div>
       <div class="actu-body">
         <time class="actu-date">Avril 2026</time>
-        <h3 class="actu-title">Évolutions réglementaires EASA 2026 : ce qui change pour les télépilotes</h3>
-        <p class="actu-excerpt">Point complet sur les nouvelles exigences DGAC / EASA applicables aux opérateurs en catégorie Spécifique et Open A2.</p>
+        <h3 class="actu-title">Évolutions EASA 2026 : ce qui change pour les télépilotes</h3>
+        <p class="actu-excerpt">Point complet sur les nouvelles exigences applicables aux opérateurs en catégorie Spécifique et Open A2.</p>
         <a href="pages/actualites.html" class="actu-lire">Lire la suite <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      </div>
+    </article>
+
+    <!-- ACTU 4 — grande -->
+    <article class="actu-card actu-card--lg reveal">
+      <div class="actu-img">
+        <span class="actu-img-placeholder">Photo</span>
+        <span class="actu-tag actu-tag--violet">Événement</span>
+      </div>
+      <div class="actu-body">
+        <time class="actu-date">Mars 2026</time>
+        <h3 class="actu-title">APH Drone au salon Drone Expo Grand Est — retour sur notre participation</h3>
+        <p class="actu-excerpt">Rencontres professionnelles, démonstrations de vol et présentation de nos offres de formation : une édition riche en échanges.</p>
+        <a href="pages/actualites.html" class="actu-lire">Lire la suite <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      </div>
+    </article>
+
+    <!-- ACTU 5 — petite -->
+    <article class="actu-card actu-card--sm reveal">
+      <div class="actu-img">
+        <span class="actu-img-placeholder">Photo</span>
+        <span class="actu-tag actu-tag--orange">Agriculture</span>
+      </div>
+      <div class="actu-body">
+        <time class="actu-date">Février 2026</time>
+        <h3 class="actu-title">Première mission multispectrale sur vigne en Jura</h3>
+        <a href="pages/prestations/agriculture.html" class="actu-lire">Lire la suite <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      </div>
+    </article>
+
+    <!-- ACTU 6 — moyenne -->
+    <article class="actu-card actu-card--md reveal">
+      <div class="actu-img">
+        <span class="actu-img-placeholder">Photo</span>
+        <span class="actu-tag actu-tag--bleu">Sécurité civile</span>
+      </div>
+      <div class="actu-body">
+        <time class="actu-date">Janvier 2026</time>
+        <h3 class="actu-title">Formation drone SDIS 70 : bilan de la session FMPA hivernale</h3>
+        <p class="actu-excerpt">Retour sur la session de formation opérationnelle conduite avec les sapeurs-pompiers de Haute-Saône en conditions hivernales.</p>
+        <a href="pages/formations/securite-secours.html" class="actu-lire">Lire la suite <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
       </div>
     </article>
 
   </div>
 </section>
-
-<!-- ═══ CONTACT RAPIDE ═══ -->
 <section class="section" style="background:var(--light);">
   <div class="contact-wrap reveal">
     <div class="contact-text">
@@ -1494,9 +1546,12 @@ Découvrir nos formations
   // Lancer après chargement complet
   window.addEventListener('load', function(){
     document.querySelectorAll('.carousel-track').forEach(setupCarousel);
-    // Témoignages : même système, vitesse plus lente
+    // Témoignages : vitesse lente
     var temoTrack = document.getElementById('carousel-temoignages');
     if(temoTrack) setupCarousel(temoTrack, 0.4);
+    // Actualités : vitesse très lente
+    var actuTrack = document.querySelector('.actu-track');
+    if(actuTrack) setupCarousel(actuTrack, 0.5);
   });
 })();
 
