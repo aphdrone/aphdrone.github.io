@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hébergement & Restauration — APH Drone Luxeuil-les-Bains</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#0B1F3A;
+  --secondary:#1F5FAF;
+  --accent:#4A90E2;
+  --light:#F5F7FA;
+}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
+body{background:#fff;color:#222;overflow-x:hidden;}
+
+/* ── HEADER ── */
+#site-header{
+  position:fixed;top:0;width:100%;z-index:9999;
+  padding:16px 60px;
+  display:flex;justify-content:space-between;align-items:center;
+  background:rgba(11,31,58,.97);
+}
+#site-header .logo img{height:64px;width:64px;border-radius:50%;object-fit:cover;}
+#site-header nav ul{display:flex;gap:28px;list-style:none;align-items:center;}
+#site-header nav a{color:white;text-decoration:none;font-weight:500;font-size:14px;}
+#site-header .has-dropdown{position:relative;}
+#site-header .dropdown{display:none;position:absolute;top:100%;left:0;background:#fff;min-width:220px;box-shadow:0 8px 32px rgba(0,0,0,.15);border-top:3px solid #4A90E2;z-index:99999;padding:6px 0;}
+#site-header .dropdown li{list-style:none;}
+#site-header .dropdown li a{display:block;padding:10px 18px;font-size:13px;font-weight:500;color:#0B1F3A;border-bottom:1px solid #f0f0f0;transition:.15s;white-space:nowrap;text-decoration:none;}
+#site-header .dropdown li:last-child a{border:none;}
+#site-header .dropdown li a:hover{background:#f5f7fa;color:#4A90E2;padding-left:24px;}
+
+/* ── HERO ── */
+.page-hero{
+  padding:140px 10% 80px;
+  background:linear-gradient(135deg,var(--primary) 0%,#1a3a6b 100%);
+  color:white;position:relative;overflow:hidden;
+}
+.page-hero::after{content:'';position:absolute;right:-80px;bottom:-80px;width:400px;height:400px;border-radius:50%;background:rgba(74,144,226,.08);}
+.breadcrumb{display:flex;align-items:center;gap:8px;font-size:12px;color:rgba(255,255,255,.5);margin-bottom:20px;letter-spacing:.04em;}
+.breadcrumb a{color:rgba(255,255,255,.5);text-decoration:none;transition:.2s;}
+.breadcrumb a:hover{color:white;}
+.page-hero h1{font-size:3rem;font-weight:700;line-height:1.1;margin-bottom:16px;}
+.page-hero p{font-size:1.1rem;color:rgba(255,255,255,.7);max-width:600px;line-height:1.7;}
+
+/* ── FILTRES ── */
+.filtres-wrap{padding:40px 10% 0;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.filtre-btn{padding:8px 18px;border-radius:30px;font-size:12px;font-weight:600;letter-spacing:.04em;cursor:pointer;border:1.5px solid #dde3ec;background:white;color:#555;transition:.2s;}
+.filtre-btn:hover{border-color:var(--accent);color:var(--accent);}
+.filtre-btn.active{background:var(--secondary);color:white;border-color:var(--secondary);}
+.filtre-btn[data-cat="Hôtel"].active{background:var(--primary);}
+.filtre-btn[data-cat="Restaurant"].active{background:#b45309;}
+.filtre-btn[data-cat="Chambre d'hôtes"].active{background:#15803d;}
+.filtre-btn[data-cat="Meublé"].active{background:#6d28d9;}
+
+/* ── GRILLE FICHES ── */
+.annuaire{padding:40px 10% 100px;}
+.annuaire-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;}
+
+/* ── FICHE ── */
+.fiche{
+  background:#fff;border-radius:16px;overflow:hidden;
+  box-shadow:0 8px 32px rgba(0,0,0,.07);
+  transition:.35s;display:flex;flex-direction:column;
+}
+.fiche.hidden{display:none;}
+.fiche:hover{transform:translateY(-6px);box-shadow:0 16px 48px rgba(0,0,0,.12);}
+.fiche-img{
+  width:100%;height:180px;
+  background:var(--light);
+  display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;flex-shrink:0;
+}
+.fiche-img img{width:100%;height:100%;object-fit:cover;}
+.fiche-img-placeholder{font-size:40px;}
+.fiche-cat{
+  position:absolute;top:14px;left:14px;
+  color:white;font-size:11px;font-weight:700;
+  letter-spacing:.06em;text-transform:uppercase;
+  padding:4px 12px;border-radius:20px;
+}
+.fiche-cat--hotel{background:var(--primary);}
+.fiche-cat--resto{background:#b45309;}
+.fiche-cat--chambre{background:#15803d;}
+.fiche-cat--meuble{background:#6d28d9;}
+
+.fiche-body{padding:22px 24px 26px;flex:1;display:flex;flex-direction:column;}
+.fiche-nom{font-size:1.05rem;font-weight:700;color:var(--primary);margin-bottom:6px;}
+.fiche-desc{font-size:.83rem;color:#555;line-height:1.65;flex:1;margin-bottom:16px;}
+.fiche-infos{display:flex;flex-direction:column;gap:6px;margin-bottom:16px;}
+.fiche-info{display:flex;align-items:flex-start;gap:8px;font-size:.78rem;color:#7a8fa5;}
+.fiche-info svg{width:13px;height:13px;flex-shrink:0;margin-top:1px;color:var(--accent);}
+.fiche-actions{display:flex;gap:10px;flex-wrap:wrap;}
+.fiche-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:8px 16px;border-radius:8px;
+  font-size:.78rem;font-weight:600;text-decoration:none;transition:.2s;
+}
+.fiche-btn--primary{background:var(--secondary);color:white;}
+.fiche-btn--primary:hover{background:var(--accent);}
+.fiche-btn--outline{background:white;color:var(--secondary);border:1.5px solid var(--secondary);}
+.fiche-btn--outline:hover{background:var(--secondary);color:white;}
+
+/* Séparateur section */
+.section-sep{padding:0 10%;margin-bottom:8px;}
+.section-sep-label{
+  display:flex;align-items:center;gap:16px;
+  font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);
+  padding:20px 0 12px;
+}
+.section-sep-label::after{content:'';flex:1;height:1px;background:#e8edf4;}
+
+/* ── BOUTON TÉLÉPHONE ── */
+#back-top{position:fixed;bottom:30px;right:30px;width:52px;height:52px;border-radius:50%;background:var(--secondary);color:white;display:flex;align-items:center;justify-content:center;text-decoration:none;box-shadow:0 8px 24px rgba(31,95,175,.4);transition:.3s;z-index:999;opacity:1;}
+#back-top:hover{background:var(--accent);}
+#back-top svg{width:20px;height:20px;}
+
+/* ── Reveal ── */
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .5s ease,transform .5s ease;}
+.reveal.visible{opacity:1;transform:none;}
+
+/* ── FOOTER ── */
+footer{background:var(--primary);color:white;padding:60px 10% 0;}
+.footer-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:40px;padding-bottom:50px;border-bottom:1px solid rgba(255,255,255,.08);}
+.footer-title{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:18px;}
+.footer-links{list-style:none;display:flex;flex-direction:column;gap:8px;}
+.footer-links a{color:rgba(255,255,255,.7);text-decoration:none;font-size:13px;transition:.2s;display:flex;align-items:center;gap:6px;}
+.footer-links a span{color:var(--accent);font-size:15px;}
+.footer-links a:hover{color:white;padding-left:4px;}
+.footer-desc{font-size:13px;color:rgba(255,255,255,.5);line-height:1.7;margin-bottom:18px;}
+.footer-socials{display:flex;gap:12px;margin-top:6px;}
+.footer-socials a{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.07);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.6);transition:.2s;text-decoration:none;}
+.footer-socials a:hover{background:var(--accent);color:white;}
+.footer-legal{display:flex;flex-wrap:wrap;gap:16px;align-items:center;padding:20px 0;font-size:11px;}
+.footer-legal a{color:rgba(255,255,255,.4);text-decoration:none;transition:.2s;}
+.footer-legal a:hover{color:white;}
+.footer-legal-copy{margin-left:auto;color:rgba(255,255,255,.25);}
+</style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══ -->
+<div id="site-header">
+  <div class="logo"><a href="../index.html"><img src="../assets/logo.jpg" alt="APH Drone"></a></div>
+  <nav>
+    <ul>
+      <li class="has-dropdown"><a href="../index.html">Accueil</a>
+        <ul class="dropdown">
+          <li><a href="apropos.html">À propos</a></li>
+          <li><a href="hebergement.html">Hébergement &amp; Restauration</a></li>
+          <li><a href="actualites.html">Actualités</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </li>
+      <li class="has-dropdown"><a href="../prestations.html">Prestations</a>
+        <ul class="dropdown">
+          <li><a href="prestations/surveillance.html">Surveillance &amp; Sécurité</a></li>
+          <li><a href="prestations/agriculture.html">Agriculture de précision</a></li>
+          <li><a href="prestations/thermographie.html">Thermographie</a></li>
+          <li><a href="prestations/cartographie.html">Cartographie &amp; 3D</a></li>
+        </ul>
+      </li>
+      <li class="has-dropdown"><a href="../formations.html">Formations</a>
+        <ul class="dropdown">
+          <li><a href="formations/initiation-a1a3.html">Initiation A1/A3</a></li>
+          <li><a href="formations/cats-sts.html">Préparation CATS STS</a></li>
+          <li><a href="formations/vol-nuit.html">Vol de nuit</a></li>
+        </ul>
+      </li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </nav>
+</div>
+
+<!-- ═══ HERO ═══ -->
+<div class="page-hero">
+  <div class="breadcrumb">
+    <a href="../index.html">Accueil</a><span>›</span>
+    <span style="color:rgba(255,255,255,.8);">Hébergement &amp; Restauration</span>
+  </div>
+  <h1>Hébergement &amp; Restauration</h1>
+  <p>Toutes les adresses utiles autour de Luxeuil-les-Bains pour vos séjours de formation — hôtels, restaurants, chambres d'hôtes et meublés sélectionnés à proximité de nos locaux.</p>
+</div>
+
+<!-- ═══ FILTRES ═══ -->
+<div class="filtres-wrap">
+  <button class="filtre-btn active" data-cat="Tous">Tous</button>
+  <button class="filtre-btn" data-cat="Hôtel">Hôtels</button>
+  <button class="filtre-btn" data-cat="Restaurant">Restaurants</button>
+  <button class="filtre-btn" data-cat="Chambre d'hôtes">Chambres d'hôtes</button>
+  <button class="filtre-btn" data-cat="Meublé">Meublés &amp; Gîtes</button>
+</div>
+
+<!-- ═══ FICHES ═══ -->
+<div class="annuaire">
+
+  <!-- HÔTELS -->
+  <div class="section-sep"><div class="section-sep-label">Hôtels</div></div>
+  <div class="annuaire-grid" id="grid-hotels">
+
+    <div class="fiche reveal" data-cat="Hôtel">
+      <div class="fiche-img">
+        <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&q=80" alt="Hôtel CERISE Les Sources" style="width:100%;height:100%;object-fit:cover;">
+        <span class="fiche-cat fiche-cat--hotel">Hôtel ★★★</span>
+      </div>
+      <div class="fiche-body">
+        <div class="fiche-nom">Hôtel CERISE — Les Sources</div>
+        <div class="fiche-desc">41 studios avec kitchenette, face au parc thermal. Salle de séminaire disponible. Idéal pour les stagiaires en formation. À 100 m des thermes.</div>
+        <div class="fiche-infos">
+          <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>2 Avenue Jean Moulin, 70300 Luxeuil-les-Bains</div>
+          <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.5 19.79 19.79 0 0 1 1.61 5a2 2 0 0 1 1.95-2H6a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 10a16 16 0 0 0 6 6l.27-.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 18z"/></svg>03 84 93 70 04</div>
+        </div>
+        <div class="fiche-actions">
+          <a href="tel:0384937004" class="fiche-btn fiche-btn--primary">Appeler</a>
+          <a href="https://www.cerise-hotels-residences.com/cerise-luxeuil-les-sources/" target="_blank" class="fiche-btn fiche-btn--outline">Site web</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="fiche reveal" data-cat="Hôtel">
+      <div class="fiche-img">
+        <img src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=600&q=80" alt="Le Clos Rebillotte" style="width:100%;height:100%;object-fit:cover;">
+        <span class="fiche-cat fiche-cat--hotel">Hôtel ★★★</span>
+      </div>
+      <div class="fiche-body">
+        <div class="fiche-nom">Le Clos Rebillotte</div>
+        <div class="fiche-desc">Hôtel 3 étoiles dans une ancienne maison de maître. 21 chambres, climatisation, parking gratuit. À deux pas du casino et des thermes.</div>
+        <div class="fiche-infos">
+          <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>16 rue des Thermes, 70300 Luxeuil-les-Bains</div>
+          <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.5 19.79 19.79 0 0 1 1.61 5a2 2 0 0 1 1.95-2H6a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 10a16 16 0 0 0 6 6l.27-.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 18z"/></svg>03 84 93 90 90</div>
+        </div>
+        <div class="fiche-actions">
+          <a href="tel:0384939090" class="fiche-btn fiche-btn--primary">Appeler</a>
+          <a href="https://www.joa.fr/casinos/luxeuil/hotel" target="_blank" class="fiche-btn fiche-btn--outline">Site web</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="fiche reveal" data-cat="Hôtel">
+      <div class="fiche-img">
+        <img src="https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=600&q=80" alt="Hôtel Le Lion Vert" style="width:100%;height:100%;object-fit:cover;">
+        <span class="fiche-cat fiche-cat--hotel">Hôtel</span>
+      </div>
+      <div class="fiche-body">
+        <div class="fiche-nom">Hôtel Le Lion Vert</div>
+        <div class="fiche-desc">Hôtel convivial à 200 m des thermes. Chambres équipées, WiFi, parking sécurisé, bar. Bon rapport qualité/prix pour les séjours professionnels.</div>
+        <div class="fiche-infos">
+          <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>16 rue Carnot, 70300 Luxeuil-les-Bains</div>
+          <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.5 19.79 19.79 0 0 1 1.61 5a2 2 0 0 1 1.95-2H6a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 10a16 16 0 0 0 6 6l.27-.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 18z"/></svg>À vérifier</div>
+        </div>
+        <div class="fiche-actions">
+          <a href="contact.html" class="fiche-btn fiche-btn--primary">Nous contacter</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="fiche reveal" data-cat="Hôtel">
+      <div class="fiche-img">
+        <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=600&q=80" alt="Hôtel de France" style="width:100%;height:100%;object-fit:cover;">
+        <span class="fiche-cat fiche-cat--hotel">Hôtel ★★</span>
+      </div>
+      <div class="fiche-body">
+        <div class="fiche-nom">Hôtel de France</div>
+        <div class="fiche-desc">Hôtel classique avec jardin fleuri. 15 chambres à partir de 35 €, restaurant sur place. Ouvert toute l'année, parking privé.</div>
+        <div class="fiche-infos">
+          <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>6 avenue Jean Moulin, 70300 Luxeuil-les-Bains</div>
+          <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.5 19.79 19.79 0 0 1 1.61 5a2 2 0 0 1 1.95-2H6a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 10a16 16 0 0 0 6 6l.27-.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 18z"/></svg>À vérifier</div>
+        </div>
+        <div class="fiche-actions">
+          <a href="contact.html" class="fiche-btn fiche-btn--primary">Nous contacter</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="fiche reveal" data-cat="Hôtel">
+      <div class="fiche-img">
+        <img src="https://images.unsplash.com/photo-1445019980597-93fa8acb246c?w=600&q=80" alt="Logis Beau Site" style="width:100%;height:100%;object-fit:cover;">
+        <span class="fiche-cat fiche-cat--hotel">Hôtel ★★★</span>
+      </div>
+      <div class="fiche-body">
+        <div class="fiche-nom">Logis Beau Site</div>
+        <div class="fiche-desc">Hôtel restaurant avec sauna et bain à remous. Vue sur la zone thermale, grand jardin fleuri. Restaurant terroir noté Gault&amp;Millau.</div>
+        <div class="fiche-infos">
+          <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>18 rue Georges Moulimard, 70300 Luxeuil-les-Bains</div>
+          <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.5 19.79 19.79 0 0 1 1.61 5a2 2 0 0 1 1.95-2H6a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 10a16 16 0 0 0 6 6l.27-.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 18z"/></svg>À vérifier</div>
+        </div>
+        <div class="fiche-actions">
+          <a href="contact.html" class="fiche-btn fiche-btn--primary">Nous contacter</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- RESTAURANTS -->
+  <div class="section-sep" style="margin-top:40px;"><div class="section-sep-label">Restaurants</div></div>
+  <div class="annuaire-grid" id="grid-restos">
+
+    <div class="fiche reveal" data-cat="Restaurant">
+      <div class="fiche-img">
+        <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&q=80" alt="Le Comptoir JOA" style="width:100%;height:100%;object-fit:cover;">
+        <span class="fiche-cat fiche-cat--resto">Restaurant</span>
+      </div>
+      <div class="fiche-body">
+        <div class="fiche-nom">Le Comptoir JOA</div>
+        <div class="fiche-desc">Restaurant du casino, cuisine française soignée. Note 8.5/10 sur TheFork (350+ avis). Terrasse, groupes bienvenus, parking.</div>
+        <div class="fiche-infos">
+          <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>16 avenue des Thermes, 70300 Luxeuil-les-Bains</div>
+          <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.5 19.79 19.79 0 0 1 1.61 5a2 2 0 0 1 1.95-2H6a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 10a16 16 0 0 0 6 6l.27-.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 18z"/></svg>03 84 93 90 90</div>
+        </div>
+        <div class="fiche-actions">
+          <a href="tel:0384939090" class="fiche-btn fiche-btn--primary">Réserver</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="fiche reveal" data-cat="Restaurant">
+      <div class="fiche-img">
+        <img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?w=600&q=80" alt="Restaurant Beau Site" style="width:100%;height:100%;object-fit:cover;">
+        <span class="fiche-cat fiche-cat--resto">Restaurant</span>
+      </div>
+      <div class="fiche-body">
+        <div class="fiche-nom">Restaurant Beau Site</div>
+        <div class="fiche-desc">Cuisine terroir franc-comtoise, noté Gault&amp;Millau. Menu terroir à 34 €. Truite du Breuchin, volaille moutarde de Dijon, morbier. Cadre classique soigné.</div>
+        <div class="fiche-infos">
+          <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>18 rue Georges Moulimard, 70300 Luxeuil-les-Bains</div>
+          <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.5 19.79 19.79 0 0 1 1.61 5a2 2 0 0 1 1.95-2H6a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 10a16 16 0 0 0 6 6l.27-.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 18z"/></svg>À vérifier</div>
+        </div>
+        <div class="fiche-actions">
+          <a href="contact.html" class="fiche-btn fiche-btn--primary">Nous contacter</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="fiche reveal" data-cat="Restaurant">
+      <div class="fiche-img">
+        <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80" alt="Restaurant Le Lac" style="width:100%;height:100%;object-fit:cover;">
+        <span class="fiche-cat fiche-cat--resto">Restaurant</span>
+      </div>
+      <div class="fiche-body">
+        <div class="fiche-nom">Restaurant Le Lac</div>
+        <div class="fiche-desc">Cadre verdoyant au lac des 7 chevaux. Cuisine traditionnelle, pizzas, ambiance familiale et conviviale. Privatisation possible pour groupes.</div>
+        <div class="fiche-infos">
+          <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Rue des 7 Chevaux, 70300 Luxeuil-les-Bains</div>
+          <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.5 19.79 19.79 0 0 1 1.61 5a2 2 0 0 1 1.95-2H6a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 10a16 16 0 0 0 6 6l.27-.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 18z"/></svg>03 84 40 27 93</div>
+        </div>
+        <div class="fiche-actions">
+          <a href="tel:0384402793" class="fiche-btn fiche-btn--primary">Réserver</a>
+          <a href="https://restaurant-le-lac.fr/" target="_blank" class="fiche-btn fiche-btn--outline">Site web</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="fiche reveal" data-cat="Restaurant">
+      <div class="fiche-img">
+        <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600&q=80" alt="La Pomme d'Or" style="width:100%;height:100%;object-fit:cover;">
+        <span class="fiche-cat fiche-cat--resto">Brasserie</span>
+      </div>
+      <div class="fiche-body">
+        <div class="fiche-nom">La Pomme d'Or</div>
+        <div class="fiche-desc">Belle brasserie réputée au cœur de Luxeuil. Cuisine française, cadre chaleureux et convivial. Ouvert jusqu'à minuit, idéal après formation.</div>
+        <div class="fiche-infos">
+          <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>8 allée André Maroselli, 70300 Luxeuil-les-Bains</div>
+          <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.5 19.79 19.79 0 0 1 1.61 5a2 2 0 0 1 1.95-2H6a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 10a16 16 0 0 0 6 6l.27-.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 18z"/></svg>03 84 93 43 59</div>
+        </div>
+        <div class="fiche-actions">
+          <a href="tel:0384934359" class="fiche-btn fiche-btn--primary">Réserver</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- CHAMBRES D'HÔTES -->
+  <div class="section-sep" style="margin-top:40px;"><div class="section-sep-label">Chambres d'hôtes</div></div>
+  <div class="annuaire-grid" id="grid-chambres">
+
+    <div class="fiche reveal" data-cat="Chambre d'hôtes">
+      <div class="fiche-img">
+        <img src="https://images.unsplash.com/photo-1584132967334-10e028bd69f7?w=600&q=80" alt="Chambre d'hôtes" style="width:100%;height:100%;object-fit:cover;">
+        <span class="fiche-cat fiche-cat--chambre">Chambre d'hôtes</span>
+      </div>
+      <div class="fiche-body">
+        <div class="fiche-nom">À compléter</div>
+        <div class="fiche-desc">Nous référençons actuellement les chambres d'hôtes de qualité autour de Luxeuil-les-Bains. N'hésitez pas à nous contacter pour toute recommandation.</div>
+        <div class="fiche-infos">
+          <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Luxeuil-les-Bains et environs (70)</div>
+        </div>
+        <div class="fiche-actions">
+          <a href="contact.html" class="fiche-btn fiche-btn--primary">Nous contacter</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- MEUBLÉS -->
+  <div class="section-sep" style="margin-top:40px;"><div class="section-sep-label">Meublés &amp; Gîtes</div></div>
+  <div class="annuaire-grid" id="grid-meubles">
+
+    <div class="fiche reveal" data-cat="Meublé">
+      <div class="fiche-img">
+        <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&q=80" alt="Résidence Les Thermes" style="width:100%;height:100%;object-fit:cover;">
+        <span class="fiche-cat fiche-cat--meuble">Meublé</span>
+      </div>
+      <div class="fiche-body">
+        <div class="fiche-nom">Résidence Les Thermes — Métropole</div>
+        <div class="fiche-desc">64 studios et appartements meublés équipés, face au Centre Thermal. Petit-déjeuner buffet, bar, terrasse. Idéal pour séjours longue durée.</div>
+        <div class="fiche-infos">
+          <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>4 rue des Thermes, 70300 Luxeuil-les-Bains</div>
+          <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.5 19.79 19.79 0 0 1 1.61 5a2 2 0 0 1 1.95-2H6a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 10a16 16 0 0 0 6 6l.27-.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 18z"/></svg>À vérifier</div>
+        </div>
+        <div class="fiche-actions">
+          <a href="contact.html" class="fiche-btn fiche-btn--primary">Nous contacter</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="fiche reveal" data-cat="Meublé">
+      <div class="fiche-img">
+        <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=600&q=80" alt="Le Cocon Thermal" style="width:100%;height:100%;object-fit:cover;">
+        <span class="fiche-cat fiche-cat--meuble">Appartement</span>
+      </div>
+      <div class="fiche-body">
+        <div class="fiche-nom">Le Cocon Thermal</div>
+        <div class="fiche-desc">Appartement neuf et moderne à Luxeuil-les-Bains. Idéal pour 1 à 2 personnes. À proximité du golf de Luxeuil-Bellevue.</div>
+        <div class="fiche-infos">
+          <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Luxeuil-les-Bains, 70300</div>
+          <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Disponible sur Booking.com</div>
+        </div>
+        <div class="fiche-actions">
+          <a href="https://www.booking.com/city/fr/luxeuil-les-bains.fr.html" target="_blank" class="fiche-btn fiche-btn--primary">Voir sur Booking</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-col">
+      <h4 class="footer-title">Nos Prestations</h4>
+      <ul class="footer-links">
+        <li><a href="prestations/surveillance.html"><span>›</span> Surveillance &amp; Sécurité</a></li>
+        <li><a href="prestations/agriculture.html"><span>›</span> Agriculture de précision</a></li>
+        <li><a href="prestations/thermographie.html"><span>›</span> Thermographie</a></li>
+        <li><a href="prestations/cartographie.html"><span>›</span> Cartographie &amp; 3D</a></li>
+        <li><a href="prestations/photo-video.html"><span>›</span> Photo &amp; Vidéo</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4 class="footer-title">Nos Formations</h4>
+      <ul class="footer-links">
+        <li><a href="formations/initiation-a1a3.html"><span>›</span> Initiation A1/A3</a></li>
+        <li><a href="formations/bapd-a2.html"><span>›</span> BAPD — Catégorie A2</a></li>
+        <li><a href="formations/cats-sts.html"><span>›</span> Préparation CATS STS</a></li>
+        <li><a href="formations/vol-nuit.html"><span>›</span> Vol de nuit</a></li>
+        <li><a href="formations/securite-secours.html"><span>›</span> Sécurité &amp; Secours</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4 class="footer-title">APH Drone</h4>
+      <ul class="footer-links">
+        <li><a href="apropos.html"><span>›</span> À propos</a></li>
+        <li><a href="hebergement.html"><span>›</span> Hébergement &amp; Restauration</a></li>
+        <li><a href="actualites.html"><span>›</span> Actualités</a></li>
+        <li><a href="contact.html"><span>›</span> Contact</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4 class="footer-title">Nous contacter</h4>
+      <p class="footer-desc">Opérateur drone professionnel certifié DGAC.<br/>Luxeuil-les-Bains — Haute-Saône.</p>
+      <ul class="footer-links" style="margin-bottom:20px;">
+        <li><a href="tel:0695390776"><span>›</span> 06 95 39 07 76</a></li>
+        <li><a href="mailto:aphdrone@gmail.com"><span>›</span> aphdrone@gmail.com</a></li>
+      </ul>
+      <div class="footer-socials">
+        <a href="#"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+        <a href="#"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+        <a href="#"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-legal">
+    <a href="mentions-legales.html">Mentions légales</a>
+    <a href="confidentialite.html">Confidentialité</a>
+    <a href="contact.html">Contact</a>
+    <span class="footer-legal-copy">© 2024–2026 APH Drone SASU</span>
+    <a href="../admin/actualites.html" style="color:rgba(255,255,255,.1);font-size:10px;text-decoration:none;" title="Administration">⚙</a>
+  </div>
+</footer>
+
+<a id="back-top" href="tel:0695390776">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.5 19.79 19.79 0 0 1 1.61 5a2 2 0 0 1 1.95-2H6a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 10a16 16 0 0 0 6 6l.27-.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 18z"/></svg>
+</a>
+
+<script>
+// Header dropdowns
+document.querySelectorAll('#site-header .has-dropdown').forEach(function(item){
+  var dd = item.querySelector('.dropdown');
+  item.addEventListener('mouseenter', function(){ dd.style.display='block'; });
+  item.addEventListener('mouseleave', function(){ dd.style.display='none'; });
+});
+
+// Reveal
+(function(){
+  var els = document.querySelectorAll('.reveal');
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); }
+    });
+  },{threshold:0.1});
+  els.forEach(function(el){ io.observe(el); });
+})();
+
+// Filtres
+(function(){
+  var btns = document.querySelectorAll('.filtre-btn');
+  var fiches = document.querySelectorAll('.fiche');
+  var seps = document.querySelectorAll('.section-sep');
+
+  btns.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      btns.forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      var cat = btn.dataset.cat;
+
+      fiches.forEach(function(f){
+        f.classList.toggle('hidden', cat !== 'Tous' && f.dataset.cat !== cat);
+      });
+
+      // Masquer les séparateurs de section si aucune fiche visible dessous
+      seps.forEach(function(sep){
+        var grid = sep.nextElementSibling;
+        if(!grid) return;
+        var hasVisible = Array.from(grid.querySelectorAll('.fiche')).some(function(f){
+          return !f.classList.contains('hidden');
+        });
+        sep.style.display = hasVisible ? '' : 'none';
+      });
+    });
+  });
+})();
+</script>
+</body>
+</html>
