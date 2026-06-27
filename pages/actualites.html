@@ -103,10 +103,16 @@ body{background:#fff;color:#222;overflow-x:hidden;}
   gap:28px;
 }
 #firebase-mosaic .actu-card--lg{grid-column:span 2;}
-#firebase-mosaic .actu-card--sm{grid-column:span 1;}
+#firebase-mosaic .actu-card--lg .actu-img{height:260px;}
 #firebase-mosaic .actu-card--md{grid-column:span 1;}
+#firebase-mosaic .actu-card--md .actu-img{height:200px;}
+#firebase-mosaic .actu-card--sm{grid-column:span 1;}
+#firebase-mosaic .actu-card--sm .actu-img{height:160px;}
 /* Carte featured sur 2 colonnes */
 .actu-mosaic .actu-card--span2{grid-column:span 2;}
+.actu-mosaic .actu-card--span2 .actu-img{height:280px;}
+.actu-mosaic .actu-card--md .actu-img{height:200px;}
+.actu-mosaic .actu-card--sm .actu-img{height:160px;}
 
 .actu-card{
   background:#fff;
@@ -590,7 +596,7 @@ footer{background:var(--primary);color:white;padding:60px 10% 0;}
     </div>
   </article>
 
-  <article class="actu-card reveal" data-cat="Formation"
+  <article class="actu-card actu-card--md reveal" data-cat="Formation"
     data-tpl="tpl-cats-sts" data-tag="Formation" data-tagcol="actu-tag--bleu"
     data-date="Juin 2026"
     data-title="Nouvelle session CATS STS ouverte à l'inscription"
@@ -604,7 +610,7 @@ footer{background:var(--primary);color:white;padding:60px 10% 0;}
     </div>
   </article>
 
-  <article class="actu-card reveal" data-cat="Événement"
+  <article class="actu-card actu-card--sm reveal" data-cat="Événement"
     data-tpl="tpl-portes-ouvertes" data-tag="Événement" data-tagcol="actu-tag--violet"
     data-date="Juin 2026"
     data-title="Portes ouvertes SDIS 70 — APH Drone présent"
@@ -621,7 +627,7 @@ footer{background:var(--primary);color:white;padding:60px 10% 0;}
   <!-- ── MAI 2026 ── -->
   <div class="actu-mois"><span>Mai 2026</span></div>
 
-  <article class="actu-card reveal" data-cat="Mission"
+  <article class="actu-card actu-card--sm reveal" data-cat="Mission"
     data-tpl="tpl-thermographie" data-tag="Mission" data-tagcol="actu-tag--vert"
     data-date="Mai 2026"
     data-title="Thermographie sur site industriel en Haute-Saône"
@@ -652,7 +658,7 @@ footer{background:var(--primary);color:white;padding:60px 10% 0;}
   <!-- ── AVRIL 2026 ── -->
   <div class="actu-mois"><span>Avril 2026</span></div>
 
-  <article class="actu-card reveal" data-cat="Réglementation"
+  <article class="actu-card actu-card--md reveal" data-cat="Réglementation"
     data-tpl="tpl-easa" data-tag="Réglementation" data-tagcol="actu-tag--rouge"
     data-date="Avril 2026"
     data-title="Évolutions EASA 2026 : ce qui change pour les télépilotes"
@@ -666,7 +672,7 @@ footer{background:var(--primary);color:white;padding:60px 10% 0;}
     </div>
   </article>
 
-  <article class="actu-card reveal" data-cat="Mission"
+  <article class="actu-card actu-card--sm reveal" data-cat="Mission"
     data-tpl="tpl-cartographie" data-tag="Mission" data-tagcol="actu-tag--vert"
     data-date="Avril 2026"
     data-title="Cartographie de carrière en Franche-Comté — modélisation 3D complète"
@@ -680,7 +686,7 @@ footer{background:var(--primary);color:white;padding:60px 10% 0;}
     </div>
   </article>
 
-  <article class="actu-card reveal" data-cat="Agriculture"
+  <article class="actu-card actu-card--md reveal" data-cat="Agriculture"
     data-tpl="tpl-multispectral-saison" data-tag="Agriculture" data-tagcol="actu-tag--orange"
     data-date="Avril 2026"
     data-title="Démarrage de la saison multispectrale — premières analyses de cultures"
@@ -711,7 +717,7 @@ footer{background:var(--primary);color:white;padding:60px 10% 0;}
     </div>
   </article>
 
-  <article class="actu-card reveal" data-cat="Sécurité civile"
+  <article class="actu-card actu-card--sm reveal" data-cat="Sécurité civile"
     data-tpl="tpl-exercice-sdis" data-tag="Sécurité civile" data-tagcol="actu-tag--marine"
     data-date="Mars 2026"
     data-title="Exercice SDIS 70 — recherche de personne disparue en forêt"
@@ -728,7 +734,7 @@ footer{background:var(--primary);color:white;padding:60px 10% 0;}
   <!-- ── JANVIER 2026 ── -->
   <div class="actu-mois"><span>Janvier 2026</span></div>
 
-  <article class="actu-card reveal" data-cat="Sécurité civile"
+  <article class="actu-card actu-card--md reveal" data-cat="Sécurité civile"
     data-tpl="tpl-fmpa" data-tag="Sécurité civile" data-tagcol="actu-tag--marine"
     data-date="Janvier 2026"
     data-title="Formation FMPA SDIS 70 — bilan de la session hivernale"
@@ -742,7 +748,7 @@ footer{background:var(--primary);color:white;padding:60px 10% 0;}
     </div>
   </article>
 
-  <article class="actu-card reveal" data-cat="Agriculture"
+  <article class="actu-card actu-card--sm reveal" data-cat="Agriculture"
     data-tpl="tpl-vigne" data-tag="Agriculture" data-tagcol="actu-tag--orange"
     data-date="Janvier 2026"
     data-title="Première mission multispectrale sur vigne — Jura"
@@ -756,7 +762,7 @@ footer{background:var(--primary);color:white;padding:60px 10% 0;}
     </div>
   </article>
 
-  <article class="actu-card reveal" data-cat="Réglementation"
+  <article class="actu-card actu-card--md reveal" data-cat="Réglementation"
     data-tpl="tpl-sora" data-tag="Réglementation" data-tagcol="actu-tag--rouge"
     data-date="Janvier 2026"
     data-title="SORA v2.5 — nouveautés pour les opérateurs en catégorie Spécifique"
