@@ -1159,6 +1159,10 @@ Découvrir nos formations
     </div>
     <a href="pages/actualites.html" class="btn-section btn-section--outline">Toutes les actualités</a>
   </div>
+  <div class="carousel-wrapper">
+  <button class="carousel-btn carousel-btn--prev" onclick="scrollCarousel(this,-1)" aria-label="Précédent">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+  </button>
   <div class="actu-track">
 
     <!-- ACTU 1 — grande -->
@@ -1244,9 +1248,11 @@ Découvrir nos formations
     </article>
 
   </div>
+  <button class="carousel-btn carousel-btn--next" onclick="scrollCarousel(this,1)" aria-label="Suivant">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+  </button>
+  </div>
 </section>
-<section class="section" style="background:var(--light);">
-  <div class="contact-wrap reveal">
     <div class="contact-text">
       <h2 class="section-title" style="margin-bottom:16px;">Un projet ? Parlons-en.</h2>
       <p style="color:#555;line-height:1.8;margin-bottom:28px;">Devis gratuit sous 48h. Que ce soit pour une mission ponctuelle, une formation ou un partenariat, répondons à vos besoins ensemble.</p>
@@ -1538,7 +1544,7 @@ Découvrir nos formations
   // Flèches
   window.scrollCarousel = function(btn, dir){
     var wrapper = btn.closest('.carousel-wrapper');
-    var track = wrapper.querySelector('.carousel-track');
+    var track = wrapper.querySelector('.carousel-track, .actu-track, .temoignages-track');
     track._pause && track._pause();
     track.scrollBy({ left: dir * CARD_W, behavior: 'smooth' });
   };
@@ -1549,7 +1555,7 @@ Découvrir nos formations
     // Témoignages : vitesse lente
     var temoTrack = document.getElementById('carousel-temoignages');
     if(temoTrack) setupCarousel(temoTrack, 0.4);
-    // Actualités : vitesse très lente
+    // Actualités : vitesse lente
     var actuTrack = document.querySelector('.actu-track');
     if(actuTrack) setupCarousel(actuTrack, 0.5);
   });
