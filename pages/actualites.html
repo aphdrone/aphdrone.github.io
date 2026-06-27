@@ -152,6 +152,7 @@ body{background:#fff;color:#222;overflow-x:hidden;}
   display:inline-flex;align-items:center;gap:6px;
   font-size:.82rem;font-weight:600;color:var(--secondary);
   text-decoration:none;transition:.2s;
+  background:none;border:none;cursor:pointer;padding:0;font-family:'Inter',sans-serif;
 }
 .actu-lire:hover{color:var(--accent);gap:10px;}
 
@@ -185,7 +186,95 @@ body{background:#fff;color:#222;overflow-x:hidden;}
 #back-top:hover{background:var(--accent);}
 #back-top svg{width:20px;height:20px;}
 
-/* ── Animations reveal ── */
+/* ── Panel article ── */
+#article-overlay{
+  position:fixed;inset:0;
+  background:rgba(11,31,58,.55);
+  backdrop-filter:blur(4px);
+  z-index:99998;
+  opacity:0;pointer-events:none;
+  transition:opacity .35s;
+}
+#article-overlay.open{opacity:1;pointer-events:all;}
+
+#article-panel{
+  position:fixed;top:0;right:0;
+  width:min(680px,95vw);height:100vh;
+  background:#fff;
+  z-index:99999;
+  overflow-y:auto;
+  transform:translateX(100%);
+  transition:transform .4s cubic-bezier(.4,0,.2,1);
+  display:flex;flex-direction:column;
+}
+#article-panel.open{transform:translateX(0);}
+
+#article-panel .ap-header{
+  position:sticky;top:0;
+  background:#fff;
+  padding:20px 32px 16px;
+  border-bottom:1px solid #eee;
+  display:flex;align-items:center;justify-content:space-between;
+  z-index:10;
+}
+#article-panel .ap-close{
+  width:40px;height:40px;border-radius:50%;
+  border:none;background:#f5f7fa;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  color:#555;transition:.2s;flex-shrink:0;
+}
+#article-panel .ap-close:hover{background:var(--primary);color:white;}
+
+#article-panel .ap-img{
+  width:100%;height:280px;
+  background:#e8edf4;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;overflow:hidden;
+}
+#article-panel .ap-img img{width:100%;height:100%;object-fit:cover;}
+#article-panel .ap-img-placeholder{font-size:12px;color:#7a8fa5;letter-spacing:.06em;text-transform:uppercase;}
+
+#article-panel .ap-body{padding:36px 40px 60px;flex:1;}
+#article-panel .ap-meta{
+  display:flex;align-items:center;gap:12px;
+  margin-bottom:20px;
+}
+#article-panel .ap-tag{
+  font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  padding:4px 12px;border-radius:20px;color:white;
+}
+#article-panel .ap-date{font-size:12px;color:#7a8fa5;font-weight:500;}
+#article-panel .ap-title{
+  font-size:1.6rem;font-weight:700;
+  color:var(--primary);line-height:1.3;
+  margin-bottom:24px;
+}
+#article-panel .ap-content{
+  font-size:.95rem;color:#444;line-height:1.85;
+}
+#article-panel .ap-content p{margin-bottom:18px;}
+#article-panel .ap-content h4{
+  font-size:1rem;font-weight:700;color:var(--primary);
+  margin:28px 0 10px;
+}
+#article-panel .ap-content ul{
+  padding-left:20px;margin-bottom:18px;
+}
+#article-panel .ap-content ul li{margin-bottom:6px;}
+#article-panel .ap-cta{
+  margin-top:36px;padding-top:28px;
+  border-top:1px solid #eee;
+}
+#article-panel .ap-cta a{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--secondary);color:white;
+  padding:12px 24px;border-radius:8px;
+  font-size:.88rem;font-weight:600;
+  text-decoration:none;transition:.2s;
+}
+#article-panel .ap-cta a:hover{background:var(--accent);}
+
+/* ── Curseur ── */
 .reveal{opacity:0;transform:translateY(24px);transition:opacity .5s ease,transform .5s ease;}
 .reveal.visible{opacity:1;transform:none;}
 
@@ -303,7 +392,11 @@ footer{background:var(--primary);color:white;padding:60px 10% 0;}
   <!-- ── JUIN 2026 ── -->
   <div class="actu-mois"><span>Juin 2026</span></div>
 
-  <article class="actu-card actu-card--span2 reveal" data-cat="Formation">
+  <article class="actu-card actu-card--span2 reveal" data-cat="Formation"
+    data-tag="Formation" data-tagcol="actu-tag--bleu" data-date="Juin 2026"
+    data-title="Nouvelle session CATS STS ouverte à l'inscription"
+    data-content="&lt;p&gt;La prochaine session de préparation à l'examen CATS — scénarios STS-01 et STS-02 — est programmée en distanciel synchrone sur 5 jours. Public mixte SDIS et civils. Places limitées à 3 stagiaires pour garantir un suivi individualisé.&lt;/p&gt;&lt;h4&gt;Programme&lt;/h4&gt;&lt;ul&gt;&lt;li&gt;Jour 1 — Réglementation européenne UAS (EASA, DGAC)&lt;/li&gt;&lt;li&gt;Jour 2 — Gestion de l'espace aérien et autorisations&lt;/li&gt;&lt;li&gt;Jour 3 — Météorologie appliquée et GO/NO-GO&lt;/li&gt;&lt;li&gt;Jour 4 — Facteurs humains et CRM&lt;/li&gt;&lt;li&gt;Jour 5 — Révisions et examen blanc complet (40 QCM, seuil 75%)&lt;/li&gt;&lt;/ul&gt;&lt;h4&gt;Modalités&lt;/h4&gt;&lt;p&gt;Formation distancielle synchrone via Zoom. Supports de cours fournis. Examen final dans un centre DGAC Océane agréé. Tarif sur devis selon profil (SDIS / particulier / entreprise).&lt;/p&gt;"
+    data-cta="&lt;a href='formations/cats-sts.html'&gt;Voir la formation CATS STS &lt;svg width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5'&gt;&lt;path d='M5 12h14M12 5l7 7-7 7'/&gt;&lt;/svg&gt;&lt;/a&gt;">
     <div class="actu-img">
       <span class="actu-img-placeholder">Photo</span>
       <span class="actu-tag actu-tag--bleu">Formation</span>
@@ -311,12 +404,16 @@ footer{background:var(--primary);color:white;padding:60px 10% 0;}
     <div class="actu-body">
       <time class="actu-date">Juin 2026</time>
       <h3 class="actu-title">Nouvelle session CATS STS ouverte à l'inscription</h3>
-      <p class="actu-excerpt">La prochaine session de préparation à l'examen CATS — scénarios STS-01 et STS-02 — est programmée en distanciel synchrone sur 5 jours. Public mixte SDIS et civils. Places limitées à 3 stagiaires pour garantir un suivi individualisé.</p>
-      <a href="formations/cats-sts.html" class="actu-lire">Lire la suite <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      <p class="actu-excerpt">La prochaine session de préparation à l'examen CATS — scénarios STS-01 et STS-02 — est programmée en distanciel synchrone sur 5 jours. Public mixte SDIS et civils. Places limitées à 3 stagiaires.</p>
+      <button class="actu-lire" onclick="openArticle(this.closest('.actu-card'))">Lire la suite <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
     </div>
   </article>
 
-  <article class="actu-card reveal" data-cat="Événement">
+  <article class="actu-card reveal" data-cat="Événement"
+    data-tag="Événement" data-tagcol="actu-tag--violet" data-date="Juin 2026"
+    data-title="Portes ouvertes SDIS 70 — APH Drone présent"
+    data-content="&lt;p&gt;APH Drone a participé aux portes ouvertes du centre de secours de Luxeuil-les-Bains le 27 juin 2026, en tant qu'opérateur drone du SDIS 70.&lt;/p&gt;&lt;h4&gt;Au programme&lt;/h4&gt;&lt;ul&gt;&lt;li&gt;Démonstration de vol opérationnel drone thermique&lt;/li&gt;&lt;li&gt;Présentation des usages en sécurité civile (recherche de personnes, incendie, accident)&lt;/li&gt;&lt;li&gt;Ateliers enfants et sensibilisation grand public&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;Une journée riche en échanges avec les habitants de la Haute-Saône, qui ont pu découvrir les capacités opérationnelles du drone au service des sapeurs-pompiers.&lt;/p&gt;"
+    data-cta="">
     <div class="actu-img">
       <span class="actu-img-placeholder">Photo</span>
       <span class="actu-tag actu-tag--violet">Événement</span>
@@ -325,14 +422,18 @@ footer{background:var(--primary);color:white;padding:60px 10% 0;}
       <time class="actu-date">Juin 2026</time>
       <h3 class="actu-title">Portes ouvertes SDIS 70 — APH Drone présent</h3>
       <p class="actu-excerpt">Démonstration de drone opérationnel lors des portes ouvertes du centre de secours de Luxeuil. Sensibilisation du public aux usages civils et de sécurité civile.</p>
-      <a href="actualites.html" class="actu-lire">Lire la suite <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      <button class="actu-lire" onclick="openArticle(this.closest('.actu-card'))">Lire la suite <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
     </div>
   </article>
 
   <!-- ── MAI 2026 ── -->
   <div class="actu-mois"><span>Mai 2026</span></div>
 
-  <article class="actu-card reveal" data-cat="Mission">
+  <article class="actu-card reveal" data-cat="Mission"
+    data-tag="Mission" data-tagcol="actu-tag--vert" data-date="Mai 2026"
+    data-title="Thermographie sur site industriel en Haute-Saône"
+    data-content="&lt;p&gt;APH Drone est intervenu sur un site industriel en Haute-Saône pour un diagnostic thermographique complet de toiture et d'installations électriques.&lt;/p&gt;&lt;h4&gt;Déroulement de la mission&lt;/h4&gt;&lt;ul&gt;&lt;li&gt;Reconnaissance terrain et définition de la zone de vol&lt;/li&gt;&lt;li&gt;Vol thermique à l'aube (conditions optimales)&lt;/li&gt;&lt;li&gt;Analyse des images infrarouges et identification des anomalies&lt;/li&gt;&lt;li&gt;Rapport de restitution avec cartographie des défauts&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;Rapport livré sous 48h. Plusieurs ponts thermiques et une anomalie électrique critique ont été identifiés, permettant une intervention préventive immédiate.&lt;/p&gt;"
+    data-cta="&lt;a href='prestations/thermographie.html'&gt;Découvrir la prestation thermographie &lt;svg width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5'&gt;&lt;path d='M5 12h14M12 5l7 7-7 7'/&gt;&lt;/svg&gt;&lt;/a&gt;">
     <div class="actu-img">
       <span class="actu-img-placeholder">Photo</span>
       <span class="actu-tag actu-tag--vert">Mission</span>
@@ -341,11 +442,15 @@ footer{background:var(--primary);color:white;padding:60px 10% 0;}
       <time class="actu-date">Mai 2026</time>
       <h3 class="actu-title">Thermographie sur site industriel en Haute-Saône</h3>
       <p class="actu-excerpt">Diagnostic complet de toiture et installations électriques pour un client industriel local. Rapport de restitution livré sous 48h.</p>
-      <a href="prestations/thermographie.html" class="actu-lire">Lire la suite <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      <button class="actu-lire" onclick="openArticle(this.closest('.actu-card'))">Lire la suite <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
     </div>
   </article>
 
-  <article class="actu-card actu-card--span2 reveal" data-cat="Formation">
+  <article class="actu-card actu-card--span2 reveal" data-cat="Formation"
+    data-tag="Formation" data-tagcol="actu-tag--bleu" data-date="Mai 2026"
+    data-title="Lancement du programme Vol de nuit — une formation rare en France"
+    data-content="&lt;p&gt;APH Drone propose désormais une formation complète au vol de nuit réglementé, sur 3 jours incluant 2 nuits de pratique terrain. Unique en Bourgogne-Franche-Comté.&lt;/p&gt;&lt;h4&gt;Pour qui ?&lt;/h4&gt;&lt;p&gt;Ce programme s'adresse aux professionnels de la sécurité, de l'inspection industrielle, de la photographie nocturne et aux sapeurs-pompiers volontaires.&lt;/p&gt;&lt;h4&gt;Contenu&lt;/h4&gt;&lt;ul&gt;&lt;li&gt;Réglementation vol de nuit et autorisations DGAC&lt;/li&gt;&lt;li&gt;Gestion des risques nocturnes&lt;/li&gt;&lt;li&gt;Configuration drone pour le vol de nuit (éclairage, capteurs)&lt;/li&gt;&lt;li&gt;2 nuits de vols pratiques en conditions réelles&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;Formation dispensée en petit groupe (3 stagiaires maximum) pour garantir un accompagnement individualisé.&lt;/p&gt;"
+    data-cta="&lt;a href='formations/vol-nuit.html'&gt;Voir la formation Vol de nuit &lt;svg width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5'&gt;&lt;path d='M5 12h14M12 5l7 7-7 7'/&gt;&lt;/svg&gt;&lt;/a&gt;">
     <div class="actu-img">
       <span class="actu-img-placeholder">Photo</span>
       <span class="actu-tag actu-tag--bleu">Formation</span>
@@ -353,15 +458,16 @@ footer{background:var(--primary);color:white;padding:60px 10% 0;}
     <div class="actu-body">
       <time class="actu-date">Mai 2026</time>
       <h3 class="actu-title">Lancement du programme Vol de nuit — une formation rare en France</h3>
-      <p class="actu-excerpt">APH Drone propose désormais une formation complète au vol de nuit réglementé, sur 3 jours incluant 2 nuits de pratique terrain. Unique en Bourgogne-Franche-Comté, ce programme répond aux besoins des professionnels de la sécurité, de l'inspection et de la photographie nocturne.</p>
-      <a href="formations/vol-nuit.html" class="actu-lire">Lire la suite <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      <p class="actu-excerpt">APH Drone propose désormais une formation complète au vol de nuit réglementé, sur 3 jours incluant 2 nuits de pratique terrain. Unique en Bourgogne-Franche-Comté.</p>
+      <button class="actu-lire" onclick="openArticle(this.closest('.actu-card'))">Lire la suite <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
     </div>
   </article>
 
-  <!-- ── AVRIL 2026 ── -->
-  <div class="actu-mois"><span>Avril 2026</span></div>
-
-  <article class="actu-card reveal" data-cat="Réglementation">
+  <article class="actu-card reveal" data-cat="Réglementation"
+    data-tag="Réglementation" data-tagcol="actu-tag--rouge" data-date="Avril 2026"
+    data-title="Évolutions EASA 2026 : ce qui change pour les télépilotes"
+    data-content="&lt;p&gt;Le second semestre 2026 apporte son lot de changements réglementaires pour les opérateurs UAS en Europe. Voici les points essentiels à connaître.&lt;/p&gt;&lt;h4&gt;Catégorie Open — Open A2&lt;/h4&gt;&lt;p&gt;Renforcement des exigences de formation en ligne et de l'auto-déclaration. Le certificat A2 reste valable 5 ans mais une mise à jour des connaissances est désormais recommandée tous les 2 ans.&lt;/p&gt;&lt;h4&gt;Catégorie Spécifique — SORA v2.5&lt;/h4&gt;&lt;p&gt;La nouvelle version du SORA introduit des modifications dans l'évaluation du GRC et des OSOs. Les dossiers déposés avant le 1er juillet 2026 restent instruits selon SORA v2.0.&lt;/p&gt;&lt;h4&gt;Enregistrement des opérateurs&lt;/h4&gt;&lt;p&gt;Mise à jour obligatoire des données dans Alphatango avant le 31 décembre 2026 pour tous les opérateurs enregistrés.&lt;/p&gt;"
+    data-cta="">
     <div class="actu-img">
       <span class="actu-img-placeholder">Photo</span>
       <span class="actu-tag actu-tag--rouge">Réglementation</span>
@@ -370,11 +476,15 @@ footer{background:var(--primary);color:white;padding:60px 10% 0;}
       <time class="actu-date">Avril 2026</time>
       <h3 class="actu-title">Évolutions EASA 2026 : ce qui change pour les télépilotes</h3>
       <p class="actu-excerpt">Point complet sur les nouvelles exigences applicables aux opérateurs en catégorie Spécifique et Open A2 à compter du second semestre 2026.</p>
-      <a href="actualites.html" class="actu-lire">Lire la suite <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      <button class="actu-lire" onclick="openArticle(this.closest('.actu-card'))">Lire la suite <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
     </div>
   </article>
 
-  <article class="actu-card reveal" data-cat="Mission">
+  <article class="actu-card reveal" data-cat="Mission"
+    data-tag="Mission" data-tagcol="actu-tag--vert" data-date="Avril 2026"
+    data-title="Cartographie de carrière en Franche-Comté — modélisation 3D complète"
+    data-content="&lt;p&gt;APH Drone a réalisé une mission de cartographie photogrammétrique sur une carrière de 12 ha en Franche-Comté, pour le compte d'un opérateur minier local.&lt;/p&gt;&lt;h4&gt;Livrables produits&lt;/h4&gt;&lt;ul&gt;&lt;li&gt;Modèle Numérique de Terrain (MNT) haute résolution&lt;/li&gt;&lt;li&gt;Nuage de points dense (>200 points/m²)&lt;/li&gt;&lt;li&gt;Orthophotoplan géoréférencé&lt;/li&gt;&lt;li&gt;Calcul de volumes de stock&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;Mission réalisée avec le DJI Mavic 3 Enterprise en catégorie Spécifique, sur autorisation DGAC. Traitement sous Pix4Dmapper. Précision planimétrique : ±3 cm.&lt;/p&gt;"
+    data-cta="&lt;a href='prestations/cartographie.html'&gt;Découvrir la prestation cartographie &lt;svg width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5'&gt;&lt;path d='M5 12h14M12 5l7 7-7 7'/&gt;&lt;/svg&gt;&lt;/a&gt;">
     <div class="actu-img">
       <span class="actu-img-placeholder">Photo</span>
       <span class="actu-tag actu-tag--vert">Mission</span>
@@ -383,11 +493,15 @@ footer{background:var(--primary);color:white;padding:60px 10% 0;}
       <time class="actu-date">Avril 2026</time>
       <h3 class="actu-title">Cartographie de carrière en Franche-Comté — modélisation 3D complète</h3>
       <p class="actu-excerpt">Mission de cartographie photogrammétrique sur une carrière de 12 ha. Restitution d'un MNT et d'un nuage de points haute densité pour calcul de volumes.</p>
-      <a href="prestations/cartographie.html" class="actu-lire">Lire la suite <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      <button class="actu-lire" onclick="openArticle(this.closest('.actu-card'))">Lire la suite <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
     </div>
   </article>
 
-  <article class="actu-card reveal" data-cat="Agriculture">
+  <article class="actu-card reveal" data-cat="Agriculture"
+    data-tag="Agriculture" data-tagcol="actu-tag--orange" data-date="Avril 2026"
+    data-title="Démarrage de la saison multispectrale — premières analyses de cultures"
+    data-content="&lt;p&gt;Le printemps 2026 marque le lancement de la saison d'imagerie multispectrale pour APH Drone. Premières missions sur céréales en Haute-Saône.&lt;/p&gt;&lt;h4&gt;Indices restitués&lt;/h4&gt;&lt;ul&gt;&lt;li&gt;NDVI — Indice de végétation normalisé&lt;/li&gt;&lt;li&gt;NDRE — Indice de bord rouge (teneur en chlorophylle)&lt;/li&gt;&lt;li&gt;Cartographie de vigueur et zones de stress&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;Les données sont intégrées dans DJI SmartFarm pour permettre aux agriculteurs de moduler leurs intrants et optimiser leurs rendements.&lt;/p&gt;"
+    data-cta="&lt;a href='prestations/agriculture.html'&gt;Découvrir l'agriculture de précision &lt;svg width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5'&gt;&lt;path d='M5 12h14M12 5l7 7-7 7'/&gt;&lt;/svg&gt;&lt;/a&gt;">
     <div class="actu-img">
       <span class="actu-img-placeholder">Photo</span>
       <span class="actu-tag actu-tag--orange">Agriculture</span>
@@ -396,14 +510,18 @@ footer{background:var(--primary);color:white;padding:60px 10% 0;}
       <time class="actu-date">Avril 2026</time>
       <h3 class="actu-title">Démarrage de la saison multispectrale — premières analyses de cultures</h3>
       <p class="actu-excerpt">Lancement des premières missions d'imagerie multispectrale de la saison sur céréales en Haute-Saône, avec restitution d'indices NDVI et NDRE.</p>
-      <a href="prestations/agriculture.html" class="actu-lire">Lire la suite <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      <button class="actu-lire" onclick="openArticle(this.closest('.actu-card'))">Lire la suite <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
     </div>
   </article>
 
   <!-- ── MARS 2026 ── -->
   <div class="actu-mois"><span>Mars 2026</span></div>
 
-  <article class="actu-card actu-card--span2 reveal" data-cat="Événement">
+  <article class="actu-card actu-card--span2 reveal" data-cat="Événement"
+    data-tag="Événement" data-tagcol="actu-tag--violet" data-date="Mars 2026"
+    data-title="APH Drone au salon Drone Expo Grand Est — retour sur notre participation"
+    data-content="&lt;p&gt;APH Drone a tenu un stand au salon Drone Expo Grand Est, édition 2026, avec démonstrations de vol et présentation de l'ensemble de l'offre formation et prestations.&lt;/p&gt;&lt;h4&gt;Temps forts&lt;/h4&gt;&lt;ul&gt;&lt;li&gt;Démonstration drone thermique et multispectral&lt;/li&gt;&lt;li&gt;Présentation du catalogue formation (CATS, Vol de nuit, BAPD...)&lt;/li&gt;&lt;li&gt;Rencontres avec acteurs agriculture, construction, sécurité civile&lt;/li&gt;&lt;li&gt;Table ronde réglementation EASA avec d'autres opérateurs&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;Plus de 40 contacts professionnels établis sur les deux jours. Plusieurs devis en cours suite à ces rencontres.&lt;/p&gt;"
+    data-cta="">
     <div class="actu-img">
       <span class="actu-img-placeholder">Photo</span>
       <span class="actu-tag actu-tag--violet">Événement</span>
@@ -411,12 +529,16 @@ footer{background:var(--primary);color:white;padding:60px 10% 0;}
     <div class="actu-body">
       <time class="actu-date">Mars 2026</time>
       <h3 class="actu-title">APH Drone au salon Drone Expo Grand Est — retour sur notre participation</h3>
-      <p class="actu-excerpt">Rencontres professionnelles, démonstrations de vol et présentation de nos offres de formation : une édition riche en échanges. Nombreux contacts établis avec des acteurs de l'agriculture, de la sécurité civile et de la construction.</p>
-      <a href="actualites.html" class="actu-lire">Lire la suite <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      <p class="actu-excerpt">Rencontres professionnelles, démonstrations de vol et présentation de nos offres de formation : une édition riche en échanges.</p>
+      <button class="actu-lire" onclick="openArticle(this.closest('.actu-card'))">Lire la suite <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
     </div>
   </article>
 
-  <article class="actu-card reveal" data-cat="Sécurité civile">
+  <article class="actu-card reveal" data-cat="Sécurité civile"
+    data-tag="Sécurité civile" data-tagcol="actu-tag--marine" data-date="Mars 2026"
+    data-title="Exercice SDIS 70 — recherche de personne disparue en forêt"
+    data-content="&lt;p&gt;APH Drone a participé à un exercice opérationnel grandeur nature organisé par le SDIS 70, centré sur la recherche d'une personne disparue en milieu forestier.&lt;/p&gt;&lt;h4&gt;Conditions&lt;/h4&gt;&lt;ul&gt;&lt;li&gt;Zone boisée dense, couverture nuageuse, vent modéré&lt;/li&gt;&lt;li&gt;Mise en oeuvre drone thermique en catégorie Spécifique&lt;/li&gt;&lt;li&gt;Coordination avec équipes au sol et PC opérations&lt;/li&gt;&lt;/ul&gt;&lt;h4&gt;Résultats&lt;/h4&gt;&lt;p&gt;La cible (mannequin thermique) a été localisée en 12 minutes. Retex positif : amélioration des protocoles de communication entre télépilote et chef de colonne.&lt;/p&gt;"
+    data-cta="&lt;a href='formations/securite-secours.html'&gt;Formation Sécurité &amp;amp; Secours &lt;svg width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5'&gt;&lt;path d='M5 12h14M12 5l7 7-7 7'/&gt;&lt;/svg&gt;&lt;/a&gt;">
     <div class="actu-img">
       <span class="actu-img-placeholder">Photo</span>
       <span class="actu-tag actu-tag--marine">Sécurité civile</span>
@@ -425,27 +547,35 @@ footer{background:var(--primary);color:white;padding:60px 10% 0;}
       <time class="actu-date">Mars 2026</time>
       <h3 class="actu-title">Exercice SDIS 70 — recherche de personne disparue en forêt</h3>
       <p class="actu-excerpt">Participation à un exercice grandeur nature de recherche de personne disparue en milieu forestier, avec mise en oeuvre du drone thermique.</p>
-      <a href="formations/securite-secours.html" class="actu-lire">Lire la suite <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      <button class="actu-lire" onclick="openArticle(this.closest('.actu-card'))">Lire la suite <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
     </div>
   </article>
 
   <!-- ── JANVIER 2026 ── -->
   <div class="actu-mois"><span>Janvier 2026</span></div>
 
-  <article class="actu-card reveal" data-cat="Sécurité civile">
+  <article class="actu-card reveal" data-cat="Sécurité civile"
+    data-tag="Sécurité civile" data-tagcol="actu-tag--marine" data-date="Janvier 2026"
+    data-title="Formation FMPA SDIS 70 — bilan de la session hivernale"
+    data-content="&lt;p&gt;La session FMPA (Formation de Maintien et de Perfectionnement des Acquis) hivernale s'est tenue en janvier 2026 avec les télépilotes sapeurs-pompiers du SDIS 70.&lt;/p&gt;&lt;h4&gt;Objectifs&lt;/h4&gt;&lt;ul&gt;&lt;li&gt;Maintien des compétences en conditions dégradées (froid, vent, faible visibilité)&lt;/li&gt;&lt;li&gt;Révision des procédures d'urgence et pannes en vol&lt;/li&gt;&lt;li&gt;Pratique des patterns opérationnels (orbite, transect, lawnmower)&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;Bilan positif : tous les stagiaires ont validé leurs acquis. Prochain FMPA prévu en juin 2026.&lt;/p&gt;"
+    data-cta="">
     <div class="actu-img">
       <span class="actu-img-placeholder">Photo</span>
       <span class="actu-tag actu-tag--marine">Sécurité civile</span>
     </div>
     <div class="actu-body">
       <time class="actu-date">Janvier 2026</time>
-      <h3 class="actu-title">Formation FMPA SDIS 70 — bilan de la session hivernale</h3>
+      <h3 class="actu-title">Formation FMPA SDIS 70 : bilan de la session hivernale</h3>
       <p class="actu-excerpt">Retour sur la session de formation opérationnelle conduite avec les sapeurs-pompiers de Haute-Saône en conditions hivernales difficiles.</p>
-      <a href="formations/securite-secours.html" class="actu-lire">Lire la suite <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      <button class="actu-lire" onclick="openArticle(this.closest('.actu-card'))">Lire la suite <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
     </div>
   </article>
 
-  <article class="actu-card reveal" data-cat="Agriculture">
+  <article class="actu-card reveal" data-cat="Agriculture"
+    data-tag="Agriculture" data-tagcol="actu-tag--orange" data-date="Janvier 2026"
+    data-title="Première mission multispectrale sur vigne — Jura"
+    data-content="&lt;p&gt;APH Drone a réalisé sa première mission d'imagerie multispectrale sur parcelles viticoles dans le Jura, pour le compte d'un vigneron souhaitant optimiser sa gestion agronomique.&lt;/p&gt;&lt;h4&gt;Livrables&lt;/h4&gt;&lt;ul&gt;&lt;li&gt;Cartes NDVI et NDRE par parcelle&lt;/li&gt;&lt;li&gt;Identification des zones de stress et de vigueur différenciée&lt;/li&gt;&lt;li&gt;Recommandations d'intervention ciblée&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;Une première collaboration prometteuse avec la filière viticole jurassienne, secteur en fort développement pour l'usage du drone de précision.&lt;/p&gt;"
+    data-cta="&lt;a href='prestations/agriculture.html'&gt;En savoir plus &lt;svg width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5'&gt;&lt;path d='M5 12h14M12 5l7 7-7 7'/&gt;&lt;/svg&gt;&lt;/a&gt;">
     <div class="actu-img">
       <span class="actu-img-placeholder">Photo</span>
       <span class="actu-tag actu-tag--orange">Agriculture</span>
@@ -454,11 +584,15 @@ footer{background:var(--primary);color:white;padding:60px 10% 0;}
       <time class="actu-date">Janvier 2026</time>
       <h3 class="actu-title">Première mission multispectrale sur vigne — Jura</h3>
       <p class="actu-excerpt">Analyse de parcelles viticoles en Jura avec restitution d'indicateurs de vigueur végétative pour gestion agronomique différenciée.</p>
-      <a href="prestations/agriculture.html" class="actu-lire">Lire la suite <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      <button class="actu-lire" onclick="openArticle(this.closest('.actu-card'))">Lire la suite <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
     </div>
   </article>
 
-  <article class="actu-card reveal" data-cat="Réglementation">
+  <article class="actu-card reveal" data-cat="Réglementation"
+    data-tag="Réglementation" data-tagcol="actu-tag--rouge" data-date="Janvier 2026"
+    data-title="SORA v2.5 — nouveautés pour les opérateurs en catégorie Spécifique"
+    data-content="&lt;p&gt;La version 2.5 du SORA (Specific Operations Risk Assessment) est désormais applicable pour les nouvelles demandes d'autorisation DGAC en catégorie Spécifique.&lt;/p&gt;&lt;h4&gt;Principaux changements&lt;/h4&gt;&lt;ul&gt;&lt;li&gt;Nouvelle grille GRC avec critères de population mis à jour&lt;/li&gt;&lt;li&gt;ARC-d renforcé pour les vols en zone urbanisée&lt;/li&gt;&lt;li&gt;OSO #14 et #21 : exigences documentaires précisées&lt;/li&gt;&lt;li&gt;TMPR : nouvelle méthode de calcul de la trajectoire à risque&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;APH Drone propose un accompagnement à la mise à jour de vos dossiers SORA. Contactez-nous pour un audit de votre dossier existant.&lt;/p&gt;"
+    data-cta="&lt;a href='prestations/sora-pdra.html'&gt;Expertise SORA &amp;amp; PDRA &lt;svg width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5'&gt;&lt;path d='M5 12h14M12 5l7 7-7 7'/&gt;&lt;/svg&gt;&lt;/a&gt;">
     <div class="actu-img">
       <span class="actu-img-placeholder">Photo</span>
       <span class="actu-tag actu-tag--rouge">Réglementation</span>
@@ -466,12 +600,29 @@ footer{background:var(--primary);color:white;padding:60px 10% 0;}
     <div class="actu-body">
       <time class="actu-date">Janvier 2026</time>
       <h3 class="actu-title">SORA v2.5 — nouveautés pour les opérateurs en catégorie Spécifique</h3>
-      <p class="actu-excerpt">Analyse des changements introduits par la version 2.5 du SORA (Specific Operations Risk Assessment) et impact sur les dossiers DGAC en cours.</p>
-      <a href="prestations/sora-pdra.html" class="actu-lire">Lire la suite <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      <p class="actu-excerpt">Analyse des changements introduits par la version 2.5 du SORA et impact sur les dossiers DGAC en cours.</p>
+      <button class="actu-lire" onclick="openArticle(this.closest('.actu-card'))">Lire la suite <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
     </div>
   </article>
 
 </div>
+</div>
+
+<!-- ═══ PANEL ARTICLE ═══ -->
+<div id="article-overlay" onclick="closePanel()"></div>
+<div id="article-panel">
+  <div class="ap-header">
+    <div class="ap-meta" id="ap-meta"></div>
+    <button class="ap-close" onclick="closePanel()" aria-label="Fermer">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="ap-img" id="ap-img"><span class="ap-img-placeholder">Photo</span></div>
+  <div class="ap-body">
+    <h2 class="ap-title" id="ap-title"></h2>
+    <div class="ap-content" id="ap-content"></div>
+    <div class="ap-cta" id="ap-cta"></div>
+  </div>
 </div>
 
 <!-- ── FOOTER ── -->
@@ -566,6 +717,47 @@ document.querySelectorAll('#site-header .has-dropdown').forEach(function(item){
   var dd = item.querySelector('.dropdown');
   item.addEventListener('mouseenter', function(){ dd.style.display='block'; });
   item.addEventListener('mouseleave', function(){ dd.style.display='none'; });
+});
+
+// ── Panel article ──
+var tagColors = {
+  'actu-tag--bleu': '#1F5FAF',
+  'actu-tag--vert': '#16a34a',
+  'actu-tag--rouge': '#dc2626',
+  'actu-tag--orange': '#ea580c',
+  'actu-tag--violet': '#7c3aed',
+  'actu-tag--marine': '#0B1F3A'
+};
+
+function openArticle(card){
+  var tag = card.dataset.tag || '';
+  var tagcol = card.dataset.tagcol || 'actu-tag--bleu';
+  var date = card.dataset.date || '';
+  var title = card.dataset.title || '';
+  var content = card.dataset.content || '';
+  var cta = card.dataset.cta || '';
+  var color = tagColors[tagcol] || '#1F5FAF';
+
+  document.getElementById('ap-meta').innerHTML =
+    '<span class="ap-tag" style="background:'+color+'">'+tag+'</span>' +
+    '<span class="ap-date">'+date+'</span>';
+  document.getElementById('ap-title').textContent = title;
+  document.getElementById('ap-content').innerHTML = content;
+  document.getElementById('ap-cta').innerHTML = cta;
+
+  document.getElementById('article-overlay').classList.add('open');
+  document.getElementById('article-panel').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closePanel(){
+  document.getElementById('article-overlay').classList.remove('open');
+  document.getElementById('article-panel').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape') closePanel();
 });
 
 // Bouton téléphone toujours visible
