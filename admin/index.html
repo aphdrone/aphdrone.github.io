@@ -167,6 +167,11 @@ body{background:var(--light);color:#222;overflow:hidden;}
         Recrutement
         <span class="nav-badge" id="badge-rec">0</span>
       </button>
+      <button class="nav-item" onclick="showPanel('stagiaires',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+        Stagiaires
+        <span class="nav-badge" id="badge-stag">0</span>
+      </button>
       <div class="nav-sep">Site</div>
       <a class="nav-item" href="../index.html" target="_blank">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10z"/></svg>
@@ -323,6 +328,64 @@ body{background:var(--light);color:#222;overflow:hidden;}
         </div>
       </div>
 
+      <!-- Panel Stagiaires -->
+      <div class="dash-panel" id="panel-stagiaires">
+        <div class="panel-grid" style="grid-template-columns:1fr 1.6fr;">
+          <div class="panel-col">
+            <div class="panel-col-h" id="stag-form-title">Nouveau stagiaire</div>
+            <input type="hidden" id="stag-edit-id">
+            <div class="fg-row">
+              <div class="fg"><label>Prénom *</label><input type="text" id="s-prenom" placeholder="Prénom"></div>
+              <div class="fg"><label>Nom *</label><input type="text" id="s-nom" placeholder="Nom"></div>
+            </div>
+            <div class="fg"><label>Email *</label><input type="email" id="s-email" placeholder="email@exemple.fr"></div>
+            <div class="fg"><label>Mot de passe temporaire *</label><input type="text" id="s-password" placeholder="Min. 6 caractères"></div>
+            <div class="fg"><label>Téléphone</label><input type="text" id="s-tel" placeholder="06 XX XX XX XX"></div>
+            <div class="fg"><label>Entreprise / Organisation</label><input type="text" id="s-entreprise" placeholder="Nom de l'entreprise"></div>
+            <div class="fg">
+              <label>Formations accessibles</label>
+              <div style="display:flex;flex-direction:column;gap:8px;margin-top:6px;">
+                <label style="display:flex;align-items:center;gap:10px;font-size:.85rem;font-weight:normal;text-transform:none;letter-spacing:0;color:#333;cursor:pointer;">
+                  <input type="checkbox" id="f-cats-sts" style="width:16px;height:16px;accent-color:var(--secondary);"> Préparation CATS STS</label>
+                <label style="display:flex;align-items:center;gap:10px;font-size:.85rem;font-weight:normal;text-transform:none;letter-spacing:0;color:#333;cursor:pointer;">
+                  <input type="checkbox" id="f-vol-nuit" style="width:16px;height:16px;accent-color:var(--secondary);"> Vol de nuit</label>
+                <label style="display:flex;align-items:center;gap:10px;font-size:.85rem;font-weight:normal;text-transform:none;letter-spacing:0;color:#333;cursor:pointer;">
+                  <input type="checkbox" id="f-bapd" style="width:16px;height:16px;accent-color:var(--secondary);"> BAPD — Catégorie A2</label>
+                <label style="display:flex;align-items:center;gap:10px;font-size:.85rem;font-weight:normal;text-transform:none;letter-spacing:0;color:#333;cursor:pointer;">
+                  <input type="checkbox" id="f-thermographie" style="width:16px;height:16px;accent-color:var(--secondary);"> Thermographie</label>
+                <label style="display:flex;align-items:center;gap:10px;font-size:.85rem;font-weight:normal;text-transform:none;letter-spacing:0;color:#333;cursor:pointer;">
+                  <input type="checkbox" id="f-agriculture" style="width:16px;height:16px;accent-color:var(--secondary);"> Agriculture de précision</label>
+                <label style="display:flex;align-items:center;gap:10px;font-size:.85rem;font-weight:normal;text-transform:none;letter-spacing:0;color:#333;cursor:pointer;">
+                  <input type="checkbox" id="f-cartographie" style="width:16px;height:16px;accent-color:var(--secondary);"> Cartographie &amp; 3D</label>
+                <label style="display:flex;align-items:center;gap:10px;font-size:.85rem;font-weight:normal;text-transform:none;letter-spacing:0;color:#333;cursor:pointer;">
+                  <input type="checkbox" id="f-securite" style="width:16px;height:16px;accent-color:var(--secondary);"> Sécurité &amp; Secours</label>
+                <label style="display:flex;align-items:center;gap:10px;font-size:.85rem;font-weight:normal;text-transform:none;letter-spacing:0;color:#333;cursor:pointer;">
+                  <input type="checkbox" id="f-initiation" style="width:16px;height:16px;accent-color:var(--secondary);"> Initiation A1/A3</label>
+              </div>
+            </div>
+            <div class="fg">
+              <label>Documents</label>
+              <div id="docs-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:8px;"></div>
+              <div style="display:flex;gap:6px;">
+                <input type="text" id="doc-nom" placeholder="Nom du document" style="flex:1;padding:8px 10px;border:1.5px solid #dde3ec;border-radius:6px;font-size:.82rem;outline:none;font-family:'Inter',sans-serif;">
+                <input type="text" id="doc-url" placeholder="URL du fichier" style="flex:2;padding:8px 10px;border:1.5px solid #dde3ec;border-radius:6px;font-size:.82rem;outline:none;font-family:'Inter',sans-serif;">
+                <button onclick="addDocItem()" style="padding:8px 12px;background:var(--secondary);color:white;border:none;border-radius:6px;cursor:pointer;font-size:.82rem;font-weight:600;">+</button>
+              </div>
+            </div>
+            <div class="p-actions">
+              <button class="btn-ann" onclick="resetStag()">Annuler</button>
+              <button class="btn-pub" id="btn-pub-stag" onclick="publierStag()">Créer le stagiaire</button>
+            </div>
+            <div class="p-status" id="status-stag"></div>
+          </div>
+
+          <div class="panel-col">
+            <div class="panel-col-h">Stagiaires inscrits <span id="stag-list-count"></span></div>
+            <div id="stag-list"><div class="empty-list">Chargement...</div></div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
@@ -373,6 +436,7 @@ onAuthStateChanged(auth, async user => {
     await chargerStats();
     await chargerActus();
     await chargerRecs();
+    await chargerStags();
   } else {
     document.getElementById('login-screen').style.display='flex';
     document.getElementById('dashboard').style.display='none';
@@ -383,8 +447,10 @@ async function chargerStats(){
   try {
     const na = (await getDocs(collection(db,'actualites'))).size;
     const nr = (await getDocs(collection(db,'offres'))).size;
+    const ns = (await getDocs(collection(db,'stagiaires'))).size;
     ['stat-actu','badge-actu'].forEach(id=>document.getElementById(id).textContent=na);
     ['stat-rec','badge-rec'].forEach(id=>document.getElementById(id).textContent=nr);
+    document.getElementById('badge-stag').textContent=ns;
     document.getElementById('mc-actu-count').textContent = na+' actu'+(na>1?'s':'')+' publiée'+(na>1?'s':'');
     document.getElementById('mc-rec-count').textContent = nr+' offre'+(nr>1?'s':'')+' publiée'+(nr>1?'s':'');
   } catch(e){}
@@ -395,6 +461,7 @@ const panelTitles = {
   accueil:['Vue d\'ensemble','Bienvenue dans votre espace d\'administration'],
   actualites:['Actualités','Publiez et gérez vos articles'],
   recrutement:['Recrutement','Gérez vos offres d\'emploi'],
+  stagiaires:['Stagiaires','Gérez les comptes, accès formations et documents'],
 };
 window.showPanel = function(name, btn){
   document.querySelectorAll('.dash-panel').forEach(p=>p.classList.remove('active'));
@@ -575,6 +642,161 @@ window.resetRec=function(){
   document.getElementById('rec-form-title').textContent="Nouvelle offre d'emploi";
   document.getElementById('btn-pub-rec').textContent="Publier l'offre";
   document.getElementById('btn-pub-rec').disabled=false;
+};
+
+// ── STAGIAIRES ──
+const FORMATIONS = [
+  {id:'cats-sts',label:'Préparation CATS STS'},
+  {id:'vol-nuit',label:'Vol de nuit'},
+  {id:'bapd',label:'BAPD — Catégorie A2'},
+  {id:'thermographie',label:'Thermographie'},
+  {id:'agriculture',label:'Agriculture de précision'},
+  {id:'cartographie',label:'Cartographie & 3D'},
+  {id:'securite',label:'Sécurité & Secours'},
+  {id:'initiation',label:'Initiation A1/A3'},
+];
+
+let stagDocs = []; // documents temporaires en cours de saisie
+
+window.addDocItem = function(){
+  const nom = document.getElementById('doc-nom').value.trim();
+  const url = document.getElementById('doc-url').value.trim();
+  if(!nom||!url){alert('Nom et URL requis.');return;}
+  stagDocs.push({nom,url});
+  renderDocsList();
+  document.getElementById('doc-nom').value='';
+  document.getElementById('doc-url').value='';
+};
+
+function renderDocsList(){
+  const cont = document.getElementById('docs-list');
+  cont.innerHTML='';
+  stagDocs.forEach(function(d,i){
+    const div = document.createElement('div');
+    div.style.cssText='display:flex;align-items:center;gap:8px;background:#f5f7fa;border-radius:6px;padding:6px 10px;';
+    div.innerHTML=`<span style="flex:1;font-size:.8rem;color:#333;">${d.nom}</span>
+      <a href="${d.url}" target="_blank" style="font-size:.75rem;color:var(--accent);">Voir</a>
+      <button onclick="removeDoc(${i})" style="background:none;border:none;color:#dc2626;cursor:pointer;font-size:14px;padding:0 4px;">✕</button>`;
+    cont.appendChild(div);
+  });
+}
+
+window.removeDoc = function(i){ stagDocs.splice(i,1); renderDocsList(); };
+
+window.publierStag = async function(){
+  const prenom=document.getElementById('s-prenom').value.trim();
+  const nom=document.getElementById('s-nom').value.trim();
+  const email=document.getElementById('s-email').value.trim();
+  const password=document.getElementById('s-password').value.trim();
+  const tel=document.getElementById('s-tel').value.trim();
+  const entreprise=document.getElementById('s-entreprise').value.trim();
+  const editId=document.getElementById('stag-edit-id').value;
+
+  if(!prenom||!nom||!email){showStatus('status-stag','Prénom, nom et email requis.','error');return;}
+  if(!editId && password.length < 6){showStatus('status-stag','Mot de passe : 6 caractères minimum.','error');return;}
+
+  const formations={};
+  FORMATIONS.forEach(f=>{ formations[f.id]=document.getElementById('f-'+f.id).checked; });
+
+  const btn=document.getElementById('btn-pub-stag');
+  btn.disabled=true;btn.textContent='Enregistrement...';
+
+  try {
+    const data={prenom,nom,email,tel,entreprise,formations,documents:stagDocs,actif:true,dateCreation:new Date().toLocaleDateString('fr-FR')};
+
+    if(editId){
+      await updateDoc(doc(db,'stagiaires',editId),data);
+      showStatus('status-stag','Stagiaire mis à jour.','success');
+    } else {
+      // Créer le compte Firebase Auth via l'API REST
+      const resp = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAV5NQWfp8n9RkTrHSwqssBJ4R9lNAuYK8`,{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({email,password,returnSecureToken:true})
+      });
+      const result = await resp.json();
+      if(result.error){
+        showStatus('status-stag','Erreur compte : '+result.error.message,'error');
+        btn.disabled=false;btn.textContent='Créer le stagiaire';
+        return;
+      }
+      data.uid=result.localId;
+      await addDoc(collection(db,'stagiaires'),data);
+      showStatus('status-stag','Stagiaire créé ! Il peut se connecter avec son email et mot de passe.','success');
+    }
+    resetStag();
+    await chargerStags();
+    await chargerStats();
+  } catch(e){showStatus('status-stag','Erreur : '+e.message,'error');}
+  btn.disabled=false;
+  btn.textContent=document.getElementById('stag-edit-id').value?'Mettre à jour':'Créer le stagiaire';
+};
+
+async function chargerStags(){
+  const list=document.getElementById('stag-list');
+  list.innerHTML='<div class="empty-list">Chargement...</div>';
+  const snap=await getDocs(collection(db,'stagiaires'));
+  document.getElementById('stag-list-count').textContent='('+snap.size+')';
+  window._stagsData={};
+  if(snap.empty){list.innerHTML='<div class="empty-list">Aucun stagiaire inscrit</div>';return;}
+  list.innerHTML='';
+  snap.forEach(ds=>{
+    const d=ds.data();window._stagsData[ds.id]=d;
+    const formationsActives=FORMATIONS.filter(f=>d.formations&&d.formations[f.id]).map(f=>f.label);
+    const div=document.createElement('div');
+    div.className='list-item';
+    div.style.flexDirection='column';div.style.alignItems='flex-start';div.style.gap='10px';
+    div.innerHTML=`
+      <div style="display:flex;align-items:center;gap:12px;width:100%;">
+        <div style="width:38px;height:38px;border-radius:50%;background:var(--secondary);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:14px;flex-shrink:0;">${(d.prenom||'?')[0].toUpperCase()}</div>
+        <div style="flex:1;min-width:0;">
+          <div class="list-title">${d.prenom} ${d.nom}</div>
+          <div class="list-date">${d.email}${d.entreprise?' — '+d.entreprise:''}</div>
+        </div>
+        <div class="list-actions">
+          <button class="btn-ed" onclick="editerStag('${ds.id}')">Modifier</button>
+          <button class="btn-del" onclick="supprimerStag('${ds.id}','${(d.prenom+' '+d.nom).replace(/'/g,"\\'")}')">✕</button>
+        </div>
+      </div>
+      ${formationsActives.length?`<div style="display:flex;flex-wrap:wrap;gap:4px;padding-left:50px;">${formationsActives.map(f=>`<span style="padding:2px 8px;border-radius:10px;background:#eff6ff;color:var(--secondary);font-size:10px;font-weight:600;">${f}</span>`).join('')}</div>`:'<div style="padding-left:50px;font-size:11px;color:#7a8fa5;">Aucune formation activée</div>'}
+      ${d.documents&&d.documents.length?`<div style="padding-left:50px;display:flex;flex-wrap:wrap;gap:4px;">${d.documents.map(doc=>`<a href="${doc.url}" target="_blank" style="padding:2px 8px;border-radius:10px;background:#f0fdf4;color:#16a34a;font-size:10px;font-weight:600;text-decoration:none;">📄 ${doc.nom}</a>`).join('')}</div>`:''}
+    `;
+    list.appendChild(div);
+  });
+}
+
+window.editerStag=function(id){
+  const d=window._stagsData[id];if(!d)return;
+  document.getElementById('stag-edit-id').value=id;
+  document.getElementById('s-prenom').value=d.prenom||'';
+  document.getElementById('s-nom').value=d.nom||'';
+  document.getElementById('s-email').value=d.email||'';
+  document.getElementById('s-password').value='';
+  document.getElementById('s-tel').value=d.tel||'';
+  document.getElementById('s-entreprise').value=d.entreprise||'';
+  FORMATIONS.forEach(f=>{ document.getElementById('f-'+f.id).checked=!!(d.formations&&d.formations[f.id]); });
+  stagDocs=d.documents?[...d.documents]:[];
+  renderDocsList();
+  document.getElementById('stag-form-title').textContent='Modifier le stagiaire';
+  document.getElementById('btn-pub-stag').textContent='Mettre à jour';
+  const pw=document.getElementById('s-password');
+  pw.placeholder='Laisser vide pour ne pas changer';pw.required=false;
+};
+
+window.supprimerStag=async function(id,nom){
+  if(!confirm('Supprimer le stagiaire "'+nom+'" ?'))return;
+  await deleteDoc(doc(db,'stagiaires',id));
+  await chargerStags();await chargerStats();
+};
+
+window.resetStag=function(){
+  ['stag-edit-id','s-prenom','s-nom','s-email','s-password','s-tel','s-entreprise'].forEach(id=>document.getElementById(id).value='');
+  FORMATIONS.forEach(f=>{ document.getElementById('f-'+f.id).checked=false; });
+  stagDocs=[];renderDocsList();
+  document.getElementById('stag-form-title').textContent='Nouveau stagiaire';
+  document.getElementById('btn-pub-stag').textContent='Créer le stagiaire';
+  document.getElementById('btn-pub-stag').disabled=false;
+  document.getElementById('s-password').placeholder='Min. 6 caractères';
 };
 
 function showStatus(id,msg,type){
