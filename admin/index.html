@@ -8,251 +8,168 @@
 <style>
 :root{--primary:#0B1F3A;--secondary:#1F5FAF;--accent:#4A90E2;--light:#F5F7FA;}
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
-body{background:var(--light);color:#222;}
+body{background:var(--light);color:#222;overflow:hidden;}
 
-/* ── LOGIN ── */
-#login-screen{
-  min-height:100vh;display:flex;align-items:center;justify-content:center;
-  background:linear-gradient(135deg,var(--primary) 0%,#1a3a6b 100%);
-  position:relative;overflow:hidden;
-}
-#login-screen::before{
-  content:'';position:absolute;inset:0;
-  background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);
-  background-size:60px 60px;
-}
-.login-box{
-  background:white;border-radius:24px;padding:52px 48px;width:420px;
-  box-shadow:0 32px 80px rgba(0,0,0,.35);text-align:center;
-  position:relative;z-index:1;
-}
-.login-logo{
-  width:80px;height:80px;border-radius:50%;
-  background:linear-gradient(135deg,var(--secondary),var(--accent));
-  display:flex;align-items:center;justify-content:center;
-  margin:0 auto 24px;
-  font-size:28px;font-weight:800;color:white;
-  box-shadow:0 8px 24px rgba(31,95,175,.3);
-}
+/* LOGIN */
+#login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--primary),#1a3a6b);position:relative;overflow:hidden;}
+#login-screen::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:60px 60px;}
+.login-box{background:white;border-radius:24px;padding:52px 48px;width:420px;box-shadow:0 32px 80px rgba(0,0,0,.35);text-align:center;position:relative;z-index:1;}
+.login-logo{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--secondary),var(--accent));display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:28px;font-weight:800;color:white;}
 .login-box h1{font-size:1.5rem;font-weight:700;color:var(--primary);margin-bottom:6px;}
 .login-box p{font-size:.85rem;color:#7a8fa5;margin-bottom:36px;}
-.login-box input{
-  width:100%;padding:13px 16px;
-  border:1.5px solid #dde3ec;border-radius:10px;
-  font-size:.9rem;margin-bottom:12px;outline:none;
-  transition:.2s;font-family:'Inter',sans-serif;
-}
-.login-box input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(74,144,226,.1);}
-.btn-login{
-  width:100%;padding:14px;
-  background:var(--secondary);color:white;
-  border:none;border-radius:10px;
-  font-size:.95rem;font-weight:600;cursor:pointer;transition:.2s;
-  margin-top:4px;
-}
+.login-box input{width:100%;padding:13px 16px;border:1.5px solid #dde3ec;border-radius:10px;font-size:.9rem;margin-bottom:12px;outline:none;transition:.2s;font-family:'Inter',sans-serif;}
+.login-box input:focus{border-color:var(--accent);}
+.btn-login{width:100%;padding:14px;background:var(--secondary);color:white;border:none;border-radius:10px;font-size:.95rem;font-weight:600;cursor:pointer;transition:.2s;}
 .btn-login:hover{background:var(--accent);}
 #login-error{color:#dc2626;font-size:.82rem;margin-top:10px;display:none;}
-.login-footer{font-size:11px;color:#9aa8b8;margin-top:24px;}
 
-/* ── DASHBOARD ── */
-#dashboard{display:none;min-height:100vh;}
+/* DASHBOARD */
+#dashboard{display:none;height:100vh;flex-direction:row;}
 
 /* Sidebar */
-.dash-sidebar{
-  position:fixed;top:0;left:0;bottom:0;width:260px;
-  background:var(--primary);
-  display:flex;flex-direction:column;
-  z-index:100;
-}
-.sidebar-logo{
-  padding:28px 24px 20px;
-  border-bottom:1px solid rgba(255,255,255,.08);
-}
-.sidebar-logo-inner{display:flex;align-items:center;gap:12px;}
-.sidebar-logo-icon{
-  width:40px;height:40px;border-radius:10px;
-  background:var(--secondary);
-  display:flex;align-items:center;justify-content:center;
-  font-size:14px;font-weight:800;color:white;flex-shrink:0;
-}
-.sidebar-logo-text strong{display:block;font-size:.88rem;font-weight:700;color:white;}
-.sidebar-logo-text span{font-size:.72rem;color:rgba(255,255,255,.4);}
-
-.sidebar-nav{flex:1;padding:20px 12px;overflow-y:auto;}
-.sidebar-section-label{
-  font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
-  color:rgba(255,255,255,.25);padding:0 12px;margin-bottom:8px;margin-top:16px;
-}
-.sidebar-section-label:first-child{margin-top:0;}
-.nav-item{
-  display:flex;align-items:center;gap:12px;
-  padding:11px 14px;border-radius:10px;
-  color:rgba(255,255,255,.6);font-size:.875rem;font-weight:500;
-  text-decoration:none;transition:.2s;cursor:pointer;
-  border:none;background:none;width:100%;text-align:left;
-}
+.dash-sidebar{width:240px;background:var(--primary);display:flex;flex-direction:column;height:100vh;flex-shrink:0;}
+.sidebar-logo{padding:24px 20px 18px;border-bottom:1px solid rgba(255,255,255,.08);}
+.sidebar-logo-inner{display:flex;align-items:center;gap:10px;}
+.sidebar-logo-icon{width:36px;height:36px;border-radius:8px;background:var(--secondary);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:white;flex-shrink:0;}
+.sidebar-logo-text strong{display:block;font-size:.82rem;font-weight:700;color:white;}
+.sidebar-logo-text span{font-size:.68rem;color:rgba(255,255,255,.4);}
+.sidebar-nav{flex:1;padding:16px 10px;overflow-y:auto;}
+.nav-sep{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.25);padding:0 10px;margin:14px 0 6px;}
+.nav-sep:first-child{margin-top:0;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;color:rgba(255,255,255,.6);font-size:.84rem;font-weight:500;text-decoration:none;transition:.2s;cursor:pointer;border:none;background:none;width:100%;text-align:left;}
 .nav-item:hover{background:rgba(255,255,255,.06);color:white;}
 .nav-item.active{background:var(--secondary);color:white;}
-.nav-item svg{width:18px;height:18px;flex-shrink:0;}
-.nav-badge{
-  margin-left:auto;background:var(--accent);
-  color:white;font-size:10px;font-weight:700;
-  padding:2px 7px;border-radius:10px;
-}
+.nav-item svg{width:16px;height:16px;flex-shrink:0;}
+.nav-badge{margin-left:auto;background:var(--accent);color:white;font-size:10px;font-weight:700;padding:1px 7px;border-radius:10px;}
+.sidebar-footer{padding:14px 10px;border-top:1px solid rgba(255,255,255,.08);}
+.sidebar-user{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;background:rgba(255,255,255,.05);margin-bottom:8px;}
+.sidebar-user-av{width:28px;height:28px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:white;flex-shrink:0;}
+.sidebar-user-info strong{display:block;font-size:.72rem;font-weight:600;color:white;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:140px;}
+.sidebar-user-info span{font-size:.66rem;color:rgba(255,255,255,.4);}
+.btn-logout{width:100%;padding:8px;background:rgba(255,255,255,.05);color:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.1);border-radius:7px;font-size:.78rem;cursor:pointer;transition:.2s;display:flex;align-items:center;justify-content:center;gap:6px;}
+.btn-logout:hover{background:rgba(220,38,38,.2);color:#fca5a5;}
 
-.sidebar-footer{
-  padding:16px 12px;
-  border-top:1px solid rgba(255,255,255,.08);
-}
-.sidebar-user{
-  display:flex;align-items:center;gap:10px;
-  padding:10px 12px;border-radius:10px;
-  background:rgba(255,255,255,.05);margin-bottom:8px;
-}
-.sidebar-user-avatar{
-  width:32px;height:32px;border-radius:50%;
-  background:var(--accent);
-  display:flex;align-items:center;justify-content:center;
-  font-size:12px;font-weight:700;color:white;flex-shrink:0;
-}
-.sidebar-user-info strong{display:block;font-size:.78rem;font-weight:600;color:white;}
-.sidebar-user-info span{font-size:.7rem;color:rgba(255,255,255,.4);}
-.btn-logout-sidebar{
-  width:100%;padding:9px 14px;
-  background:rgba(255,255,255,.05);color:rgba(255,255,255,.6);
-  border:1px solid rgba(255,255,255,.1);border-radius:8px;
-  font-size:.8rem;cursor:pointer;transition:.2s;
-  display:flex;align-items:center;justify-content:center;gap:8px;
-}
-.btn-logout-sidebar:hover{background:rgba(220,38,38,.2);color:#fca5a5;border-color:rgba(220,38,38,.3);}
-
-/* Main content */
-.dash-main{margin-left:260px;padding:0;}
-
-/* Top bar */
-.dash-topbar{
-  background:white;padding:20px 40px;
-  border-bottom:1px solid #e8edf4;
-  display:flex;align-items:center;justify-content:space-between;
-  position:sticky;top:0;z-index:50;
-}
-.topbar-title{font-size:1.1rem;font-weight:700;color:var(--primary);}
-.topbar-subtitle{font-size:.78rem;color:#7a8fa5;margin-top:2px;}
-.topbar-actions{display:flex;align-items:center;gap:12px;}
-.btn-site{
-  display:inline-flex;align-items:center;gap:6px;
-  padding:8px 16px;border-radius:8px;
-  background:var(--light);color:var(--secondary);
-  font-size:.8rem;font-weight:600;text-decoration:none;
-  border:1px solid #dde3ec;transition:.2s;
-}
-.btn-site:hover{background:var(--secondary);color:white;border-color:var(--secondary);}
+/* Main */
+.dash-main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.dash-topbar{background:white;padding:16px 32px;border-bottom:1px solid #e8edf4;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.topbar-title{font-size:1rem;font-weight:700;color:var(--primary);}
+.topbar-sub{font-size:.75rem;color:#7a8fa5;margin-top:2px;}
+.btn-site{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:7px;background:var(--light);color:var(--secondary);font-size:.78rem;font-weight:600;text-decoration:none;border:1px solid #dde3ec;transition:.2s;}
+.btn-site:hover{background:var(--secondary);color:white;}
 
 /* Panels */
-.dash-panel{display:none;padding:40px;}
+.dash-content{flex:1;overflow-y:auto;padding:28px 32px;}
+.dash-panel{display:none;}
 .dash-panel.active{display:block;}
 
-/* ── ACCUEIL ── */
-.welcome-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;margin-bottom:32px;}
-.module-card{
-  background:white;border-radius:16px;padding:28px;
-  border:1px solid #e8edf4;
-  display:flex;flex-direction:column;gap:16px;
-  transition:.3s;cursor:pointer;
-}
-.module-card:hover{border-color:var(--accent);box-shadow:0 8px 28px rgba(0,0,0,.08);transform:translateY(-2px);}
-.module-card-header{display:flex;align-items:center;gap:14px;}
-.module-icon{
-  width:48px;height:48px;border-radius:12px;
-  display:flex;align-items:center;justify-content:center;flex-shrink:0;
-}
-.module-icon svg{width:24px;height:24px;}
-.module-name{font-size:1rem;font-weight:700;color:var(--primary);}
-.module-desc{font-size:.82rem;color:#7a8fa5;line-height:1.6;}
-.module-footer{display:flex;align-items:center;justify-content:space-between;}
-.module-count{font-size:.78rem;color:#7a8fa5;}
-.module-link{
-  display:inline-flex;align-items:center;gap:6px;
-  font-size:.8rem;font-weight:600;color:var(--secondary);
-  padding:7px 14px;border-radius:8px;
-  background:var(--light);border:1px solid #dde3ec;
-  text-decoration:none;transition:.2s;
-}
-.module-link:hover{background:var(--secondary);color:white;border-color:var(--secondary);}
+/* Accueil */
+.quick-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
+.qs{background:white;border-radius:12px;padding:18px;border:1px solid #e8edf4;text-align:center;}
+.qs-num{font-size:1.6rem;font-weight:800;color:var(--secondary);line-height:1;}
+.qs-label{font-size:10px;color:#7a8fa5;text-transform:uppercase;letter-spacing:.06em;margin-top:3px;}
+.module-cards{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.mc{background:white;border-radius:14px;padding:24px;border:1px solid #e8edf4;transition:.3s;cursor:pointer;}
+.mc:hover{border-color:var(--accent);box-shadow:0 6px 24px rgba(0,0,0,.07);transform:translateY(-2px);}
+.mc-header{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+.mc-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.mc-icon svg{width:20px;height:20px;}
+.mc-name{font-size:.95rem;font-weight:700;color:var(--primary);}
+.mc-desc{font-size:.8rem;color:#7a8fa5;line-height:1.6;margin-bottom:14px;}
+.mc-footer{display:flex;align-items:center;justify-content:space-between;}
+.mc-count{font-size:.75rem;color:#7a8fa5;}
+.mc-btn{font-size:.75rem;font-weight:600;color:var(--secondary);display:flex;align-items:center;gap:4px;}
 
-/* Stats rapides */
-.quick-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px;}
-.quick-stat{
-  background:white;border-radius:12px;padding:20px;
-  border:1px solid #e8edf4;text-align:center;
-}
-.quick-stat-num{font-size:1.8rem;font-weight:800;color:var(--secondary);line-height:1;}
-.quick-stat-label{font-size:11px;color:#7a8fa5;text-transform:uppercase;letter-spacing:.06em;margin-top:4px;}
+/* Formulaires panels */
+.panel-grid{display:grid;grid-template-columns:1fr 1.4fr;gap:20px;height:calc(100vh - 160px);}
+.panel-col{background:white;border-radius:14px;border:1px solid #e8edf4;padding:28px;overflow-y:auto;}
+.panel-col-h{font-size:.95rem;font-weight:700;color:var(--primary);margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid #eee;display:flex;align-items:center;justify-content:space-between;}
+.panel-col-h span{font-size:.78rem;font-weight:400;color:#7a8fa5;}
 
-/* Iframe modules */
-.module-iframe-wrap{
-  background:white;border-radius:16px;
-  border:1px solid #e8edf4;
-  overflow:hidden;
-  height:calc(100vh - 160px);
-}
-.module-iframe-wrap iframe{width:100%;height:100%;border:none;}
+.fg{margin-bottom:16px;}
+.fg label{display:block;font-size:11px;font-weight:700;color:#555;letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px;}
+.fg input,.fg select,.fg textarea{width:100%;padding:9px 12px;border:1.5px solid #dde3ec;border-radius:8px;font-size:.86rem;outline:none;transition:.2s;font-family:'Inter',sans-serif;color:#222;}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--accent);}
+.fg textarea{resize:vertical;min-height:100px;line-height:1.6;}
+.fg-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+
+.tag-select{display:flex;flex-wrap:wrap;gap:6px;}
+.tag-btn{padding:5px 11px;border-radius:20px;border:1.5px solid #dde3ec;background:white;font-size:11px;font-weight:600;cursor:pointer;transition:.2s;color:#555;}
+.tag-btn:hover{border-color:var(--accent);color:var(--accent);}
+.tag-btn.active{background:var(--secondary);color:white;border-color:var(--secondary);}
+
+.p-actions{display:flex;gap:10px;margin-top:18px;padding-top:14px;border-top:1px solid #eee;}
+.btn-pub{flex:1;padding:11px;background:var(--secondary);color:white;border:none;border-radius:8px;font-size:.86rem;font-weight:600;cursor:pointer;transition:.2s;}
+.btn-pub:hover{background:var(--accent);}
+.btn-pub:disabled{background:#9ca3af;cursor:not-allowed;}
+.btn-ann{padding:11px 16px;background:#f5f7fa;color:#555;border:1px solid #dde3ec;border-radius:8px;font-size:.86rem;cursor:pointer;}
+.p-status{margin-top:10px;padding:9px 12px;border-radius:8px;font-size:.82rem;font-weight:500;display:none;}
+.p-status.success{background:#dcfce7;color:#16a34a;}
+.p-status.error{background:#fee2e2;color:#dc2626;}
+
+/* Liste */
+.list-item{background:#f9fafb;border-radius:10px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:12px;border:1px solid #eee;}
+.list-item:hover{background:white;box-shadow:0 3px 10px rgba(0,0,0,.05);}
+.list-thumb{width:48px;height:36px;border-radius:6px;object-fit:cover;background:#e8edf4;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.list-thumb svg{width:16px;height:16px;color:#9aa8b8;}
+.list-body{flex:1;min-width:0;}
+.list-title{font-size:.82rem;font-weight:600;color:var(--primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px;}
+.list-meta{display:flex;align-items:center;gap:6px;}
+.list-badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;color:white;text-transform:uppercase;}
+.list-date{font-size:10px;color:#7a8fa5;}
+.list-actions{display:flex;gap:5px;flex-shrink:0;}
+.btn-ed{padding:4px 9px;background:#eff6ff;color:var(--secondary);border:none;border-radius:5px;font-size:11px;font-weight:600;cursor:pointer;transition:.2s;}
+.btn-ed:hover{background:var(--secondary);color:white;}
+.btn-del{padding:4px 7px;background:#fee2e2;color:#dc2626;border:none;border-radius:5px;font-size:11px;cursor:pointer;}
+.btn-del:hover{background:#dc2626;color:white;}
+.empty-list{text-align:center;padding:32px;color:#7a8fa5;font-size:.83rem;}
 </style>
 </head>
 <body>
 
-<!-- ═══ LOGIN ═══ -->
+<!-- LOGIN -->
 <div id="login-screen">
   <div class="login-box">
     <div class="login-logo">A</div>
     <h1>APH Drone</h1>
     <p>Panneau d'administration — Connexion requise</p>
-    <input type="email" id="login-email" placeholder="Email administrateur" autocomplete="email">
-    <input type="password" id="login-password" placeholder="Mot de passe"
-      onkeydown="if(event.key==='Enter') doLogin()">
+    <input type="email" id="login-email" placeholder="Email" autocomplete="email">
+    <input type="password" id="login-password" placeholder="Mot de passe" onkeydown="if(event.key==='Enter') doLogin()">
     <button class="btn-login" onclick="doLogin()">Se connecter</button>
-    <p id="login-error">Identifiants incorrects. Veuillez réessayer.</p>
-    <p class="login-footer">Accès réservé à l'administration APH Drone</p>
+    <p id="login-error">Identifiants incorrects.</p>
   </div>
 </div>
 
-<!-- ═══ DASHBOARD ═══ -->
-<div id="dashboard">
+<!-- DASHBOARD -->
+<div id="dashboard" style="display:none;height:100vh;display:none;flex-direction:row;">
 
   <!-- Sidebar -->
   <div class="dash-sidebar">
     <div class="sidebar-logo">
       <div class="sidebar-logo-inner">
         <div class="sidebar-logo-icon">AP</div>
-        <div class="sidebar-logo-text">
-          <strong>APH Drone</strong>
-          <span>Administration</span>
-        </div>
+        <div class="sidebar-logo-text"><strong>APH Drone</strong><span>Administration</span></div>
       </div>
     </div>
-
     <nav class="sidebar-nav">
-      <div class="sidebar-section-label">Tableau de bord</div>
+      <div class="nav-sep">Tableau de bord</div>
       <button class="nav-item active" onclick="showPanel('accueil',this)">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
         Vue d'ensemble
       </button>
-
-      <div class="sidebar-section-label">Contenu</div>
+      <div class="nav-sep">Contenu</div>
       <button class="nav-item" onclick="showPanel('actualites',this)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
         Actualités
-        <span class="nav-badge" id="badge-actualites">—</span>
+        <span class="nav-badge" id="badge-actu">0</span>
       </button>
       <button class="nav-item" onclick="showPanel('recrutement',this)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
         Recrutement
-        <span class="nav-badge" id="badge-recrutement">—</span>
+        <span class="nav-badge" id="badge-rec">0</span>
       </button>
-
-      <div class="sidebar-section-label">Site</div>
+      <div class="nav-sep">Site</div>
       <a class="nav-item" href="../index.html" target="_blank">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10z"/></svg>
         Voir le site
       </a>
       <a class="nav-item" href="../pages/actualites.html" target="_blank">
@@ -264,18 +181,14 @@ body{background:var(--light);color:#222;}
         Page Recrutement
       </a>
     </nav>
-
     <div class="sidebar-footer">
       <div class="sidebar-user">
-        <div class="sidebar-user-avatar" id="user-avatar">A</div>
-        <div class="sidebar-user-info">
-          <strong id="user-email-short">—</strong>
-          <span>Administrateur</span>
-        </div>
+        <div class="sidebar-user-av" id="user-av">A</div>
+        <div class="sidebar-user-info"><strong id="user-em">—</strong><span>Administrateur</span></div>
       </div>
-      <button class="btn-logout-sidebar" onclick="doLogout()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-        Se déconnecter
+      <button class="btn-logout" onclick="doLogout()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Déconnexion
       </button>
     </div>
   </div>
@@ -285,86 +198,132 @@ body{background:var(--light);color:#222;}
     <div class="dash-topbar">
       <div>
         <div class="topbar-title" id="topbar-title">Vue d'ensemble</div>
-        <div class="topbar-subtitle" id="topbar-subtitle">Bienvenue dans votre espace d'administration</div>
+        <div class="topbar-sub" id="topbar-sub">Bienvenue dans votre espace d'administration</div>
       </div>
-      <div class="topbar-actions">
-        <a href="../index.html" target="_blank" class="btn-site">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-          Voir le site
-        </a>
-      </div>
+      <a href="../index.html" target="_blank" class="btn-site">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        Voir le site
+      </a>
     </div>
 
-    <!-- Panel Accueil -->
-    <div class="dash-panel active" id="panel-accueil">
-      <div class="quick-stats">
-        <div class="quick-stat">
-          <div class="quick-stat-num" id="stat-actualites">—</div>
-          <div class="quick-stat-label">Actualités</div>
+    <div class="dash-content">
+
+      <!-- Panel Accueil -->
+      <div class="dash-panel active" id="panel-accueil">
+        <div class="quick-stats">
+          <div class="qs"><div class="qs-num" id="stat-actu">—</div><div class="qs-label">Actualités</div></div>
+          <div class="qs"><div class="qs-num" id="stat-rec">—</div><div class="qs-label">Offres emploi</div></div>
+          <div class="qs"><div class="qs-num">7j/7</div><div class="qs-label">Disponibilité</div></div>
+          <div class="qs"><div class="qs-num">48h</div><div class="qs-label">Réponse</div></div>
         </div>
-        <div class="quick-stat">
-          <div class="quick-stat-num" id="stat-offres">—</div>
-          <div class="quick-stat-label">Offres d'emploi</div>
-        </div>
-        <div class="quick-stat">
-          <div class="quick-stat-num">7j/7</div>
-          <div class="quick-stat-label">Disponibilité</div>
-        </div>
-        <div class="quick-stat">
-          <div class="quick-stat-num">48h</div>
-          <div class="quick-stat-label">Réponse garantie</div>
+        <div class="module-cards">
+          <div class="mc" onclick="showPanel('actualites',document.querySelectorAll('.nav-item')[1])">
+            <div class="mc-header">
+              <div class="mc-icon" style="background:#eff6ff;"><svg viewBox="0 0 24 24" fill="none" stroke="#1F5FAF" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+              <div class="mc-name">Actualités</div>
+            </div>
+            <div class="mc-desc">Publiez, modifiez ou supprimez vos articles. Apparaissent automatiquement sur la page Actualités et le carrousel de l'accueil.</div>
+            <div class="mc-footer">
+              <span class="mc-count" id="mc-actu-count">—</span>
+              <span class="mc-btn">Gérer <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+            </div>
+          </div>
+          <div class="mc" onclick="showPanel('recrutement',document.querySelectorAll('.nav-item')[2])">
+            <div class="mc-header">
+              <div class="mc-icon" style="background:#f0fdf4;"><svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+              <div class="mc-name">Recrutement</div>
+            </div>
+            <div class="mc-desc">Publiez vos offres d'emploi. Elles apparaissent automatiquement sur la page Recrutement du site.</div>
+            <div class="mc-footer">
+              <span class="mc-count" id="mc-rec-count">—</span>
+              <span class="mc-btn">Gérer <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="welcome-grid">
-        <div class="module-card" onclick="showPanel('actualites', document.querySelector('.nav-item:nth-child(4)'))">
-          <div class="module-card-header">
-            <div class="module-icon" style="background:#eff6ff;">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#1F5FAF" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+      <!-- Panel Actualités -->
+      <div class="dash-panel" id="panel-actualites">
+        <div class="panel-grid">
+          <div class="panel-col">
+            <div class="panel-col-h" id="actu-form-title">Nouvelle actualité</div>
+            <input type="hidden" id="actu-edit-id">
+            <div class="fg"><label>Titre *</label><input type="text" id="a-titre" placeholder="Titre de l'actualité"></div>
+            <div class="fg-row">
+              <div class="fg"><label>Date *</label><input type="text" id="a-date" placeholder="ex: Juin 2026"></div>
+              <div class="fg"><label>Taille de la carte</label>
+                <select id="a-taille"><option value="lg">Grande</option><option value="md" selected>Moyenne</option><option value="sm">Petite</option></select>
+              </div>
             </div>
-            <div>
-              <div class="module-name">Actualités</div>
+            <div class="fg"><label>Catégorie *</label>
+              <div class="tag-select">
+                <button class="tag-btn" data-val="Réglementation" onclick="selectTag(this,'a-cat')">Réglementation</button>
+                <button class="tag-btn" data-val="Formation" onclick="selectTag(this,'a-cat')">Formation</button>
+                <button class="tag-btn" data-val="Mission" onclick="selectTag(this,'a-cat')">Mission</button>
+                <button class="tag-btn" data-val="Événement" onclick="selectTag(this,'a-cat')">Événement</button>
+                <button class="tag-btn" data-val="Agriculture" onclick="selectTag(this,'a-cat')">Agriculture</button>
+                <button class="tag-btn" data-val="Sécurité civile" onclick="selectTag(this,'a-cat')">Sécurité civile</button>
+              </div>
+              <input type="hidden" id="a-cat">
             </div>
+            <div class="fg"><label>Extrait</label><textarea id="a-extrait" rows="3" placeholder="Résumé affiché sur la carte..."></textarea></div>
+            <div class="fg"><label>Contenu complet</label><textarea id="a-contenu" rows="6" placeholder="Texte complet de l'article. Séparez les paragraphes par une ligne vide."></textarea></div>
+            <div class="fg"><label>URL Photo</label><input type="url" id="a-photo" placeholder="https://... ou assets/images/photo.jpg"></div>
+            <div class="fg-row">
+              <div class="fg"><label>Texte bouton CTA</label><input type="text" id="a-cta-texte" placeholder="ex: Voir la formation"></div>
+              <div class="fg"><label>Lien CTA</label><input type="text" id="a-cta-lien" placeholder="ex: formations/cats-sts.html"></div>
+            </div>
+            <div class="p-actions">
+              <button class="btn-ann" onclick="resetActu()">Annuler</button>
+              <button class="btn-pub" id="btn-pub-actu" onclick="publierActu()">Publier</button>
+            </div>
+            <div class="p-status" id="status-actu"></div>
           </div>
-          <div class="module-desc">Publiez, modifiez ou supprimez vos articles d'actualité. Ils apparaissent automatiquement sur la page Actualités et dans le carrousel de l'accueil.</div>
-          <div class="module-footer">
-            <span class="module-count" id="count-actualites">Chargement...</span>
-            <span class="module-link">Gérer <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
-          </div>
-        </div>
-
-        <div class="module-card" onclick="showPanel('recrutement', document.querySelector('.nav-item:nth-child(5)'))">
-          <div class="module-card-header">
-            <div class="module-icon" style="background:#f0fdf4;">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-            </div>
-            <div>
-              <div class="module-name">Recrutement</div>
-            </div>
-          </div>
-          <div class="module-desc">Publiez vos offres d'emploi (CDI, CDD, alternance, stage...). Elles apparaissent automatiquement sur la page Recrutement du site.</div>
-          <div class="module-footer">
-            <span class="module-count" id="count-offres">Chargement...</span>
-            <span class="module-link">Gérer <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+          <div class="panel-col">
+            <div class="panel-col-h">Actualités publiées <span id="actu-list-count"></span></div>
+            <div id="actu-list"><div class="empty-list">Chargement...</div></div>
           </div>
         </div>
       </div>
+
+      <!-- Panel Recrutement -->
+      <div class="dash-panel" id="panel-recrutement">
+        <div class="panel-grid">
+          <div class="panel-col">
+            <div class="panel-col-h" id="rec-form-title">Nouvelle offre d'emploi</div>
+            <input type="hidden" id="rec-edit-id">
+            <div class="fg"><label>Intitulé du poste *</label><input type="text" id="r-titre" placeholder="ex: Télépilote professionnel"></div>
+            <div class="fg-row">
+              <div class="fg"><label>Lieu *</label><input type="text" id="r-lieu" placeholder="ex: Luxeuil-les-Bains (70)"></div>
+              <div class="fg"><label>Date</label><input type="text" id="r-date" placeholder="ex: Juin 2026"></div>
+            </div>
+            <div class="fg"><label>Type de contrat *</label>
+              <div class="tag-select">
+                <button class="tag-btn" data-val="CDI" onclick="selectTag(this,'r-type')">CDI</button>
+                <button class="tag-btn" data-val="CDD" onclick="selectTag(this,'r-type')">CDD</button>
+                <button class="tag-btn" data-val="Alternance" onclick="selectTag(this,'r-type')">Alternance</button>
+                <button class="tag-btn" data-val="Stage" onclick="selectTag(this,'r-type')">Stage</button>
+                <button class="tag-btn" data-val="Freelance" onclick="selectTag(this,'r-type')">Freelance</button>
+                <button class="tag-btn" data-val="Bénévolat" onclick="selectTag(this,'r-type')">Bénévolat</button>
+              </div>
+              <input type="hidden" id="r-type">
+            </div>
+            <div class="fg"><label>Description du poste *</label><textarea id="r-desc" rows="5" placeholder="Missions, profil recherché, conditions..."></textarea></div>
+            <div class="fg"><label>Compétences requises</label><input type="text" id="r-comp" placeholder="DGAC Open A2, STS-01, Pix4D... (séparées par virgules)"></div>
+            <div class="p-actions">
+              <button class="btn-ann" onclick="resetRec()">Annuler</button>
+              <button class="btn-pub" id="btn-pub-rec" onclick="publierRec()">Publier l'offre</button>
+            </div>
+            <div class="p-status" id="status-rec"></div>
+          </div>
+          <div class="panel-col">
+            <div class="panel-col-h">Offres publiées <span id="rec-list-count"></span></div>
+            <div id="rec-list"><div class="empty-list">Chargement...</div></div>
+          </div>
+        </div>
+      </div>
+
     </div>
-
-    <!-- Panel Actualités -->
-    <div class="dash-panel" id="panel-actualites">
-      <div class="module-iframe-wrap">
-        <iframe src="actualites.html" id="iframe-actualites"></iframe>
-      </div>
-    </div>
-
-    <!-- Panel Recrutement -->
-    <div class="dash-panel" id="panel-recrutement">
-      <div class="module-iframe-wrap">
-        <iframe src="admin-recrutement.html" id="iframe-recrutement"></iframe>
-      </div>
-    </div>
-
   </div>
 </div>
 
@@ -372,7 +331,7 @@ body{background:var(--light);color:#222;}
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, collection, getDocs }
+import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, updateDoc, orderBy, query }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -388,61 +347,241 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// Login
-window.doLogin = async function(){
-  const email = document.getElementById('login-email').value;
-  const pwd = document.getElementById('login-password').value;
-  try { await signInWithEmailAndPassword(auth, email, pwd); }
-  catch(e){ document.getElementById('login-error').style.display='block'; }
+const tagColors = {
+  'Réglementation':'#dc2626','Formation':'#1F5FAF','Mission':'#16a34a',
+  'Événement':'#7c3aed','Agriculture':'#ea580c','Sécurité civile':'#0B1F3A',
+  'CDI':'#16a34a','CDD':'#1F5FAF','Alternance':'#7c3aed',
+  'Stage':'#ea580c','Freelance':'#0891b2','Bénévolat':'#6b7280'
 };
 
-window.doLogout = async function(){
-  await signOut(auth);
+// ── Auth ──
+window.doLogin = async function(){
+  const e = document.getElementById('login-email').value;
+  const p = document.getElementById('login-password').value;
+  try { await signInWithEmailAndPassword(auth,e,p); }
+  catch(err){ document.getElementById('login-error').style.display='block'; }
 };
+window.doLogout = async function(){ await signOut(auth); };
 
 onAuthStateChanged(auth, async user => {
   if(user){
     document.getElementById('login-screen').style.display='none';
-    document.getElementById('dashboard').style.display='flex';
-    // Afficher email court
-    const short = user.email.split('@')[0];
-    document.getElementById('user-email-short').textContent = user.email;
-    document.getElementById('user-avatar').textContent = short[0].toUpperCase();
-
-    // Compter les docs
-    try {
-      const actSnap = await getDocs(collection(db,'actualites'));
-      const offSnap = await getDocs(collection(db,'offres'));
-      const na = actSnap.size, no = offSnap.size;
-      document.getElementById('stat-actualites').textContent = na;
-      document.getElementById('stat-offres').textContent = no;
-      document.getElementById('count-actualites').textContent = na + ' actu' + (na>1?'s':'') + ' publiée' + (na>1?'s':'');
-      document.getElementById('count-offres').textContent = no + ' offre' + (no>1?'s':'') + ' publiée' + (no>1?'s':'');
-      document.getElementById('badge-actualites').textContent = na;
-      document.getElementById('badge-recrutement').textContent = no;
-    } catch(e){}
+    const dash = document.getElementById('dashboard');
+    dash.style.display='flex';
+    document.getElementById('user-em').textContent = user.email;
+    document.getElementById('user-av').textContent = user.email[0].toUpperCase();
+    await chargerStats();
+    await chargerActus();
+    await chargerRecs();
   } else {
     document.getElementById('login-screen').style.display='flex';
     document.getElementById('dashboard').style.display='none';
   }
 });
 
-// Navigation panels
-const titles = {
-  accueil: ['Vue d\'ensemble','Bienvenue dans votre espace d\'administration'],
-  actualites: ['Actualités','Publiez et gérez vos articles'],
-  recrutement: ['Recrutement','Gérez vos offres d\'emploi'],
-};
+async function chargerStats(){
+  try {
+    const na = (await getDocs(collection(db,'actualites'))).size;
+    const nr = (await getDocs(collection(db,'offres'))).size;
+    ['stat-actu','badge-actu'].forEach(id=>document.getElementById(id).textContent=na);
+    ['stat-rec','badge-rec'].forEach(id=>document.getElementById(id).textContent=nr);
+    document.getElementById('mc-actu-count').textContent = na+' actu'+(na>1?'s':'')+' publiée'+(na>1?'s':'');
+    document.getElementById('mc-rec-count').textContent = nr+' offre'+(nr>1?'s':'')+' publiée'+(nr>1?'s':'');
+  } catch(e){}
+}
 
+// ── Navigation ──
+const panelTitles = {
+  accueil:['Vue d\'ensemble','Bienvenue dans votre espace d\'administration'],
+  actualites:['Actualités','Publiez et gérez vos articles'],
+  recrutement:['Recrutement','Gérez vos offres d\'emploi'],
+};
 window.showPanel = function(name, btn){
-  document.querySelectorAll('.dash-panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.querySelectorAll('.dash-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   document.getElementById('panel-'+name).classList.add('active');
   if(btn) btn.classList.add('active');
-  const t = titles[name] || [name,''];
-  document.getElementById('topbar-title').textContent = t[0];
-  document.getElementById('topbar-subtitle').textContent = t[1];
+  const t = panelTitles[name]||[name,''];
+  document.getElementById('topbar-title').textContent=t[0];
+  document.getElementById('topbar-sub').textContent=t[1];
 };
+
+// ── Tags ──
+window.selectTag = function(btn, fieldId){
+  const group = btn.closest('.tag-select');
+  group.querySelectorAll('.tag-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(fieldId).value = btn.dataset.val;
+};
+
+// ── ACTUALITÉS ──
+function formatContenu(t){ return t.split(/\n\n+/).map(p=>'<p>'+p.replace(/\n/g,'<br>')+'</p>').join(''); }
+
+window.publierActu = async function(){
+  const titre=document.getElementById('a-titre').value.trim();
+  const date=document.getElementById('a-date').value.trim();
+  const cat=document.getElementById('a-cat').value;
+  const taille=document.getElementById('a-taille').value;
+  const extrait=document.getElementById('a-extrait').value.trim();
+  const contenu=document.getElementById('a-contenu').value.trim();
+  const photoUrl=document.getElementById('a-photo').value.trim();
+  const ctaTexte=document.getElementById('a-cta-texte').value.trim();
+  const ctaLien=document.getElementById('a-cta-lien').value.trim();
+  const editId=document.getElementById('actu-edit-id').value;
+  if(!titre||!date||!cat){showStatus('status-actu','Titre, date et catégorie requis.','error');return;}
+  const btn=document.getElementById('btn-pub-actu');
+  btn.disabled=true;btn.textContent='Publication...';
+  try {
+    const data={titre,date,cat,taille,extrait,contenu:formatContenu(contenu),photoUrl,ctaTexte,ctaLien,ordre:Date.now()};
+    if(editId){await updateDoc(doc(db,'actualites',editId),data);showStatus('status-actu','Actualité mise à jour.','success');}
+    else{await addDoc(collection(db,'actualites'),data);showStatus('status-actu','Actualité publiée !','success');}
+    resetActu();await chargerActus();await chargerStats();
+  } catch(e){showStatus('status-actu','Erreur : '+e.message,'error');}
+  btn.disabled=false;btn.textContent=document.getElementById('actu-edit-id').value?'Mettre à jour':'Publier';
+};
+
+async function chargerActus(){
+  const list=document.getElementById('actu-list');
+  list.innerHTML='<div class="empty-list">Chargement...</div>';
+  const q=query(collection(db,'actualites'),orderBy('ordre','desc'));
+  const snap=await getDocs(q);
+  document.getElementById('actu-list-count').textContent='('+snap.size+')';
+  window._actusData={};
+  if(snap.empty){list.innerHTML='<div class="empty-list">Aucune actualité publiée</div>';return;}
+  list.innerHTML='';
+  snap.forEach(ds=>{
+    const d=ds.data();window._actusData[ds.id]=d;
+    const color=tagColors[d.cat]||'#1F5FAF';
+    const div=document.createElement('div');
+    div.className='list-item';
+    div.innerHTML=`
+      ${d.photoUrl?`<img class="list-thumb" src="${d.photoUrl}" alt="">`:`<div class="list-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>`}
+      <div class="list-body">
+        <div class="list-title">${d.titre}</div>
+        <div class="list-meta"><span class="list-badge" style="background:${color}">${d.cat}</span><span class="list-date">${d.date}</span></div>
+      </div>
+      <div class="list-actions">
+        <button class="btn-ed" onclick="editerActu('${ds.id}')">Modifier</button>
+        <button class="btn-del" onclick="supprimerActu('${ds.id}','${d.titre.replace(/'/g,"\\'")}')">✕</button>
+      </div>`;
+    list.appendChild(div);
+  });
+}
+
+window.editerActu=function(id){
+  const d=window._actusData[id];if(!d)return;
+  document.getElementById('actu-edit-id').value=id;
+  document.getElementById('a-titre').value=d.titre||'';
+  document.getElementById('a-date').value=d.date||'';
+  document.getElementById('a-taille').value=d.taille||'md';
+  document.getElementById('a-extrait').value=d.extrait||'';
+  document.getElementById('a-contenu').value=(d.contenu||'').replace(/<p>/g,'').replace(/<\/p>/g,'\n\n').replace(/<br>/g,'\n').trim();
+  document.getElementById('a-photo').value=d.photoUrl||'';
+  document.getElementById('a-cta-texte').value=d.ctaTexte||'';
+  document.getElementById('a-cta-lien').value=d.ctaLien||'';
+  document.getElementById('a-cat').value=d.cat||'';
+  document.querySelectorAll('#panel-actualites .tag-btn').forEach(b=>b.classList.toggle('active',b.dataset.val===d.cat));
+  document.getElementById('actu-form-title').textContent="Modifier l'actualité";
+  document.getElementById('btn-pub-actu').textContent='Mettre à jour';
+};
+
+window.supprimerActu=async function(id,titre){
+  if(!confirm('Supprimer "'+titre+'" ?'))return;
+  await deleteDoc(doc(db,'actualites',id));
+  await chargerActus();await chargerStats();
+};
+
+window.resetActu=function(){
+  ['actu-edit-id','a-titre','a-date','a-cat','a-extrait','a-contenu','a-photo','a-cta-texte','a-cta-lien'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('a-taille').value='md';
+  document.querySelectorAll('#panel-actualites .tag-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('actu-form-title').textContent='Nouvelle actualité';
+  document.getElementById('btn-pub-actu').textContent='Publier';
+  document.getElementById('btn-pub-actu').disabled=false;
+};
+
+// ── RECRUTEMENT ──
+window.publierRec=async function(){
+  const titre=document.getElementById('r-titre').value.trim();
+  const lieu=document.getElementById('r-lieu').value.trim();
+  const date=document.getElementById('r-date').value.trim();
+  const type=document.getElementById('r-type').value;
+  const desc=document.getElementById('r-desc').value.trim();
+  const comp=document.getElementById('r-comp').value.trim();
+  const editId=document.getElementById('rec-edit-id').value;
+  if(!titre||!lieu||!type||!desc){showStatus('status-rec','Titre, lieu, type et description requis.','error');return;}
+  const btn=document.getElementById('btn-pub-rec');
+  btn.disabled=true;btn.textContent='Publication...';
+  try {
+    const data={titre,lieu,date:date||new Date().toLocaleDateString('fr-FR',{month:'long',year:'numeric'}),type,desc,competences:comp,ordre:Date.now()};
+    if(editId){await updateDoc(doc(db,'offres',editId),data);showStatus('status-rec','Offre mise à jour.','success');}
+    else{await addDoc(collection(db,'offres'),data);showStatus('status-rec','Offre publiée !','success');}
+    resetRec();await chargerRecs();await chargerStats();
+  } catch(e){showStatus('status-rec','Erreur : '+e.message,'error');}
+  btn.disabled=false;btn.textContent=document.getElementById('rec-edit-id').value?'Mettre à jour':'Publier l\'offre';
+};
+
+async function chargerRecs(){
+  const list=document.getElementById('rec-list');
+  list.innerHTML='<div class="empty-list">Chargement...</div>';
+  const q=query(collection(db,'offres'),orderBy('ordre','desc'));
+  const snap=await getDocs(q);
+  document.getElementById('rec-list-count').textContent='('+snap.size+')';
+  window._recsData={};
+  if(snap.empty){list.innerHTML='<div class="empty-list">Aucune offre publiée</div>';return;}
+  list.innerHTML='';
+  snap.forEach(ds=>{
+    const d=ds.data();window._recsData[ds.id]=d;
+    const color=tagColors[d.type]||'#6b7280';
+    const div=document.createElement('div');
+    div.className='list-item';
+    div.innerHTML=`
+      <div class="list-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div>
+      <div class="list-body">
+        <div class="list-title">${d.titre}</div>
+        <div class="list-meta"><span class="list-badge" style="background:${color}">${d.type}</span><span class="list-date">${d.lieu} — ${d.date}</span></div>
+      </div>
+      <div class="list-actions">
+        <button class="btn-ed" onclick="editerRec('${ds.id}')">Modifier</button>
+        <button class="btn-del" onclick="supprimerRec('${ds.id}','${d.titre.replace(/'/g,"\\'")}')">✕</button>
+      </div>`;
+    list.appendChild(div);
+  });
+}
+
+window.editerRec=function(id){
+  const d=window._recsData[id];if(!d)return;
+  document.getElementById('rec-edit-id').value=id;
+  document.getElementById('r-titre').value=d.titre||'';
+  document.getElementById('r-lieu').value=d.lieu||'';
+  document.getElementById('r-date').value=d.date||'';
+  document.getElementById('r-type').value=d.type||'';
+  document.getElementById('r-desc').value=d.desc||'';
+  document.getElementById('r-comp').value=d.competences||'';
+  document.querySelectorAll('#panel-recrutement .tag-btn').forEach(b=>b.classList.toggle('active',b.dataset.val===d.type));
+  document.getElementById('rec-form-title').textContent="Modifier l'offre";
+  document.getElementById('btn-pub-rec').textContent='Mettre à jour';
+};
+
+window.supprimerRec=async function(id,titre){
+  if(!confirm('Supprimer "'+titre+'" ?'))return;
+  await deleteDoc(doc(db,'offres',id));
+  await chargerRecs();await chargerStats();
+};
+
+window.resetRec=function(){
+  ['rec-edit-id','r-titre','r-lieu','r-date','r-type','r-desc','r-comp'].forEach(id=>document.getElementById(id).value='');
+  document.querySelectorAll('#panel-recrutement .tag-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('rec-form-title').textContent="Nouvelle offre d'emploi";
+  document.getElementById('btn-pub-rec').textContent="Publier l'offre";
+  document.getElementById('btn-pub-rec').disabled=false;
+};
+
+function showStatus(id,msg,type){
+  const el=document.getElementById(id);
+  el.textContent=msg;el.className='p-status '+type;el.style.display='block';
+  setTimeout(()=>el.style.display='none',4000);
+}
 </script>
 </body>
 </html>
