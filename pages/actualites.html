@@ -97,11 +97,14 @@ body{background:#fff;color:#222;overflow-x:hidden;}
 /* ── GRILLE ACTUALITÉS ── */
 .actu-page{padding:40px 10% 100px;}
 
-.actu-mosaic{
+#firebase-mosaic{
   display:grid;
   grid-template-columns:repeat(3,1fr);
   gap:28px;
 }
+#firebase-mosaic .actu-card--lg{grid-column:span 2;}
+#firebase-mosaic .actu-card--sm{grid-column:span 1;}
+#firebase-mosaic .actu-card--md{grid-column:span 1;}
 /* Carte featured sur 2 colonnes */
 .actu-mosaic .actu-card--span2{grid-column:span 2;}
 
