@@ -231,6 +231,9 @@ flex-direction:column;
 }
 
 /* Carrousel horizontal */
+.carousel-wrapper{
+  position:relative;
+}
 .carousel-track{
   display:flex;
   gap:30px;
@@ -246,6 +249,26 @@ flex-direction:column;
   scroll-snap-align:start;
 }
 .carousel-track .card-img:hover{transform:translateY(-10px);}
+
+/* Flèches carrousel */
+.carousel-btn{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  width:44px;height:44px;
+  border-radius:50%;
+  background:white;
+  border:none;
+  box-shadow:0 4px 16px rgba(0,0,0,.15);
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  z-index:10;
+  transition:.2s;
+  color:var(--primary);
+}
+.carousel-btn:hover{background:var(--secondary);color:white;box-shadow:0 6px 20px rgba(31,95,175,.3);}
+.carousel-btn--prev{left:-22px;}
+.carousel-btn--next{right:-22px;}
 
 .card-img .card-thumb{
 width:100%;height:180px;
@@ -796,7 +819,11 @@ Découvrir nos formations
     <a href="login.html" class="btn-section btn-section--outline">Espace Professionnel</a>
   </div>
 </div>
-<div class="carousel-track">
+<div class="carousel-wrapper">
+<button class="carousel-btn carousel-btn--prev" onclick="scrollCarousel(this,-1)" aria-label="Précédent">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+</button>
+<div class="carousel-track" id="carousel-prestations">
 
   <div class="card-img" onclick="window.location='pages/prestations/surveillance.html'" style="cursor:pointer;">
     <div class="card-thumb"><span class="card-thumb-placeholder">Image</span></div>
@@ -849,6 +876,10 @@ Découvrir nos formations
   </div>
 
 </div>
+<button class="carousel-btn carousel-btn--next" onclick="scrollCarousel(this,1)" aria-label="Suivant">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+</button>
+</div>
 </section>
 
 <!-- ═══ ZONE D'INTERVENTION ═══ -->
@@ -896,7 +927,11 @@ Découvrir nos formations
     <a href="login.html" class="btn-section btn-section--outline">Espace Stagiaire</a>
   </div>
 </div>
-<div class="carousel-track">
+<div class="carousel-wrapper">
+<button class="carousel-btn carousel-btn--prev" onclick="scrollCarousel(this,-1)" aria-label="Précédent">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+</button>
+<div class="carousel-track" id="carousel-formations">
 
   <div class="card-img" onclick="window.location='pages/formations/initiation-a1a3.html'" style="cursor:pointer;">
     <div class="card-thumb"><span class="card-thumb-placeholder">Image</span></div>
@@ -973,6 +1008,10 @@ Découvrir nos formations
     <div class="card-body"><h3>Changer de carrière — métiers du drone</h3><p>Réussir sa reconversion dans le secteur du drone.</p></div>
   </div>
 
+</div>
+<button class="carousel-btn carousel-btn--next" onclick="scrollCarousel(this,1)" aria-label="Suivant">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+</button>
 </div>
 </section>
 
@@ -1308,6 +1347,48 @@ Découvrir nos formations
 (function(){
   document.getElementById('back-top').classList.add('visible');
 })();
+(function(){
+  var SPEED = 0.5; // pixels par frame
+  var CARD_W = 310; // 280px carte + 30px gap
+
+  function setupCarousel(track){
+    var paused = false;
+    var raf;
+
+    function autoScroll(){
+      if(!paused){
+        track.scrollLeft += SPEED;
+        // reboucle en fin de liste
+        if(track.scrollLeft >= track.scrollWidth - track.clientWidth - 2){
+          track.scrollLeft = 0;
+        }
+      }
+      raf = requestAnimationFrame(autoScroll);
+    }
+
+    track.addEventListener('mouseenter', function(){ paused = true; });
+    track.addEventListener('mouseleave', function(){ paused = false; });
+    track.addEventListener('touchstart', function(){ paused = true; }, {passive:true});
+    track.addEventListener('touchend', function(){
+      setTimeout(function(){ paused = false; }, 2000);
+    }, {passive:true});
+
+    raf = requestAnimationFrame(autoScroll);
+    track._pauseScroll = function(){ paused = true; setTimeout(function(){ paused = false; }, 2500); };
+  }
+
+  // Flèches
+  window.scrollCarousel = function(btn, dir){
+    var wrapper = btn.closest('.carousel-wrapper');
+    var track = wrapper.querySelector('.carousel-track');
+    track._pauseScroll && track._pauseScroll();
+    track.scrollBy({ left: dir * CARD_W, behavior: 'smooth' });
+  };
+
+  // Init après chargement
+  document.querySelectorAll('.carousel-track').forEach(setupCarousel);
+})();
+
 </script>
 </body>
 </html>
