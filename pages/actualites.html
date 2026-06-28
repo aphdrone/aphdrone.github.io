@@ -1019,21 +1019,48 @@ footer{background:var(--primary);color:white;padding:60px 10% 0;}
 </style>
 
 <style>
-/* ── Responsive mobile grille actualités ── */
+/* ══ PAGE ACTUALITÉS : neutraliser les width carrousel hérités ══ */
+#firebase-mosaic .actu-card,
+#firebase-mosaic .actu-card--lg,
+#firebase-mosaic .actu-card--md,
+#firebase-mosaic .actu-card--sm,
+.actu-mosaic .actu-card,
+.actu-mosaic .actu-card--span2,
+.actu-mosaic .actu-card--md,
+.actu-mosaic .actu-card--sm {
+  width: auto !important;
+  min-width: 0 !important;
+  flex-shrink: 1 !important;
+}
+
+/* ══ RESPONSIVE MOBILE — PAGE ACTUALITÉS ══ */
 @media (max-width: 768px) {
+
+  /* Grille mosaïque → colonne unique */
   #firebase-mosaic,
   .actu-mosaic {
+    display: grid !important;
     grid-template-columns: 1fr !important;
-    gap: 16px;
+    gap: 16px !important;
   }
+
+  /* Toutes les cartes sur pleine largeur */
   #firebase-mosaic .actu-card--lg,
   #firebase-mosaic .actu-card--md,
   #firebase-mosaic .actu-card--sm,
+  .actu-mosaic .actu-card,
   .actu-mosaic .actu-card--span2,
   .actu-mosaic .actu-card--md,
   .actu-mosaic .actu-card--sm {
-    grid-column: span 1 !important;
+    grid-column: 1 / -1 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    flex: none !important;
   }
+
+  /* Hauteur image uniforme */
+  .actu-card .actu-img,
   #firebase-mosaic .actu-card--lg .actu-img,
   #firebase-mosaic .actu-card--md .actu-img,
   #firebase-mosaic .actu-card--sm .actu-img,
@@ -1042,15 +1069,26 @@ footer{background:var(--primary);color:white;padding:60px 10% 0;}
   .actu-mosaic .actu-card--sm .actu-img {
     height: 200px !important;
   }
+
+  /* Excerpt toujours visible */
   .actu-card--sm .actu-excerpt { display: block !important; }
+
+  /* Filtres */
   .filtres-wrap { padding: 24px 6% 0; gap: 8px; }
   .filtre-btn { font-size: 11px; padding: 6px 14px; }
-  .page-hero { padding: 100px 6% 50px; }
-  .page-hero h1 { font-size: 2rem; }
-  .actu-page { padding: 24px 6% 60px; }
+
+  /* Hero */
+  .page-hero { padding: 100px 6% 50px !important; }
+  .page-hero h1 { font-size: 2rem !important; }
+
+  /* Contenu */
+  .actu-page { padding: 24px 6% 60px !important; }
+
+  /* Séparateurs de mois */
+  .actu-mois { grid-column: 1 / -1 !important; }
 }
 @media (max-width: 480px) {
-  .page-hero h1 { font-size: 1.6rem; }
+  .page-hero h1 { font-size: 1.6rem !important; }
 }
 </style>
 </head>
@@ -1200,10 +1238,7 @@ footer{background:var(--primary);color:white;padding:60px 10% 0;}
   /* ── Section header ── */
   .section-header{flex-direction:column;align-items:flex-start;gap:16px;}
 
-  /* ── Actualités ── */
-  .actu-card--lg{width:280px !important;}
-  .actu-card--md{width:240px !important;}
-  .actu-card--sm{width:200px !important;}
+  /* ── Actualités ── (règles carrousel supprimées pour page actualités) */
 
   /* ── Témoignages ── */
   .temoignage{flex:0 0 280px !important;}
