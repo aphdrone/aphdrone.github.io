@@ -677,6 +677,125 @@ padding:60px 10% 0;
   font-family:'Inter',sans-serif;
 }
 #site-header .search-box input::placeholder{color:rgba(255,255,255,.6);}
+
+/* ══════════════════════════════════════
+   RESPONSIVE MOBILE
+   ══════════════════════════════════════ */
+@media (max-width: 768px) {
+
+  /* ── Header ── */
+  #site-header{
+    padding:12px 20px;
+    flex-wrap:nowrap;
+    position:fixed;
+  }
+  #site-header .logo img{height:48px;width:48px;}
+  #site-header nav{display:none;} /* Menu caché — remplacé par burger */
+
+  /* Bouton burger */
+  #burger-btn{
+    display:flex;flex-direction:column;gap:5px;
+    background:none;border:none;cursor:pointer;padding:4px;
+  }
+  #burger-btn span{display:block;width:24px;height:2px;background:white;border-radius:2px;transition:.3s;}
+
+  /* Menu mobile overlay */
+  #mobile-menu{
+    display:none;
+    position:fixed;top:0;left:0;right:0;bottom:0;
+    background:var(--primary);z-index:99998;
+    overflow-y:auto;padding:80px 28px 40px;
+    flex-direction:column;gap:8px;
+  }
+  #mobile-menu.open{display:flex;}
+  #mobile-menu-close{
+    position:absolute;top:20px;right:20px;
+    background:rgba(255,255,255,.1);border:none;color:white;
+    width:40px;height:40px;border-radius:50%;cursor:pointer;
+    font-size:20px;display:flex;align-items:center;justify-content:center;
+  }
+  .mobile-menu-item{
+    color:white;text-decoration:none;font-size:1rem;font-weight:600;
+    padding:14px 0;border-bottom:1px solid rgba(255,255,255,.08);
+    display:block;
+  }
+  .mobile-menu-sub{
+    padding-left:16px;display:flex;flex-direction:column;gap:0;
+  }
+  .mobile-menu-sub a{
+    color:rgba(255,255,255,.65);text-decoration:none;font-size:.88rem;
+    padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05);display:block;
+  }
+  .mobile-menu-section{
+    font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--accent);padding:16px 0 6px;
+  }
+
+  /* ── Hero ── */
+  .hero{padding:100px 6% 60px;}
+  .hero-content h1{font-size:2.2rem !important;}
+  .hero-content p{font-size:.95rem;}
+  .hero-content .btn{padding:12px 22px;font-size:.85rem;}
+
+  /* ── Sections ── */
+  .section{padding:60px 6%;}
+  .section-title{font-size:1.6rem;}
+
+  /* ── Stats ── */
+  .stats-grid{
+    grid-template-columns:repeat(2,1fr) !important;
+    gap:16px;
+  }
+
+  /* ── Carrousels ── */
+  .carousel-btn--prev{left:-10px;}
+  .carousel-btn--next{right:-10px;}
+  .carousel-wrapper{padding:0 4px;}
+
+  /* ── Section header ── */
+  .section-header{flex-direction:column;align-items:flex-start;gap:16px;}
+
+  /* ── Actualités ── */
+  .actu-card--lg{width:280px !important;}
+  .actu-card--md{width:240px !important;}
+  .actu-card--sm{width:200px !important;}
+
+  /* ── Témoignages ── */
+  .temoignage{flex:0 0 280px !important;}
+
+  /* ── Contact rapide ── */
+  .contact-wrap{
+    grid-template-columns:1fr !important;
+    gap:32px;
+  }
+
+  /* ── Zone d'intervention ── */
+  .zone-grid{
+    grid-template-columns:1fr !important;
+  }
+
+  /* ── Footer ── */
+  .footer-grid{
+    grid-template-columns:1fr 1fr !important;
+    gap:32px;
+  }
+  .footer-legal{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:8px;
+  }
+  .footer-legal-copy{margin-left:0 !important;}
+
+  /* ── Bouton tel ── */
+  #back-top{bottom:20px;right:20px;width:46px;height:46px;}
+}
+
+@media (max-width: 480px) {
+  .stats-grid{grid-template-columns:1fr 1fr !important;}
+  .footer-grid{grid-template-columns:1fr !important;}
+  .hero-content h1{font-size:1.8rem !important;}
+  .section-title{font-size:1.4rem;}
+}
 </style>
 
 <div id="site-header">
@@ -751,6 +870,51 @@ padding:60px 10% 0;
       </li>
     </ul>
   </nav>
+  <!-- Burger mobile -->
+  <button id="burger-btn" onclick="toggleMobileMenu()" aria-label="Menu" style="display:none;">
+    <span></span><span></span><span></span>
+  </button>
+</div>
+
+<!-- Menu mobile -->
+<div id="mobile-menu">
+  <button id="mobile-menu-close" onclick="toggleMobileMenu()">✕</button>
+  <div class="mobile-menu-section">Navigation</div>
+  <a href="index.html" class="mobile-menu-item">Accueil</a>
+  <div class="mobile-menu-section">Prestations</div>
+  <div class="mobile-menu-sub">
+    <a href="pages/prestations/surveillance.html">Surveillance &amp; Sécurité</a>
+    <a href="pages/prestations/agriculture.html">Agriculture de précision</a>
+    <a href="pages/prestations/environnement.html">Environnement &amp; Forêt</a>
+    <a href="pages/prestations/cartographie.html">Cartographie &amp; Modélisation 3D</a>
+    <a href="pages/prestations/thermographie.html">Thermographie</a>
+    <a href="pages/prestations/inspection.html">Inspection technique</a>
+    <a href="pages/prestations/sora-pdra.html">Expertise SORA &amp; PDRA</a>
+    <a href="pages/prestations/conseil-audit.html">Conseil &amp; Audit</a>
+    <a href="pages/prestations/mission-telepilote.html">Mission Télépilote</a>
+    <a href="pages/prestations/photo-video.html">Photo &amp; Vidéo</a>
+  </div>
+  <div class="mobile-menu-section">Formations</div>
+  <div class="mobile-menu-sub">
+    <a href="pages/formations/initiation-a1a3.html">Initiation A1/A3</a>
+    <a href="pages/formations/bapd-a2.html">BAPD — Catégorie A2</a>
+    <a href="pages/formations/cats-sts.html">Préparation CATS STS</a>
+    <a href="pages/formations/vol-nuit.html">Vol de nuit</a>
+    <a href="pages/formations/sylviculture.html">Sylviculture, faune &amp; biodiversité</a>
+    <a href="pages/formations/securite-secours.html">Surveillance, Sécurité &amp; Secours</a>
+    <a href="pages/formations/agriculture.html">Agriculture de précision</a>
+    <a href="pages/formations/thermographie.html">Thermographie</a>
+    <a href="pages/formations/cartographie.html">Cartographie &amp; 3D</a>
+    <a href="pages/formations/changer-carriere.html">Changer de carrière</a>
+  </div>
+  <div class="mobile-menu-section">Outils</div>
+  <div class="mobile-menu-sub">
+    <a href="pages/outils/meteo.html">Météo drone</a>
+    <a href="pages/outils/qcm.html">QCM entraînement</a>
+    <a href="pages/outils/preparation-vol.html">Préparation de vol</a>
+  </div>
+  <a href="pages/contact.html" class="mobile-menu-item">Contact</a>
+  <a href="pages/connexion.html" class="mobile-menu-item" style="color:var(--accent);">Se connecter</a>
 </div>
 
 <script>
@@ -763,6 +927,25 @@ padding:60px 10% 0;
     item.addEventListener('mouseleave', function(){ dd.style.display='none'; });
   });
 })();
+
+// Menu mobile burger
+window.toggleMobileMenu = function(){
+  var menu = document.getElementById('mobile-menu');
+  menu.classList.toggle('open');
+  document.body.style.overflow = menu.classList.contains('open') ? 'hidden' : '';
+};
+function checkMobile(){
+  var burger = document.getElementById('burger-btn');
+  if(!burger) return;
+  burger.style.display = window.innerWidth <= 768 ? 'flex' : 'none';
+  if(window.innerWidth > 768){
+    var menu = document.getElementById('mobile-menu');
+    if(menu) menu.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+}
+checkMobile();
+window.addEventListener('resize', checkMobile);
 </script>
 
 
