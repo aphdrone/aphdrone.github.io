@@ -198,7 +198,18 @@ body{background:#fff;color:#222;overflow-x:hidden;}
 .cta-info-text strong{display:block;font-size:.88rem;font-weight:600;color:white;}
 .cta-info-text span{font-size:.78rem;color:rgba(255,255,255,.45);}
 
-/* ── Bouton tel ── */
+/* ── Responsive mobile apropos ── */
+@media(max-width:768px){
+  .hero-apropos{
+    grid-template-columns:1fr !important;
+    padding:100px 6% 50px !important;
+    gap:40px !important;
+  }
+  .hero-visual{width:100% !important;}
+  .profile-card{max-width:100% !important;}
+  .floating-stats{max-width:100% !important;}
+  .hero-apropos h1{font-size:2.2rem !important;}
+}
 #back-top{position:fixed;bottom:30px;right:30px;width:52px;height:52px;border-radius:50%;background:var(--secondary);color:white;display:flex;align-items:center;justify-content:center;text-decoration:none;box-shadow:0 8px 24px rgba(31,95,175,.4);transition:.3s;z-index:999;opacity:1;}
 #back-top:hover{background:var(--accent);}
 #back-top svg{width:20px;height:20px;}
