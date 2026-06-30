@@ -467,39 +467,6 @@ a:hover ~ #cursor, button:hover ~ #cursor{width:16px;height:16px;background:whit
 @keyframes ticker{from{transform:translateX(0);}to{transform:translateX(-50%);}}
 
 /* ── Processus ── */
-.process-grid{
-  display:grid;grid-template-columns:repeat(4,1fr);
-  gap:0;position:relative;
-}
-.process-grid::before{
-  content:'';position:absolute;top:32px;left:12.5%;right:12.5%;height:1.5px;
-  background:linear-gradient(90deg,var(--accent),rgba(74,144,226,.2));
-  z-index:0;
-}
-.process-step{
-  display:flex;flex-direction:column;align-items:center;
-  text-align:center;padding:0 20px;position:relative;z-index:1;
-}
-.process-num{
-  width:64px;height:64px;border-radius:50%;
-  background:white;border:2px solid var(--accent);
-  display:flex;align-items:center;justify-content:center;
-  font-size:1.3rem;font-weight:700;color:var(--accent);
-  margin-bottom:20px;
-  transition:.4s;
-  box-shadow:0 0 0 0 rgba(74,144,226,.3);
-}
-.process-step.visible .process-num{
-  animation:pulse-ring 1s .3s ease forwards;
-}
-@keyframes pulse-ring{
-  0%{box-shadow:0 0 0 0 rgba(74,144,226,.4);}
-  70%{box-shadow:0 0 0 16px rgba(74,144,226,0);}
-  100%{box-shadow:0 0 0 0 rgba(74,144,226,0);}
-}
-.process-step h3{font-size:1rem;font-weight:600;color:var(--primary);margin-bottom:8px;}
-.process-step p{font-size:.85rem;color:#777;line-height:1.6;}
-
 /* ── Back to top ── */
 #back-top{
   position:fixed;bottom:32px;right:32px;
@@ -602,16 +569,9 @@ padding:60px 10% 0;
 .zone-map svg{width:100%;max-width:320px;display:block;margin:auto;}
 
 /* ── Témoignages ── */
-.temoignages-track{
-  display:flex;
-  gap:24px;
-  overflow-x:auto;
-  scrollbar-width:none;
-  padding-bottom:8px;
-}
-.temoignages-track::-webkit-scrollbar{display:none;}
 .temoignage{
   flex:0 0 340px;
+  scroll-snap-align:start;
   background:rgba(255,255,255,.06);
   border:1px solid rgba(255,255,255,.1);
   border-radius:16px;
@@ -814,7 +774,7 @@ Découvrir nos formations
 </section>
 
 <!-- ═══ CARROUSEL PRESTATIONS ═══ -->
-<section class="section">
+<section class="section" style="background:var(--light);">
 <div style="margin-bottom:32px;">
   <h2 class="section-title" style="margin-bottom:16px;">Nos Prestations</h2>
   <div style="display:flex;gap:12px;">
@@ -886,7 +846,7 @@ Découvrir nos formations
 </section>
 
 <!-- ═══ ZONE D'INTERVENTION ═══ -->
-<section class="section" style="background:var(--light);">
+<section class="section">
   <div class="zone-wrap reveal">
     <div class="zone-text">
       <h2 class="section-title" style="margin-bottom:20px;">Zone d'intervention</h2>
@@ -938,7 +898,7 @@ Découvrir nos formations
 </section>
 
 <!-- ═══ CARROUSEL FORMATIONS ═══ -->
-<section class="section">
+<section class="section" style="background:var(--light);">
 <div style="margin-bottom:32px;">
   <h2 class="section-title" style="margin-bottom:16px;">Nos Formations</h2>
   <div style="display:flex;gap:12px;">
@@ -1034,74 +994,6 @@ Découvrir nos formations
 </div>
 </section>
 
-<!-- ═══ TÉMOIGNAGES ═══ -->
-<section class="section" style="background:var(--primary);">
-  <h2 class="section-title" style="color:white;">Ils nous font confiance</h2>
-  <div class="carousel-wrapper">
-  <button class="carousel-btn carousel-btn--prev" onclick="scrollCarousel(this,-1)" aria-label="Précédent">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-  </button>
-  <div class="temoignages-track" id="carousel-temoignages">
-    <div class="temoignage">
-      <div class="temoignage-stars">★★★★★</div>
-      <p>"Formation BAPD très complète, pédagogie excellente et mise en situation réelle. Je recommande vivement APH Drone pour toute formation professionnelle."</p>
-      <div class="temoignage-author">— Marc D., Agriculteur — Haute-Saône</div>
-    </div>
-    <div class="temoignage">
-      <div class="temoignage-stars">★★★★★</div>
-      <p>"Intervention thermographique sur notre toiture industrielle : rapport détaillé, délais respectés, équipe réactive. Un partenaire de confiance."</p>
-      <div class="temoignage-author">— Sophie L., Responsable technique — PME BFC</div>
-    </div>
-    <div class="temoignage">
-      <div class="temoignage-stars">★★★★★</div>
-      <p>"Cartographie de nos parcelles viticoles avec une précision impressionnante. Les données multispectrale ont transformé notre gestion agronomique."</p>
-      <div class="temoignage-author">— Pierre M., Viticulteur — Jura</div>
-    </div>
-    <div class="temoignage">
-      <div class="temoignage-stars">★★★★★</div>
-      <p>"Mission de surveillance sur notre site logistique réalisée avec professionnalisme. Les images restituées étaient d'une qualité remarquable."</p>
-      <div class="temoignage-author">— Jean-Luc R., Directeur de site — Vesoul</div>
-    </div>
-    <div class="temoignage">
-      <div class="temoignage-stars">★★★★★</div>
-      <p>"Formation vol de nuit unique en France. Arnaud transmet avec passion et rigueur. Une expérience marquante, très attendue dans notre secteur."</p>
-      <div class="temoignage-author">— Karim B., Télépilote professionnel — Grand Est</div>
-    </div>
-  </div>
-  <button class="carousel-btn carousel-btn--next" onclick="scrollCarousel(this,1)" aria-label="Suivant">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-  </button>
-  </div>
-</section>
-
-<!-- ═══ CERTIFICATIONS ═══ -->
-
-<section class="section" style="background:var(--light);">
-  <h2 class="section-title">Comment ça se passe ?</h2>
-  <div class="process-grid">
-    <div class="process-step reveal">
-      <div class="process-num">1</div>
-      <h3>Contact</h3>
-      <p>Échangeons sur votre projet, vos besoins et votre calendrier.</p>
-    </div>
-    <div class="process-step reveal">
-      <div class="process-num">2</div>
-      <h3>Devis gratuit</h3>
-      <p>Réception d'une proposition détaillée sous 48h, sans engagement.</p>
-    </div>
-    <div class="process-step reveal">
-      <div class="process-num">3</div>
-      <h3>Mission</h3>
-      <p>Intervention sur site avec le matériel adapté et toutes les autorisations.</p>
-    </div>
-    <div class="process-step reveal">
-      <div class="process-num">4</div>
-      <h3>Livraison</h3>
-      <p>Rapport, données ou livrables remis dans les délais convenus.</p>
-    </div>
-  </div>
-</section>
-
 <!-- ═══ ACTUALITÉS ═══ -->
 <section class="section actu-section">
   <div class="actu-header reveal">
@@ -1115,7 +1007,7 @@ Découvrir nos formations
   <button class="carousel-btn carousel-btn--prev" onclick="scrollCarousel(this,-1)" aria-label="Précédent">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
   </button>
-  <div class="actu-track">
+  <div class="actu-track carousel-track">
 
     <!-- ACTU 1 — grande avec photo -->
     <article class="actu-card actu-card--lg reveal">
@@ -1205,6 +1097,10 @@ Découvrir nos formations
   </button>
   </div>
 </section>
+
+<!-- ═══ CONTACT RAPIDE ═══ -->
+<section class="section" style="background:var(--light);">
+  <div class="contact-wrap">
     <div class="contact-text">
       <h2 class="section-title" style="margin-bottom:16px;">Un projet ? Parlons-en.</h2>
       <p style="color:#555;line-height:1.8;margin-bottom:28px;">Devis gratuit sous 48h. Que ce soit pour une mission ponctuelle, une formation ou un partenariat, répondons à vos besoins ensemble.</p>
@@ -1365,52 +1261,41 @@ Découvrir nos formations
     // 2. Désactiver scroll-snap (incompatible avec scrollLeft+=)
     track.style.scrollSnapType = 'none';
 
-    var paused = false;
-
     function autoScroll(){
-      if(!paused){
-        track.scrollLeft += spd;
-        if(track.scrollLeft >= halfWidth){
-          track.scrollLeft -= halfWidth;
-        }
+      track.scrollLeft += spd;
+      if(track.scrollLeft >= halfWidth){
+        track.scrollLeft -= halfWidth;
       }
       requestAnimationFrame(autoScroll);
     }
-
-    // Pause au survol
-    track.addEventListener('mouseenter', function(){ paused = true; });
-    track.addEventListener('mouseleave', function(){ paused = false; });
-    track.addEventListener('touchstart', function(){ paused = true; }, {passive:true});
-    track.addEventListener('touchend', function(){
-      setTimeout(function(){ paused = false; }, 2000);
-    }, {passive:true});
-
-    // Méthode pause temporaire pour les flèches
-    track._pause = function(){
-      paused = true;
-      setTimeout(function(){ paused = false; }, 2500);
-    };
-
     requestAnimationFrame(autoScroll);
+
+    // Méthode pause temporaire pour les flèches (sans bloquer l'auto-scroll de base)
+    var pauseUntil = 0;
+    track._pause = function(){
+      pauseUntil = Date.now() + 2500;
+    };
   }
 
   // Flèches
   window.scrollCarousel = function(btn, dir){
     var wrapper = btn.closest('.carousel-wrapper');
-    var track = wrapper.querySelector('.carousel-track, .actu-track, .temoignages-track');
+    var track = wrapper.querySelector('.carousel-track');
     track._pause && track._pause();
     track.scrollBy({ left: dir * CARD_W, behavior: 'smooth' });
   };
 
   // Lancer après chargement du DOM (plus fiable que 'load' si une vidéo/ressource bloque)
   function initCarousels(){
-    document.querySelectorAll('.carousel-track').forEach(setupCarousel);
-    // Témoignages : vitesse lente
-    var temoTrack = document.getElementById('carousel-temoignages');
-    if(temoTrack) setupCarousel(temoTrack, 0.2);
-    // Actualités : vitesse lente
-    var actuTrack = document.querySelector('.actu-track');
-    if(actuTrack) setupCarousel(actuTrack, 0.5);
+    document.querySelectorAll('.carousel-track').forEach(function(track){
+      if(track.id === 'carousel-temoignages'){
+        setupCarousel(track, 0.2);
+      } else if(track.classList.contains('actu-track')){
+        setupCarousel(track, 0.5);
+      } else {
+        setupCarousel(track);
+      }
+    });
   }
   if(document.readyState === 'loading'){
     document.addEventListener('DOMContentLoaded', initCarousels);
