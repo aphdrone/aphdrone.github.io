@@ -39,17 +39,18 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
 /* ── Grille modules ── */
 .modules-zone{background:var(--light);padding:48px 10% 80px;}
 .modules-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
-.mod-card{background:white;border-radius:14px;border:1px solid #e3e9f1;overflow:hidden;transition:.25s;display:flex;flex-direction:column;}
+.mod-card{background:white;border-radius:14px;border:1px solid #e3e9f1;overflow:hidden;transition:.25s;display:flex;flex-direction:column;min-height:280px;}
 .mod-card:hover{box-shadow:0 16px 40px rgba(11,31,58,.1);transform:translateY(-2px);}
-.mod-card.span-2{grid-column:span 2;}
 .mod-head{padding:20px 22px 0;display:flex;justify-content:flex-end;align-items:flex-start;}
 .mod-badge{display:flex;align-items:center;gap:5px;font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:4px 9px;border-radius:20px;font-family:var(--mono);}
 .mod-badge.free{background:rgba(74,144,226,.1);color:var(--secondary);}
 .mod-badge.locked{background:#eef1f6;color:#667085;}
 .mod-body{padding:14px 22px 22px;flex:1;display:flex;flex-direction:column;}
+.mod-image{width:calc(100% + 44px);margin:14px -22px 4px;height:120px;overflow:hidden;background:var(--light);border-top:1px solid #eef1f6;border-bottom:1px solid #eef1f6;}
+.mod-image img{width:100%;height:100%;object-fit:cover;display:block;}
 .mod-body h3{font-size:1rem;font-weight:700;color:var(--primary);margin-bottom:6px;}
 .mod-body p{font-size:.83rem;color:#667085;line-height:1.6;margin-bottom:16px;flex:1;}
-.mod-action{display:flex;align-items:center;justify-content:center;gap:7px;padding:10px;border-radius:8px;font-size:.82rem;font-weight:600;text-decoration:none;transition:.2s;border:none;cursor:pointer;width:100%;}
+.mod-action{display:flex;align-items:center;justify-content:center;gap:7px;padding:10px;border-radius:8px;font-size:.82rem;font-weight:600;text-decoration:none;transition:.2s;border:none;cursor:pointer;width:100%;margin-top:auto;}
 .mod-action.primary{background:var(--secondary);color:white;}
 .mod-action.primary:hover{background:var(--accent);}
 .mod-action.outline{background:transparent;color:var(--secondary);border:1.5px solid #dde3ec;}
@@ -72,7 +73,8 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
 .metar-icao-form button{padding:9px 16px;background:var(--primary);color:white;border:none;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;}
 
 /* ── Jauge Kp ── */
-.kp-gauge-wrap{display:flex;justify-content:center;padding:4px 0 0;}
+.kp-gauge-wrap{display:flex;justify-content:center;padding:8px 0 0;}
+.kp-gauge-wrap svg{max-width:170px;}
 
 /* ── Checklist preview (locked) ── */
 .locked-preview{position:relative;background:var(--light);border-radius:10px;padding:18px;}
@@ -110,8 +112,7 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
 /* ── Responsive ── */
 @media(max-width:1024px){
   .modules-grid{grid-template-columns:repeat(2,1fr);}
-  .mod-card.span-2{grid-column:span 2;}
-}
+  }
 @media(max-width:768px){
   .dash-bar{padding:0 6%;}
   .dash-inner{padding:24px 0;}
@@ -122,7 +123,6 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
   .access-legend{flex-wrap:wrap;gap:14px;}
   .modules-zone{padding:32px 6% 60px;}
   .modules-grid{grid-template-columns:1fr;}
-  .mod-card.span-2{grid-column:span 1;}
   .fiche-grid{grid-template-columns:1fr;}
   .fiche-card{padding:22px;}
 }
@@ -225,7 +225,7 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
     </div>
     <div class="modules-grid">
 
-      <div class="mod-card span-2">
+      <div class="mod-card">
         <div class="mod-head">
           <span class="mod-badge free"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg> Libre</span>
         </div>
@@ -266,6 +266,9 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
         <div class="mod-body">
           <h3>Carte aéronautique OACI 1/500 000</h3>
           <p>Carte VFR de référence : espaces aériens, fréquences, obstacles et règles de survol, éditée par l'IGN et le SIA.</p>
+          <div class="mod-image">
+            <img src="/assets/cartes/apercu-oaci.jpg" alt="Aperçu carte OACI 1/500 000" onerror="this.parentElement.style.display='none';">
+          </div>
           <a href="https://www.geoportail.gouv.fr/donnees/carte-oaci-vfr" target="_blank" class="mod-action primary">
             Ouvrir la carte OACI
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
@@ -537,6 +540,7 @@ function updateDashboard(){
 }
 updateDashboard();
 setInterval(updateDashboard, 1000);
+document.addEventListener('DOMContentLoaded', fetchMetar);
 
 function updateKpGauge(kp, timeTag){
   var pct = Math.max(0, Math.min(9, kp)) / 9;
@@ -578,9 +582,40 @@ setInterval(fetchKpIndex, 5 * 60 * 1000);
 function fetchMetar(){
   var icao = document.getElementById('icao-input').value.trim().toUpperCase();
   if(icao.length !== 4){ alert('Code OACI à 4 lettres (ex: LFSX).'); return; }
-  document.getElementById('metar-result').innerHTML =
-    '<div class="metar-row"><span class="metar-label">Statut</span><span>Connexion au service météo en cours…</span></div>';
-  // Branchement API METAR à connecter ici
+
+  var box = document.getElementById('metar-result');
+  box.innerHTML = '<div class="metar-row"><span class="metar-label">Statut</span><span>Recherche en cours…</span></div>';
+
+  fetch('https://aviationweather.gov/api/data/metar?ids=' + icao + '&format=json')
+    .then(function(r){
+      if(!r.ok) throw new Error('reseau');
+      return r.json();
+    })
+    .then(function(data){
+      if(!data || data.length === 0){
+        box.innerHTML = '<div class="metar-row"><span class="metar-label">Statut</span><span>Aucune donnée pour ' + icao + '. Vérifiez le code OACI.</span></div>';
+        return;
+      }
+      var m = data[0];
+      var wind = (m.wdir != null && m.wspd != null) ? m.wdir + '° / ' + m.wspd + ' kt' : '—';
+      var vis = (m.visib != null) ? m.visib + ' SM' : '—';
+      var ceil = '—';
+      if(m.clouds && m.clouds.length){
+        var lowest = m.clouds.find(function(c){ return c.base != null; });
+        if(lowest) ceil = lowest.cover + ' ' + lowest.base + ' ft';
+      }
+      var temp = (m.temp != null) ? m.temp + ' °C' : '—';
+
+      box.innerHTML =
+        '<div class="metar-row"><span class="metar-label">Vent</span><span>' + wind + '</span></div>' +
+        '<div class="metar-row"><span class="metar-label">Visibilité</span><span>' + vis + '</span></div>' +
+        '<div class="metar-row"><span class="metar-label">Plafond</span><span>' + ceil + '</span></div>' +
+        '<div class="metar-row"><span class="metar-label">Température</span><span>' + temp + '</span></div>' +
+        '<div class="metar-row"><span class="metar-label">Brut</span><span style="font-size:10px;">' + (m.rawOb || '—') + '</span></div>';
+    })
+    .catch(function(){
+      box.innerHTML = '<div class="metar-row"><span class="metar-label">Statut</span><span>Service indisponible. Réessayez dans un instant.</span></div>';
+    });
 }
 </script>
 
