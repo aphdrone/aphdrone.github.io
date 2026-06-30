@@ -6,16 +6,11 @@
 <title>APH Drone — Nos Prestations</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root{
-  --primary:#0B1F3A;
-  --secondary:#1F5FAF;
-  --accent:#4A90E2;
-  --light:#F5F7FA;
-}
+:root{--primary:#0B1F3A;--secondary:#1F5FAF;--accent:#4A90E2;--light:#F5F7FA;--green:#16a34a;}
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
 body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
 
-/* ── Header ── */
+/* Header */
 #site-header{position:fixed;top:0;width:100%;z-index:9999;padding:16px 60px;display:flex;justify-content:space-between;align-items:center;background:rgba(11,31,58,.97);}
 #site-header .logo img{height:64px;width:64px;border-radius:50%;object-fit:cover;display:block;}
 #site-header nav ul{display:flex;gap:28px;list-style:none;margin:0;padding:0;align-items:center;}
@@ -30,7 +25,7 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
 #site-header .search-box input{background:none;border:none;outline:none;color:white;font-size:13px;width:130px;}
 #site-header .search-box input::placeholder{color:rgba(255,255,255,.6);}
 
-/* ── Burger ── */
+/* Burger */
 #burger-btn{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:4px;}
 #burger-btn span{display:block;width:24px;height:2px;background:white;border-radius:2px;}
 #mobile-menu{display:none;visibility:hidden;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--primary);z-index:99998;overflow-y:auto;padding:80px 28px 40px;flex-direction:column;gap:8px;}
@@ -41,7 +36,7 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
 .mobile-menu-sub a{color:rgba(255,255,255,.65);text-decoration:none;font-size:.88rem;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05);display:block;}
 .mobile-menu-section{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);padding:16px 0 6px;}
 
-/* ── Hero ── */
+/* Hero */
 .page-hero{background:linear-gradient(135deg,var(--primary) 0%,#1a3a6b 100%);color:white;padding:70px 10% 60px;position:relative;overflow:hidden;}
 .page-hero::before{content:'';position:absolute;right:-100px;top:-100px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(74,144,226,.08),transparent 70%);}
 .hero-breadcrumb{display:flex;align-items:center;gap:8px;font-size:12px;color:rgba(255,255,255,.5);margin-bottom:20px;}
@@ -51,55 +46,67 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
 .page-hero h1 em{font-style:normal;color:#4A90E2;}
 .page-hero p{font-size:1.05rem;color:rgba(255,255,255,.7);max-width:580px;line-height:1.75;position:relative;z-index:1;}
 
-/* ── Intro ── */
+/* Stats band */
 .intro-band{background:var(--light);padding:40px 10%;display:flex;gap:48px;align-items:center;justify-content:space-between;}
 .intro-stat{text-align:center;}
 .intro-stat .val{font-size:2rem;font-weight:800;color:var(--accent);}
 .intro-stat .lbl{font-size:12px;color:#888;text-transform:uppercase;letter-spacing:.08em;margin-top:2px;}
 .intro-sep{width:1px;height:48px;background:#dde3ec;}
 
-/* ── Grille prestations ── */
-.prestations-section{padding:80px 10%;}
-.prestations-section h2{font-size:1.5rem;font-weight:700;color:var(--primary);margin-bottom:8px;}
-.prestations-section .sub{font-size:.95rem;color:#666;margin-bottom:40px;}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+/* Section */
+.formations-section{padding:70px 10%;}
+.section-label{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:10px;}
+.formations-section h2{font-size:1.5rem;font-weight:700;color:var(--primary);margin-bottom:6px;}
+.formations-section .sub{font-size:.95rem;color:#666;margin-bottom:36px;}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
 
-/* ── Carte prestation ── */
-.card{border-radius:18px;overflow:hidden;position:relative;cursor:pointer;background:var(--primary);min-height:280px;transition:transform .3s ease, box-shadow .3s ease;}
-.card:hover{transform:translateY(-4px);box-shadow:0 24px 60px rgba(11,31,58,.25);}
-
-/* Face avant */
-.card-front{position:absolute;inset:0;padding:32px;display:flex;flex-direction:column;justify-content:flex-end;transition:opacity .4s ease;}
-.card-front::before{content:'';position:absolute;inset:0;background:linear-gradient(160deg,rgba(11,31,58,.3) 0%,rgba(11,31,58,.85) 100%);z-index:1;}
-.card-bg{position:absolute;inset:0;background:linear-gradient(135deg,var(--primary),#1a3a6b);z-index:0;}
-.card-icon{position:absolute;top:24px;right:24px;z-index:2;width:48px;height:48px;border-radius:12px;background:rgba(74,144,226,.2);border:1px solid rgba(74,144,226,.3);display:flex;align-items:center;justify-content:center;color:#4A90E2;}
-.card-front h3{font-size:1.2rem;font-weight:700;color:white;position:relative;z-index:2;margin-bottom:8px;}
-.card-front .card-tag{display:inline-block;background:rgba(74,144,226,.25);border:1px solid rgba(74,144,226,.4);color:#7ab8f5;font-size:10px;font-weight:700;padding:3px 10px;border-radius:10px;text-transform:uppercase;letter-spacing:.06em;position:relative;z-index:2;}
+/* Carte formation */
+.fcard{border-radius:16px;overflow:hidden;position:relative;cursor:pointer;min-height:260px;transition:transform .3s ease,box-shadow .3s ease;}
+.fcard:hover{transform:translateY(-4px);box-shadow:0 20px 50px rgba(11,31,58,.2);}
+.fcard-front{position:absolute;inset:0;padding:28px;display:flex;flex-direction:column;justify-content:flex-end;transition:opacity .35s ease;}
+.fcard-front::before{content:'';position:absolute;inset:0;background:linear-gradient(160deg,rgba(11,31,58,.2) 0%,rgba(11,31,58,.88) 100%);z-index:1;}
+.fcard-bg{position:absolute;inset:0;z-index:0;}
+.fcard-level{position:absolute;top:20px;left:20px;z-index:2;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:10px;}
+.level-debutant{background:rgba(22,163,74,.25);color:#86efac;}
+.level-intermediaire{background:rgba(74,144,226,.25);color:#93c5fd;}
+.level-avance{background:rgba(234,88,12,.25);color:#fdba74;}
+.level-pro{background:rgba(139,92,246,.25);color:#c4b5fd;}
+.level-reconversion{background:rgba(236,72,153,.25);color:#f9a8d4;}
+.fcard-front h3{font-size:1.05rem;font-weight:700;color:white;position:relative;z-index:2;margin-bottom:6px;}
+.fcard-meta{display:flex;gap:10px;position:relative;z-index:2;}
+.fcard-meta span{font-size:11px;color:rgba(255,255,255,.7);display:flex;align-items:center;gap:4px;}
 
 /* Face arrière */
-.card-back{position:absolute;inset:0;padding:28px;display:flex;flex-direction:column;justify-content:space-between;background:white;opacity:0;pointer-events:none;transition:opacity .4s ease;}
-.card:hover .card-front{opacity:0;pointer-events:none;}
-.card:hover .card-back{opacity:1;pointer-events:auto;}
-.card-back h3{font-size:1.1rem;font-weight:700;color:var(--primary);margin-bottom:10px;}
-.card-back p{font-size:13px;color:#555;line-height:1.7;flex:1;}
-.card-back-points{margin:12px 0;display:flex;flex-direction:column;gap:6px;}
-.card-back-points li{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:#444;list-style:none;}
-.card-back-points li::before{content:'›';color:var(--accent);font-weight:700;flex-shrink:0;margin-top:1px;}
-.card-back-btns{display:flex;gap:10px;margin-top:14px;}
-.btn-card-primary{flex:1;padding:10px;background:var(--secondary);color:white;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center;transition:.2s;}
-.btn-card-primary:hover{background:var(--accent);}
-.btn-card-secondary{flex:1;padding:10px;background:transparent;color:var(--secondary);border:1.5px solid var(--secondary);border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center;transition:.2s;}
-.btn-card-secondary:hover{background:var(--secondary);color:white;}
+.fcard-back{position:absolute;inset:0;padding:22px;display:flex;flex-direction:column;justify-content:space-between;background:white;opacity:0;pointer-events:none;transition:opacity .35s ease;}
+.fcard:hover .fcard-front{opacity:0;pointer-events:none;}
+.fcard:hover .fcard-back{opacity:1;pointer-events:auto;}
+.fcard-back-top h3{font-size:14px;font-weight:700;color:var(--primary);margin-bottom:6px;}
+.fcard-back-top p{font-size:12px;color:#555;line-height:1.6;margin-bottom:10px;}
+.fcard-price{font-size:1.3rem;font-weight:800;color:var(--primary);}
+.fcard-price span{font-size:.8rem;font-weight:500;color:#888;}
+.fcard-infos{display:flex;gap:12px;margin:8px 0;}
+.fcard-info{display:flex;align-items:center;gap:5px;font-size:11px;color:#666;}
+.fcard-info svg{color:var(--accent);flex-shrink:0;}
+.fcard-price{font-size:1.3rem;font-weight:800;color:var(--primary);}
+.fcard-price span{font-size:.8rem;font-weight:500;color:#888;}
+.fcard-infos{display:flex;gap:12px;margin:8px 0;}
+.fcard-info{display:flex;align-items:center;gap:5px;font-size:11px;color:#666;}
+.fcard-info svg{color:var(--accent);flex-shrink:0;}
+.fcard-financement{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--green);font-weight:600;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;padding:4px 8px;margin-bottom:10px;width:fit-content;}
+.fcard-btns{display:flex;gap:8px;margin-top:auto;}
+.btn-fcard-primary{flex:1;padding:9px 6px;background:var(--secondary);color:white;border:none;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center;transition:.2s;}
+.btn-fcard-primary:hover{background:var(--accent);}
+.btn-fcard-secondary{flex:1;padding:9px 6px;background:transparent;color:var(--secondary);border:1.5px solid var(--secondary);border-radius:8px;font-size:11px;font-weight:700;text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center;transition:.2s;}
+.btn-fcard-secondary:hover{background:var(--secondary);color:white;}
 
-/* Couleurs accent par catégorie */
-.card.c1 .card-bg{background:linear-gradient(135deg,#0B1F3A,#1F5FAF);}
-.card.c2 .card-bg{background:linear-gradient(135deg,#0a2a1a,#1a5f3a);}
-.card.c3 .card-bg{background:linear-gradient(135deg,#1a0a2a,#4a1a8f);}
-.card.c4 .card-bg{background:linear-gradient(135deg,#2a1a0a,#8f4a1a);}
-.card.c5 .card-bg{background:linear-gradient(135deg,#0a1a2a,#1a4a6f);}
-.card.c6 .card-bg{background:linear-gradient(135deg,#1a1a0a,#5f5f1a);}
+/* Couleurs bg par type */
+.bg-certif{background:linear-gradient(135deg,#0B1F3A,#1F5FAF);}
+.bg-speciali{background:linear-gradient(135deg,#0a2a1a,#1a5f3a);}
+.bg-terrain{background:linear-gradient(135deg,#1a0a2a,#4a1a8f);}
+.bg-reglementaire{background:linear-gradient(135deg,#2a1a0a,#6f3a1a);}
+.bg-reconversion{background:linear-gradient(135deg,#1a0a1a,#6f1a5f);}
 
-/* ── CTA section ── */
+/* CTA */
 .cta-section{background:linear-gradient(135deg,var(--primary),#1a3a6b);padding:70px 10%;text-align:center;color:white;}
 .cta-section h2{font-size:2rem;font-weight:700;margin-bottom:14px;}
 .cta-section p{font-size:1rem;color:rgba(255,255,255,.7);margin-bottom:36px;max-width:520px;margin-left:auto;margin-right:auto;line-height:1.7;}
@@ -109,12 +116,12 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
 .btn-cta-secondary{display:inline-flex;align-items:center;gap:8px;background:transparent;color:white;border:1.5px solid rgba(255,255,255,.4);padding:15px 32px;border-radius:10px;font-size:15px;font-weight:600;text-decoration:none;transition:.2s;}
 .btn-cta-secondary:hover{background:rgba(255,255,255,.1);}
 
-/* ── Bouton téléphone ── */
+/* Bouton tel */
 #back-top{position:fixed;bottom:30px;right:30px;width:52px;height:52px;border-radius:50%;background:var(--secondary);color:white;display:flex;align-items:center;justify-content:center;text-decoration:none;box-shadow:0 8px 24px rgba(31,95,175,.4);transition:.3s;z-index:999;}
 #back-top:hover{background:var(--accent);}
 #back-top svg{width:20px;height:20px;}
 
-/* ── Footer ── */
+/* Footer */
 footer{background:#071A33;color:white;padding:60px 10% 0;}
 .footer-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:40px;padding-bottom:48px;border-bottom:1px solid rgba(255,255,255,.08);}
 .footer-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:rgba(255,255,255,.9);margin-bottom:16px;display:block;}
@@ -133,7 +140,7 @@ footer{background:#071A33;color:white;padding:60px 10% 0;}
 .footer-legal a:hover{color:rgba(255,255,255,.7);}
 .footer-legal-copy{font-size:12px;color:rgba(255,255,255,.25);margin-left:auto;}
 
-/* ── Responsive ── */
+/* Responsive */
 @media(max-width:1024px){.grid{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:768px){
   #site-header{padding:12px 20px;}
@@ -144,22 +151,22 @@ footer{background:#071A33;color:white;padding:60px 10% 0;}
   .page-hero h1{font-size:2rem;}
   .intro-band{flex-wrap:wrap;gap:24px;padding:30px 6%;}
   .intro-sep{display:none;}
-  .prestations-section{padding:50px 6%;}
+  .formations-section{padding:50px 6%;}
   .grid{grid-template-columns:1fr;}
-  .card{min-height:240px;}
-  .card-back{opacity:1;pointer-events:auto;position:relative;inset:auto;}
-  .card-front{display:none;}
+  .fcard{min-height:auto;}
+  .fcard-front{display:none;}
+  .fcard-back{opacity:1;pointer-events:auto;position:relative;inset:auto;border:1.5px solid #e8edf4;}
   .cta-section{padding:50px 6%;}
   .footer-grid{grid-template-columns:1fr 1fr;gap:32px;}
   .footer-legal{flex-direction:column;align-items:flex-start;gap:8px;}
   .footer-legal-copy{margin-left:0;}
 }
-@media(max-width:480px){.footer-grid{grid-template-columns:1fr;}.grid{grid-template-columns:1fr;}}
+@media(max-width:480px){.footer-grid{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
 
-<!-- ── Header ── -->
+<!-- Header -->
 <div id="site-header">
   <a href="index.html" class="logo"><img src="assets/logo.jpg" alt="APH Drone"/></a>
   <nav>
@@ -193,13 +200,25 @@ footer{background:#071A33;color:white;padding:60px 10% 0;}
           <li><a href="pages/formations/bapd-a2.html">BAPD — Catégorie A2</a></li>
           <li><a href="pages/formations/cats-sts.html">Préparation CATS STS</a></li>
           <li><a href="pages/formations/vol-nuit.html">Vol de nuit</a></li>
+          <li><a href="pages/formations/sylviculture.html">Sylviculture, faune &amp; biodiversité</a></li>
+          <li><a href="pages/formations/securite-secours.html">Surveillance, Sécurité &amp; Secours</a></li>
+          <li><a href="pages/formations/agriculture.html">Agriculture de précision</a></li>
+          <li><a href="pages/formations/thermographie.html">Thermographie</a></li>
+          <li><a href="pages/formations/cartographie.html">Cartographie &amp; Modélisation 3D</a></li>
+          <li><a href="pages/formations/donnees-exploitables.html">Production de Données Exploitables</a></li>
+          <li><a href="pages/formations/inspection.html">Inspection Technique</a></li>
+          <li><a href="pages/formations/maitrise-pilotage.html">Maîtrise opérationnelle</a></li>
+          <li><a href="pages/formations/maj-reglementaire.html">Mise à niveau réglementaire</a></li>
+          <li><a href="pages/formations/sora-pdra.html">Catégorie Spécifique</a></li>
           <li><a href="pages/formations/changer-carriere.html">Changer de carrière</a></li>
         </ul>
       </li>
       <li class="has-dropdown"><a href="#">Outils</a>
         <ul class="dropdown">
-          <li><a href="pages/outils/meteo.html">MÉTÉO</a></li>
+          <li><a href="pages/outils/reglementation.html">Réglementation</a></li>
           <li><a href="pages/outils/preparation-vol.html">Préparation de vol</a></li>
+          <li><a href="pages/outils/meteo.html">MÉTÉO</a></li>
+          <li><a href="pages/outils/elearning.html">Drone e-learning</a></li>
           <li><a href="pages/outils/qcm.html">QCM</a></li>
         </ul>
       </li>
@@ -246,19 +265,31 @@ footer{background:#071A33;color:white;padding:60px 10% 0;}
     <a href="pages/formations/bapd-a2.html">BAPD — Catégorie A2</a>
     <a href="pages/formations/cats-sts.html">Préparation CATS STS</a>
     <a href="pages/formations/vol-nuit.html">Vol de nuit</a>
+    <a href="pages/formations/sylviculture.html">Sylviculture, faune &amp; biodiversité</a>
+    <a href="pages/formations/securite-secours.html">Surveillance, Sécurité &amp; Secours</a>
+    <a href="pages/formations/agriculture.html">Agriculture de précision</a>
+    <a href="pages/formations/thermographie.html">Thermographie</a>
+    <a href="pages/formations/cartographie.html">Cartographie &amp; Modélisation 3D</a>
+    <a href="pages/formations/donnees-exploitables.html">Production de Données Exploitables</a>
+    <a href="pages/formations/inspection.html">Inspection Technique</a>
+    <a href="pages/formations/maitrise-pilotage.html">Maîtrise opérationnelle</a>
+    <a href="pages/formations/maj-reglementaire.html">Mise à niveau réglementaire</a>
+    <a href="pages/formations/sora-pdra.html">Catégorie Spécifique</a>
     <a href="pages/formations/changer-carriere.html">Changer de carrière</a>
   </div>
   <div class="mobile-menu-section">Outils</div>
   <div class="mobile-menu-sub">
-    <a href="pages/outils/meteo.html">MÉTÉO</a>
+    <a href="pages/outils/reglementation.html">Réglementation</a>
     <a href="pages/outils/preparation-vol.html">Préparation de vol</a>
+    <a href="pages/outils/meteo.html">MÉTÉO</a>
+    <a href="pages/outils/elearning.html">Drone e-learning</a>
     <a href="pages/outils/qcm.html">QCM</a>
   </div>
   <a href="pages/contact.html" class="mobile-menu-item">Contact</a>
   <a href="pages/connexion.html" class="mobile-menu-item" style="color:#4A90E2;">Se connecter</a>
 </div>
 
-<!-- ── Hero ── -->
+<!-- Hero -->
 <div class="page-hero">
   <div class="hero-breadcrumb">
     <a href="index.html">Accueil</a>
@@ -269,281 +300,279 @@ footer{background:#071A33;color:white;padding:60px 10% 0;}
   <p>Opérateur drone professionnel certifié DGAC en Bourgogne-Franche-Comté. Dix prestations spécialisées, une exigence constante : des données exploitables, des rapports rigoureux, des missions qui servent à quelque chose.</p>
 </div>
 
-<!-- ── Bande stats ── -->
-<div class="intro-band">
-  <div class="intro-stat"><div class="val">10</div><div class="lbl">Prestations</div></div>
-  <div class="intro-sep"></div>
-  <div class="intro-stat"><div class="val">DGAC</div><div class="lbl">Certifié</div></div>
-  <div class="intro-sep"></div>
-  <div class="intro-stat"><div class="val">48h</div><div class="lbl">Réponse devis</div></div>
-  <div class="intro-sep"></div>
-  <div class="intro-stat"><div class="val">BFC</div><div class="lbl">Grand Est</div></div>
-  <div class="intro-sep"></div>
-  <div class="intro-stat"><div class="val">RC Pro</div><div class="lbl">Assuré</div></div>
-</div>
-
-<!-- ── Grille prestations ── -->
-<div class="prestations-section">
-  <h2>Toutes nos prestations</h2>
+<!-- Prestations -->
+<div class="formations-section">
+  <div class="section-label">Toutes nos prestations</div>
+  <h2>10 expertises au service de vos projets</h2>
   <p class="sub">Passez la souris sur une carte pour découvrir le détail de la prestation.</p>
   <div class="grid">
 
-    <!-- Surveillance -->
-    <div class="card c1">
-      <div class="card-bg"></div>
-      <div class="card-front">
-        <div class="card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+    <div class="fcard">
+      <div class="fcard-bg bg-certif"></div>
+      <div class="fcard-front">
+        <span class="fcard-level level-intermediaire">Sécurité civile</span>
         <h3>Surveillance &amp; Sécurité</h3>
-        <span class="card-tag">Sécurité civile</span>
+        <div class="fcard-meta">
+          <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> BFC &amp; Grand Est</span>
+        </div>
       </div>
-      <div class="card-back">
-        <div>
+      <div class="fcard-back">
+        <div class="fcard-back-top">
           <h3>Surveillance &amp; Sécurité</h3>
           <p>Surveillance aérienne de sites sensibles, appui aux forces de l'ordre, surveillance d'événements et recherche de personnes.</p>
-          <ul class="card-back-points">
-            <li>Rondes aériennes automatisées</li>
-            <li>Caméra thermique + optique HD</li>
-            <li>Retransmission live vers PC</li>
-            <li>Partenaire SDIS 70</li>
-          </ul>
         </div>
-        <div class="card-back-btns">
-          <a href="pages/prestations/surveillance.html" class="btn-card-primary">En savoir plus</a>
-          <a href="pages/contact.html" class="btn-card-secondary">Devis gratuit</a>
+        <div class="fcard-price">Sur devis <span>Réponse sous 48h</span></div>
+        <div class="fcard-infos">
+          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> BFC &amp; Grand Est</span>
+          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> RC Pro incluse</span>
+        </div>
+        <div class="fcard-financement"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Devis gratuit sous 48h</div>
+        <div class="fcard-btns">
+          <a href="pages/prestations/surveillance.html" class="btn-fcard-primary">Découvrir</a>
+          <a href="pages/contact.html" class="btn-fcard-secondary">Devis gratuit</a>
         </div>
       </div>
     </div>
 
-    <!-- Agriculture -->
-    <div class="card c2">
-      <div class="card-bg"></div>
-      <div class="card-front">
-        <div class="card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg></div>
+    <div class="fcard">
+      <div class="fcard-bg bg-speciali"></div>
+      <div class="fcard-front">
+        <span class="fcard-level level-debutant">Agriculture</span>
         <h3>Agriculture de précision</h3>
-        <span class="card-tag">Imagerie multispectrale</span>
+        <div class="fcard-meta">
+          <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> BFC &amp; Grand Est</span>
+        </div>
       </div>
-      <div class="card-back">
-        <div>
+      <div class="fcard-back">
+        <div class="fcard-back-top">
           <h3>Agriculture de précision</h3>
           <p>Imagerie multispectrale NDVI, cartographie parcellaire, détection de stress hydrique et de maladies. Optimisez vos intrants.</p>
-          <ul class="card-back-points">
-            <li>Capteur multispectral 5 bandes</li>
-            <li>Cartes NDVI / NDRE géoréférencées</li>
-            <li>Interprétation agronomique</li>
-            <li>Traitement Pix4Dfields</li>
-          </ul>
         </div>
-        <div class="card-back-btns">
-          <a href="pages/prestations/agriculture.html" class="btn-card-primary">En savoir plus</a>
-          <a href="pages/contact.html" class="btn-card-secondary">Devis gratuit</a>
+        <div class="fcard-price">Sur devis <span>Réponse sous 48h</span></div>
+        <div class="fcard-infos">
+          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> BFC &amp; Grand Est</span>
+          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> RC Pro incluse</span>
+        </div>
+        <div class="fcard-financement"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Devis gratuit sous 48h</div>
+        <div class="fcard-btns">
+          <a href="pages/prestations/agriculture.html" class="btn-fcard-primary">Découvrir</a>
+          <a href="pages/contact.html" class="btn-fcard-secondary">Devis gratuit</a>
         </div>
       </div>
     </div>
 
-    <!-- Thermographie -->
-    <div class="card c3">
-      <div class="card-bg"></div>
-      <div class="card-front">
-        <div class="card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg></div>
+    <div class="fcard">
+      <div class="fcard-bg bg-speciali"></div>
+      <div class="fcard-front">
+        <span class="fcard-level level-avance">Diagnostic</span>
         <h3>Thermographie infrarouge</h3>
-        <span class="card-tag">Détection anomalies</span>
+        <div class="fcard-meta">
+          <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> BFC &amp; Grand Est</span>
+        </div>
       </div>
-      <div class="card-back">
-        <div>
+      <div class="fcard-back">
+        <div class="fcard-back-top">
           <h3>Thermographie infrarouge</h3>
           <p>Détection des anomalies thermiques invisibles : toitures, façades, panneaux photovoltaïques, réseaux électriques et installations industrielles.</p>
-          <ul class="card-back-points">
-            <li>Caméra FLIR haute résolution</li>
-            <li>Rapport thermographique illustré</li>
-            <li>Classification par criticité</li>
-            <li>Bâtiment, PV, industrie</li>
-          </ul>
         </div>
-        <div class="card-back-btns">
-          <a href="pages/prestations/thermographie.html" class="btn-card-primary">En savoir plus</a>
-          <a href="pages/contact.html" class="btn-card-secondary">Devis gratuit</a>
+        <div class="fcard-price">Sur devis <span>Réponse sous 48h</span></div>
+        <div class="fcard-infos">
+          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> BFC &amp; Grand Est</span>
+          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> RC Pro incluse</span>
+        </div>
+        <div class="fcard-financement"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Devis gratuit sous 48h</div>
+        <div class="fcard-btns">
+          <a href="pages/prestations/thermographie.html" class="btn-fcard-primary">Découvrir</a>
+          <a href="pages/contact.html" class="btn-fcard-secondary">Devis gratuit</a>
         </div>
       </div>
     </div>
 
-    <!-- Inspection -->
-    <div class="card c4">
-      <div class="card-bg"></div>
-      <div class="card-front">
-        <div class="card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></div>
+    <div class="fcard">
+      <div class="fcard-bg bg-speciali"></div>
+      <div class="fcard-front">
+        <span class="fcard-level level-avance">Diagnostic</span>
         <h3>Inspection technique</h3>
-        <span class="card-tag">Sans échafaudage</span>
+        <div class="fcard-meta">
+          <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> BFC &amp; Grand Est</span>
+        </div>
       </div>
-      <div class="card-back">
-        <div>
+      <div class="fcard-back">
+        <div class="fcard-back-top">
           <h3>Inspection technique</h3>
           <p>Inspection aérienne d'ouvrages inaccessibles : toitures, façades, ponts, pylônes, éoliennes et cheminées industrielles. Zoom x28 à x200.</p>
-          <ul class="card-back-points">
-            <li>Zoom optique x28 / x200</li>
-            <li>Photos annotées géolocalisées</li>
-            <li>Rapport illustré sous 48h</li>
-            <li>Cotation des défauts</li>
-          </ul>
         </div>
-        <div class="card-back-btns">
-          <a href="pages/prestations/inspection.html" class="btn-card-primary">En savoir plus</a>
-          <a href="pages/contact.html" class="btn-card-secondary">Devis gratuit</a>
+        <div class="fcard-price">Sur devis <span>Réponse sous 48h</span></div>
+        <div class="fcard-infos">
+          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> BFC &amp; Grand Est</span>
+          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> RC Pro incluse</span>
+        </div>
+        <div class="fcard-financement"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Devis gratuit sous 48h</div>
+        <div class="fcard-btns">
+          <a href="pages/prestations/inspection.html" class="btn-fcard-primary">Découvrir</a>
+          <a href="pages/contact.html" class="btn-fcard-secondary">Devis gratuit</a>
         </div>
       </div>
     </div>
 
-    <!-- Cartographie -->
-    <div class="card c5">
-      <div class="card-bg"></div>
-      <div class="card-front">
-        <div class="card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/></svg></div>
-        <h3>Cartographie &amp; 3D</h3>
-        <span class="card-tag">Précision RTK</span>
+    <div class="fcard">
+      <div class="fcard-bg bg-speciali"></div>
+      <div class="fcard-front">
+        <span class="fcard-level level-pro">Topographie</span>
+        <h3>Cartographie &amp; Modélisation 3D</h3>
+        <div class="fcard-meta">
+          <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> BFC &amp; Grand Est</span>
+        </div>
       </div>
-      <div class="card-back">
-        <div>
+      <div class="fcard-back">
+        <div class="fcard-back-top">
           <h3>Cartographie &amp; Modélisation 3D</h3>
           <p>Orthophotos haute résolution, MNT, nuages de points LAS, modèles 3D texturés et cubatures. Précision centimétrique RTK.</p>
-          <ul class="card-back-points">
-            <li>GSD ≤ 3 cm — GNSS RTK</li>
-            <li>Livrables SIG (GeoTIFF, LAS, DXF)</li>
-            <li>Rapport de précision RMSE</li>
-            <li>BTP, topographie, patrimoine</li>
-          </ul>
         </div>
-        <div class="card-back-btns">
-          <a href="pages/prestations/cartographie.html" class="btn-card-primary">En savoir plus</a>
-          <a href="pages/contact.html" class="btn-card-secondary">Devis gratuit</a>
+        <div class="fcard-price">Sur devis <span>Réponse sous 48h</span></div>
+        <div class="fcard-infos">
+          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> BFC &amp; Grand Est</span>
+          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> RC Pro incluse</span>
+        </div>
+        <div class="fcard-financement"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Devis gratuit sous 48h</div>
+        <div class="fcard-btns">
+          <a href="pages/prestations/cartographie.html" class="btn-fcard-primary">Découvrir</a>
+          <a href="pages/contact.html" class="btn-fcard-secondary">Devis gratuit</a>
         </div>
       </div>
     </div>
 
-    <!-- Environnement -->
-    <div class="card c6">
-      <div class="card-bg"></div>
-      <div class="card-front">
-        <div class="card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg></div>
+    <div class="fcard">
+      <div class="fcard-bg bg-terrain"></div>
+      <div class="fcard-front">
+        <span class="fcard-level level-debutant">Environnement</span>
         <h3>Environnement &amp; Forêt</h3>
-        <span class="card-tag">Biodiversité</span>
+        <div class="fcard-meta">
+          <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> BFC &amp; Grand Est</span>
+        </div>
       </div>
-      <div class="card-back">
-        <div>
+      <div class="fcard-back">
+        <div class="fcard-back-top">
           <h3>Environnement, Forêt &amp; Biodiversité</h3>
           <p>Cartographie forestière, inventaire faunistique, surveillance DFCI, milieux humides Natura 2000 et détection d'espèces invasives.</p>
-          <ul class="card-back-points">
-            <li>Thermique + multispectral</li>
-            <li>Protocoles scientifiques validés</li>
-            <li>Livrables SIG / shapefile</li>
-            <li>Partenaire SDIS 70</li>
-          </ul>
         </div>
-        <div class="card-back-btns">
-          <a href="pages/prestations/environnement.html" class="btn-card-primary">En savoir plus</a>
-          <a href="pages/contact.html" class="btn-card-secondary">Devis gratuit</a>
+        <div class="fcard-price">Sur devis <span>Réponse sous 48h</span></div>
+        <div class="fcard-infos">
+          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> BFC &amp; Grand Est</span>
+          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> RC Pro incluse</span>
+        </div>
+        <div class="fcard-financement"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Devis gratuit sous 48h</div>
+        <div class="fcard-btns">
+          <a href="pages/prestations/environnement.html" class="btn-fcard-primary">Découvrir</a>
+          <a href="pages/contact.html" class="btn-fcard-secondary">Devis gratuit</a>
         </div>
       </div>
     </div>
 
-    <!-- SORA PDRA -->
-    <div class="card c1">
-      <div class="card-bg"></div>
-      <div class="card-front">
-        <div class="card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+    <div class="fcard">
+      <div class="fcard-bg bg-reglementaire"></div>
+      <div class="fcard-front">
+        <span class="fcard-level level-reconversion">Réglementaire</span>
         <h3>Expertise SORA &amp; PDRA</h3>
-        <span class="card-tag">DGAC / EASA</span>
+        <div class="fcard-meta">
+          <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> France entière</span>
+        </div>
       </div>
-      <div class="card-back">
-        <div>
+      <div class="fcard-back">
+        <div class="fcard-back-top">
           <h3>Expertise SORA &amp; PDRA</h3>
           <p>Accompagnement à la constitution de vos dossiers SORA v2.5, MANEX, fiches de mission et déclarations STS auprès de la DGAC.</p>
-          <ul class="card-back-points">
-            <li>SORA v2.5 — GRC / ARC / SAIL</li>
-            <li>Rédaction MANEX personnalisé</li>
-            <li>Dépôt AlphaTango suivi</li>
-            <li>France entière + visio</li>
-          </ul>
         </div>
-        <div class="card-back-btns">
-          <a href="pages/prestations/sora-pdra.html" class="btn-card-primary">En savoir plus</a>
-          <a href="pages/contact.html" class="btn-card-secondary">Nous contacter</a>
+        <div class="fcard-price">Sur devis <span>Réponse sous 48h</span></div>
+        <div class="fcard-infos">
+          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> France entière + visio</span>
+          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> RC Pro incluse</span>
+        </div>
+        <div class="fcard-financement"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Premier échange gratuit</div>
+        <div class="fcard-btns">
+          <a href="pages/prestations/sora-pdra.html" class="btn-fcard-primary">Découvrir</a>
+          <a href="pages/contact.html" class="btn-fcard-secondary">Nous contacter</a>
         </div>
       </div>
     </div>
 
-    <!-- Conseil audit -->
-    <div class="card c2">
-      <div class="card-bg"></div>
-      <div class="card-front">
-        <div class="card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+    <div class="fcard">
+      <div class="fcard-bg bg-reglementaire"></div>
+      <div class="fcard-front">
+        <span class="fcard-level level-reconversion">Stratégie</span>
         <h3>Conseil &amp; Audit Opérationnel</h3>
-        <span class="card-tag">Stratégie drone</span>
+        <div class="fcard-meta">
+          <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> France entière</span>
+        </div>
       </div>
-      <div class="card-back">
-        <div>
+      <div class="fcard-back">
+        <div class="fcard-back-top">
           <h3>Conseil &amp; Audit Opérationnel</h3>
           <p>Audit de faisabilité, conseil en équipement, structuration des processus et accompagnement au démarrage d'activité drone.</p>
-          <ul class="card-back-points">
-            <li>Audit de faisabilité</li>
-            <li>Conseil indépendant UAS</li>
-            <li>Plan d'actions priorisé</li>
-            <li>25 ans direction + drone</li>
-          </ul>
         </div>
-        <div class="card-back-btns">
-          <a href="pages/prestations/conseil-audit.html" class="btn-card-primary">En savoir plus</a>
-          <a href="pages/contact.html" class="btn-card-secondary">Nous contacter</a>
+        <div class="fcard-price">Sur devis <span>Réponse sous 48h</span></div>
+        <div class="fcard-infos">
+          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> France entière + visio</span>
+          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> RC Pro incluse</span>
+        </div>
+        <div class="fcard-financement"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Premier échange gratuit</div>
+        <div class="fcard-btns">
+          <a href="pages/prestations/conseil-audit.html" class="btn-fcard-primary">Découvrir</a>
+          <a href="pages/contact.html" class="btn-fcard-secondary">Nous contacter</a>
         </div>
       </div>
     </div>
 
-    <!-- Mission télépilote -->
-    <div class="card c3">
-      <div class="card-bg"></div>
-      <div class="card-front">
-        <div class="card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+    <div class="fcard">
+      <div class="fcard-bg bg-terrain"></div>
+      <div class="fcard-front">
+        <span class="fcard-level level-intermediaire">Renfort</span>
         <h3>Mission Télépilote</h3>
-        <span class="card-tag">Votre drone, notre expertise</span>
+        <div class="fcard-meta">
+          <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> BFC &amp; Grand Est</span>
+        </div>
       </div>
-      <div class="card-back">
-        <div>
+      <div class="fcard-back">
+        <div class="fcard-back-top">
           <h3>Mission Télépilote Professionnel</h3>
           <p>Mise à disposition d'un télépilote certifié pour opérer vos propres drones. Intervention ponctuelle ou récurrente, en renfort ou en autonomie.</p>
-          <ul class="card-back-points">
-            <li>Certifié A2, STS-01, CATS</li>
-            <li>Vol de nuit autorisé</li>
-            <li>Multi-missions</li>
-            <li>BFC &amp; Grand Est</li>
-          </ul>
         </div>
-        <div class="card-back-btns">
-          <a href="pages/prestations/mission-telepilote.html" class="btn-card-primary">En savoir plus</a>
-          <a href="pages/contact.html" class="btn-card-secondary">Devis gratuit</a>
+        <div class="fcard-price">Sur devis <span>Réponse sous 48h</span></div>
+        <div class="fcard-infos">
+          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> BFC &amp; Grand Est</span>
+          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> RC Pro incluse</span>
+        </div>
+        <div class="fcard-financement"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Devis gratuit sous 48h</div>
+        <div class="fcard-btns">
+          <a href="pages/prestations/mission-telepilote.html" class="btn-fcard-primary">Découvrir</a>
+          <a href="pages/contact.html" class="btn-fcard-secondary">Devis gratuit</a>
         </div>
       </div>
     </div>
 
-    <!-- Photo vidéo -->
-    <div class="card c4">
-      <div class="card-bg"></div>
-      <div class="card-front">
-        <div class="card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
+    <div class="fcard">
+      <div class="fcard-bg bg-speciali"></div>
+      <div class="fcard-front">
+        <span class="fcard-level level-debutant">Créatif</span>
         <h3>Photo &amp; Vidéo aérienne</h3>
-        <span class="card-tag">4K Hasselblad</span>
+        <div class="fcard-meta">
+          <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> BFC &amp; Grand Est</span>
+        </div>
       </div>
-      <div class="card-back">
-        <div>
+      <div class="fcard-back">
+        <div class="fcard-back-top">
           <h3>Photo &amp; Vidéo aérienne</h3>
           <p>Prises de vue professionnelles pour l'immobilier, l'événementiel, le BTP et la communication institutionnelle. Post-production incluse.</p>
-          <ul class="card-back-points">
-            <li>Capteur 4K Hasselblad</li>
-            <li>Post-production Adobe incluse</li>
-            <li>Droits d'utilisation inclus</li>
-            <li>Livraison 48-72h</li>
-          </ul>
         </div>
-        <div class="card-back-btns">
-          <a href="pages/prestations/photo-video.html" class="btn-card-primary">En savoir plus</a>
-          <a href="pages/contact.html" class="btn-card-secondary">Devis gratuit</a>
+        <div class="fcard-price">Sur devis <span>Réponse sous 48h</span></div>
+        <div class="fcard-infos">
+          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> BFC &amp; Grand Est</span>
+          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> RC Pro incluse</span>
+        </div>
+        <div class="fcard-financement"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Devis gratuit sous 48h</div>
+        <div class="fcard-btns">
+          <a href="pages/prestations/photo-video.html" class="btn-fcard-primary">Découvrir</a>
+          <a href="pages/contact.html" class="btn-fcard-secondary">Devis gratuit</a>
         </div>
       </div>
     </div>
@@ -551,7 +580,7 @@ footer{background:#071A33;color:white;padding:60px 10% 0;}
   </div>
 </div>
 
-<!-- ── CTA ── -->
+<!-- CTA -->
 <div class="cta-section">
   <h2>Un projet, une mission ?</h2>
   <p>Tous nos devis sont gratuits et sans engagement. Décrivez votre besoin — nous vous répondons sous 48h avec une proposition adaptée.</p>
@@ -567,12 +596,12 @@ footer{background:#071A33;color:white;padding:60px 10% 0;}
   </div>
 </div>
 
-<!-- ── Bouton téléphone ── -->
+<!-- Bouton tel -->
 <a id="back-top" href="tel:0695390776">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.5 19.79 19.79 0 0 1 1.61 5a2 2 0 0 1 1.95-2H6a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 10a16 16 0 0 0 6 6l.27-.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 18z"/></svg>
 </a>
 
-<!-- ── Footer ── -->
+<!-- Footer -->
 <footer>
   <div class="footer-grid">
     <div>
@@ -602,6 +631,11 @@ footer{background:#071A33;color:white;padding:60px 10% 0;}
         <li><a href="pages/formations/agriculture.html"><span>›</span> Agriculture de précision</a></li>
         <li><a href="pages/formations/thermographie.html"><span>›</span> Thermographie</a></li>
         <li><a href="pages/formations/cartographie.html"><span>›</span> Cartographie &amp; 3D</a></li>
+        <li><a href="pages/formations/donnees-exploitables.html"><span>›</span> Données exploitables</a></li>
+        <li><a href="pages/formations/inspection.html"><span>›</span> Inspection Technique</a></li>
+        <li><a href="pages/formations/maitrise-pilotage.html"><span>›</span> Maîtrise opérationnelle</a></li>
+        <li><a href="pages/formations/maj-reglementaire.html"><span>›</span> Mise à niveau réglementaire</a></li>
+        <li><a href="pages/formations/sora-pdra.html"><span>›</span> Catégorie Spécifique</a></li>
         <li><a href="pages/formations/changer-carriere.html"><span>›</span> Changer de carrière</a></li>
       </ul>
     </div>
@@ -609,10 +643,16 @@ footer{background:#071A33;color:white;padding:60px 10% 0;}
       <h4 class="footer-title">APH Drone</h4>
       <ul class="footer-links">
         <li><a href="pages/apropos.html"><span>›</span> À propos</a></li>
-        <li><a href="pages/hebergement.html"><span>›</span> Hébergement</a></li>
-        <li><a href="pages/partenaires.html"><span>›</span> Partenaires</a></li>
-        <li><a href="pages/recrutement.html"><span>›</span> Recrutement</a></li>
+        <li><a href="pages/hebergement.html"><span>›</span> Hébergement &amp; Restauration</a></li>
+        <li><a href="pages/partenaires.html"><span>›</span> Partenaires &amp; clients</a></li>
+        <li><a href="pages/recrutement.html"><span>›</span> Nous rejoindre</a></li>
         <li><a href="pages/contact.html"><span>›</span> Contact</a></li>
+      </ul>
+      <h4 class="footer-title" style="margin-top:28px;">Outils</h4>
+      <ul class="footer-links">
+        <li><a href="pages/outils/meteo.html"><span>›</span> Météo drone</a></li>
+        <li><a href="pages/outils/preparation-vol.html"><span>›</span> Préparation de vol</a></li>
+        <li><a href="pages/outils/qcm.html"><span>›</span> QCM entraînement</a></li>
       </ul>
     </div>
     <div>
@@ -624,9 +664,9 @@ footer{background:#071A33;color:white;padding:60px 10% 0;}
       </ul>
       <h4 class="footer-title">Suivez-nous</h4>
       <div class="footer-socials">
-        <a href="#"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
-        <a href="#"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
-        <a href="#"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a>
+        <a href="#" title="Facebook"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+        <a href="#" title="Instagram"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+        <a href="#" title="LinkedIn"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a>
       </div>
     </div>
   </div>
@@ -634,6 +674,7 @@ footer{background:#071A33;color:white;padding:60px 10% 0;}
     <a href="pages/mentions-legales.html">Mentions légales</a>
     <a href="pages/confidentialite.html">Confidentialité</a>
     <a href="pages/cgu.html">CGU</a>
+    <a href="pages/cgv.html">CGV</a>
     <a href="pages/contact.html">Contact</a>
     <span class="footer-legal-copy">© 2024–2026 APH Drone SASU</span>
     <a href="admin/" style="color:rgba(255,255,255,.3);font-size:11px;margin-left:auto;text-decoration:none;" title="Administration">Admin</a>
@@ -643,17 +684,17 @@ footer{background:#071A33;color:white;padding:60px 10% 0;}
 <script>
 (function(){
   document.querySelectorAll('#site-header .has-dropdown').forEach(function(item){
-    var dd = item.querySelector('.dropdown');
+    var dd=item.querySelector('.dropdown');
     item.addEventListener('mouseenter',function(){dd.style.display='block';});
     item.addEventListener('mouseleave',function(){dd.style.display='none';});
   });
-  window.toggleMobileMenu = function(){
-    var menu = document.getElementById('mobile-menu');
+  window.toggleMobileMenu=function(){
+    var menu=document.getElementById('mobile-menu');
     menu.classList.toggle('open');
-    document.body.style.overflow = menu.classList.contains('open') ? 'hidden' : '';
+    document.body.style.overflow=menu.classList.contains('open')?'hidden':'';
   };
   function checkMobile(){
-    var burger = document.getElementById('burger-btn');
+    var burger=document.getElementById('burger-btn');
     if(window.innerWidth<=768){burger.style.display='flex';}
     else{burger.style.display='none';var m=document.getElementById('mobile-menu');if(m){m.classList.remove('open');document.body.style.overflow='';}}
   }
