@@ -131,10 +131,8 @@ body{background:var(--light);color:#222;min-height:100vh;padding-top:80px;}
       <div class="chk-body">
         <div id="chk-list"></div>
         <div class="chk-actions">
-          <button class="chk-btn" id="btn-chk-reset">RÉINITIALISER</button>
-          <button class="chk-btn primary" id="btn-chk-archive">ARCHIVER LA SESSION</button>
+          <button class="chk-btn" id="btn-chk-reset">TOUT RÉINITIALISER</button>
         </div>
-        <div class="chk-last" id="chk-last"></div>
       </div>
     </div>
   </div>
@@ -169,33 +167,50 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 const CHECKLIST = [
-  { cat: 'Drone', items: [
-    'Niveau de batterie vérifié',
-    'Hélices inspectées (fissures, jeu)',
-    'Bras et moteurs vérifiés',
+  { cat: 'Aéronef', items: [
+    'Batterie principale chargée et en bon état',
+    'Hélices inspectées (fissures, jeu, serrage)',
+    'Bras, moteurs et châssis vérifiés',
+    'Capteurs (GPS, vision, ultrasons) propres et dégagés',
+    'Caméra / nacelle stabilisée et fonctionnelle',
     'Firmware à jour',
-    'Caméra / nacelle fonctionnelle'
+    'Calibration boussole effectuée si nécessaire'
   ]},
-  { cat: 'Accessoires', items: [
-    'Cartes mémoire formatées',
-    'Batteries télécommande chargées',
-    'Filtres ND si besoin'
+  { cat: 'Radiocommande & accessoires', items: [
+    'Radiocommande chargée et antennes déployées',
+    'Cartes mémoire formatées avec espace suffisant',
+    'Batteries télécommande / accessoires chargées',
+    'Filtres ND ou pare-soleil si besoin',
+    'Batteries de rechange emportées',
+    'Mallette de transport et rangement vérifiés'
   ]},
-  { cat: 'Environnement', items: [
+  { cat: 'Environnement & réglementation', items: [
     'Zone de vol vérifiée (Géoportail / AlphaTango)',
-    'Météo Go/No-Go validée',
-    'NOTAM consultés'
+    'NOTAM consultés',
+    'Météo Go/No-Go validée (vent, plafond, visibilité)',
+    'Hauteur de vol autorisée vérifiée',
+    'Présence de tiers ou de personnes évaluée',
+    'Distance de sécurité avec obstacles et lignes vérifiée',
+    'Autorisations spécifiques obtenues si requises (SORA/PDRA)'
   ]},
-  { cat: 'Administratif', items: [
-    'Assurance à jour',
+  { cat: 'Administratif & sécurité', items: [
+    'Assurance RC professionnelle à jour',
     'Déclaration de vol effectuée si requise',
-    'Autorisation du propriétaire du terrain obtenue'
+    'Autorisation du propriétaire du terrain obtenue',
+    'Qualifications télépilote à jour',
+    'Zone de décollage/atterrissage sécurisée et dégagée',
+    'Trousse de premiers secours à disposition'
+  ]},
+  { cat: 'Avant décollage', items: [
+    'Test moteurs au sol effectué',
+    'Portée radio et retour vidéo vérifiés',
+    'Retour automatique (RTH) configuré',
+    'Point de décollage GPS fixé'
   ]}
 ];
 
 let currentUser = null;
 let checklistState = {};
-let lastSession = null;
 
 onAuthStateChanged(auth, user => {
   document.getElementById('gate-checking').style.display = 'none';
@@ -218,7 +233,6 @@ async function loadChecklist(){
     if(snap.exists()){
       const data = snap.data();
       checklistState = data.items || {};
-      lastSession = data.lastArchivedAt || null;
     }
   }catch(e){}
   renderChecklist();
@@ -249,9 +263,6 @@ function renderChecklist(){
   const pct = total ? Math.round((checked/total)*100) : 0;
   document.getElementById('chk-pct').textContent = pct + '%';
   document.getElementById('chk-fill').style.width = pct + '%';
-  document.getElementById('chk-last').textContent = lastSession
-    ? 'Dernière session archivée le ' + new Date(lastSession).toLocaleDateString('fr-FR')
-    : 'Aucune session archivée pour le moment.';
 
   const lamp = document.getElementById('status-lamp');
   const lampText = document.getElementById('status-lamp-text');
@@ -276,21 +287,13 @@ async function saveChecklist(){
   try{
     await setDoc(doc(db, 'checklists_prevol', docIdFromEmail(currentUser.email)), {
       items: checklistState,
-      email: currentUser.email,
-      lastArchivedAt: lastSession
+      email: currentUser.email
     }, { merge: true });
   }catch(e){}
 }
 
 document.getElementById('btn-chk-reset').addEventListener('click', () => {
   if(!confirm('Réinitialiser toutes les cases de la check-list ?')) return;
-  checklistState = {};
-  saveChecklist();
-  renderChecklist();
-});
-
-document.getElementById('btn-chk-archive').addEventListener('click', () => {
-  lastSession = Date.now();
   checklistState = {};
   saveChecklist();
   renderChecklist();
