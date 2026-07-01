@@ -243,7 +243,7 @@ body{background:var(--light);color:#222;min-height:100vh;padding-top:80px;}
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, collection, getDocs, query, where, addDoc, doc }
+import { getFirestore, collection, getDocs, query, where, addDoc, doc, getDoc }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -255,9 +255,13 @@ const firebaseConfig = {
   appId: "1:316810168380:web:66cb916cec4fdc00b9db39"
 };
 
+const ADMIN_EMAIL = 'aph.moreau@gmail.com';
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+
+const urlParams = new URLSearchParams(window.location.search);
+const adminViewId = urlParams.get('admin_view');
 
 // ── Catalogue des 15 formations : nom Firestore → { slug page, description courte } ──
 // ⚠️ À VÉRIFIER : adapte le champ "url" si le nom réel de tes fichiers formations diffère.
@@ -287,6 +291,21 @@ let pendingSign = null;
 onAuthStateChanged(auth, async user => {
   if(!user){ denyAccess("Vous n'êtes pas connecté."); return; }
   try{
+    // Mode aperçu admin : consulter directement la fiche d'un stagiaire par son ID
+    if(adminViewId && user.email === ADMIN_EMAIL){
+      const snap = await getDoc(doc(db,'stagiaires',adminViewId));
+      if(!snap.exists()){ denyAccess("Ce stagiaire n'existe pas."); return; }
+      currentStagId = adminViewId;
+      currentStagiaire = snap.data();
+      document.getElementById('gate').style.display = 'none';
+      document.getElementById('stag-app').style.display = 'block';
+      showAdminBanner();
+      renderWelcome();
+      renderFormations();
+      renderDocuments();
+      renderEmargement();
+      return;
+    }
     const snap = await getDocs(query(collection(db,'stagiaires'), where('email','==',user.email)));
     if(snap.empty){ denyAccess("Ce compte n'est pas enregistré comme stagiaire."); return; }
     const d = snap.docs[0];
@@ -302,6 +321,13 @@ onAuthStateChanged(auth, async user => {
     denyAccess('Erreur de connexion : ' + e.message);
   }
 });
+
+function showAdminBanner(){
+  const banner = document.createElement('div');
+  banner.style.cssText = 'background:#0B1F3A;color:white;text-align:center;padding:10px 16px;font-size:.8rem;font-weight:600;';
+  banner.innerHTML = 'Mode aperçu administrateur — vous consultez l\'espace de ' + (currentStagiaire.name || 'ce stagiaire') + ' &nbsp;·&nbsp; <a href="/office/" style="color:#7fc8ff;">← Retour à l\'administration</a>';
+  document.body.insertBefore(banner, document.body.firstChild);
+}
 
 function denyAccess(msg){
   document.getElementById('gate-status').textContent = msg;
@@ -421,7 +447,9 @@ async function renderEmargement(){
           <p>Présence non encore signée</p>
         </div>
         <div class="emarg-actions">
-          <button class="btn btn-primary" data-sign="${name}">Signer ma présence</button>
+          ${adminViewId
+            ? '<span class="btn btn-outline" style="opacity:.6;cursor:default;">Signature réservée au stagiaire</span>'
+            : '<button class="btn btn-primary" data-sign="'+name+'">Signer ma présence</button>'}
         </div>`;
     }
     list.appendChild(row);
