@@ -598,7 +598,7 @@ tr:last-child td{border-bottom:none;}
 <div class="toast" id="toast"></div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
   getAuth, onAuthStateChanged, signOut, createUserWithEmailAndPassword,
   EmailAuthProvider, sendPasswordResetEmail
@@ -620,6 +620,20 @@ const ADMIN_EMAIL = 'aph.moreau@gmail.com';
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+
+// Crée un compte Firebase Auth SANS jamais perturber la session admin active.
+// (createUserWithEmailAndPassword connecte automatiquement le nouveau compte
+// sur l'instance auth utilisée — on passe donc par une app secondaire jetable.)
+async function createAccountKeepingAdminSession(email, pwd){
+  const secondaryApp = initializeApp(firebaseConfig, 'Secondary-' + Date.now());
+  const secondaryAuth = getAuth(secondaryApp);
+  try{
+    await createUserWithEmailAndPassword(secondaryAuth, email, pwd);
+  } finally {
+    await signOut(secondaryAuth).catch(() => {});
+    await deleteApp(secondaryApp).catch(() => {});
+  }
+}
 
 const AVAILABLE_MODULES = [
   'Initiation A1/A3','BAPD A2','CATS STS','Vol de nuit','Sylviculture & biodiversité',
@@ -1125,15 +1139,13 @@ document.getElementById('btn-create-client').addEventListener('click', async () 
   if(!name || !email){ alert("Renseignez le nom et l'email."); return; }
   const pwd = genPassword();
   try{
-    await createUserWithEmailAndPassword(auth, email, pwd);
+    await createAccountKeepingAdminSession(email, pwd);
     await addDoc(collection(db,'clients'), { name, email, createdAt: Date.now() });
     closeModal('modal-client');
     document.getElementById('pwd-email-display').textContent = email;
     document.getElementById('pwd-display').textContent = pwd;
     openModal('modal-pwd');
     loadClients();
-    // Reconnecter l'admin (createUserWithEmailAndPassword change la session active)
-    await auth.updateCurrentUser ? null : null;
   }catch(e){
     alert('Erreur : ' + e.message);
   }
@@ -1208,7 +1220,7 @@ document.getElementById('btn-create-stagiaire').addEventListener('click', async 
   if(!name || !email){ alert("Renseignez le nom et l'email."); return; }
   const pwd = genPassword();
   try{
-    await createUserWithEmailAndPassword(auth, email, pwd);
+    await createAccountKeepingAdminSession(email, pwd);
     await addDoc(collection(db,'stagiaires'), { name, email, formation, modules: [], createdAt: Date.now() });
     closeModal('modal-stagiaire');
     document.getElementById('pwd-email-display').textContent = email;
