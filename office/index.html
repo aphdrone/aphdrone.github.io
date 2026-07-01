@@ -81,6 +81,9 @@ tr:last-child td{border-bottom:none;}
 .badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:.7rem;font-weight:700;}
 .badge-active{background:#dcfce7;color:#15803d;}
 .badge-inactive{background:#f1f5f9;color:#64748b;}
+.module-badges{display:flex;flex-wrap:wrap;gap:5px;max-width:260px;}
+.module-badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:.68rem;font-weight:600;background:#eef4fd;color:var(--secondary);white-space:nowrap;}
+.module-badge-none{font-size:.78rem;color:#94a3b8;}
 .row-actions{display:flex;gap:6px;}
 .icon-btn{width:30px;height:30px;border-radius:7px;border:1px solid #e8edf4;background:white;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#64748b;transition:.15s;}
 .icon-btn:hover{border-color:var(--secondary);color:var(--secondary);}
@@ -110,6 +113,19 @@ tr:last-child td{border-bottom:none;}
 .toggle-slider::before{content:'';position:absolute;width:16px;height:16px;left:3px;top:3px;background:white;border-radius:50%;transition:.2s;}
 .toggle input:checked + .toggle-slider{background:var(--green);}
 .toggle input:checked + .toggle-slider::before{transform:translateX(18px);}
+
+/* Documents stagiaire (admin) */
+.doc-admin-list{display:flex;flex-direction:column;gap:8px;margin:10px 0 16px;}
+.doc-admin-row{display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--light);border-radius:8px;}
+.doc-admin-row .info{flex:1;min-width:0;}
+.doc-admin-row .name{font-size:.82rem;font-weight:600;color:var(--primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.doc-admin-row .type{font-size:.7rem;color:#94a3b8;}
+.doc-admin-empty{font-size:.8rem;color:#94a3b8;padding:8px 0;}
+.doc-add-form{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;}
+.doc-add-form input,.doc-add-form select{padding:9px 12px;border:1.5px solid #dde3ec;border-radius:8px;font-size:.82rem;font-family:'Inter',sans-serif;outline:none;}
+.doc-add-form input:focus,.doc-add-form select:focus{border-color:var(--accent);}
+.doc-add-form .full{grid-column:1/-1;}
+.modal-subtitle{font-size:.78rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.03em;margin:22px 0 4px;padding-top:18px;border-top:1px solid #eef1f6;}
 
 /* Quick links publication */
 .quick-links{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
@@ -347,9 +363,27 @@ tr:last-child td{border-bottom:none;}
 
 <!-- ═══ MODAL : Modules stagiaire ═══ -->
 <div class="modal-overlay" id="modal-modules">
-  <div class="modal-box">
+  <div class="modal-box" style="max-width:460px;">
     <h3 id="modules-stag-name">Modules débloqués</h3>
     <div class="module-list" id="modules-list"></div>
+
+    <p class="modal-subtitle">Documents</p>
+    <div class="doc-admin-list" id="doc-admin-list"></div>
+    <div class="doc-add-form">
+      <input type="text" id="new-doc-name" placeholder="Nom du document" class="full">
+      <input type="url" id="new-doc-url" placeholder="Lien (Google Drive, Dropbox...)">
+      <select id="new-doc-type">
+        <option value="Support de cours">Support de cours</option>
+        <option value="Convention">Convention</option>
+        <option value="Attestation">Attestation</option>
+        <option value="Autre">Autre</option>
+      </select>
+    </div>
+    <button class="btn btn-outline btn-sm" id="btn-add-doc" style="width:100%;justify-content:center;margin-bottom:6px;">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Ajouter le document
+    </button>
+
     <div class="modal-actions">
       <button class="btn btn-primary" onclick="closeModal('modal-modules')" style="width:100%;">Fermer</button>
     </div>
@@ -530,7 +564,7 @@ async function loadStagiaires(){
         <td class="cell-main">${s.name || '—'}</td>
         <td>${s.email || '—'}</td>
         <td class="cell-sub">${s.formation || '—'}</td>
-        <td><span class="badge badge-active">${modules.length} module${modules.length>1?'s':''}</span></td>
+        <td>${modules.length ? '<div class="module-badges">' + modules.map(m => '<span class="module-badge">'+m+'</span>').join('') + '</div>' : '<span class="module-badge-none">Aucun accès</span>'}</td>
         <td><div class="row-actions">
           <button class="icon-btn" title="Gérer les modules" data-manage-stag="${d.id}">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
@@ -592,6 +626,7 @@ async function openModulesModal(stagId){
   if(!stagDoc) return;
   const data = stagDoc.data();
   const current = data.modules || [];
+  window._currentModalStagId = stagId;
   document.getElementById('modules-stag-name').textContent = 'Modules — ' + (data.name || '');
   const list = document.getElementById('modules-list');
   list.innerHTML = '';
@@ -619,8 +654,64 @@ async function openModulesModal(stagId){
       loadStagiaires();
     });
   });
+
+  renderDocAdminList(data.documents || []);
   openModal('modal-modules');
 }
+
+function renderDocAdminList(docs){
+  const list = document.getElementById('doc-admin-list');
+  if(!docs.length){
+    list.innerHTML = '<div class="doc-admin-empty">Aucun document ajouté.</div>';
+    return;
+  }
+  list.innerHTML = '';
+  docs.forEach((d, i) => {
+    const row = document.createElement('div');
+    row.className = 'doc-admin-row';
+    row.innerHTML = `
+      <div class="info">
+        <div class="name">${d.name}</div>
+        <div class="type">${d.type || 'Document'}</div>
+      </div>
+      <button class="icon-btn" title="Supprimer" data-del-doc="${i}">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+      </button>`;
+    list.appendChild(row);
+  });
+  list.querySelectorAll('[data-del-doc]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const stagId = window._currentModalStagId;
+      const snap = await getDocs(collection(db,'stagiaires'));
+      let d2 = null;
+      snap.forEach(d => { if(d.id === stagId) d2 = d; });
+      let docsArr = (d2.data().documents || []).slice();
+      docsArr.splice(parseInt(btn.dataset.delDoc, 10), 1);
+      await updateDoc(doc(db,'stagiaires',stagId), { documents: docsArr });
+      renderDocAdminList(docsArr);
+      showToast('Document supprimé.');
+    });
+  });
+}
+
+document.getElementById('btn-add-doc').addEventListener('click', async () => {
+  const stagId = window._currentModalStagId;
+  if(!stagId) return;
+  const name = document.getElementById('new-doc-name').value.trim();
+  const url = document.getElementById('new-doc-url').value.trim();
+  const type = document.getElementById('new-doc-type').value;
+  if(!name || !url){ alert('Renseignez un nom et un lien pour le document.'); return; }
+  const snap = await getDocs(collection(db,'stagiaires'));
+  let d2 = null;
+  snap.forEach(d => { if(d.id === stagId) d2 = d; });
+  let docsArr = (d2.data().documents || []).slice();
+  docsArr.push({ name, url, type });
+  await updateDoc(doc(db,'stagiaires',stagId), { documents: docsArr });
+  document.getElementById('new-doc-name').value = '';
+  document.getElementById('new-doc-url').value = '';
+  renderDocAdminList(docsArr);
+  showToast('Document ajouté.');
+});
 </script>
 </body>
 </html>
