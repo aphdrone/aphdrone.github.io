@@ -23,34 +23,60 @@ body{background:var(--light);color:#222;min-height:100vh;padding-top:80px;}
 
 /* ── Outil ── */
 #tool-app{display:none;}
-.tool-hero{background:linear-gradient(135deg,var(--primary) 0%,#1a3a6b 100%);padding:40px 5%;}
-.tool-hero-inner{max-width:760px;margin:0 auto;}
-.tool-hero a.back{color:rgba(255,255,255,.55);text-decoration:none;font-size:.78rem;font-weight:600;display:inline-flex;align-items:center;gap:6px;margin-bottom:16px;}
+.tool-hero{background:linear-gradient(135deg,var(--primary) 0%,#1a3a6b 100%);padding:40px 5%;position:relative;overflow:hidden;}
+.tool-hero::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:36px 36px;}
+.tool-hero-inner{max-width:760px;margin:0 auto;position:relative;z-index:1;}
+.tool-hero a.back{color:rgba(255,255,255,.5);text-decoration:none;font-size:.75rem;font-weight:700;font-family:var(--mono);letter-spacing:.03em;display:inline-flex;align-items:center;gap:6px;margin-bottom:18px;}
 .tool-hero a.back:hover{color:white;}
+.tool-hero-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;}
+.tool-hero-eyebrow{font-family:var(--mono);font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:8px;}
 .tool-hero h1{color:white;font-size:1.5rem;font-weight:800;margin-bottom:6px;}
-.tool-hero p{color:rgba(255,255,255,.65);font-size:.88rem;}
+.tool-hero p{color:rgba(255,255,255,.6);font-size:.85rem;}
+.status-lamp{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:8px 16px;font-family:var(--mono);font-size:.72rem;font-weight:700;letter-spacing:.05em;color:rgba(255,255,255,.7);white-space:nowrap;}
+.status-lamp .dot{width:8px;height:8px;border-radius:50%;background:#f59e0b;flex-shrink:0;transition:.3s;box-shadow:0 0 8px rgba(245,158,11,.7);}
+.status-lamp.go .dot{background:#22c55e;box-shadow:0 0 8px rgba(34,197,94,.8);}
+.status-lamp.go{color:#bbf7d0;border-color:rgba(34,197,94,.3);}
 
 .tool-content{max-width:760px;margin:0 auto;padding:32px 5% 60px;}
-.tool-card{background:white;border:1px solid #e3e9f1;border-radius:16px;padding:28px;}
+.tool-card{background:white;border:1px solid #e3e9f1;border-radius:16px;padding:0;overflow:hidden;}
 
-.chk-progress-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;}
-.chk-progress-row .cnt{font-size:14px;font-weight:700;color:var(--primary);}
-.chk-progress-row .pct{font-size:12px;font-weight:700;color:var(--secondary);font-family:var(--mono);}
-.chk-track{width:100%;height:8px;background:var(--light);border-radius:20px;overflow:hidden;margin-bottom:20px;}
-.chk-fill{height:100%;background:linear-gradient(90deg,var(--secondary),var(--accent));border-radius:20px;width:0%;transition:width .5s ease;}
-.chk-cat{margin-top:10px;}
-.chk-cat-label{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#9aa8b8;margin-bottom:8px;font-family:var(--mono);}
-.chk-row{display:flex;align-items:center;gap:12px;padding:9px 0;cursor:pointer;user-select:none;border-bottom:1px solid #f2f5f9;}
+.chk-progress-band{background:var(--primary);padding:18px 26px;}
+.chk-progress-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;}
+.chk-progress-row .cnt{font-size:13px;font-weight:700;color:white;font-family:var(--mono);letter-spacing:.02em;}
+.chk-progress-row .pct{font-size:15px;font-weight:800;color:#7fc8ff;font-family:var(--mono);}
+.chk-track{width:100%;height:6px;background:rgba(255,255,255,.12);border-radius:20px;overflow:hidden;}
+.chk-fill{height:100%;background:linear-gradient(90deg,var(--secondary),#7fc8ff);border-radius:20px;width:0%;transition:width .5s ease;}
+
+.chk-body{padding:8px 26px 26px;}
+.chk-cat{margin-top:18px;}
+.chk-cat-head{display:flex;align-items:center;gap:10px;margin-bottom:4px;}
+.chk-cat-num{font-family:var(--mono);font-size:10px;font-weight:700;color:white;background:var(--secondary);width:20px;height:20px;border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.chk-cat-label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--primary);font-family:var(--mono);}
+.chk-row{display:flex;align-items:center;gap:12px;padding:10px 0 10px 30px;cursor:pointer;user-select:none;border-bottom:1px solid #f2f5f9;}
 .chk-row:last-child{border-bottom:none;}
+.chk-row-idx{font-family:var(--mono);font-size:10px;color:#c2cbd8;width:20px;flex-shrink:0;}
 .chk-row input{width:18px;height:18px;accent-color:var(--secondary);cursor:pointer;flex-shrink:0;}
-.chk-row span{font-size:13.5px;color:#33415c;transition:.15s;}
-.chk-row input:checked ~ span{color:#9aa8b8;text-decoration:line-through;}
-.chk-actions{display:flex;gap:10px;margin-top:24px;}
-.chk-btn{flex:1;font-size:.85rem;font-weight:700;padding:12px;border-radius:9px;border:1.5px solid #dde3ec;background:white;color:var(--secondary);cursor:pointer;transition:.15s;text-align:center;}
+.chk-row span.label{font-size:13.5px;color:#33415c;transition:.15s;flex:1;}
+.chk-row input:checked ~ span.label{color:#9aa8b8;text-decoration:line-through;}
+.chk-row input:checked ~ .chk-check-icon{opacity:1;transform:scale(1);}
+.chk-check-icon{color:#22c55e;opacity:0;transform:scale(.5);transition:.2s;flex-shrink:0;}
+
+.chk-actions{display:flex;gap:10px;margin-top:26px;}
+.chk-btn{flex:1;font-size:.82rem;font-weight:700;padding:12px;border-radius:9px;border:1.5px solid #dde3ec;background:white;color:var(--secondary);cursor:pointer;transition:.15s;text-align:center;font-family:var(--mono);letter-spacing:.02em;}
 .chk-btn:hover{border-color:var(--secondary);}
 .chk-btn.primary{background:var(--secondary);color:white;border-color:var(--secondary);}
 .chk-btn.primary:hover{background:var(--accent);border-color:var(--accent);}
-.chk-last{font-size:.78rem;color:#9aa8b8;text-align:center;margin-top:16px;font-family:var(--mono);}
+.chk-last{font-size:.74rem;color:#9aa8b8;text-align:center;margin-top:18px;font-family:var(--mono);}
+
+@media(max-width:640px){
+  .tool-hero-top{flex-direction:column;align-items:flex-start;}
+  .tool-hero h1{font-size:1.25rem;}
+  .chk-progress-band{padding:16px 18px;}
+  .chk-body{padding:6px 18px 22px;}
+  .chk-row{padding-left:0;gap:9px;}
+  .chk-row-idx{display:none;}
+  .chk-actions{flex-direction:column;}
+}
 </style>
 </head>
 <body>
@@ -75,28 +101,41 @@ body{background:var(--light);color:#222;min-height:100vh;padding-top:80px;}
 <div id="tool-app">
   <div class="tool-hero">
     <div class="tool-hero-inner">
-      <a class="back" href="/pages/preparation-vol.html">
+      <a class="back" href="/pages/outils/preparation-vol.html">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
         Retour à la préparation de vol
       </a>
-      <h1>Check-list pré-vol interactive</h1>
-      <p>Vos vérifications avant décollage, sauvegardées automatiquement.</p>
+      <div class="tool-hero-top">
+        <div>
+          <p class="tool-hero-eyebrow">APH Drone · Check-list</p>
+          <h1>Check-list pré-vol interactive</h1>
+          <p>Vos vérifications avant décollage, sauvegardées automatiquement.</p>
+        </div>
+        <div class="status-lamp" id="status-lamp">
+          <span class="dot"></span>
+          <span id="status-lamp-text">EN COURS</span>
+        </div>
+      </div>
     </div>
   </div>
 
   <div class="tool-content">
     <div class="tool-card">
-      <div class="chk-progress-row">
-        <span class="cnt"><span id="chk-count">0</span>/<span id="chk-total">0</span> vérifications</span>
-        <span class="pct" id="chk-pct">0%</span>
+      <div class="chk-progress-band">
+        <div class="chk-progress-row">
+          <span class="cnt"><span id="chk-count">0</span>/<span id="chk-total">0</span> VÉRIFICATIONS</span>
+          <span class="pct" id="chk-pct">0%</span>
+        </div>
+        <div class="chk-track"><div class="chk-fill" id="chk-fill"></div></div>
       </div>
-      <div class="chk-track"><div class="chk-fill" id="chk-fill"></div></div>
-      <div id="chk-list"></div>
-      <div class="chk-actions">
-        <button class="chk-btn" id="btn-chk-reset">Réinitialiser</button>
-        <button class="chk-btn primary" id="btn-chk-archive">Archiver la session</button>
+      <div class="chk-body">
+        <div id="chk-list"></div>
+        <div class="chk-actions">
+          <button class="chk-btn" id="btn-chk-reset">RÉINITIALISER</button>
+          <button class="chk-btn primary" id="btn-chk-archive">ARCHIVER LA SESSION</button>
+        </div>
+        <div class="chk-last" id="chk-last"></div>
       </div>
-      <div class="chk-last" id="chk-last"></div>
     </div>
   </div>
 </div>
@@ -188,18 +227,19 @@ async function loadChecklist(){
 function renderChecklist(){
   const list = document.getElementById('chk-list');
   list.innerHTML = '';
-  let total = 0, checked = 0;
-  CHECKLIST.forEach(group => {
+  let total = 0, checked = 0, itemIndex = 0;
+  CHECKLIST.forEach((group, gi) => {
     const catDiv = document.createElement('div');
     catDiv.className = 'chk-cat';
-    catDiv.innerHTML = `<div class="chk-cat-label">${group.cat}</div>`;
+    catDiv.innerHTML = `<div class="chk-cat-head"><span class="chk-cat-num">${String(gi+1).padStart(2,'0')}</span><span class="chk-cat-label">${group.cat}</span></div>`;
     group.items.forEach(item => {
       total++;
+      itemIndex++;
       const isChecked = !!checklistState[item];
       if(isChecked) checked++;
       const row = document.createElement('label');
       row.className = 'chk-row';
-      row.innerHTML = `<input type="checkbox" ${isChecked ? 'checked' : ''} data-item="${item.replace(/"/g,'&quot;')}"><span>${item}</span>`;
+      row.innerHTML = `<span class="chk-row-idx">${String(itemIndex).padStart(2,'0')}</span><input type="checkbox" ${isChecked ? 'checked' : ''} data-item="${item.replace(/"/g,'&quot;')}"><span class="label">${item}</span><svg class="chk-check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>`;
       catDiv.appendChild(row);
     });
     list.appendChild(catDiv);
@@ -212,6 +252,16 @@ function renderChecklist(){
   document.getElementById('chk-last').textContent = lastSession
     ? 'Dernière session archivée le ' + new Date(lastSession).toLocaleDateString('fr-FR')
     : 'Aucune session archivée pour le moment.';
+
+  const lamp = document.getElementById('status-lamp');
+  const lampText = document.getElementById('status-lamp-text');
+  if(pct === 100){
+    lamp.classList.add('go');
+    lampText.textContent = 'PRÊT AU DÉCOLLAGE';
+  } else {
+    lamp.classList.remove('go');
+    lampText.textContent = 'EN COURS';
+  }
 
   list.querySelectorAll('input[type=checkbox]').forEach(cb => {
     cb.addEventListener('change', () => {
