@@ -68,7 +68,7 @@ body{background:var(--light);color:#222;min-height:100vh;padding-top:80px;}
 .doc-cards-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:28px;}
 .doc-card{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:20px 20px 18px;backdrop-filter:blur(6px);text-decoration:none;cursor:pointer;transition:.2s;display:flex;flex-direction:column;min-height:108px;}
 .doc-card:hover{background:rgba(255,255,255,.13);border-color:rgba(255,255,255,.26);}
-.doc-card-num{font-size:.68rem;font-weight:700;letter-spacing:.08em;color:rgba(255,255,255,.4);margin-bottom:12px;}
+.doc-card-tag{display:inline-flex;align-items:center;padding:4px 12px;border-radius:20px;background:rgba(255,255,255,.14);color:white;font-size:.68rem;font-weight:700;margin-bottom:14px;width:fit-content;}
 .doc-card h4{font-size:.86rem;color:white;font-weight:600;line-height:1.4;flex:1;}
 .doc-card-arrow{display:flex;align-items:center;gap:5px;font-size:.72rem;font-weight:600;color:rgba(255,255,255,.55);margin-top:14px;transition:.2s;}
 .doc-card-arrow svg{width:12px;height:12px;transition:.2s;}
@@ -190,22 +190,22 @@ body{background:var(--light);color:#222;min-height:100vh;padding-top:80px;}
 
       <div class="doc-cards-row">
         <a href="#" class="doc-card" data-doc="fiche-renseignements">
-          <span class="doc-card-num">DOCUMENT 01</span>
+          <span class="doc-card-tag">Administratif</span>
           <h4>Fiche renseignements</h4>
           <span class="doc-card-arrow">Ouvrir <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
         </a>
         <a href="#" class="doc-card" data-doc="attestation-zone-exclusion">
-          <span class="doc-card-num">DOCUMENT 02</span>
+          <span class="doc-card-tag">Sécurité</span>
           <h4>Attestation zone d'exclusion</h4>
           <span class="doc-card-arrow">Ouvrir <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
         </a>
         <a href="#" class="doc-card" data-doc="formulaire-satisfaction">
-          <span class="doc-card-num">DOCUMENT 03</span>
+          <span class="doc-card-tag">Avis</span>
           <h4>Formulaire de satisfaction</h4>
           <span class="doc-card-arrow">Ouvrir <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
         </a>
         <a href="#" class="doc-card" data-doc="formulaire-reclamation">
-          <span class="doc-card-num">DOCUMENT 04</span>
+          <span class="doc-card-tag">Litige</span>
           <h4>Formulaire de réclamation</h4>
           <span class="doc-card-arrow">Ouvrir <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
         </a>
