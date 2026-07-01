@@ -352,7 +352,7 @@ function renderMissions(){
     row.innerHTML = `
       <div class="mission-info">
         <h4>${m.nom || 'Mission'}</h4>
-        <p>${m.date ? new Date(m.date).toLocaleDateString('fr-FR') : '—'}</p>
+        <p>${m.date ? new Date(m.date).toLocaleDateString('fr-FR') : '—'}${m.lieu ? ' — '+m.lieu : ''}</p>
       </div>
       <span class="status-pill ${statusClass(m.statut)}">${m.statut || 'Planifiée'}</span>`;
     list.appendChild(row);
