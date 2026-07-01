@@ -361,7 +361,7 @@ tr:last-child td{border-bottom:none;}
 <!-- ═══ MODAL : Ajouter un outil ═══ -->
 <div class="modal-overlay" id="modal-outil">
   <div class="modal-box">
-    <h3>Nouvel outil</h3>
+    <h3 id="outil-modal-title">Nouvel outil</h3>
     <div class="f-group">
       <label>Nom de l'outil</label>
       <input type="text" id="new-outil-nom" placeholder="Ex : Check-list météo personnalisée">
@@ -372,7 +372,7 @@ tr:last-child td{border-bottom:none;}
     </div>
     <div class="f-group">
       <label>Lien vers l'outil</label>
-      <input type="text" id="new-outil-url" placeholder="Ex : /pages/preparation-vol.html#meteo">
+      <input type="text" id="new-outil-url" placeholder="Ex : /pages/outils/checklist-prevol.html">
     </div>
     <div class="modal-actions">
       <button class="btn btn-outline" onclick="closeModal('modal-outil')">Annuler</button>
@@ -1081,11 +1081,19 @@ async function loadOutils(){
           <a class="icon-btn" title="Ouvrir l'outil" href="${o.url}" target="_blank">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
           </a>
+          <button class="icon-btn" title="Modifier" data-edit-outil="${d.id}">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4Z"/></svg>
+          </button>
           <button class="icon-btn" title="Supprimer" data-del-outil="${d.id}">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
           </button>
         </div></td>`;
       tbody.appendChild(tr);
+    });
+    window._outilsCache = {};
+    snap.forEach(d => { window._outilsCache[d.id] = d.data(); });
+    document.querySelectorAll('[data-edit-outil]').forEach(btn => {
+      btn.addEventListener('click', () => openOutilModal(btn.dataset.editOutil));
     });
     document.querySelectorAll('[data-del-outil]').forEach(btn => {
       btn.addEventListener('click', async () => {
@@ -1100,20 +1108,36 @@ async function loadOutils(){
   }
 }
 
+function openOutilModal(outilId){
+  window._currentOutilId = outilId || null;
+  const titleEl = document.getElementById('outil-modal-title');
+  const btnEl = document.getElementById('btn-create-outil');
+  if(outilId){
+    const o = window._outilsCache[outilId];
+    titleEl.textContent = "Modifier l'outil";
+    btnEl.textContent = 'Enregistrer';
+    document.getElementById('new-outil-nom').value = o.nom || '';
+    document.getElementById('new-outil-desc').value = o.desc || '';
+    document.getElementById('new-outil-url').value = o.url || '';
+  } else {
+    titleEl.textContent = 'Nouvel outil';
+    btnEl.textContent = 'Ajouter';
+    document.getElementById('new-outil-nom').value = '';
+    document.getElementById('new-outil-desc').value = '';
+    document.getElementById('new-outil-url').value = '';
+  }
+  openModal('modal-outil');
+}
+
 document.getElementById('btn-quick-outil').addEventListener('click', () => {
   document.querySelectorAll('.admin-nav-item').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
   document.querySelector('[data-panel="panel-outils"]').classList.add('active');
   document.getElementById('panel-outils').classList.add('active');
-  document.getElementById('btn-add-outil').click();
+  openOutilModal(null);
 });
 
-document.getElementById('btn-add-outil').addEventListener('click', () => {
-  document.getElementById('new-outil-nom').value = '';
-  document.getElementById('new-outil-desc').value = '';
-  document.getElementById('new-outil-url').value = '';
-  openModal('modal-outil');
-});
+document.getElementById('btn-add-outil').addEventListener('click', () => openOutilModal(null));
 
 document.getElementById('btn-create-outil').addEventListener('click', async () => {
   const nom = document.getElementById('new-outil-nom').value.trim();
@@ -1121,9 +1145,14 @@ document.getElementById('btn-create-outil').addEventListener('click', async () =
   const url = document.getElementById('new-outil-url').value.trim();
   if(!nom || !url){ alert('Renseignez au moins le nom et le lien.'); return; }
   try{
-    await addDoc(collection(db,'outils'), { nom, desc, url, createdAt: Date.now() });
+    if(window._currentOutilId){
+      await updateDoc(doc(db,'outils',window._currentOutilId), { nom, desc, url });
+      showToast('Outil mis à jour.');
+    } else {
+      await addDoc(collection(db,'outils'), { nom, desc, url, createdAt: Date.now() });
+      showToast('Outil ajouté.');
+    }
     closeModal('modal-outil');
-    showToast('Outil ajouté.');
     loadOutils();
   }catch(e){
     alert('Erreur : ' + e.message);
