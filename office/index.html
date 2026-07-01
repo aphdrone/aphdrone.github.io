@@ -145,7 +145,7 @@ tr:last-child td{border-bottom:none;}
 .modal-subtitle{font-size:.78rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.03em;margin:22px 0 4px;padding-top:18px;border-top:1px solid #eef1f6;}
 
 /* Quick links publication */
-.quick-links{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.quick-links{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
 .quick-link-card{border:1px solid #e8edf4;border-radius:12px;padding:20px;text-decoration:none;transition:.2s;display:block;}
 .quick-link-card:hover{border-color:var(--secondary);box-shadow:0 8px 24px rgba(11,31,58,.08);}
 .quick-link-card h4{font-size:.92rem;color:var(--primary);margin-bottom:5px;}
@@ -251,6 +251,10 @@ tr:last-child td{border-bottom:none;}
                 <h4>Publier une annonce</h4>
                 <p>Créer une offre de recrutement</p>
               </a>
+              <button class="quick-link-card" id="btn-quick-outil" style="text-align:left;background:none;border:1px solid #e8edf4;font-family:'Inter',sans-serif;cursor:pointer;">
+                <h4>Publier un outil</h4>
+                <p>Ajouter un outil accessible aux comptes connectés</p>
+              </button>
             </div>
           </div>
         </div>
@@ -908,6 +912,14 @@ async function loadOutils(){
     tbody.innerHTML = '<tr><td colspan="4" class="empty-row">Erreur de chargement : ' + e.message + '</td></tr>';
   }
 }
+
+document.getElementById('btn-quick-outil').addEventListener('click', () => {
+  document.querySelectorAll('.admin-nav-item').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
+  document.querySelector('[data-panel="panel-outils"]').classList.add('active');
+  document.getElementById('panel-outils').classList.add('active');
+  document.getElementById('btn-add-outil').click();
+});
 
 document.getElementById('btn-add-outil').addEventListener('click', () => {
   document.getElementById('new-outil-nom').value = '';
