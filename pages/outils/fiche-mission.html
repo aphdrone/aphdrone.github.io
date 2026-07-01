@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fiche de mission — APH Drone</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/style.css">
+<style>
+:root{--primary:#0B1F3A;--secondary:#1F5FAF;--accent:#4A90E2;--light:#F5F7FA;--mono:'JetBrains Mono',monospace;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
+body{background:var(--light);color:#222;min-height:100vh;padding-top:80px;}
+
+/* ── Non connecté ── */
+#gate-locked{display:none;min-height:70vh;align-items:center;justify-content:center;padding:40px 20px;}
+.gate-box{background:white;border:1px solid #e3e9f1;border-radius:16px;padding:40px;max-width:380px;text-align:center;}
+.gate-box svg{color:var(--secondary);margin-bottom:16px;}
+.gate-box h2{font-size:1.15rem;color:var(--primary);margin-bottom:8px;}
+.gate-box p{font-size:.85rem;color:#7a8fa5;margin-bottom:22px;line-height:1.5;}
+.gate-box a{display:inline-block;background:var(--secondary);color:white;padding:11px 24px;border-radius:9px;text-decoration:none;font-size:.88rem;font-weight:600;transition:.2s;}
+.gate-box a:hover{background:var(--accent);}
+#gate-checking{min-height:70vh;display:flex;align-items:center;justify-content:center;color:#9aa8b8;font-size:.85rem;}
+
+/* ── Outil ── */
+#tool-app{display:none;}
+.tool-hero{background:linear-gradient(135deg,var(--primary) 0%,#1a3a6b 100%);padding:40px 5%;position:relative;overflow:hidden;}
+.tool-hero::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:36px 36px;}
+.tool-hero-inner{max-width:760px;margin:0 auto;position:relative;z-index:1;}
+.tool-hero a.back{color:rgba(255,255,255,.5);text-decoration:none;font-size:.75rem;font-weight:700;font-family:var(--mono);letter-spacing:.03em;display:inline-flex;align-items:center;gap:6px;margin-bottom:18px;}
+.tool-hero a.back:hover{color:white;}
+.tool-hero-eyebrow{font-family:var(--mono);font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:8px;}
+.tool-hero h1{color:white;font-size:1.5rem;font-weight:800;margin-bottom:6px;}
+.tool-hero p{color:rgba(255,255,255,.6);font-size:.85rem;}
+
+.tool-content{max-width:760px;margin:0 auto;padding:32px 5% 60px;}
+.tool-card{background:white;border:1px solid #e3e9f1;border-radius:16px;padding:28px;margin-bottom:20px;}
+.tool-card h2{font-size:.95rem;color:var(--primary);font-weight:700;margin-bottom:4px;}
+.tool-card .sub{font-size:.78rem;color:#94a3b8;margin-bottom:20px;}
+
+.f-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+.f-group{margin-bottom:14px;}
+.f-group label{display:block;font-size:.7rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;font-family:var(--mono);}
+.f-group input,.f-group select,.f-group textarea{width:100%;padding:11px 14px;border:1.5px solid #dde3ec;border-radius:9px;font-size:.88rem;font-family:'Inter',sans-serif;outline:none;transition:.2s;color:#222;}
+.f-group input:focus,.f-group select:focus,.f-group textarea:focus{border-color:var(--accent);}
+.f-group textarea{resize:vertical;min-height:90px;line-height:1.6;}
+
+.chk-cat{margin-top:6px;}
+.chk-cat-head{display:flex;align-items:center;gap:10px;margin-bottom:4px;}
+.chk-cat-num{font-family:var(--mono);font-size:10px;font-weight:700;color:white;background:var(--secondary);width:20px;height:20px;border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.chk-cat-label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--primary);font-family:var(--mono);}
+.chk-row{display:flex;align-items:center;gap:12px;padding:9px 0 9px 30px;cursor:pointer;user-select:none;border-bottom:1px solid #f2f5f9;}
+.chk-row:last-child{border-bottom:none;}
+.chk-row input{width:18px;height:18px;accent-color:var(--secondary);cursor:pointer;flex-shrink:0;}
+.chk-row span{font-size:13.5px;color:#33415c;}
+
+.status-lamp{display:flex;align-items:center;gap:8px;background:var(--light);border:1px solid #e8edf4;border-radius:20px;padding:9px 16px;font-family:var(--mono);font-size:.74rem;font-weight:700;letter-spacing:.05em;color:#94a3b8;width:fit-content;margin-top:18px;}
+.status-lamp .dot{width:8px;height:8px;border-radius:50%;background:#f59e0b;flex-shrink:0;}
+.status-lamp.go .dot{background:#22c55e;}
+.status-lamp.go{color:#15803d;background:#dcfce7;border-color:#bbf7d0;}
+
+.btn-generate{width:100%;padding:14px;background:var(--secondary);color:white;border:none;border-radius:10px;font-size:.92rem;font-weight:700;cursor:pointer;transition:.2s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.btn-generate:hover{background:var(--accent);}
+.btn-generate:disabled{background:#9ca3af;cursor:not-allowed;}
+.form-note{font-size:.76rem;color:#94a3b8;text-align:center;margin-top:12px;}
+
+@media(max-width:640px){
+  .tool-hero h1{font-size:1.25rem;}
+  .tool-card{padding:20px;}
+  .f-row{grid-template-columns:1fr;}
+  .chk-row{padding-left:0;}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ Header ═══ -->
+<div id="header-placeholder"></div>
+
+<!-- ═══ Vérification en cours ═══ -->
+<div id="gate-checking">Vérification de l'accès…</div>
+
+<!-- ═══ Non connecté ═══ -->
+<div id="gate-locked">
+  <div class="gate-box">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    <h2>Outil réservé aux comptes connectés</h2>
+    <p>Connectez-vous à votre espace personnel APH Drone pour générer une fiche de mission.</p>
+    <a href="/pages/connexion.html">Se connecter →</a>
+  </div>
+</div>
+
+<!-- ═══ Outil (si connecté) ═══ -->
+<div id="tool-app">
+  <div class="tool-hero">
+    <div class="tool-hero-inner">
+      <a class="back" href="/pages/outils/preparation-vol.html">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+        Retour à la préparation de vol
+      </a>
+      <p class="tool-hero-eyebrow">APH Drone · Fiche de mission</p>
+      <h1>Fiche de mission PDF</h1>
+      <p>Renseignez les informations de mission et générez un document complet à archiver ou transmettre.</p>
+    </div>
+  </div>
+
+  <div class="tool-content">
+
+    <!-- Informations mission -->
+    <div class="tool-card">
+      <h2>Informations mission</h2>
+      <p class="sub">Ces informations figureront sur le document généré</p>
+
+      <div class="f-group">
+        <label>Prestation</label>
+        <select id="f-prestation">
+          <option value="">— Choisir une prestation —</option>
+        </select>
+      </div>
+
+      <div class="f-row">
+        <div class="f-group">
+          <label>Client</label>
+          <input type="text" id="f-client" placeholder="Nom du client / de l'entreprise">
+        </div>
+        <div class="f-group">
+          <label>Lieu</label>
+          <input type="text" id="f-lieu" placeholder="Ex : Luxeuil-les-Bains (70)">
+        </div>
+      </div>
+
+      <div class="f-row">
+        <div class="f-group">
+          <label>Date de mission</label>
+          <input type="date" id="f-date">
+        </div>
+        <div class="f-group">
+          <label>Pilote</label>
+          <input type="text" id="f-pilote" value="Arnaud MOREAU">
+        </div>
+      </div>
+
+      <div class="f-row">
+        <div class="f-group">
+          <label>Drone utilisé</label>
+          <select id="f-drone">
+            <option>DJI Mini 4 Pro</option>
+            <option>DJI Mavic 3 Multispectral</option>
+            <option>DJI Agras T100</option>
+            <option>Autre</option>
+          </select>
+        </div>
+        <div class="f-group">
+          <label>Conditions météo</label>
+          <input type="text" id="f-meteo" placeholder="Ex : Vent 8kt, ciel dégagé">
+        </div>
+      </div>
+
+      <div class="f-group">
+        <label>Observations / notes de mission</label>
+        <textarea id="f-obs" placeholder="Déroulé de la mission, difficultés rencontrées, livrables produits..."></textarea>
+      </div>
+    </div>
+
+    <!-- Check-list de validation -->
+    <div class="tool-card">
+      <h2>Check-list de validation</h2>
+      <p class="sub">Cochez les points vérifiés — ils apparaîtront sur le document final</p>
+
+      <div id="chk-list"></div>
+
+      <div class="status-lamp" id="status-lamp">
+        <span class="dot"></span>
+        <span id="status-lamp-text">MISSION EN COURS DE VALIDATION</span>
+      </div>
+    </div>
+
+    <!-- Génération -->
+    <div class="tool-card">
+      <button class="btn-generate" id="btn-generate-pdf">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M12 18v-6"/><path d="m9 15 3 3 3-3"/></svg>
+        Générer la fiche de mission (PDF)
+      </button>
+      <p class="form-note">Le document est généré directement dans votre navigateur et téléchargé sur votre appareil.</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══ Bouton téléphone ═══ -->
+<a id="back-top" href="tel:0695390776">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.5 19.79 19.79 0 0 1 1.61 5a2 2 0 0 1 1.95-2H6a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 10a16 16 0 0 0 6 6l.27-.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 18z"/></svg>
+</a>
+
+<!-- ═══ Footer ═══ -->
+<div id="footer-placeholder"></div>
+
+<script src="/assets/include.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAV5NQWfp8n9RkTrHSwqssBJ4R9lNAuYK8",
+  authDomain: "aph-drone.firebaseapp.com",
+  projectId: "aph-drone",
+  storageBucket: "aph-drone.firebasestorage.app",
+  messagingSenderId: "316810168380",
+  appId: "1:316810168380:web:66cb916cec4fdc00b9db39"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const PRESTATIONS = [
+  'Sécurité, Recherche & Secours','Agriculture & Arboriculture','Thermographie infrarouge',
+  'Inspection technique','Cartographie & Modélisation 3D','Environnement, Forêt & Biodiversité',
+  'Expertise SORA & PDRA','Conseil & Audit Opérationnel','Mission Télépilote Professionnel',
+  'Photo & Vidéo aérienne'
+];
+
+const VALIDATION_CHECKLIST = [
+  { cat: 'Avant vol', items: [
+    'Check-list pré-vol effectuée',
+    'Conditions météo Go/No-Go validées',
+    'Autorisations et déclarations en règle'
+  ]},
+  { cat: 'Pendant la mission', items: [
+    'Objectifs de mission atteints',
+    'Zone survolée conforme au périmètre prévu',
+    'Aucun incident ou événement à signaler'
+  ]},
+  { cat: 'Après vol', items: [
+    'Données/livrables collectés et sauvegardés',
+    'Matériel inspecté après vol',
+    'Client informé de la fin de mission'
+  ]}
+];
+
+let currentUser = null;
+
+onAuthStateChanged(auth, user => {
+  document.getElementById('gate-checking').style.display = 'none';
+  if(!user){
+    document.getElementById('gate-locked').style.display = 'flex';
+    return;
+  }
+  currentUser = user;
+  document.getElementById('tool-app').style.display = 'block';
+  init();
+});
+
+function init(){
+  const presSelect = document.getElementById('f-prestation');
+  PRESTATIONS.forEach(p => {
+    const opt = document.createElement('option');
+    opt.value = p; opt.textContent = p;
+    presSelect.appendChild(opt);
+  });
+  document.getElementById('f-date').value = new Date().toISOString().slice(0,10);
+  renderValidationChecklist();
+}
+
+function renderValidationChecklist(){
+  const list = document.getElementById('chk-list');
+  list.innerHTML = '';
+  VALIDATION_CHECKLIST.forEach((group, gi) => {
+    const catDiv = document.createElement('div');
+    catDiv.className = 'chk-cat';
+    catDiv.innerHTML = `<div class="chk-cat-head"><span class="chk-cat-num">${gi+1}</span><span class="chk-cat-label">${group.cat}</span></div>`;
+    group.items.forEach(item => {
+      const row = document.createElement('label');
+      row.className = 'chk-row';
+      row.innerHTML = `<input type="checkbox" data-item="${item.replace(/"/g,'&quot;')}"><span>${item}</span>`;
+      catDiv.appendChild(row);
+    });
+    list.appendChild(catDiv);
+  });
+  list.querySelectorAll('input[type=checkbox]').forEach(cb => {
+    cb.addEventListener('change', updateStatusLamp);
+  });
+  updateStatusLamp();
+}
+
+function updateStatusLamp(){
+  const boxes = document.querySelectorAll('#chk-list input[type=checkbox]');
+  const total = boxes.length;
+  const checked = Array.from(boxes).filter(b => b.checked).length;
+  const lamp = document.getElementById('status-lamp');
+  const lampText = document.getElementById('status-lamp-text');
+  if(checked === total){
+    lamp.classList.add('go');
+    lampText.textContent = 'MISSION VALIDÉE';
+  } else {
+    lamp.classList.remove('go');
+    lampText.textContent = 'MISSION EN COURS DE VALIDATION (' + checked + '/' + total + ')';
+  }
+}
+
+document.getElementById('btn-generate-pdf').addEventListener('click', async () => {
+  const prestation = document.getElementById('f-prestation').value;
+  const client = document.getElementById('f-client').value.trim();
+  const lieu = document.getElementById('f-lieu').value.trim();
+  const date = document.getElementById('f-date').value;
+  const pilote = document.getElementById('f-pilote').value.trim();
+  const drone = document.getElementById('f-drone').value;
+  const meteo = document.getElementById('f-meteo').value.trim();
+  const obs = document.getElementById('f-obs').value.trim();
+
+  if(!prestation || !lieu || !date){
+    alert('Merci de renseigner au minimum la prestation, le lieu et la date.');
+    return;
+  }
+
+  const checkedItems = [];
+  const uncheckedItems = [];
+  VALIDATION_CHECKLIST.forEach(group => {
+    group.items.forEach(item => {
+      const cb = document.querySelector('#chk-list input[data-item="' + item.replace(/"/g,'&quot;') + '"]');
+      if(cb && cb.checked) checkedItems.push(item); else uncheckedItems.push(item);
+    });
+  });
+
+  generatePDF({ prestation, client, lieu, date, pilote, drone, meteo, obs, checkedItems, uncheckedItems });
+
+  try{
+    await addDoc(collection(db,'fiches_mission'), {
+      email: currentUser.email, prestation, client, lieu, date, pilote, drone, meteo, obs,
+      checkedItems, uncheckedItems, createdAt: Date.now()
+    });
+  }catch(e){}
+});
+
+function generatePDF(m){
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  doc.setFillColor(11,31,58);
+  doc.rect(0,0,210,36,'F');
+  doc.setTextColor(255,255,255);
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(18);
+  doc.text('APH Drone', 20, 18);
+  doc.setFontSize(10);
+  doc.setFont('helvetica','normal');
+  doc.text('Fiche de mission', 20, 26);
+
+  doc.setTextColor(30,30,30);
+  let y = 50;
+
+  function field(label, value){
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(9);
+    doc.setTextColor(100,100,100);
+    doc.text(label.toUpperCase(), 20, y);
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(11);
+    doc.setTextColor(20,20,20);
+    doc.text(value || '—', 20, y+6);
+    y += 16;
+  }
+
+  field('Prestation', m.prestation);
+  field('Client', m.client);
+  field('Lieu', m.lieu);
+  field('Date de mission', new Date(m.date).toLocaleDateString('fr-FR'));
+  field('Pilote', m.pilote);
+  field('Drone utilisé', m.drone);
+  field('Conditions météo', m.meteo);
+
+  if(m.obs){
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(9);
+    doc.setTextColor(100,100,100);
+    doc.text('OBSERVATIONS', 20, y);
+    y += 6;
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(10.5);
+    doc.setTextColor(20,20,20);
+    const lines = doc.splitTextToSize(m.obs, 170);
+    doc.text(lines, 20, y);
+    y += lines.length * 5.5 + 8;
+  }
+
+  y += 4;
+  doc.setDrawColor(200,200,200);
+  doc.line(20, y, 190, y);
+  y += 10;
+
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(11);
+  doc.setTextColor(11,31,58);
+  doc.text('Check-list de validation', 20, y);
+  y += 8;
+
+  doc.setFontSize(10);
+  m.checkedItems.forEach(item => {
+    doc.setTextColor(22,163,74);
+    doc.text('OK', 20, y);
+    doc.setTextColor(40,40,40);
+    const lines = doc.splitTextToSize(item, 160);
+    doc.text(lines, 30, y);
+    y += lines.length * 5.5 + 1.5;
+  });
+  m.uncheckedItems.forEach(item => {
+    doc.setTextColor(220,38,38);
+    doc.text('--', 20, y);
+    doc.setTextColor(120,120,120);
+    const lines = doc.splitTextToSize(item, 160);
+    doc.text(lines, 30, y);
+    y += lines.length * 5.5 + 1.5;
+  });
+
+  y += 10;
+  doc.setDrawColor(200,200,200);
+  doc.line(20, y, 190, y);
+  y += 8;
+  doc.setFontSize(9);
+  doc.setTextColor(120,120,120);
+  doc.text('APH Drone — Luxeuil-les-Bains (70) — Document généré depuis l\'espace APH Drone.', 20, y);
+  doc.text('Généré le ' + new Date().toLocaleDateString('fr-FR') + ' par ' + (currentUser.email || ''), 20, y+6);
+
+  const filename = 'Fiche_mission_' + (m.lieu || 'mission').replace(/[^a-z0-9]/gi,'_') + '_' + m.date + '.pdf';
+  doc.save(filename);
+}
+</script>
+</body>
+</html>
