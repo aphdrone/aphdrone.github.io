@@ -89,6 +89,23 @@ tr:last-child td{border-bottom:none;}
 .icon-btn:hover{border-color:var(--secondary);color:var(--secondary);}
 .empty-row{text-align:center;padding:30px;color:#94a3b8;font-size:.84rem;}
 
+/* Fiche client admin : missions / devis */
+.fiche-tabs{display:flex;gap:6px;margin-bottom:16px;background:var(--light);border-radius:10px;padding:4px;}
+.fiche-tab{flex:1;padding:8px;border-radius:7px;border:none;background:transparent;font-size:.76rem;font-weight:700;color:#7a8fa5;cursor:pointer;transition:.15s;}
+.fiche-tab.active{background:white;color:var(--primary);box-shadow:0 2px 6px rgba(0,0,0,.06);}
+.fiche-panel{display:none;}
+.fiche-panel.active{display:block;}
+.mini-add-form{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;}
+.mini-add-form input,.mini-add-form select{padding:9px 12px;border:1.5px solid #dde3ec;border-radius:8px;font-size:.82rem;font-family:'Inter',sans-serif;outline:none;}
+.mini-add-form input:focus,.mini-add-form select:focus{border-color:var(--accent);}
+.mini-add-form .full{grid-column:1/-1;}
+.mini-list{display:flex;flex-direction:column;gap:8px;margin-bottom:10px;max-height:220px;overflow-y:auto;}
+.mini-row{display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--light);border-radius:8px;}
+.mini-row .info{flex:1;min-width:0;}
+.mini-row .name{font-size:.82rem;font-weight:600;color:var(--primary);}
+.mini-row .sub{font-size:.7rem;color:#94a3b8;}
+.mini-empty{font-size:.8rem;color:#94a3b8;padding:8px 0;}
+
 /* Modal */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(11,31,58,.5);z-index:1000;align-items:center;justify-content:center;padding:20px;}
 .modal-overlay.open{display:flex;}
@@ -365,6 +382,79 @@ tr:last-child td{border-bottom:none;}
   </div>
 </div>
 
+<!-- ═══ MODAL : Fiche client ═══ -->
+<div class="modal-overlay" id="modal-client-fiche">
+  <div class="modal-box" style="max-width:480px;">
+    <h3 id="fiche-client-name">Fiche client</h3>
+    <div class="fiche-tabs">
+      <button class="fiche-tab active" data-tab="tab-missions">Missions</button>
+      <button class="fiche-tab" data-tab="tab-docs">Documents</button>
+      <button class="fiche-tab" data-tab="tab-devis">Devis</button>
+    </div>
+
+    <!-- Missions -->
+    <div class="fiche-panel active" id="tab-missions">
+      <div class="mini-list" id="mission-admin-list"></div>
+      <div class="mini-add-form">
+        <input type="text" id="new-mission-nom" placeholder="Nom de la mission" class="full">
+        <input type="date" id="new-mission-date">
+        <select id="new-mission-statut">
+          <option>Planifiée</option>
+          <option>En cours</option>
+          <option>Terminée</option>
+        </select>
+      </div>
+      <button class="btn btn-outline btn-sm" id="btn-add-mission" style="width:100%;justify-content:center;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Ajouter la mission
+      </button>
+    </div>
+
+    <!-- Documents -->
+    <div class="fiche-panel" id="tab-docs">
+      <div class="mini-list" id="client-doc-admin-list"></div>
+      <div class="mini-add-form">
+        <input type="text" id="new-client-doc-name" placeholder="Nom du document" class="full">
+        <input type="url" id="new-client-doc-url" placeholder="Lien (Drive, Dropbox...)">
+        <select id="new-client-doc-type">
+          <option>Rapport de mission</option>
+          <option>Livrable</option>
+          <option>Données brutes</option>
+          <option>Autre</option>
+        </select>
+      </div>
+      <button class="btn btn-outline btn-sm" id="btn-add-client-doc" style="width:100%;justify-content:center;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Ajouter le document
+      </button>
+    </div>
+
+    <!-- Devis -->
+    <div class="fiche-panel" id="tab-devis">
+      <div class="mini-list" id="devis-admin-list"></div>
+      <div class="mini-add-form">
+        <input type="text" id="new-devis-ref" placeholder="Référence (ex: DEV-2026-014)">
+        <input type="number" id="new-devis-montant" placeholder="Montant € HT">
+        <input type="date" id="new-devis-date">
+        <select id="new-devis-statut">
+          <option>Envoyé</option>
+          <option>Accepté</option>
+          <option>Payé</option>
+          <option>Refusé</option>
+        </select>
+      </div>
+      <button class="btn btn-outline btn-sm" id="btn-add-devis" style="width:100%;justify-content:center;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Ajouter le devis/facture
+      </button>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-primary" onclick="closeModal('modal-client-fiche')" style="width:100%;">Fermer</button>
+    </div>
+  </div>
+</div>
+
 <!-- ═══ MODAL : Modules stagiaire ═══ -->
 <div class="modal-overlay" id="modal-modules">
   <div class="modal-box" style="max-width:460px;">
@@ -503,11 +593,17 @@ async function loadClients(){
           <a class="icon-btn" title="Voir son espace" href="/pages/espace-clients.html?admin_view=${d.id}" target="_blank">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/><circle cx="12" cy="12" r="3"/></svg>
           </a>
+          <button class="icon-btn" title="Gérer la fiche" data-manage-client="${d.id}">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          </button>
           <button class="icon-btn" title="Supprimer" data-del-client="${d.id}">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
           </button>
         </div></td>`;
       tbody.appendChild(tr);
+    });
+    document.querySelectorAll('[data-manage-client]').forEach(btn => {
+      btn.addEventListener('click', () => openClientFicheModal(btn.dataset.manageClient));
     });
     document.querySelectorAll('[data-del-client]').forEach(btn => {
       btn.addEventListener('click', async () => {
@@ -521,6 +617,180 @@ async function loadClients(){
     tbody.innerHTML = '<tr><td colspan="5" class="empty-row">Erreur de chargement : ' + e.message + '</td></tr>';
   }
 }
+
+// ── Fiche client : onglets, missions, documents, devis ──
+document.querySelectorAll('.fiche-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.fiche-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.fiche-panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById(tab.dataset.tab).classList.add('active');
+  });
+});
+
+async function getClientData(clientId){
+  const snap = await getDocs(collection(db,'clients'));
+  let found = null;
+  snap.forEach(d => { if(d.id === clientId) found = d; });
+  return found ? found.data() : null;
+}
+
+async function openClientFicheModal(clientId){
+  const data = await getClientData(clientId);
+  if(!data) return;
+  window._currentModalClientId = clientId;
+  document.getElementById('fiche-client-name').textContent = 'Fiche — ' + (data.name || '');
+  renderMissionAdminList(data.missions || []);
+  renderClientDocAdminList(data.documents || []);
+  renderDevisAdminList(data.devis || []);
+  openModal('modal-client-fiche');
+}
+
+// Missions
+function renderMissionAdminList(missions){
+  const list = document.getElementById('mission-admin-list');
+  if(!missions.length){ list.innerHTML = '<div class="mini-empty">Aucune mission enregistrée.</div>'; return; }
+  list.innerHTML = '';
+  missions.forEach((m, i) => {
+    const row = document.createElement('div');
+    row.className = 'mini-row';
+    row.innerHTML = `
+      <div class="info">
+        <div class="name">${m.nom}</div>
+        <div class="sub">${m.date ? new Date(m.date).toLocaleDateString('fr-FR') : ''} — ${m.statut}</div>
+      </div>
+      <button class="icon-btn" title="Supprimer" data-del-mission="${i}">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+      </button>`;
+    list.appendChild(row);
+  });
+  list.querySelectorAll('[data-del-mission]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const clientId = window._currentModalClientId;
+      const data = await getClientData(clientId);
+      let arr = (data.missions || []).slice();
+      arr.splice(parseInt(btn.dataset.delMission, 10), 1);
+      await updateDoc(doc(db,'clients',clientId), { missions: arr });
+      renderMissionAdminList(arr);
+      showToast('Mission supprimée.');
+    });
+  });
+}
+
+document.getElementById('btn-add-mission').addEventListener('click', async () => {
+  const clientId = window._currentModalClientId;
+  if(!clientId) return;
+  const nom = document.getElementById('new-mission-nom').value.trim();
+  const date = document.getElementById('new-mission-date').value;
+  const statut = document.getElementById('new-mission-statut').value;
+  if(!nom){ alert('Renseignez le nom de la mission.'); return; }
+  const data = await getClientData(clientId);
+  let arr = (data.missions || []).slice();
+  arr.push({ nom, date, statut });
+  await updateDoc(doc(db,'clients',clientId), { missions: arr });
+  document.getElementById('new-mission-nom').value = '';
+  document.getElementById('new-mission-date').value = '';
+  renderMissionAdminList(arr);
+  showToast('Mission ajoutée.');
+});
+
+// Documents client
+function renderClientDocAdminList(docs){
+  const list = document.getElementById('client-doc-admin-list');
+  if(!docs.length){ list.innerHTML = '<div class="mini-empty">Aucun document ajouté.</div>'; return; }
+  list.innerHTML = '';
+  docs.forEach((d, i) => {
+    const row = document.createElement('div');
+    row.className = 'mini-row';
+    row.innerHTML = `
+      <div class="info">
+        <div class="name">${d.name}</div>
+        <div class="sub">${d.type || 'Document'}</div>
+      </div>
+      <button class="icon-btn" title="Supprimer" data-del-client-doc="${i}">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+      </button>`;
+    list.appendChild(row);
+  });
+  list.querySelectorAll('[data-del-client-doc]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const clientId = window._currentModalClientId;
+      const data = await getClientData(clientId);
+      let arr = (data.documents || []).slice();
+      arr.splice(parseInt(btn.dataset.delClientDoc, 10), 1);
+      await updateDoc(doc(db,'clients',clientId), { documents: arr });
+      renderClientDocAdminList(arr);
+      showToast('Document supprimé.');
+    });
+  });
+}
+
+document.getElementById('btn-add-client-doc').addEventListener('click', async () => {
+  const clientId = window._currentModalClientId;
+  if(!clientId) return;
+  const name = document.getElementById('new-client-doc-name').value.trim();
+  const url = document.getElementById('new-client-doc-url').value.trim();
+  const type = document.getElementById('new-client-doc-type').value;
+  if(!name || !url){ alert('Renseignez un nom et un lien pour le document.'); return; }
+  const data = await getClientData(clientId);
+  let arr = (data.documents || []).slice();
+  arr.push({ name, url, type });
+  await updateDoc(doc(db,'clients',clientId), { documents: arr });
+  document.getElementById('new-client-doc-name').value = '';
+  document.getElementById('new-client-doc-url').value = '';
+  renderClientDocAdminList(arr);
+  showToast('Document ajouté.');
+});
+
+// Devis / factures
+function renderDevisAdminList(devis){
+  const list = document.getElementById('devis-admin-list');
+  if(!devis.length){ list.innerHTML = '<div class="mini-empty">Aucun devis enregistré.</div>'; return; }
+  list.innerHTML = '';
+  devis.forEach((dv, i) => {
+    const row = document.createElement('div');
+    row.className = 'mini-row';
+    row.innerHTML = `
+      <div class="info">
+        <div class="name">${dv.reference || '—'} · ${dv.montant ? dv.montant+' € HT' : ''}</div>
+        <div class="sub">${dv.date ? new Date(dv.date).toLocaleDateString('fr-FR') : ''} — ${dv.statut}</div>
+      </div>
+      <button class="icon-btn" title="Supprimer" data-del-devis="${i}">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+      </button>`;
+    list.appendChild(row);
+  });
+  list.querySelectorAll('[data-del-devis]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const clientId = window._currentModalClientId;
+      const data = await getClientData(clientId);
+      let arr = (data.devis || []).slice();
+      arr.splice(parseInt(btn.dataset.delDevis, 10), 1);
+      await updateDoc(doc(db,'clients',clientId), { devis: arr });
+      renderDevisAdminList(arr);
+      showToast('Devis supprimé.');
+    });
+  });
+}
+
+document.getElementById('btn-add-devis').addEventListener('click', async () => {
+  const clientId = window._currentModalClientId;
+  if(!clientId) return;
+  const reference = document.getElementById('new-devis-ref').value.trim();
+  const montant = document.getElementById('new-devis-montant').value.trim();
+  const date = document.getElementById('new-devis-date').value;
+  const statut = document.getElementById('new-devis-statut').value;
+  if(!reference){ alert('Renseignez une référence.'); return; }
+  const data = await getClientData(clientId);
+  let arr = (data.devis || []).slice();
+  arr.push({ reference, montant, date, statut });
+  await updateDoc(doc(db,'clients',clientId), { devis: arr });
+  document.getElementById('new-devis-ref').value = '';
+  document.getElementById('new-devis-montant').value = '';
+  document.getElementById('new-devis-date').value = '';
+  renderDevisAdminList(arr);
+  showToast('Devis ajouté.');
+});
 
 document.getElementById('btn-add-client').addEventListener('click', () => {
   document.getElementById('new-client-name').value = '';
