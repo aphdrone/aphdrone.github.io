@@ -1026,7 +1026,7 @@ document.getElementById('btn-add-facture').addEventListener('click', async () =>
 
 document.getElementById('btn-reset-pwd-stag').addEventListener('click', async () => {
   const email = window._currentModalStagEmail;
-  if(!email) return;
+  if(!email){ showToast('Erreur : email introuvable pour ce stagiaire.'); return; }
   try{
     await sendPasswordResetEmail(auth, email);
     showToast('Email de réinitialisation envoyé à ' + email);
@@ -1037,7 +1037,7 @@ document.getElementById('btn-reset-pwd-stag').addEventListener('click', async ()
 
 document.getElementById('btn-reset-pwd-client').addEventListener('click', async () => {
   const email = window._currentModalClientEmail;
-  if(!email) return;
+  if(!email){ showToast('Erreur : email introuvable pour ce client.'); return; }
   try{
     await sendPasswordResetEmail(auth, email);
     showToast('Email de réinitialisation envoyé à ' + email);
