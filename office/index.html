@@ -450,6 +450,9 @@ tr:last-child td{border-bottom:none;}
     </div>
 
     <div class="modal-actions">
+      <button class="btn btn-outline" id="btn-reset-pwd-client" style="width:100%;">Envoyer un lien de réinitialisation du mot de passe</button>
+    </div>
+    <div class="modal-actions">
       <button class="btn btn-primary" onclick="closeModal('modal-client-fiche')" style="width:100%;">Fermer</button>
     </div>
   </div>
@@ -479,6 +482,9 @@ tr:last-child td{border-bottom:none;}
     </button>
 
     <div class="modal-actions">
+      <button class="btn btn-outline" id="btn-reset-pwd-stag" style="width:100%;">Envoyer un lien de réinitialisation du mot de passe</button>
+    </div>
+    <div class="modal-actions">
       <button class="btn btn-primary" onclick="closeModal('modal-modules')" style="width:100%;">Fermer</button>
     </div>
   </div>
@@ -490,7 +496,7 @@ tr:last-child td{border-bottom:none;}
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
   getAuth, onAuthStateChanged, signOut, createUserWithEmailAndPassword,
-  EmailAuthProvider
+  EmailAuthProvider, sendPasswordResetEmail
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import {
   getFirestore, collection, getDocs, addDoc, doc, updateDoc, deleteDoc, setDoc
@@ -639,6 +645,7 @@ async function openClientFicheModal(clientId){
   const data = await getClientData(clientId);
   if(!data) return;
   window._currentModalClientId = clientId;
+  window._currentModalClientEmail = data.email;
   document.getElementById('fiche-client-name').textContent = 'Fiche — ' + (data.name || '');
   renderMissionAdminList(data.missions || []);
   renderClientDocAdminList(data.documents || []);
@@ -792,6 +799,28 @@ document.getElementById('btn-add-devis').addEventListener('click', async () => {
   showToast('Devis ajouté.');
 });
 
+document.getElementById('btn-reset-pwd-stag').addEventListener('click', async () => {
+  const email = window._currentModalStagEmail;
+  if(!email) return;
+  try{
+    await sendPasswordResetEmail(auth, email);
+    showToast('Email de réinitialisation envoyé à ' + email);
+  }catch(e){
+    showToast('Erreur : ' + e.message);
+  }
+});
+
+document.getElementById('btn-reset-pwd-client').addEventListener('click', async () => {
+  const email = window._currentModalClientEmail;
+  if(!email) return;
+  try{
+    await sendPasswordResetEmail(auth, email);
+    showToast('Email de réinitialisation envoyé à ' + email);
+  }catch(e){
+    showToast('Erreur : ' + e.message);
+  }
+});
+
 document.getElementById('btn-add-client').addEventListener('click', () => {
   document.getElementById('new-client-name').value = '';
   document.getElementById('new-client-email').value = '';
@@ -907,6 +936,7 @@ async function openModulesModal(stagId){
   const data = stagDoc.data();
   const current = data.modules || [];
   window._currentModalStagId = stagId;
+  window._currentModalStagEmail = data.email;
   document.getElementById('modules-stag-name').textContent = 'Modules — ' + (data.name || '');
   const list = document.getElementById('modules-list');
   list.innerHTML = '';
