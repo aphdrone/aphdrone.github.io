@@ -103,10 +103,19 @@ body{background:var(--light);color:#222;min-height:100vh;padding-top:80px;}
 .devis-date{font-size:.78rem;color:#94a3b8;}
 
 @media(max-width:768px){
-  .client-hero h1{font-size:1.4rem;}
-  .stat-row{grid-template-columns:1fr 1fr;}
+  .client-hero{padding:32px 5%;}
+  .client-hero h1{font-size:1.3rem;}
+  .client-hero-top{flex-direction:column;align-items:stretch;gap:14px;}
+  .hero-actions{width:100%;}
+  .btn-account,.btn-logout-client{flex:1;justify-content:center;white-space:nowrap;}
+  .stat-row{grid-template-columns:1fr 1fr;gap:10px;}
   .mission-row{flex-direction:column;align-items:flex-start;}
+  .devis-row{flex-direction:column;align-items:flex-start;gap:6px;}
   .devis-montant{margin-left:0;}
+  .client-section{padding:32px 5% 10px;}
+  .client-section-head{flex-direction:column;align-items:flex-start;gap:6px;}
+  .doc-row{flex-wrap:wrap;}
+  .modal-box{padding:24px 20px;max-width:100%;}
 }
 </style>
 </head>

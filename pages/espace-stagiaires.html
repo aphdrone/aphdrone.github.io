@@ -138,10 +138,23 @@ body{background:var(--light);color:#222;min-height:100vh;padding-top:80px;}
 .toast{position:fixed;bottom:24px;right:24px;background:var(--primary);color:white;padding:13px 20px;border-radius:10px;font-size:.85rem;font-weight:500;box-shadow:0 12px 32px rgba(0,0,0,.2);z-index:2000;display:none;}
 
 @media(max-width:768px){
-  .stag-hero h1{font-size:1.4rem;}
+  .stag-hero{padding:32px 5%;}
+  .stag-hero h1{font-size:1.3rem;}
+  .stag-hero-top{flex-direction:column;align-items:stretch;gap:14px;}
+  .hero-actions{width:100%;}
+  .btn-account,.btn-logout-stag{flex:1;justify-content:center;white-space:nowrap;}
   .progress-top{flex-direction:column;align-items:flex-start;gap:4px;}
   .emarg-row{flex-direction:column;align-items:flex-start;}
-  .doc-cards-row{grid-template-columns:1fr 1fr;}
+  .emarg-actions{width:100%;}
+  .emarg-actions .btn{width:100%;justify-content:center;}
+  .doc-cards-row{grid-template-columns:1fr 1fr;gap:10px;}
+  .form-grid{grid-template-columns:1fr;}
+  .stag-section{padding:32px 5% 10px;}
+  .stag-section-head{flex-direction:column;align-items:flex-start;gap:6px;}
+  .modal-box{padding:24px 20px;max-width:100%;}
+}
+@media(max-width:420px){
+  .doc-cards-row{grid-template-columns:1fr;}
 }
 </style>
 </head>
