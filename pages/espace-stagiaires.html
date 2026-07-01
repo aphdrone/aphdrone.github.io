@@ -30,6 +30,10 @@ body{background:var(--light);color:#222;min-height:100vh;padding-top:80px;}
 .stag-hero::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:56px 56px;}
 .stag-hero-inner{max-width:1100px;margin:0 auto;position:relative;z-index:1;}
 .stag-hero-eyebrow{font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:8px;}
+.stag-hero-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;}
+.btn-logout-stag{font-size:.78rem;color:rgba(255,255,255,.7);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:9px 15px;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:7px;flex-shrink:0;}
+.btn-logout-stag:hover{background:rgba(255,255,255,.15);color:white;}
+.btn-logout-stag svg{width:14px;height:14px;}
 .stag-hero h1{font-size:1.8rem;color:white;font-weight:800;margin-bottom:6px;}
 .stag-hero p{color:rgba(255,255,255,.7);font-size:.92rem;margin-bottom:28px;}
 
@@ -141,9 +145,17 @@ body{background:var(--light);color:#222;min-height:100vh;padding-top:80px;}
   <!-- Hero + progression -->
   <section class="stag-hero">
     <div class="stag-hero-inner">
-      <p class="stag-hero-eyebrow">Espace personnel</p>
-      <h1 id="stag-welcome">Bienvenue</h1>
-      <p id="stag-sub">Retrouvez vos formations, vos documents et vos émargements.</p>
+      <div class="stag-hero-top">
+        <div>
+          <p class="stag-hero-eyebrow">Espace personnel</p>
+          <h1 id="stag-welcome">Bienvenue</h1>
+          <p id="stag-sub">Retrouvez vos formations, vos documents et vos émargements.</p>
+        </div>
+        <button class="btn-logout-stag" id="btn-logout-stag">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Se déconnecter
+        </button>
+      </div>
 
       <div class="progress-card">
         <div class="progress-top">
@@ -323,6 +335,7 @@ onAuthStateChanged(auth, async user => {
 });
 
 function showAdminBanner(){
+  document.getElementById('btn-logout-stag').style.display = 'none';
   const banner = document.createElement('div');
   banner.style.cssText = 'background:#0B1F3A;color:white;text-align:center;padding:10px 16px;font-size:.8rem;font-weight:600;';
   banner.innerHTML = 'Mode aperçu administrateur — vous consultez l\'espace de ' + (currentStagiaire.name || 'ce stagiaire') + ' &nbsp;·&nbsp; <a href="/office/" style="color:#7fc8ff;">← Retour à l\'administration</a>';
@@ -539,6 +552,10 @@ function generateAttestation(formation, signature){
 
   doc.save('Attestation_' + formation.replace(/[^a-z0-9]/gi,'_') + '.pdf');
 }
+
+document.getElementById('btn-logout-stag').addEventListener('click', () => {
+  signOut(auth).then(() => window.location.href = 'connexion.html');
+});
 
 function showToast(msg){
   const el = document.getElementById('toast');
