@@ -68,7 +68,7 @@ body{background:var(--light);color:#222;min-height:100vh;padding-top:80px;}
 .doc-cards-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:28px;}
 .doc-card{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:20px 20px 18px;backdrop-filter:blur(6px);text-decoration:none;cursor:pointer;transition:.2s;display:flex;flex-direction:column;min-height:108px;}
 .doc-card:hover{background:rgba(255,255,255,.13);border-color:rgba(255,255,255,.26);}
-.doc-card-tag{display:inline-flex;align-items:center;padding:4px 12px;border-radius:20px;background:rgba(255,255,255,.14);color:white;font-size:.68rem;font-weight:700;margin-bottom:14px;width:fit-content;}
+.doc-card-tag{display:inline-flex;align-items:center;padding:4px 12px;border-radius:20px;background:#dcfce7;color:#15803d;font-size:.68rem;font-weight:700;margin-bottom:14px;width:fit-content;}
 .doc-card h4{font-size:.86rem;color:white;font-weight:600;line-height:1.4;flex:1;}
 .doc-card-arrow{display:flex;align-items:center;gap:5px;font-size:.72rem;font-weight:600;color:rgba(255,255,255,.55);margin-top:14px;transition:.2s;}
 .doc-card-arrow svg{width:12px;height:12px;transition:.2s;}
@@ -224,6 +224,16 @@ body{background:var(--light);color:#222;min-height:100vh;padding-top:80px;}
     </div>
   </section>
 
+  <!-- Mes outils -->
+  <section class="stag-section">
+    <div class="stag-section-head">
+      <div><h2>Mes outils</h2><p>Outils de préparation de vol réservés aux comptes connectés</p></div>
+    </div>
+    <div class="form-grid" id="outils-grid">
+      <div class="empty-state">Chargement…</div>
+    </div>
+  </section>
+
   <!-- Documents -->
   <section class="stag-section">
     <div class="stag-section-head">
@@ -369,6 +379,7 @@ onAuthStateChanged(auth, async user => {
       showAdminBanner();
       renderWelcome();
       renderFormations();
+      renderOutils();
       renderDocuments();
       renderEmargement();
       return;
@@ -382,6 +393,7 @@ onAuthStateChanged(auth, async user => {
     document.getElementById('stag-app').style.display = 'block';
     renderWelcome();
     renderFormations();
+    renderOutils();
     renderDocuments();
     renderEmargement();
   }catch(e){
@@ -437,6 +449,40 @@ function renderFormations(){
       </a>`;
     grid.appendChild(card);
   });
+}
+
+async function renderOutils(){
+  const grid = document.getElementById('outils-grid');
+  try{
+    const snap = await getDocs(collection(db,'outils'));
+    if(snap.empty){
+      grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+        Aucun outil disponible pour le moment.
+      </div>`;
+      return;
+    }
+    grid.innerHTML = '';
+    snap.forEach(d => {
+      const o = d.data();
+      const card = document.createElement('div');
+      card.className = 'form-card';
+      card.innerHTML = `
+        <span class="form-card-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="11" height="11"><path d="M20 6 9 17l-5-5"/></svg>
+          Débloqué
+        </span>
+        <h3>${o.nom}</h3>
+        <p style="font-size:.82rem;color:#7a8fa5;line-height:1.5;">${o.desc || ''}</p>
+        <a href="${o.url}" class="form-card-link">
+          Ouvrir l'outil
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>`;
+      grid.appendChild(card);
+    });
+  }catch(e){
+    grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1;">Erreur de chargement des outils.</div>';
+  }
 }
 
 function renderDocuments(){
