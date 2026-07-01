@@ -58,7 +58,7 @@ body{background:var(--light);color:#222;min-height:100vh;padding-top:80px;}
 .contact-link svg{width:17px;height:17px;color:var(--secondary);flex-shrink:0;}
 .toast{position:fixed;bottom:24px;right:24px;background:var(--primary);color:white;padding:13px 20px;border-radius:10px;font-size:.85rem;font-weight:500;box-shadow:0 12px 32px rgba(0,0,0,.2);z-index:2000;display:none;}
 
-.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:28px;}
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:28px;}
 .stat-card{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:18px 20px;backdrop-filter:blur(6px);}
 .stat-card .num{font-size:1.5rem;font-weight:800;color:white;}
 .stat-card .lbl{font-size:.74rem;color:rgba(255,255,255,.55);margin-top:2px;}
@@ -81,6 +81,7 @@ body{background:var(--light);color:#222;min-height:100vh;padding-top:80px;}
 .status-planifiee{background:#eef4fd;color:var(--secondary);}
 .status-encours{background:#fff2e0;color:var(--orange);}
 .status-terminee{background:#dcfce7;color:var(--green);}
+.status-retard{background:#fee2e2;color:var(--red);}
 
 /* Documents */
 .doc-list{display:flex;flex-direction:column;gap:10px;}
@@ -103,7 +104,7 @@ body{background:var(--light);color:#222;min-height:100vh;padding-top:80px;}
 
 @media(max-width:768px){
   .client-hero h1{font-size:1.4rem;}
-  .stat-row{grid-template-columns:1fr;}
+  .stat-row{grid-template-columns:1fr 1fr;}
   .mission-row{flex-direction:column;align-items:flex-start;}
   .devis-montant{margin-left:0;}
 }
@@ -155,7 +156,8 @@ body{background:var(--light);color:#222;min-height:100vh;padding-top:80px;}
       <div class="stat-row">
         <div class="stat-card"><div class="num" id="stat-missions">—</div><div class="lbl">Missions réalisées</div></div>
         <div class="stat-card"><div class="num" id="stat-docs">—</div><div class="lbl">Documents disponibles</div></div>
-        <div class="stat-card"><div class="num" id="stat-devis">—</div><div class="lbl">Devis / factures</div></div>
+        <div class="stat-card"><div class="num" id="stat-devis">—</div><div class="lbl">Devis</div></div>
+        <div class="stat-card"><div class="num" id="stat-factures">—</div><div class="lbl">Factures</div></div>
       </div>
     </div>
   </section>
@@ -180,12 +182,22 @@ body{background:var(--light);color:#222;min-height:100vh;padding-top:80px;}
     </div>
   </section>
 
-  <!-- Devis / Factures -->
-  <section class="client-section" style="padding-bottom:60px;">
+  <!-- Devis -->
+  <section class="client-section">
     <div class="client-section-head">
-      <div><h2>Devis &amp; factures</h2><p>Suivi de vos documents commerciaux</p></div>
+      <div><h2>Mes devis</h2><p>Propositions commerciales en attente ou validées</p></div>
     </div>
     <div class="devis-list" id="devis-list">
+      <div class="empty-state">Chargement…</div>
+    </div>
+  </section>
+
+  <!-- Factures -->
+  <section class="client-section" style="padding-bottom:60px;">
+    <div class="client-section-head">
+      <div><h2>Mes factures</h2><p>Suivi de vos factures et de leur règlement</p></div>
+    </div>
+    <div class="devis-list" id="facture-list">
       <div class="empty-state">Chargement…</div>
     </div>
   </section>
@@ -287,6 +299,7 @@ function showApp(){
   renderMissions();
   renderDocuments();
   renderDevis();
+  renderFactures();
 }
 
 function denyAccess(msg){
@@ -309,9 +322,11 @@ function renderWelcome(){
   const missions = currentClient.missions || [];
   const docs = currentClient.documents || [];
   const devis = currentClient.devis || [];
+  const factures = currentClient.factures || [];
   document.getElementById('stat-missions').textContent = missions.filter(m => m.statut === 'Terminée').length;
   document.getElementById('stat-docs').textContent = docs.length;
   document.getElementById('stat-devis').textContent = devis.length;
+  document.getElementById('stat-factures').textContent = factures.length;
 }
 
 function statusClass(statut){
@@ -379,7 +394,7 @@ function renderDevis(){
   if(!devis.length){
     list.innerHTML = `<div class="empty-state">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>
-      Aucun devis ou facture pour le moment.
+      Aucun devis pour le moment.
     </div>`;
     return;
   }
@@ -390,8 +405,31 @@ function renderDevis(){
     row.innerHTML = `
       <span class="devis-ref">${d.reference || '—'}</span>
       <span class="devis-date">${d.date ? new Date(d.date).toLocaleDateString('fr-FR') : ''}</span>
-      <span class="status-pill ${d.statut === 'Payé' || d.statut === 'Accepté' ? 'status-terminee' : d.statut === 'Envoyé' ? 'status-encours' : 'status-planifiee'}">${d.statut || 'Envoyé'}</span>
+      <span class="status-pill ${d.statut === 'Accepté' ? 'status-terminee' : d.statut === 'Envoyé' ? 'status-encours' : 'status-planifiee'}">${d.statut || 'Envoyé'}</span>
       <span class="devis-montant">${d.montant ? d.montant + ' € HT' : ''}</span>`;
+    list.appendChild(row);
+  });
+}
+
+function renderFactures(){
+  const list = document.getElementById('facture-list');
+  const factures = currentClient.factures || [];
+  if(!factures.length){
+    list.innerHTML = `<div class="empty-state">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>
+      Aucune facture pour le moment.
+    </div>`;
+    return;
+  }
+  list.innerHTML = '';
+  factures.slice().sort((a,b) => (b.date||'').localeCompare(a.date||'')).forEach(f => {
+    const row = document.createElement('div');
+    row.className = 'devis-row';
+    row.innerHTML = `
+      <span class="devis-ref">${f.reference || '—'}</span>
+      <span class="devis-date">${f.date ? new Date(f.date).toLocaleDateString('fr-FR') : ''}</span>
+      <span class="status-pill ${f.statut === 'Payée' ? 'status-terminee' : f.statut === 'En retard' ? 'status-retard' : 'status-encours'}">${f.statut || 'Émise'}</span>
+      <span class="devis-montant">${f.montant ? f.montant + ' € HT' : ''}</span>`;
     list.appendChild(row);
   });
 }
