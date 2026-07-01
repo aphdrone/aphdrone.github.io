@@ -3,252 +3,342 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>APH Drone — Espace Professionnel</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<title>Espace Client — APH Drone</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/style.css">
 <style>
-:root{--primary:#0B1F3A;--secondary:#1F5FAF;--accent:#4A90E2;--light:#F5F7FA;}
+:root{--primary:#0B1F3A;--secondary:#1F5FAF;--accent:#4A90E2;--light:#F5F7FA;--green:#16a34a;--orange:#ea580c;--red:#dc2626;}
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
-body{background:var(--light);color:var(--primary);}
+body{background:var(--light);color:#222;min-height:100vh;padding-top:80px;}
 
-.topbar{
-  background:var(--primary);color:white;
-  padding:0 40px;height:64px;
-  display:flex;align-items:center;justify-content:space-between;
-  position:sticky;top:0;z-index:100;
-  box-shadow:0 2px 16px rgba(0,0,0,.2);
-}
-.topbar-left{display:flex;align-items:center;gap:14px;}
-.topbar-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
-.topbar-logo img{height:38px;width:38px;border-radius:50%;object-fit:cover;}
-.topbar-logo span{font-size:15px;font-weight:700;color:white;letter-spacing:.06em;}
-.topbar-badge{
-  background:var(--secondary);color:white;
-  font-size:10px;font-weight:700;
-  padding:3px 10px;border-radius:20px;letter-spacing:.08em;text-transform:uppercase;
-}
-.topbar-right{display:flex;align-items:center;gap:16px;}
-.user-info{text-align:right;}
-.user-info .name{font-size:14px;font-weight:600;}
-.user-info .role{font-size:11px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.08em;}
-.avatar{
-  width:40px;height:40px;border-radius:50%;
-  background:var(--secondary);display:flex;align-items:center;justify-content:center;
-  font-size:15px;font-weight:700;color:white;flex-shrink:0;overflow:hidden;
-}
-.avatar img{width:100%;height:100%;object-fit:cover;}
-.btn-logout{
-  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);
-  color:rgba(255,255,255,.7);padding:7px 16px;border-radius:8px;
-  font-size:12px;font-weight:600;cursor:pointer;transition:.2s;
-}
-.btn-logout:hover{background:rgba(255,255,255,.2);color:white;}
+/* ── Gate ── */
+#gate{position:fixed;inset:0;background:linear-gradient(135deg,var(--primary) 0%,#1a3a6b 100%);display:flex;align-items:center;justify-content:center;z-index:9999;}
+.gate-box{background:white;border-radius:20px;padding:40px;width:100%;max-width:360px;text-align:center;}
+.gate-box img{width:64px;height:64px;border-radius:50%;margin-bottom:16px;}
+.gate-box h2{font-size:1.2rem;color:var(--primary);margin-bottom:6px;}
+.gate-box p{font-size:.85rem;color:#7a8fa5;margin-bottom:20px;}
+.gate-spinner{width:28px;height:28px;border:3px solid #e0e8f0;border-top-color:var(--secondary);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.gate-denied{color:var(--red);font-size:.85rem;font-weight:600;margin-top:12px;}
+.gate-link{display:inline-block;margin-top:16px;font-size:.82rem;color:var(--secondary);text-decoration:none;font-weight:600;}
 
-.main{max-width:1100px;margin:0 auto;padding:40px 24px;}
+/* ── App ── */
+#client-app{display:none;}
 
-.welcome{
-  background:linear-gradient(135deg,var(--primary),var(--secondary));
-  border-radius:16px;padding:32px 36px;color:white;
-  margin-bottom:32px;
-  border-left:4px solid var(--accent);
+/* Hero */
+.client-hero{background:linear-gradient(135deg,var(--primary) 0%,#1a3a6b 100%);padding:48px 5%;position:relative;overflow:hidden;}
+.client-hero::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:56px 56px;}
+.client-hero-inner{max-width:1100px;margin:0 auto;position:relative;z-index:1;}
+.client-hero-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;}
+.client-hero-eyebrow{font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:8px;}
+.client-hero h1{font-size:1.8rem;color:white;font-weight:800;margin-bottom:6px;}
+.client-hero p{color:rgba(255,255,255,.7);font-size:.92rem;}
+.btn-logout-client{font-size:.78rem;color:rgba(255,255,255,.7);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:9px 15px;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:7px;flex-shrink:0;}
+.btn-logout-client:hover{background:rgba(255,255,255,.15);color:white;}
+.btn-logout-client svg{width:14px;height:14px;}
+
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:28px;}
+.stat-card{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:18px 20px;backdrop-filter:blur(6px);}
+.stat-card .num{font-size:1.5rem;font-weight:800;color:white;}
+.stat-card .lbl{font-size:.74rem;color:rgba(255,255,255,.55);margin-top:2px;}
+
+/* Section wrap */
+.client-section{max-width:1100px;margin:0 auto;padding:44px 5% 10px;}
+.client-section-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:20px;}
+.client-section-head h2{font-size:1.2rem;color:var(--primary);font-weight:700;}
+.client-section-head p{font-size:.82rem;color:#94a3b8;margin-top:3px;}
+
+.empty-state{background:white;border:1.5px dashed #dde3ec;border-radius:16px;padding:44px 24px;text-align:center;color:#94a3b8;font-size:.88rem;}
+.empty-state svg{width:36px;height:36px;color:#cbd5e1;margin-bottom:12px;}
+
+/* Missions timeline */
+.mission-list{display:flex;flex-direction:column;gap:12px;}
+.mission-row{background:white;border:1px solid #e8edf4;border-radius:14px;padding:18px 22px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+.mission-info h4{font-size:.92rem;color:var(--primary);font-weight:700;margin-bottom:3px;}
+.mission-info p{font-size:.76rem;color:#94a3b8;}
+.status-pill{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:20px;font-size:.72rem;font-weight:700;white-space:nowrap;}
+.status-planifiee{background:#eef4fd;color:var(--secondary);}
+.status-encours{background:#fff2e0;color:var(--orange);}
+.status-terminee{background:#dcfce7;color:var(--green);}
+
+/* Documents */
+.doc-list{display:flex;flex-direction:column;gap:10px;}
+.doc-row{display:flex;align-items:center;gap:14px;background:white;border:1px solid #e8edf4;border-radius:12px;padding:14px 18px;transition:.2s;}
+.doc-row:hover{border-color:var(--accent);}
+.doc-icon{width:38px;height:38px;border-radius:9px;background:#eef4fd;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--secondary);}
+.doc-icon svg{width:18px;height:18px;}
+.doc-info{flex:1;min-width:0;}
+.doc-info .name{font-size:.88rem;font-weight:600;color:var(--primary);}
+.doc-info .meta{font-size:.75rem;color:#94a3b8;margin-top:1px;}
+.doc-dl{width:36px;height:36px;border-radius:9px;border:1px solid #e8edf4;display:flex;align-items:center;justify-content:center;color:#64748b;text-decoration:none;transition:.2s;flex-shrink:0;}
+.doc-dl:hover{background:var(--secondary);color:white;border-color:var(--secondary);}
+
+/* Devis / factures */
+.devis-list{display:flex;flex-direction:column;gap:10px;}
+.devis-row{display:flex;align-items:center;gap:16px;background:white;border:1px solid #e8edf4;border-radius:12px;padding:16px 20px;flex-wrap:wrap;}
+.devis-ref{font-size:.88rem;font-weight:700;color:var(--primary);min-width:120px;}
+.devis-montant{font-size:.9rem;font-weight:700;color:var(--primary);margin-left:auto;}
+.devis-date{font-size:.78rem;color:#94a3b8;}
+
+@media(max-width:768px){
+  .client-hero h1{font-size:1.4rem;}
+  .stat-row{grid-template-columns:1fr;}
+  .mission-row{flex-direction:column;align-items:flex-start;}
+  .devis-montant{margin-left:0;}
 }
-.welcome h1{font-size:24px;font-weight:700;margin-bottom:6px;}
-.welcome p{font-size:14px;opacity:.75;line-height:1.6;}
-
-.section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#999;margin-bottom:14px;}
-
-.quick-links{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:32px;}
-.quick-link{
-  display:flex;align-items:center;gap:8px;
-  padding:10px 18px;background:white;border:1.5px solid #e8edf4;
-  border-radius:10px;font-size:13px;font-weight:500;color:var(--primary);
-  text-decoration:none;transition:.2s;
-}
-.quick-link:hover{border-color:var(--accent);color:var(--accent);}
-.quick-link svg{color:var(--accent);}
-
-.table-wrap{background:white;border-radius:14px;box-shadow:0 2px 12px rgba(0,0,0,.06);overflow:hidden;margin-bottom:32px;}
-table{width:100%;border-collapse:collapse;}
-th{background:#f8fafc;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#999;padding:12px 20px;text-align:left;}
-td{padding:14px 20px;font-size:13px;border-top:1px solid #f0f4f8;color:var(--primary);}
-tr:hover td{background:#fafbff;}
-.badge{display:inline-flex;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;}
-.badge-done{background:#e8f8ee;color:#27ae60;}
-.badge-progress{background:#e8f0fb;color:var(--accent);}
-.badge-pending{background:#fff8e6;color:#f39c12;}
-
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:20px;}
-.card{
-  background:white;border-radius:14px;padding:24px;
-  box-shadow:0 2px 12px rgba(0,0,0,.06);transition:.3s;
-}
-.card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.1);}
-.card-icon{
-  width:44px;height:44px;border-radius:12px;
-  background:rgba(31,95,175,.1);display:flex;align-items:center;justify-content:center;
-  margin-bottom:14px;color:var(--secondary);
-}
-.card h3{font-size:15px;font-weight:600;margin-bottom:6px;color:var(--primary);}
-.card p{font-size:13px;color:#666;line-height:1.5;margin-bottom:16px;}
-.card-link{font-size:13px;font-weight:600;color:var(--accent);text-decoration:none;display:inline-flex;align-items:center;gap:5px;}
-.card-link:hover{text-decoration:underline;}
 </style>
 </head>
 <body>
 
-<div class="topbar">
-  <div class="topbar-left">
-    <a href="../index.html" class="topbar-logo">
-      <img src="../assets/logo.jpg" alt="APH Drone">
-      <span>APH Drone</span>
-    </a>
-    <span class="topbar-badge">Espace Professionnel</span>
-  </div>
-  <div class="topbar-right">
-    <div class="user-info">
-      <div class="name" id="user-name">Chargement...</div>
-      <div class="role">Professionnel</div>
+<!-- ═══ Header ═══ -->
+<div id="header-placeholder"></div>
+
+<!-- ═══ GATE ═══ -->
+<div id="gate">
+  <div class="gate-box">
+    <img src="../assets/logo.jpg" alt="APH Drone">
+    <h2>Espace Client</h2>
+    <p id="gate-status">Vérification de l'accès…</p>
+    <div class="gate-spinner" id="gate-spinner"></div>
+    <div id="gate-denied" style="display:none;">
+      <p class="gate-denied">Accès refusé. Merci de vous connecter avec votre compte client.</p>
+      <a href="connexion.html" class="gate-link">← Retour à la connexion</a>
     </div>
-    <div class="avatar" id="user-avatar"></div>
-    <button class="btn-logout" onclick="logout()">Déconnexion</button>
   </div>
 </div>
 
-<div class="main">
+<!-- ═══ APP ═══ -->
+<div id="client-app">
 
-  <div class="welcome">
-    <h1>Bonjour, <span id="welcome-name">...</span></h1>
-    <p>Bienvenue dans votre espace professionnel APH Drone. Retrouvez vos missions, devis et livrables.</p>
-  </div>
+  <!-- Hero -->
+  <section class="client-hero">
+    <div class="client-hero-inner">
+      <div class="client-hero-top">
+        <div>
+          <p class="client-hero-eyebrow">Espace personnel</p>
+          <h1 id="client-welcome">Bienvenue</h1>
+          <p>Retrouvez vos missions, vos documents et vos devis/factures.</p>
+        </div>
+        <button class="btn-logout-client" id="btn-logout-client">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Se déconnecter
+        </button>
+      </div>
 
-  <p class="section-label">Accès rapide</p>
-  <div class="quick-links">
-    <a href="#" class="quick-link">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-      Mes devis
-    </a>
-    <a href="#" class="quick-link">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-      Mes rapports de mission
-    </a>
-    <a href="#" class="quick-link">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-      Mes factures
-    </a>
-    <a href="../pages/contact.html" class="quick-link">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-      Contacter APH Drone
-    </a>
-  </div>
+      <div class="stat-row">
+        <div class="stat-card"><div class="num" id="stat-missions">—</div><div class="lbl">Missions réalisées</div></div>
+        <div class="stat-card"><div class="num" id="stat-docs">—</div><div class="lbl">Documents disponibles</div></div>
+        <div class="stat-card"><div class="num" id="stat-devis">—</div><div class="lbl">Devis / factures</div></div>
+      </div>
+    </div>
+  </section>
 
-  <p class="section-label">Mes missions récentes</p>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th>Référence</th>
-          <th>Type de mission</th>
-          <th>Date</th>
-          <th>Statut</th>
-          <th>Livrables</th>
-        </tr>
-      </thead>
-      <tbody id="missions-tbody">
-        <tr><td colspan="5" style="text-align:center;color:#999;padding:24px;">Chargement...</td></tr>
-      </tbody>
-    </table>
-  </div>
+  <!-- Missions -->
+  <section class="client-section">
+    <div class="client-section-head">
+      <div><h2>Mes missions</h2><p>Historique des interventions APH Drone</p></div>
+    </div>
+    <div class="mission-list" id="mission-list">
+      <div class="empty-state">Chargement…</div>
+    </div>
+  </section>
 
-  <p class="section-label">Ressources et documents</p>
-  <div class="grid">
-    <div class="card">
-      <div class="card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
-      <h3>Devis et contrats</h3>
-      <p>Consultez et téléchargez vos devis acceptés et contrats de prestation.</p>
-      <a href="#" class="card-link">Accéder</a>
+  <!-- Documents -->
+  <section class="client-section">
+    <div class="client-section-head">
+      <div><h2>Mes documents</h2><p>Rapports de mission, livrables et données transmises</p></div>
     </div>
-    <div class="card">
-      <div class="card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
-      <h3>Rapports de mission</h3>
-      <p>Accédez à tous vos rapports d'intervention, analyses et données brutes.</p>
-      <a href="#" class="card-link">Voir les rapports</a>
+    <div class="doc-list" id="doc-list">
+      <div class="empty-state">Chargement…</div>
     </div>
-    <div class="card">
-      <div class="card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
-      <h3>Factures</h3>
-      <p>Historique de facturation, téléchargement PDF et suivi des paiements.</p>
-      <a href="#" class="card-link">Mes factures</a>
+  </section>
+
+  <!-- Devis / Factures -->
+  <section class="client-section" style="padding-bottom:60px;">
+    <div class="client-section-head">
+      <div><h2>Devis &amp; factures</h2><p>Suivi de vos documents commerciaux</p></div>
     </div>
-    <div class="card">
-      <div class="card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
-      <h3>Demander un devis</h3>
-      <p>Nouvelle mission ? Décrivez votre besoin, nous revenons vers vous sous 48h.</p>
-      <a href="../pages/contact.html" class="card-link">Faire une demande</a>
+    <div class="devis-list" id="devis-list">
+      <div class="empty-state">Chargement…</div>
     </div>
-  </div>
+  </section>
 
 </div>
+
+<!-- ═══ Bouton téléphone ═══ -->
+<a id="back-top" href="tel:0695390776">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.5 19.79 19.79 0 0 1 1.61 5a2 2 0 0 1 1.95-2H6a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 10a16 16 0 0 0 6 6l.27-.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 18z"/></svg>
+</a>
+
+<!-- ═══ Footer ═══ -->
+<div id="footer-placeholder"></div>
+
+<script src="/assets/include.js"></script>
 
 <script type="module">
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, collection, getDocs, query, where, doc, getDoc }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey:            "TON_API_KEY",
-  authDomain:        "TON_PROJECT.firebaseapp.com",
-  projectId:         "TON_PROJECT_ID",
-  storageBucket:     "TON_PROJECT.appspot.com",
-  messagingSenderId: "TON_SENDER_ID",
-  appId:             "TON_APP_ID"
+  apiKey: "AIzaSyAV5NQWfp8n9RkTrHSwqssBJ4R9lNAuYK8",
+  authDomain: "aph-drone.firebaseapp.com",
+  projectId: "aph-drone",
+  storageBucket: "aph-drone.firebasestorage.app",
+  messagingSenderId: "316810168380",
+  appId: "1:316810168380:web:66cb916cec4fdc00b9db39"
 };
 
-const app  = initializeApp(firebaseConfig);
+const ADMIN_EMAIL = 'aph.moreau@gmail.com';
+const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db   = getFirestore(app);
+const db = getFirestore(app);
 
-function renderMissions(missions){
-  const tbody = document.getElementById('missions-tbody');
-  if(!missions || missions.length === 0){
-    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#999;padding:24px;">Aucune mission enregistrée pour le moment.</td></tr>';
-    return;
-  }
-  tbody.innerHTML = missions.map(m => `
-    <tr>
-      <td><strong>${m.ref}</strong></td>
-      <td>${m.type}</td>
-      <td>${m.date}</td>
-      <td><span class="badge badge-${m.statut==='Terminée'?'done':m.statut==='En cours'?'progress':'pending'}">${m.statut}</span></td>
-      <td>${m.livrable ? `<a href="${m.livrable}" style="color:var(--accent);font-size:13px;">Télécharger</a>` : '<span style="color:#bbb;">—</span>'}</td>
-    </tr>`).join('');
-}
+const urlParams = new URLSearchParams(window.location.search);
+const adminViewId = urlParams.get('admin_view');
+
+let currentClient = null;
 
 onAuthStateChanged(auth, async user => {
-  if(!user){ window.location.href = '../login.html'; return; }
-
-  const snap = await getDoc(doc(db,'users', user.uid));
-  if(snap.exists() && snap.data().role === 'stagiaire'){
-    window.location.href = 'espace-stagiaires.html'; return;
+  if(!user){ denyAccess("Vous n'êtes pas connecté."); return; }
+  try{
+    if(adminViewId && user.email === ADMIN_EMAIL){
+      const snap = await getDoc(doc(db,'clients',adminViewId));
+      if(!snap.exists()){ denyAccess("Ce client n'existe pas."); return; }
+      currentClient = snap.data();
+      showApp();
+      showAdminBanner();
+      return;
+    }
+    const snap = await getDocs(query(collection(db,'clients'), where('email','==',user.email)));
+    if(snap.empty){ denyAccess("Ce compte n'est pas enregistré comme client."); return; }
+    currentClient = snap.docs[0].data();
+    showApp();
+  }catch(e){
+    denyAccess('Erreur de connexion : ' + e.message);
   }
-
-  const data = snap.data() || {};
-  const name = user.displayName || data.name || 'Client';
-  document.getElementById('user-name').textContent = name;
-  document.getElementById('welcome-name').textContent = name.split(' ')[0];
-
-  const avatarEl = document.getElementById('user-avatar');
-  if(user.photoURL){
-    avatarEl.innerHTML = `<img src="${user.photoURL}" alt="${name}">`;
-  } else {
-    avatarEl.textContent = name.charAt(0).toUpperCase();
-  }
-
-  renderMissions(data.missions || []);
 });
 
-window.logout = async function(){
-  await signOut(auth);
-  window.location.href = '../login.html';
-};
+function showApp(){
+  document.getElementById('gate').style.display = 'none';
+  document.getElementById('client-app').style.display = 'block';
+  renderWelcome();
+  renderMissions();
+  renderDocuments();
+  renderDevis();
+}
+
+function denyAccess(msg){
+  document.getElementById('gate-status').textContent = msg;
+  document.getElementById('gate-spinner').style.display = 'none';
+  document.getElementById('gate-denied').style.display = 'block';
+}
+
+function showAdminBanner(){
+  document.getElementById('btn-logout-client').style.display = 'none';
+  const banner = document.createElement('div');
+  banner.style.cssText = 'background:#0B1F3A;color:white;text-align:center;padding:10px 16px;font-size:.8rem;font-weight:600;';
+  banner.innerHTML = 'Mode aperçu administrateur — vous consultez l\'espace de ' + (currentClient.name || 'ce client') + ' &nbsp;·&nbsp; <a href="/office/" style="color:#7fc8ff;">← Retour à l\'administration</a>';
+  document.body.insertBefore(banner, document.body.firstChild);
+}
+
+function renderWelcome(){
+  document.getElementById('client-welcome').textContent = currentClient.name ? 'Bienvenue, ' + currentClient.name : 'Bienvenue';
+  const missions = currentClient.missions || [];
+  const docs = currentClient.documents || [];
+  const devis = currentClient.devis || [];
+  document.getElementById('stat-missions').textContent = missions.filter(m => m.statut === 'Terminée').length;
+  document.getElementById('stat-docs').textContent = docs.length;
+  document.getElementById('stat-devis').textContent = devis.length;
+}
+
+function statusClass(statut){
+  if(statut === 'Terminée') return 'status-terminee';
+  if(statut === 'En cours') return 'status-encours';
+  return 'status-planifiee';
+}
+
+function renderMissions(){
+  const list = document.getElementById('mission-list');
+  const missions = currentClient.missions || [];
+  if(!missions.length){
+    list.innerHTML = `<div class="empty-state">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+      Aucune mission enregistrée pour le moment.
+    </div>`;
+    return;
+  }
+  list.innerHTML = '';
+  missions.slice().sort((a,b) => (b.date||'').localeCompare(a.date||'')).forEach(m => {
+    const row = document.createElement('div');
+    row.className = 'mission-row';
+    row.innerHTML = `
+      <div class="mission-info">
+        <h4>${m.nom || 'Mission'}</h4>
+        <p>${m.date ? new Date(m.date).toLocaleDateString('fr-FR') : '—'}</p>
+      </div>
+      <span class="status-pill ${statusClass(m.statut)}">${m.statut || 'Planifiée'}</span>`;
+    list.appendChild(row);
+  });
+}
+
+function renderDocuments(){
+  const list = document.getElementById('doc-list');
+  const docs = currentClient.documents || [];
+  if(!docs.length){
+    list.innerHTML = `<div class="empty-state">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+      Aucun document disponible pour le moment.
+    </div>`;
+    return;
+  }
+  list.innerHTML = '';
+  docs.forEach(d => {
+    const row = document.createElement('div');
+    row.className = 'doc-row';
+    row.innerHTML = `
+      <div class="doc-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+      </div>
+      <div class="doc-info">
+        <div class="name">${d.name}</div>
+        <div class="meta">${d.type || 'Document'}</div>
+      </div>
+      <a class="doc-dl" href="${d.url}" target="_blank" title="Télécharger">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      </a>`;
+    list.appendChild(row);
+  });
+}
+
+function renderDevis(){
+  const list = document.getElementById('devis-list');
+  const devis = currentClient.devis || [];
+  if(!devis.length){
+    list.innerHTML = `<div class="empty-state">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>
+      Aucun devis ou facture pour le moment.
+    </div>`;
+    return;
+  }
+  list.innerHTML = '';
+  devis.slice().sort((a,b) => (b.date||'').localeCompare(a.date||'')).forEach(d => {
+    const row = document.createElement('div');
+    row.className = 'devis-row';
+    row.innerHTML = `
+      <span class="devis-ref">${d.reference || '—'}</span>
+      <span class="devis-date">${d.date ? new Date(d.date).toLocaleDateString('fr-FR') : ''}</span>
+      <span class="status-pill ${d.statut === 'Payé' || d.statut === 'Accepté' ? 'status-terminee' : d.statut === 'Envoyé' ? 'status-encours' : 'status-planifiee'}">${d.statut || 'Envoyé'}</span>
+      <span class="devis-montant">${d.montant ? d.montant + ' € HT' : ''}</span>`;
+    list.appendChild(row);
+  });
+}
+
+document.getElementById('btn-logout-client').addEventListener('click', () => {
+  signOut(auth).then(() => window.location.href = 'connexion.html');
+});
 </script>
 </body>
 </html>
