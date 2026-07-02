@@ -107,6 +107,20 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
 .related-link{font-size:13px;color:var(--secondary);text-decoration:none;font-weight:500;display:block;margin-bottom:8px;}
 .related-link:hover{color:var(--accent);}
 
+/* Emplacement photo */
+.media-photo{position:relative;border-radius:14px;overflow:hidden;height:320px;background:var(--light);box-shadow:0 4px 24px rgba(0,0,0,.06);}
+.media-photo img{width:100%;height:100%;object-fit:cover;display:block;}
+.media-photo-caption{position:absolute;left:0;right:0;bottom:0;padding:18px 22px;background:linear-gradient(180deg,transparent,rgba(11,31,58,.85));color:white;font-size:13px;font-weight:500;}
+
+/* Emplacement vidéo */
+.media-video{position:relative;border-radius:14px;overflow:hidden;aspect-ratio:16/9;background:linear-gradient(135deg,var(--primary),#1a3a6e);box-shadow:0 4px 24px rgba(0,0,0,.06);cursor:pointer;}
+.media-video img{width:100%;height:100%;object-fit:cover;opacity:.55;}
+.media-video-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;}
+.media-video-play{width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.4);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;color:white;transition:.25s;}
+.media-video:hover .media-video-play{background:var(--accent);border-color:var(--accent);transform:scale(1.08);}
+.media-video-label{color:white;font-size:13px;font-weight:600;letter-spacing:.02em;}
+
+
 /* ── Responsive mobile ── */
 @media(max-width:768px){
   .page-hero{grid-template-columns:1fr !important;padding:80px 6% 40px !important;}
@@ -116,6 +130,7 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
   .appli-grid{grid-template-columns:1fr !important;}
   .materiel-grid{grid-template-columns:1fr !important;}
   .form-row{grid-template-columns:1fr !important;}
+  .media-photo{height:220px !important;}
 }
 </style>
 </head>
@@ -179,29 +194,31 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
       <h2>Domaines d'intervention</h2>
       <div class="appli-grid">
         <div class="appli-card">
-          <div class="appli-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
           <div><h3>Audit de faisabilité drone</h3><p>Analyse de vos besoins, évaluation de la pertinence du drone pour vos activités, étude de retour sur investissement et identification des cas d'usage prioritaires.</p></div>
         </div>
         <div class="appli-card">
-          <div class="appli-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
           <div><h3>Conseil en équipement &amp; choix d'UAS</h3><p>Aide au choix des drones et capteurs adaptés à vos usages, comparatif technique, analyse des contraintes réglementaires et recommandations d'achat indépendantes.</p></div>
         </div>
         <div class="appli-card">
-          <div class="appli-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
           <div><h3>Structuration des processus opérationnels</h3><p>Conception des procédures de vol, des check-lists, des processus de gestion des données et de traçabilité adaptés à votre activité et conformes aux exigences DGAC.</p></div>
         </div>
         <div class="appli-card">
-          <div class="appli-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
           <div><h3>Accompagnement au démarrage d'activité</h3><p>Aide à la création de votre entreprise drone, obtention des enregistrements DGAC, mise en place de la couverture assurance et accompagnement lors des premières missions.</p></div>
         </div>
         <div class="appli-card">
-          <div class="appli-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
           <div><h3>Audit opérationnel de structure existante</h3><p>Évaluation des pratiques d'une structure drone déjà en activité : conformité réglementaire, sécurité des vols, qualité des livrables, organisation et compétences.</p></div>
         </div>
         <div class="appli-card">
-          <div class="appli-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
           <div><h3>Conseil en développement commercial drone</h3><p>Aide à la définition de votre offre de services, tarification, stratégie de prospection et développement de partenariats dans l'écosystème drone.</p></div>
         </div>
+      </div>
+    </div>
+
+        <!-- Emplacement photo -->
+    <div class="section-block">
+      <div class="media-photo">
+        <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&q=80" alt="Photo à venir">
+        <div class="media-photo-caption">Photo à remplacer par un visuel réel de mission APH Drone</div>
       </div>
     </div>
 
@@ -274,6 +291,20 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
       </div>
     </div>
 
+        <!-- Emplacement vidéo -->
+    <div class="section-block">
+      <h2>Exemple de mission</h2>
+      <div class="media-video" onclick="alert('Emplacement réservé pour une vidéo de mission — à connecter à un fichier ou un lien YouTube/Vimeo.')">
+        <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&q=80" alt="Aperçu vidéo de mission">
+        <div class="media-video-overlay">
+          <div class="media-video-play">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+          <span class="media-video-label">Vidéo à intégrer</span>
+        </div>
+      </div>
+    </div>
+
     <!-- Livrables -->
     <div class="section-block">
       <h2>Livrables inclus</h2>
@@ -290,7 +321,6 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
     <!-- Certifications -->
     <div class="section-block">
       <div class="certif-banner">
-        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
         <div>
           <h3>Expérience croisée direction &amp; drone</h3>
           <p>Fondateur d'APH Drone, Arnaud MOREAU combine 25 ans de direction générale et de formation en grande distribution avec une expertise drone opérationnelle complète (DGAC STS-01, SORA, CATS). Une double compétence rare au service de votre développement.</p>

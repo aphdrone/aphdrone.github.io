@@ -107,6 +107,20 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
 .related-link{font-size:13px;color:var(--secondary);text-decoration:none;font-weight:500;display:block;margin-bottom:8px;}
 .related-link:hover{color:var(--accent);}
 
+/* Emplacement photo */
+.media-photo{position:relative;border-radius:14px;overflow:hidden;height:320px;background:var(--light);box-shadow:0 4px 24px rgba(0,0,0,.06);}
+.media-photo img{width:100%;height:100%;object-fit:cover;display:block;}
+.media-photo-caption{position:absolute;left:0;right:0;bottom:0;padding:18px 22px;background:linear-gradient(180deg,transparent,rgba(11,31,58,.85));color:white;font-size:13px;font-weight:500;}
+
+/* Emplacement vidéo */
+.media-video{position:relative;border-radius:14px;overflow:hidden;aspect-ratio:16/9;background:linear-gradient(135deg,var(--primary),#1a3a6e);box-shadow:0 4px 24px rgba(0,0,0,.06);cursor:pointer;}
+.media-video img{width:100%;height:100%;object-fit:cover;opacity:.55;}
+.media-video-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;}
+.media-video-play{width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.4);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;color:white;transition:.25s;}
+.media-video:hover .media-video-play{background:var(--accent);border-color:var(--accent);transform:scale(1.08);}
+.media-video-label{color:white;font-size:13px;font-weight:600;letter-spacing:.02em;}
+
+
 /* ── Responsive mobile ── */
 @media(max-width:768px){
   .page-hero{grid-template-columns:1fr !important;padding:80px 6% 40px !important;}
@@ -116,6 +130,7 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
   .appli-grid{grid-template-columns:1fr !important;}
   .materiel-grid{grid-template-columns:1fr !important;}
   .form-row{grid-template-columns:1fr !important;}
+  .media-photo{height:220px !important;}
 }
 </style>
 </head>
@@ -179,29 +194,31 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
       <h2>Cas d'utilisation</h2>
       <div class="appli-grid">
         <div class="appli-card">
-          <div class="appli-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
           <div><h3>Renfort ponctuel de votre équipe</h3><p>Vous disposez de drones mais pas du télépilote disponible ou compétent pour une mission spécifique. Intervention en renfort le temps d'une mission ou d'un projet.</p></div>
         </div>
         <div class="appli-card">
-          <div class="appli-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
           <div><h3>Production audiovisuelle &amp; événementiel</h3><p>Tournages, clips, reportages, couverture d'événements sportifs ou culturels nécessitant un télépilote expérimenté pour opérer votre matériel de prise de vue.</p></div>
         </div>
         <div class="appli-card">
-          <div class="appli-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>
           <div><h3>BTP &amp; aménagement</h3><p>Suivi de chantier, relevés topographiques, inspection d'ouvrages avec votre propre matériel drone. Le télépilote opère, vous conservez la maîtrise des données.</p></div>
         </div>
         <div class="appli-card">
-          <div class="appli-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
           <div><h3>Collectivités &amp; services publics</h3><p>Missions ponctuelles pour communes, EPCI, services techniques : surveillance, cartographie, inspection de patrimoine bâti avec les drones de la collectivité.</p></div>
         </div>
         <div class="appli-card">
-          <div class="appli-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg></div>
           <div><h3>Agriculture &amp; environnement</h3><p>Opération de votre drone agricole ou de vos capteurs multispectraux par un télépilote maîtrisant les contraintes spécifiques (AGRAS T100, catégorie Spécifique SORA).</p></div>
         </div>
         <div class="appli-card">
-          <div class="appli-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></div>
           <div><h3>Sécurité civile &amp; intervention</h3><p>Appui aux missions de sécurité civile, de recherche de personnes ou d'intervention d'urgence en partenariat avec les services concernés (SDIS, gendarmerie, sécurité civile).</p></div>
         </div>
+      </div>
+    </div>
+
+        <!-- Emplacement photo -->
+    <div class="section-block">
+      <div class="media-photo">
+        <img src="https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=1200&q=80" alt="Photo à venir">
+        <div class="media-photo-caption">Photo à remplacer par un visuel réel de mission APH Drone</div>
       </div>
     </div>
 
@@ -274,6 +291,20 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
       </div>
     </div>
 
+        <!-- Emplacement vidéo -->
+    <div class="section-block">
+      <h2>Exemple de mission</h2>
+      <div class="media-video" onclick="alert('Emplacement réservé pour une vidéo de mission — à connecter à un fichier ou un lien YouTube/Vimeo.')">
+        <img src="https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=1200&q=80" alt="Aperçu vidéo de mission">
+        <div class="media-video-overlay">
+          <div class="media-video-play">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+          <span class="media-video-label">Vidéo à intégrer</span>
+        </div>
+      </div>
+    </div>
+
     <!-- Livrables -->
     <div class="section-block">
       <h2>Livrables inclus</h2>
@@ -290,7 +321,6 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
     <!-- Certifications -->
     <div class="section-block">
       <div class="certif-banner">
-        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
         <div>
           <h3>Votre drone, notre expertise</h3>
           <p>Vous conservez la propriété et la maîtrise de votre matériel. Nous apportons le télépilote certifié, l'expertise opérationnelle et la conformité réglementaire. Une solution flexible qui valorise votre investissement matériel.</p>
