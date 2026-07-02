@@ -312,7 +312,7 @@ line-height:1;
 }
 
 /* ── Actualités : mosaïque bento ── */
-.actu-section{background:#fff;}
+.actu-section{background:#fff;padding-bottom:40px;}
 .actu-header{
   display:flex;justify-content:space-between;align-items:flex-end;
   margin-bottom:40px;
@@ -356,7 +356,7 @@ line-height:1;
   transition:.3s;
 }
 .actu-tile:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,.08);}
-.actu-tile--c,.actu-tile--d{grid-column:span 2;min-height:420px;}
+.actu-tile--c,.actu-tile--d,.actu-tile--e,.actu-tile--f{grid-column:span 2;min-height:420px;}
 .actu-tile-cat{
   display:inline-block;font-size:.8rem;font-weight:700;letter-spacing:.02em;text-transform:uppercase;
   margin-bottom:10px;
@@ -364,11 +364,13 @@ line-height:1;
 .actu-tile--a .actu-tile-cat,.actu-tile--b .actu-tile-cat{color:#dc2626;}
 .actu-tile--c .actu-tile-cat{color:#7c3aed;}
 .actu-tile--d .actu-tile-cat{color:#16a34a;}
+.actu-tile--e .actu-tile-cat{color:#ea580c;}
+.actu-tile--f .actu-tile-cat{color:#0B1F3A;}
 .actu-tile-date{font-size:.78rem;font-weight:600;color:#86868b;margin-left:8px;}
 .actu-tile-title{color:#1d1d1f;font-weight:800;line-height:1.15;letter-spacing:-.01em;margin-bottom:12px;}
 .actu-tile--a .actu-tile-title{font-size:1.7rem;}
 .actu-tile--b .actu-tile-title{font-size:1.7rem;}
-.actu-tile--c .actu-tile-title,.actu-tile--d .actu-tile-title{font-size:1.35rem;}
+.actu-tile--c .actu-tile-title,.actu-tile--d .actu-tile-title,.actu-tile--e .actu-tile-title,.actu-tile--f .actu-tile-title{font-size:1.35rem;}
 .actu-tile-excerpt{color:#555;font-size:.95rem;line-height:1.55;max-width:420px;margin-bottom:20px;}
 .actu-tile-imgwrap{margin-top:auto;flex:1;display:flex;align-items:flex-end;justify-content:center;min-height:180px;padding-top:10px;}
 .actu-tile-imgwrap img{
@@ -652,7 +654,7 @@ body{padding-top:0;}
 
   /* ── Actualités ── */
   .actu-bento{grid-template-columns:1fr !important;}
-  .actu-tile,.actu-tile--a,.actu-tile--b,.actu-tile--c,.actu-tile--d{grid-column:1 !important;min-height:auto !important;padding:26px 26px 0 !important;}
+  .actu-tile,.actu-tile--a,.actu-tile--b,.actu-tile--c,.actu-tile--d,.actu-tile--e,.actu-tile--f{grid-column:1 !important;min-height:auto !important;padding:26px 26px 0 !important;}
   .actu-tile--a .actu-tile-title,.actu-tile--b .actu-tile-title{font-size:1.35rem !important;}
 
   /* ── Témoignages ── */
@@ -1005,7 +1007,6 @@ Découvrir nos formations
       <span class="actu-label">Actualités</span>
       <h2 class="section-title" style="margin-bottom:0;">Dernières nouvelles</h2>
     </div>
-    <a href="pages/actualites.html" class="btn-section btn-section--outline">Toutes les actualités</a>
   </div>
 
   <div class="actu-filters reveal">
@@ -1061,6 +1062,28 @@ Découvrir nos formations
       </div>
       <div class="actu-tile-imgwrap">
         <img src="https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=700&q=80" alt="Thermographie">
+      </div>
+    </a>
+
+    <a href="pages/actualites.html" class="actu-tile actu-tile--e" id="actu-tile-e">
+      <div>
+        <span class="actu-tile-cat">Agriculture</span><span class="actu-tile-date">Avril 2026</span>
+        <h3 class="actu-tile-title">Démarrage de la saison multispectrale</h3>
+        <p class="actu-tile-excerpt">Premières missions d'imagerie multispectrale sur céréales, indices NDVI et NDRE.</p>
+      </div>
+      <div class="actu-tile-imgwrap">
+        <img src="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=700&q=80" alt="Agriculture de précision">
+      </div>
+    </a>
+
+    <a href="pages/actualites.html" class="actu-tile actu-tile--f" id="actu-tile-f">
+      <div>
+        <span class="actu-tile-cat">Sécurité civile</span><span class="actu-tile-date">Avril 2026</span>
+        <h3 class="actu-tile-title">Partenariat renforcé avec le SDIS 70</h3>
+        <p class="actu-tile-excerpt">Formation continue des équipes drone pour les missions de recherche et de secours.</p>
+      </div>
+      <div class="actu-tile-imgwrap">
+        <img src="https://images.unsplash.com/photo-1587293852726-70cdb56c2866?w=700&q=80" alt="Sécurité civile">
       </div>
     </a>
 
@@ -1292,12 +1315,12 @@ const firebaseConfig = {
 try {
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
-  const q = query(collection(db, 'actualites'), orderBy('ordre','desc'), limit(4));
+  const q = query(collection(db, 'actualites'), orderBy('ordre','desc'), limit(6));
   const snap = await getDocs(q);
   if(!snap.empty){
     const docs = [];
     snap.forEach(d => docs.push(d.data()));
-    const tileIds = ['actu-tile-a','actu-tile-b','actu-tile-c','actu-tile-d'];
+    const tileIds = ['actu-tile-a','actu-tile-b','actu-tile-c','actu-tile-d','actu-tile-e','actu-tile-f'];
     docs.forEach((d, i) => {
       if(i >= tileIds.length) return;
       const tile = document.getElementById(tileIds[i]);
