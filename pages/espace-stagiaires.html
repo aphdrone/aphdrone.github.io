@@ -54,6 +54,15 @@ body{background:var(--light);color:#222;min-height:100vh;padding-top:80px;}
 .contact-link{display:flex;align-items:center;gap:10px;padding:13px 16px;background:var(--light);border-radius:10px;text-decoration:none;color:var(--primary);font-size:.85rem;font-weight:600;margin-top:6px;transition:.2s;}
 .contact-link:hover{background:#eef4fd;}
 .contact-link svg{width:17px;height:17px;color:var(--secondary);flex-shrink:0;}
+
+/* Sécurité / mot de passe */
+.modal-divider{height:1px;background:#e8edf4;margin:22px 0 16px;}
+.security-label{font-size:.72rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.03em;margin-bottom:10px;}
+.security-toggle{display:flex;align-items:center;gap:8px;background:none;border:none;color:var(--secondary);font-size:.85rem;font-weight:600;cursor:pointer;padding:0;}
+.security-toggle:hover{color:var(--accent);}
+.security-toggle svg{width:15px;height:15px;flex-shrink:0;}
+#pwd-fields{margin-top:16px;}
+.pwd-hint{font-size:.74rem;color:#94a3b8;margin:-8px 0 16px;}
 .stag-hero h1{font-size:1.8rem;color:white;font-weight:800;margin-bottom:6px;}
 .stag-hero p{color:rgba(255,255,255,.7);font-size:.92rem;margin-bottom:28px;}
 
@@ -289,6 +298,30 @@ body{background:var(--light);color:#222;min-height:100vh;padding-top:80px;}
       <button class="btn btn-outline" onclick="closeAccountModal()">Annuler</button>
       <button class="btn btn-primary" id="btn-save-account">Enregistrer</button>
     </div>
+
+    <div class="modal-divider"></div>
+    <div class="security-label">Sécurité</div>
+    <button type="button" class="security-toggle" id="btn-toggle-pwd">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      Changer mon mot de passe
+    </button>
+    <div id="pwd-fields" style="display:none;">
+      <div class="f-group">
+        <label>Mot de passe actuel</label>
+        <input type="password" id="pwd-current" placeholder="••••••••" autocomplete="current-password">
+      </div>
+      <div class="f-group">
+        <label>Nouveau mot de passe</label>
+        <input type="password" id="pwd-new" placeholder="••••••••" autocomplete="new-password">
+      </div>
+      <p class="pwd-hint">8 caractères minimum.</p>
+      <div class="f-group">
+        <label>Confirmer le nouveau mot de passe</label>
+        <input type="password" id="pwd-confirm" placeholder="••••••••" autocomplete="new-password">
+      </div>
+      <button class="btn btn-primary" id="btn-save-password" style="width:100%;justify-content:center;">Mettre à jour le mot de passe</button>
+    </div>
+
     <a href="contact.html" class="contact-link">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
       Un problème ? Me contacter
@@ -331,7 +364,7 @@ body{background:var(--light);color:#222;min-height:100vh;padding-top:80px;}
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut }
+import { getAuth, onAuthStateChanged, signOut, EmailAuthProvider, reauthenticateWithCredential, updatePassword }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { getFirestore, collection, getDocs, query, where, addDoc, doc, getDoc, updateDoc }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -667,9 +700,58 @@ document.getElementById('btn-account').addEventListener('click', () => {
   document.getElementById('account-name').value = currentStagiaire.name || '';
   document.getElementById('account-email').value = currentStagiaire.email || '';
   document.getElementById('account-phone').value = currentStagiaire.phone || '';
+  resetPasswordFields();
   document.getElementById('modal-account').classList.add('open');
 });
-window.closeAccountModal = function(){ document.getElementById('modal-account').classList.remove('open'); };
+window.closeAccountModal = function(){ document.getElementById('modal-account').classList.remove('open'); resetPasswordFields(); };
+
+function resetPasswordFields(){
+  document.getElementById('pwd-fields').style.display = 'none';
+  document.getElementById('pwd-current').value = '';
+  document.getElementById('pwd-new').value = '';
+  document.getElementById('pwd-confirm').value = '';
+}
+
+document.getElementById('btn-toggle-pwd').addEventListener('click', () => {
+  const fields = document.getElementById('pwd-fields');
+  fields.style.display = fields.style.display === 'none' ? 'block' : 'none';
+});
+
+document.getElementById('btn-save-password').addEventListener('click', async () => {
+  const current = document.getElementById('pwd-current').value;
+  const next = document.getElementById('pwd-new').value;
+  const confirm = document.getElementById('pwd-confirm').value;
+
+  if(!current || !next || !confirm){ showToast('Merci de remplir les trois champs.'); return; }
+  if(next.length < 8){ showToast('Le nouveau mot de passe doit contenir au moins 8 caractères.'); return; }
+  if(next !== confirm){ showToast('Les deux mots de passe ne correspondent pas.'); return; }
+
+  const btn = document.getElementById('btn-save-password');
+  btn.disabled = true;
+  const originalLabel = btn.textContent;
+  btn.textContent = 'Mise à jour…';
+
+  try{
+    const credential = EmailAuthProvider.credential(auth.currentUser.email, current);
+    await reauthenticateWithCredential(auth.currentUser, credential);
+    await updatePassword(auth.currentUser, next);
+    resetPasswordFields();
+    showToast('Mot de passe mis à jour avec succès.');
+  }catch(e){
+    let msg = 'Erreur : ' + e.message;
+    if(e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential'){
+      msg = 'Mot de passe actuel incorrect.';
+    } else if(e.code === 'auth/weak-password'){
+      msg = 'Ce mot de passe est trop faible.';
+    } else if(e.code === 'auth/too-many-requests'){
+      msg = 'Trop de tentatives. Réessayez plus tard.';
+    }
+    showToast(msg);
+  }finally{
+    btn.disabled = false;
+    btn.textContent = originalLabel;
+  }
+});
 
 document.getElementById('btn-save-account').addEventListener('click', async () => {
   const phone = document.getElementById('account-phone').value.trim();
