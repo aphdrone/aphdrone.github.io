@@ -311,7 +311,7 @@ line-height:1;
 }
 }
 
-/* ── Actualités ── */
+/* ── Actualités : mosaïque bento ── */
 .actu-section{background:#fff;}
 .actu-header{
   display:flex;justify-content:space-between;align-items:flex-end;
@@ -323,59 +323,60 @@ line-height:1;
   color:var(--accent);margin-bottom:10px;
 }
 
-.actu-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:28px;align-items:stretch;}
-
-.actu-feature{
-  background:#fff;border-radius:16px;overflow:hidden;
-  box-shadow:0 8px 32px rgba(0,0,0,.07);
-  display:flex;flex-direction:column;transition:.3s;text-decoration:none;
+.actu-bento{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  grid-template-rows:repeat(3,150px);
+  gap:16px;
 }
-.actu-feature:hover{transform:translateY(-4px);box-shadow:0 16px 48px rgba(0,0,0,.12);}
-.actu-feature-img{position:relative;width:100%;height:320px;background:#e8edf4;overflow:hidden;flex-shrink:0;}
-.actu-feature-img img{width:100%;height:100%;object-fit:cover;}
-.actu-feature-body{padding:28px 30px 30px;flex:1;display:flex;flex-direction:column;}
-.actu-feature-title{font-size:1.4rem;font-weight:700;color:var(--primary);line-height:1.35;margin-bottom:12px;}
-.actu-feature .actu-excerpt{font-size:.92rem;color:#555;line-height:1.7;flex:1;margin-bottom:20px;}
 
-.actu-list{
-  display:flex;flex-direction:column;background:#fff;border-radius:16px;
-  box-shadow:0 8px 32px rgba(0,0,0,.07);overflow:hidden;
+.actu-filters{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:28px;}
+.actu-filter{
+  display:inline-flex;align-items:center;padding:10px 22px;border-radius:30px;
+  font-size:.85rem;font-weight:600;text-decoration:none;
+  border:1.5px solid #dde3ec;color:#33415c;background:#fff;transition:.2s;
 }
-.actu-row{
-  display:flex;align-items:center;gap:14px;padding:19px 22px;
-  text-decoration:none;border-bottom:1px solid #eef1f6;transition:.2s;
-}
-.actu-row:last-child{border-bottom:none;}
-.actu-row:hover{background:var(--light);}
-.actu-row-body{flex:1;min-width:0;}
-.actu-row-meta{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
-.actu-row-cat{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;}
-.actu-row-cat--bleu{color:var(--secondary);}
-.actu-row-cat--vert{color:#16a34a;}
-.actu-row-cat--rouge{color:#dc2626;}
-.actu-row-cat--orange{color:#ea580c;}
-.actu-row-cat--violet{color:#7c3aed;}
-.actu-row-cat--marine{color:var(--primary);}
-.actu-row-dot{width:3px;height:3px;border-radius:50%;background:#c2cbd8;flex-shrink:0;}
-.actu-row-title{font-size:.9rem;font-weight:600;color:var(--primary);line-height:1.4;}
-.actu-row-arrow{color:#c2cbd8;transition:.2s;flex-shrink:0;}
-.actu-row:hover .actu-row-arrow{color:var(--secondary);transform:translateX(3px);}
+.actu-filter:hover{border-color:var(--secondary);color:var(--secondary);}
+.actu-filter.is-active{background:var(--secondary);border-color:var(--secondary);color:#fff;}
 
-.actu-date{font-size:11px;color:#7a8fa5;font-weight:500;letter-spacing:.06em;text-transform:uppercase;display:block;}
-.actu-feature .actu-date{margin-bottom:8px;}
-
-.actu-tag{
-  position:absolute;top:14px;left:14px;
-  color:white;
-  font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
-  padding:4px 10px;border-radius:20px;
+.actu-bento{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:20px;
 }
-.actu-tag--bleu{background:var(--secondary);}
-.actu-tag--vert{background:#16a34a;}
-.actu-tag--rouge{background:#dc2626;}
-.actu-tag--orange{background:#ea580c;}
-.actu-tag--violet{background:#7c3aed;}
-.actu-tag--marine{background:var(--primary);}
+.actu-tile{
+  grid-column:span 2;
+  background:#F5F5F7;
+  border-radius:24px;
+  padding:34px 34px 0;
+  display:flex;flex-direction:column;
+  text-decoration:none;
+  overflow:hidden;
+  min-height:420px;
+  transition:.3s;
+}
+.actu-tile:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,.08);}
+.actu-tile--c,.actu-tile--d{grid-column:span 2;min-height:420px;}
+.actu-tile-cat{
+  display:inline-block;font-size:.8rem;font-weight:700;letter-spacing:.02em;text-transform:uppercase;
+  margin-bottom:10px;
+}
+.actu-tile--a .actu-tile-cat,.actu-tile--b .actu-tile-cat{color:#dc2626;}
+.actu-tile--c .actu-tile-cat{color:#7c3aed;}
+.actu-tile--d .actu-tile-cat{color:#16a34a;}
+.actu-tile-date{font-size:.78rem;font-weight:600;color:#86868b;margin-left:8px;}
+.actu-tile-title{color:#1d1d1f;font-weight:800;line-height:1.15;letter-spacing:-.01em;margin-bottom:12px;}
+.actu-tile--a .actu-tile-title{font-size:1.7rem;}
+.actu-tile--b .actu-tile-title{font-size:1.7rem;}
+.actu-tile--c .actu-tile-title,.actu-tile--d .actu-tile-title{font-size:1.35rem;}
+.actu-tile-excerpt{color:#555;font-size:.95rem;line-height:1.55;max-width:420px;margin-bottom:20px;}
+.actu-tile-imgwrap{margin-top:auto;flex:1;display:flex;align-items:flex-end;justify-content:center;min-height:180px;padding-top:10px;}
+.actu-tile-imgwrap img{
+  width:100%;max-width:440px;height:auto;max-height:260px;object-fit:cover;
+  border-radius:16px 16px 0 0;
+  box-shadow:0 30px 40px -10px rgba(0,0,0,.18);
+}
+.actu-tile-arrow{display:none;}
 
 .actu-lire{
   display:inline-flex;align-items:center;gap:6px;
@@ -650,9 +651,9 @@ body{padding-top:0;}
   .section-header{flex-direction:column;align-items:flex-start;gap:16px;}
 
   /* ── Actualités ── */
-  .actu-grid{grid-template-columns:1fr !important;}
-  .actu-feature-img{height:220px;}
-  .actu-feature-title{font-size:1.15rem;}
+  .actu-bento{grid-template-columns:1fr !important;}
+  .actu-tile,.actu-tile--a,.actu-tile--b,.actu-tile--c,.actu-tile--d{grid-column:1 !important;min-height:auto !important;padding:26px 26px 0 !important;}
+  .actu-tile--a .actu-tile-title,.actu-tile--b .actu-tile-title{font-size:1.35rem !important;}
 
   /* ── Témoignages ── */
   .temoignage{flex:0 0 280px !important;}
@@ -1007,74 +1008,62 @@ Découvrir nos formations
     <a href="pages/actualites.html" class="btn-section btn-section--outline">Toutes les actualités</a>
   </div>
 
-  <div class="actu-grid reveal">
+  <div class="actu-filters reveal">
+    <a href="pages/actualites.html" class="actu-filter is-active">Toutes</a>
+    <a href="pages/actualites.html?cat=Formation" class="actu-filter">Formation</a>
+    <a href="pages/actualites.html?cat=Mission" class="actu-filter">Mission</a>
+    <a href="pages/actualites.html?cat=R%C3%A9glementation" class="actu-filter">Réglementation</a>
+    <a href="pages/actualites.html?cat=%C3%89v%C3%A9nement" class="actu-filter">Événement</a>
+    <a href="pages/actualites.html?cat=Agriculture" class="actu-filter">Agriculture</a>
+    <a href="pages/actualites.html?cat=S%C3%A9curit%C3%A9%20civile" class="actu-filter">Sécurité civile</a>
+  </div>
 
-    <!-- À la une -->
-    <a href="pages/actualites.html" class="actu-feature" id="actu-feature">
-      <div class="actu-feature-img">
-        <img src="https://images.unsplash.com/photo-1586771107445-d3ca888129ff?w=800&q=80" alt="Pulvérisation drone">
-        <span class="actu-tag actu-tag--rouge">Réglementation</span>
+  <div class="actu-bento reveal" id="actu-bento">
+
+    <a href="pages/actualites.html" class="actu-tile actu-tile--a" id="actu-tile-a">
+      <div>
+        <span class="actu-tile-cat">Réglementation</span><span class="actu-tile-date">Juin 2026</span>
+        <h3 class="actu-tile-title">Pulvérisation par drone enfin autorisée en France</h3>
+        <p class="actu-tile-excerpt">La loi du 23 avril 2025 et ses décrets d'application ouvrent la voie à la pulvérisation phytopharmaceutique par drone.</p>
       </div>
-      <div class="actu-feature-body">
-        <time class="actu-date">Juin 2026</time>
-        <h3 class="actu-feature-title">Pulvérisation par drone enfin autorisée en France</h3>
-        <p class="actu-excerpt">La loi du 23 avril 2025 et ses décrets d'application ouvrent la voie à la pulvérisation phytopharmaceutique par drone.</p>
-        <span class="actu-lire">Lire la suite <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+      <div class="actu-tile-imgwrap">
+        <img src="https://images.unsplash.com/photo-1586771107445-d3ca888129ff?w=700&q=80" alt="Pulvérisation drone">
       </div>
     </a>
 
-    <!-- Liste compacte -->
-    <div class="actu-list" id="actu-list">
+    <a href="pages/actualites.html" class="actu-tile actu-tile--b" id="actu-tile-b">
+      <div>
+        <span class="actu-tile-cat">Formation</span><span class="actu-tile-date">Mai 2026</span>
+        <h3 class="actu-tile-title">Lancement du programme Vol de nuit</h3>
+        <p class="actu-tile-excerpt">Une formation rare en France : 3 jours incluant 2 nuits de pratique terrain.</p>
+      </div>
+      <div class="actu-tile-imgwrap">
+        <img src="https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=700&q=80" alt="Vol de nuit">
+      </div>
+    </a>
 
-      <a href="pages/actualites.html" class="actu-row">
-        <div class="actu-row-body">
-          <div class="actu-row-meta">
-            <span class="actu-row-cat actu-row-cat--bleu">Formation</span>
-            <span class="actu-row-dot"></span>
-            <time class="actu-date">Juin 2026</time>
-          </div>
-          <h4 class="actu-row-title">Session CATS STS ouverte à l'inscription</h4>
-        </div>
-        <svg class="actu-row-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </a>
+    <a href="pages/actualites.html" class="actu-tile actu-tile--c" id="actu-tile-c">
+      <div>
+        <span class="actu-tile-cat">Événement</span><span class="actu-tile-date">Juin 2026</span>
+        <h3 class="actu-tile-title">Portes ouvertes SDIS 70</h3>
+        <p class="actu-tile-excerpt">Démonstration de drone opérationnel lors des portes ouvertes du centre de secours de Luxeuil.</p>
+      </div>
+      <div class="actu-tile-imgwrap">
+        <img src="https://images.unsplash.com/photo-1583912267550-d6c2ac3196c0?w=700&q=80" alt="Portes ouvertes SDIS">
+      </div>
+    </a>
 
-      <a href="pages/actualites.html" class="actu-row">
-        <div class="actu-row-body">
-          <div class="actu-row-meta">
-            <span class="actu-row-cat actu-row-cat--violet">Événement</span>
-            <span class="actu-row-dot"></span>
-            <time class="actu-date">Juin 2026</time>
-          </div>
-          <h4 class="actu-row-title">Portes ouvertes SDIS 70 — APH Drone présent</h4>
-        </div>
-        <svg class="actu-row-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </a>
+    <a href="pages/actualites.html" class="actu-tile actu-tile--d" id="actu-tile-d">
+      <div>
+        <span class="actu-tile-cat">Mission</span><span class="actu-tile-date">Mai 2026</span>
+        <h3 class="actu-tile-title">Thermographie industrielle en Haute-Saône</h3>
+        <p class="actu-tile-excerpt">Diagnostic thermique complet réalisé pour un site industriel local.</p>
+      </div>
+      <div class="actu-tile-imgwrap">
+        <img src="https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=700&q=80" alt="Thermographie">
+      </div>
+    </a>
 
-      <a href="pages/actualites.html" class="actu-row">
-        <div class="actu-row-body">
-          <div class="actu-row-meta">
-            <span class="actu-row-cat actu-row-cat--vert">Mission</span>
-            <span class="actu-row-dot"></span>
-            <time class="actu-date">Mai 2026</time>
-          </div>
-          <h4 class="actu-row-title">Thermographie sur site industriel en Haute-Saône</h4>
-        </div>
-        <svg class="actu-row-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </a>
-
-      <a href="pages/actualites.html" class="actu-row">
-        <div class="actu-row-body">
-          <div class="actu-row-meta">
-            <span class="actu-row-cat actu-row-cat--orange">Agriculture</span>
-            <span class="actu-row-dot"></span>
-            <time class="actu-date">Avril 2026</time>
-          </div>
-          <h4 class="actu-row-title">Démarrage de la saison multispectrale sur céréales</h4>
-        </div>
-        <svg class="actu-row-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </a>
-
-    </div>
   </div>
 </section>
 
@@ -1286,7 +1275,7 @@ Découvrir nos formations
 
 </script>
 
-<!-- Firebase — dernières actus dans le bloc à la une + liste -->
+<!-- Firebase — dernières actus dans les cartes claires -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getFirestore, collection, getDocs, orderBy, query, limit }
@@ -1300,58 +1289,30 @@ const firebaseConfig = {
   messagingSenderId: "316810168380",
   appId: "1:316810168380:web:66cb916cec4fdc00b9db39"
 };
-const tagClasses = {
-  'Réglementation':'rouge','Formation':'bleu','Mission':'vert',
-  'Événement':'violet','Agriculture':'orange','Sécurité civile':'marine'
-};
 try {
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
-  const q = query(collection(db, 'actualites'), orderBy('ordre','desc'), limit(5));
+  const q = query(collection(db, 'actualites'), orderBy('ordre','desc'), limit(4));
   const snap = await getDocs(q);
   if(!snap.empty){
     const docs = [];
     snap.forEach(d => docs.push(d.data()));
-
-    // Article à la une = le plus récent
-    const feature = docs[0];
-    const featureEl = document.getElementById('actu-feature');
-    const featureClass = tagClasses[feature.cat] || 'bleu';
-    const featureImgHtml = feature.photoUrl
-      ? `<img src="${feature.photoUrl}" alt="${feature.titre}">`
-      : `<div style="width:100%;height:100%;background:#e8edf4;"></div>`;
-    featureEl.innerHTML = `
-      <div class="actu-feature-img">${featureImgHtml}<span class="actu-tag actu-tag--${featureClass}">${feature.cat}</span></div>
-      <div class="actu-feature-body">
-        <time class="actu-date">${feature.date}</time>
-        <h3 class="actu-feature-title">${feature.titre}</h3>
-        ${feature.extrait ? `<p class="actu-excerpt">${feature.extrait}</p>` : ''}
-        <span class="actu-lire">Lire la suite <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
-      </div>`;
-
-    // Les suivantes = liste compacte
-    const rest = docs.slice(1);
-    if(rest.length){
-      const list = document.getElementById('actu-list');
-      list.innerHTML = '';
-      rest.forEach(d => {
-        const rowClass = tagClasses[d.cat] || 'bleu';
-        const row = document.createElement('a');
-        row.href = 'pages/actualites.html';
-        row.className = 'actu-row';
-        row.innerHTML = `
-          <div class="actu-row-body">
-            <div class="actu-row-meta">
-              <span class="actu-row-cat actu-row-cat--${rowClass}">${d.cat}</span>
-              <span class="actu-row-dot"></span>
-              <time class="actu-date">${d.date}</time>
-            </div>
-            <h4 class="actu-row-title">${d.titre}</h4>
-          </div>
-          <svg class="actu-row-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>`;
-        list.appendChild(row);
-      });
-    }
+    const tileIds = ['actu-tile-a','actu-tile-b','actu-tile-c','actu-tile-d'];
+    docs.forEach((d, i) => {
+      if(i >= tileIds.length) return;
+      const tile = document.getElementById(tileIds[i]);
+      if(!tile) return;
+      const img = tile.querySelector('.actu-tile-imgwrap img');
+      if(d.photoUrl){ img.src = d.photoUrl; img.alt = d.titre; }
+      const excerptEl = tile.querySelector('.actu-tile-excerpt');
+      tile.querySelector('.actu-tile-cat').textContent = d.cat;
+      tile.querySelector('.actu-tile-date').textContent = d.date;
+      tile.querySelector('.actu-tile-title').textContent = d.titre;
+      if(excerptEl){
+        if(d.extrait) excerptEl.textContent = d.extrait;
+        else excerptEl.remove();
+      }
+    });
   }
 } catch(e){ console.warn('Firebase:', e.message); }
 </script>
