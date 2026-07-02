@@ -224,7 +224,7 @@ body{background:#f5f7fa;color:#222;}
       <div class="form-row">
         <div class="form-group">
           <label>Date *</label>
-          <input type="text" id="f-date" placeholder="ex: Juin 2026">
+          <input type="month" id="f-date">
         </div>
         <div class="form-group">
           <label>Taille de la carte</label>
@@ -382,7 +382,7 @@ function formatContenu(texte){
 // ── Publier / mettre à jour ──
 window.publierActu = async function(){
   const titre = document.getElementById('f-titre').value.trim();
-  const date = document.getElementById('f-date').value.trim();
+  const dateMois = document.getElementById('f-date').value; // format "2026-06"
   const cat = document.getElementById('f-cat').value;
   const extrait = document.getElementById('f-extrait').value.trim();
   const contenu = document.getElementById('f-contenu').value.trim();
@@ -391,10 +391,15 @@ window.publierActu = async function(){
   const ctaLien = document.getElementById('f-cta-lien').value.trim();
   const editId = document.getElementById('edit-id').value;
 
-  if(!titre || !date || !cat){
+  if(!titre || !dateMois || !cat){
     showStatus('Veuillez remplir le titre, la date et la catégorie.', 'error');
     return;
   }
+
+  const MOIS_FR = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  const [annee, mois] = dateMois.split('-').map(Number);
+  const dateAffichage = MOIS_FR[mois - 1] + ' ' + annee;
+  const ordre = new Date(annee, mois - 1, 1).getTime();
 
   const btn = document.getElementById('btn-publish');
   btn.disabled = true;
@@ -404,11 +409,11 @@ window.publierActu = async function(){
     const photoUrl = document.getElementById('f-photo-url').value.trim();
 
     const data = {
-      titre, date, cat, extrait,
+      titre, date: dateAffichage, dateMois, cat, extrait,
       contenu: formatContenu(contenu),
       taille, photoUrl,
       ctaTexte, ctaLien,
-      ordre: Date.now()
+      ordre
     };
 
     if(editId){
@@ -485,7 +490,7 @@ window.editerActu = function(id){
   if(!d) return;
   document.getElementById('edit-id').value = id;
   document.getElementById('f-titre').value = d.titre || '';
-  document.getElementById('f-date').value = d.date || '';
+  document.getElementById('f-date').value = d.dateMois || '';
   document.getElementById('f-extrait').value = d.extrait || '';
   document.getElementById('f-contenu').value = (d.contenu || '').replace(/<p>/g,'').replace(/<\/p>/g,'\n\n').replace(/<br>/g,'\n').trim();
   document.getElementById('f-taille').value = d.taille || 'md';
