@@ -981,63 +981,7 @@ Découvrir nos formations
     <a href="pages/actualites.html" class="btn-section btn-section--outline">Découvrir</a>
   </div>
 
-  <div class="news-grid reveal" id="news-grid">
-
-    <a href="pages/actualites.html" class="news-card">
-      <div class="news-card-img"><img src="https://images.unsplash.com/photo-1586771107445-d3ca888129ff?w=600&q=80" alt="Pulvérisation drone"></div>
-      <div class="news-card-body">
-        <div class="news-card-meta"><span class="news-card-cat news-card-cat--rouge">Réglementation</span><span class="news-card-date">Juin 2026</span></div>
-        <h3 class="news-card-title">Pulvérisation par drone enfin autorisée en France</h3>
-        <p class="news-card-excerpt">La loi du 23 avril 2025 et ses décrets d'application ouvrent la voie à la pulvérisation phytopharmaceutique par drone.</p>
-      </div>
-    </a>
-
-    <a href="pages/actualites.html" class="news-card">
-      <div class="news-card-img"><img src="https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=600&q=80" alt="Vol de nuit"></div>
-      <div class="news-card-body">
-        <div class="news-card-meta"><span class="news-card-cat news-card-cat--bleu">Formation</span><span class="news-card-date">Mai 2026</span></div>
-        <h3 class="news-card-title">Lancement du programme Vol de nuit</h3>
-        <p class="news-card-excerpt">Une formation rare en France : 3 jours incluant 2 nuits de pratique terrain.</p>
-      </div>
-    </a>
-
-    <a href="pages/actualites.html" class="news-card">
-      <div class="news-card-img"><img src="https://images.unsplash.com/photo-1583912267550-d6c2ac3196c0?w=600&q=80" alt="Portes ouvertes SDIS"></div>
-      <div class="news-card-body">
-        <div class="news-card-meta"><span class="news-card-cat news-card-cat--violet">Événement</span><span class="news-card-date">Juin 2026</span></div>
-        <h3 class="news-card-title">Portes ouvertes SDIS 70</h3>
-        <p class="news-card-excerpt">Démonstration de drone opérationnel lors des portes ouvertes du centre de secours de Luxeuil.</p>
-      </div>
-    </a>
-
-    <a href="pages/actualites.html" class="news-card">
-      <div class="news-card-img"><img src="https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=600&q=80" alt="Thermographie"></div>
-      <div class="news-card-body">
-        <div class="news-card-meta"><span class="news-card-cat news-card-cat--vert">Mission</span><span class="news-card-date">Mai 2026</span></div>
-        <h3 class="news-card-title">Thermographie industrielle en Haute-Saône</h3>
-        <p class="news-card-excerpt">Diagnostic thermique complet réalisé pour un site industriel local.</p>
-      </div>
-    </a>
-
-    <a href="pages/actualites.html" class="news-card">
-      <div class="news-card-img"><img src="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=600&q=80" alt="Agriculture de précision"></div>
-      <div class="news-card-body">
-        <div class="news-card-meta"><span class="news-card-cat news-card-cat--orange">Agriculture</span><span class="news-card-date">Avril 2026</span></div>
-        <h3 class="news-card-title">Démarrage de la saison multispectrale</h3>
-        <p class="news-card-excerpt">Premières missions d'imagerie multispectrale sur céréales, indices NDVI et NDRE.</p>
-      </div>
-    </a>
-
-    <a href="pages/actualites.html" class="news-card">
-      <div class="news-card-img"><img src="https://images.unsplash.com/photo-1587293852726-70cdb56c2866?w=600&q=80" alt="Sécurité civile"></div>
-      <div class="news-card-body">
-        <div class="news-card-meta"><span class="news-card-cat news-card-cat--marine">Sécurité civile</span><span class="news-card-date">Avril 2026</span></div>
-        <h3 class="news-card-title">Partenariat renforcé avec le SDIS 70</h3>
-        <p class="news-card-excerpt">Formation continue des équipes drone pour les missions de recherche et de secours.</p>
-      </div>
-    </a>
-
-  </div>
+  <div class="news-grid reveal" id="news-grid"></div>
 </section>
 
 <!-- ═══ CONTACT RAPIDE ═══ -->
@@ -1290,6 +1234,11 @@ try {
         </div>`;
       grid.appendChild(card);
     });
+  } else {
+    document.getElementById('news-grid').innerHTML =
+      '<div style="grid-column:1/-1;text-align:center;padding:50px 20px;color:#7a8fa5;">' +
+      '<p style="font-size:.95rem;">Aucune actualité publiée pour le moment.</p>' +
+      '</div>';
   }
 } catch(e){ console.warn('Firebase:', e.message); }
 </script>
