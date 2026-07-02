@@ -312,7 +312,7 @@ line-height:1;
 }
 
 /* ── Actualités : mosaïque bento ── */
-.actu-section{background:#fff;padding-bottom:40px;}
+.actu-section{background:#fff;}
 .actu-header{
   display:flex;justify-content:space-between;align-items:flex-end;
   margin-bottom:40px;
@@ -329,15 +329,6 @@ line-height:1;
   grid-template-rows:repeat(3,150px);
   gap:16px;
 }
-
-.actu-filters{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:28px;}
-.actu-filter{
-  display:inline-flex;align-items:center;padding:10px 22px;border-radius:30px;
-  font-size:.85rem;font-weight:600;text-decoration:none;
-  border:1.5px solid #dde3ec;color:#33415c;background:#fff;transition:.2s;
-}
-.actu-filter:hover{border-color:var(--secondary);color:var(--secondary);}
-.actu-filter.is-active{background:var(--secondary);border-color:var(--secondary);color:#fff;}
 
 .actu-bento{
   display:grid;
@@ -1007,16 +998,7 @@ Découvrir nos formations
       <span class="actu-label">Actualités</span>
       <h2 class="section-title" style="margin-bottom:0;">Dernières nouvelles</h2>
     </div>
-  </div>
-
-  <div class="actu-filters reveal">
-    <a href="pages/actualites.html" class="actu-filter is-active">Toutes</a>
-    <a href="pages/actualites.html?cat=Formation" class="actu-filter">Formation</a>
-    <a href="pages/actualites.html?cat=Mission" class="actu-filter">Mission</a>
-    <a href="pages/actualites.html?cat=R%C3%A9glementation" class="actu-filter">Réglementation</a>
-    <a href="pages/actualites.html?cat=%C3%89v%C3%A9nement" class="actu-filter">Événement</a>
-    <a href="pages/actualites.html?cat=Agriculture" class="actu-filter">Agriculture</a>
-    <a href="pages/actualites.html?cat=S%C3%A9curit%C3%A9%20civile" class="actu-filter">Sécurité civile</a>
+    <a href="pages/actualites.html" class="btn-section btn-section--outline">Découvrir</a>
   </div>
 
   <div class="actu-bento reveal" id="actu-bento">
