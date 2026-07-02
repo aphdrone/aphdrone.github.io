@@ -243,8 +243,6 @@ body{background:#fff;color:#222;min-height:100vh;padding-top:80px;}
 
 <script src="/assets/include.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-<script>emailjs.init("48-yNZw6g_ISmtaKM");</script>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -252,6 +250,8 @@ import { getAuth, onAuthStateChanged }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { getFirestore, collection, getDocs, query, where, addDoc }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFunctions, httpsCallable }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-functions.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAV5NQWfp8n9RkTrHSwqssBJ4R9lNAuYK8",
@@ -262,14 +262,11 @@ const firebaseConfig = {
   appId: "1:316810168380:web:66cb916cec4fdc00b9db39"
 };
 
-// ⚠️ À créer dans EmailJS : un template dédié (copie de template_giwdnbr) avec
-// "To Email" = contact@aphdrone.fr et une pièce jointe dynamique liée à la variable pdf_base64.
-const EMAILJS_SERVICE_ID  = 'service_pjx0sv5';
-const EMAILJS_TEMPLATE_ID = 'template_satisfaction'; // ← remplace par l'ID réel du template créé
-
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+const functionsInstance = getFunctions(app, 'europe-west1');
+const sendSatisfactionPdf = httpsCallable(functionsInstance, 'sendSatisfactionPdf');
 
 // ── Libellés des questions notées, dans l'ordre exact du formulaire (pour le PDF) ──
 const QUESTIONS = [
@@ -512,14 +509,8 @@ document.getElementById('btn-submit').addEventListener('click', async () => {
       await addDoc(collection(db,'satisfactions'), { stagiaireId: currentStagId, ...payload });
     }
 
-    // 3. Envoie le PDF par email à contact@aphdrone.fr via EmailJS
-    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-      to_email: 'contact@aphdrone.fr',
-      subject: 'Formulaire de satisfaction — ' + name + ' — ' + formation,
-      stagiaire: name,
-      formation: formation,
-      pdf_base64: pdfBase64
-    });
+    // 3. Envoie le PDF par email à contact@aphdrone.fr via la Cloud Function
+    await sendSatisfactionPdf({ name, formation, pdfBase64 });
 
     document.querySelectorAll('.sat-wrap, .legal-hero').forEach(el => el.style.display = 'none');
     document.getElementById('sat-thanks').style.display = 'block';
