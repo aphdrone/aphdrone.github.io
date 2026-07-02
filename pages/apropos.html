@@ -755,9 +755,17 @@ document.addEventListener('DOMContentLoaded', function(){
     </div>
   </div>
   <div class="hero-apropos-visual">
-    <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:24px;padding:36px;text-align:center;width:100%;">
-      <div style="width:120px;height:120px;border-radius:50%;background:linear-gradient(135deg,#1F5FAF,#4A90E2);margin:0 auto 20px;display:flex;align-items:center;justify-content:center;font-size:42px;font-weight:800;color:white;">A</div>
-      <div style="font-size:1.3rem;font-weight:700;color:white;margin-bottom:4px;">Arnaud MOREAU</div>
+    <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:24px;padding:24px;text-align:center;width:100%;">
+      <div style="position:relative;border-radius:16px;overflow:hidden;aspect-ratio:16/9;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);cursor:pointer;" onclick="alert('Emplacement réservé pour une vidéo de présentation — à connecter à un fichier ou un lien YouTube/Vimeo.')">
+        <img src="https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=800&q=80" alt="Vidéo de présentation" style="width:100%;height:100%;object-fit:cover;opacity:.5;">
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;">
+          <div style="width:60px;height:60px;border-radius:50%;background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.4);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;color:white;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+          <span style="color:white;font-size:12px;font-weight:600;letter-spacing:.02em;">Vidéo de présentation à intégrer</span>
+        </div>
+      </div>
+      <div style="font-size:1.3rem;font-weight:700;color:white;margin:20px 0 4px;">Arnaud MOREAU</div>
       <div style="font-size:.82rem;color:rgba(255,255,255,.55);margin-bottom:20px;"></div>
       <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;">
         <span style="padding:4px 10px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase;background:rgba(74,144,226,.2);color:#4A90E2;border:1px solid rgba(74,144,226,.3);">Télépilote certifié</span>
@@ -828,6 +836,14 @@ document.addEventListener('DOMContentLoaded', function(){
   </div>
 </section>
 
+<!-- ═══ PHOTO ═══ -->
+<section style="padding:0 10% 80px;background:#F5F7FA;">
+  <div style="position:relative;border-radius:16px;overflow:hidden;height:340px;max-width:900px;margin:0 auto;box-shadow:0 4px 24px rgba(0,0,0,.06);">
+    <img src="https://images.unsplash.com/photo-1508614999368-9260051292e5?w=1200&q=80" alt="Photo à venir" style="width:100%;height:100%;object-fit:cover;display:block;">
+    <div style="position:absolute;left:0;right:0;bottom:0;padding:18px 22px;background:linear-gradient(180deg,transparent,rgba(11,31,58,.85));color:white;font-size:13px;font-weight:500;">Photo à remplacer par un visuel réel</div>
+  </div>
+</section>
+
 <!-- ═══ VALEURS ═══ -->
 <section class="section" style="background:white;">
   <span style="font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#4A90E2;margin-bottom:12px;display:block;">Notre ADN</span>
@@ -864,7 +880,20 @@ document.addEventListener('DOMContentLoaded', function(){
   </div>
 </section>
 
-<!-- ═══ CTA ═══ -->
+<!-- ═══ VIDÉO ═══ -->
+<section style="padding:0 10% 80px;background:#F5F7FA;">
+  <div style="position:relative;border-radius:16px;overflow:hidden;aspect-ratio:16/9;max-width:900px;margin:0 auto;background:linear-gradient(135deg,#0B1F3A,#1a3a6e);box-shadow:0 4px 24px rgba(0,0,0,.06);cursor:pointer;" onclick="alert('Emplacement réservé pour une vidéo — à connecter à un fichier ou un lien YouTube/Vimeo.')">
+    <img src="https://images.unsplash.com/photo-1508614999368-9260051292e5?w=1200&q=80" alt="Aperçu vidéo" style="width:100%;height:100%;object-fit:cover;opacity:.55;">
+    <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;">
+      <div style="width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.4);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;color:white;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      </div>
+      <span style="color:white;font-size:13px;font-weight:600;letter-spacing:.02em;">Vidéo à intégrer</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PHOTO ═══ -->
 <section class="cta-section-wrap" style="padding:80px 10%;background:linear-gradient(135deg,#0B1F3A,#1a3a6b);display:grid;gap:60px;align-items:center;">
   <div>
     <h2 style="font-size:2rem;font-weight:700;color:white;margin-bottom:16px;line-height:1.2;">Un projet ? Une question ?<br>Parlons-en.</h2>
