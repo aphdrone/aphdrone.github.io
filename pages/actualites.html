@@ -1191,31 +1191,15 @@ document.addEventListener('DOMContentLoaded', function(){
   <p>News, missions réalisées, nouvelles formations, évolutions réglementaires — toute l'actualité du terrain.</p>
 </div>
 
-<!-- ═══ FILTRES ═══ -->
-<div class="filtres-wrap">
-  <button class="filtre-btn active" data-cat="Tous">Toutes</button>
-  <button class="filtre-btn" data-cat="Formation">Formation</button>
-  <button class="filtre-btn" data-cat="Mission">Mission</button>
-  <button class="filtre-btn" data-cat="Réglementation">Réglementation</button>
-  <button class="filtre-btn" data-cat="Événement">Événement</button>
-  <button class="filtre-btn" data-cat="Agriculture">Agriculture</button>
-  <button class="filtre-btn" data-cat="Sécurité civile">Sécurité civile</button>
-</div>
-
 <!-- ═══ GRILLE ACTUALITÉS ═══ -->
 
-<!-- Zone dynamique Firebase — actus récentes -->
+<!-- Zone dynamique Firebase — tes actualités publiées -->
 <div class="actu-page" id="firebase-zone" style="padding-bottom:0;">
   <div style="padding-bottom:20px;">
-    <span class="actu-label">Nouveautés</span>
-    <h2 class="section-title" style="margin-bottom:0;">À la une</h2>
+    <span class="actu-label">Actualités</span>
+    <h2 class="section-title" style="margin-bottom:0;">Toutes nos actualités</h2>
   </div>
   <div id="firebase-mosaic"></div>
-</div>
-
-<!-- Séparateur si actus Firebase présentes -->
-<div id="archive-sep" style="display:none;padding:0 10%;margin-bottom:0;">
-  <div class="actu-mois" style="margin:0;"><span>Toutes les actualités</span></div>
 </div>
 
 <!-- ═══ TEMPLATES ARTICLES (contenu complet de chaque actu) ═══ -->
@@ -1380,213 +1364,6 @@ document.addEventListener('DOMContentLoaded', function(){
 <p>APH Drone propose un accompagnement à la mise à jour de vos dossiers SORA. Contactez-nous pour un audit de votre dossier existant.</p>
 </script>
 
-<!-- ═══ GRILLE ACTUALITÉS ═══ -->
-<div class="actu-page">
-<div class="actu-mosaic" id="actu-mosaic">
-
-  <!-- ── JUIN 2026 ── -->
-  <div class="actu-mois"><span>Juin 2026</span></div>
-
-  <article class="actu-card actu-card--span2 reveal" data-cat="Réglementation"
-    data-tpl="tpl-pulverisation" data-tag="Réglementation" data-tagcol="actu-tag--rouge"
-    data-date="Juin 2026" data-img="https://images.unsplash.com/photo-1586771107445-d3ca888129ff?w=900&q=80"
-    data-title="Pulvérisation par drone enfin autorisée en France — ce que ça change pour les opérateurs"
-    data-cta-text="Découvrir nos prestations agriculture" data-cta-href="prestations/agriculture.html">
-    <div class="actu-img" style="height:220px;background:#1a2a1a;overflow:hidden;position:relative;">
-      <img src="https://images.unsplash.com/photo-1586771107445-d3ca888129ff?w=700&q=80" alt="Pulvérisation drone" style="width:100%;height:100%;object-fit:cover;">
-      <span class="actu-tag actu-tag--rouge">Réglementation</span>
-    </div>
-    <div class="actu-body">
-      <time class="actu-date">Juin 2026</time>
-      <h3 class="actu-title">Pulvérisation par drone enfin autorisée en France — ce que ça change pour les opérateurs</h3>
-      <p class="actu-excerpt">La loi du 23 avril 2025 et ses décrets d'application (mai-juin 2026) ouvrent la voie à la pulvérisation phytopharmaceutique par drone sur parcelles en pente, bananeraies et vignes mères.</p>
-      <button class="actu-lire" onclick="openArticle(this.closest('.actu-card'))">Lire la suite <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
-    </div>
-  </article>
-
-  <article class="actu-card actu-card--sm reveal" data-cat="Formation"
-    data-tpl="tpl-cats-sts" data-tag="Formation" data-tagcol="actu-tag--bleu"
-    data-date="Juin 2026"
-    data-title="Nouvelle session CATS STS ouverte à l'inscription"
-    data-cta-text="Voir la formation CATS STS" data-cta-href="formations/cats-sts.html">
-    <div class="actu-img"><span class="actu-img-placeholder">Photo</span><span class="actu-tag actu-tag--bleu">Formation</span></div>
-    <div class="actu-body">
-      <time class="actu-date">Juin 2026</time>
-      <h3 class="actu-title">Nouvelle session CATS STS ouverte à l'inscription</h3>
-      <p class="actu-excerpt">Session de préparation à l'examen CATS — STS-01 et STS-02 — en distanciel synchrone sur 5 jours. Places limitées à 3 stagiaires.</p>
-      <button class="actu-lire" onclick="openArticle(this.closest('.actu-card'))">Lire la suite <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
-    </div>
-  </article>
-
-  <article class="actu-card actu-card--sm reveal" data-cat="Événement"
-    data-tpl="tpl-portes-ouvertes" data-tag="Événement" data-tagcol="actu-tag--violet"
-    data-date="Juin 2026"
-    data-title="Portes ouvertes SDIS 70 — APH Drone présent"
-    data-cta-text="" data-cta-href="">
-    <div class="actu-img"><span class="actu-img-placeholder">Photo</span><span class="actu-tag actu-tag--violet">Événement</span></div>
-    <div class="actu-body">
-      <time class="actu-date">Juin 2026</time>
-      <h3 class="actu-title">Portes ouvertes SDIS 70 — APH Drone présent</h3>
-      <p class="actu-excerpt">Démonstration de drone opérationnel lors des portes ouvertes du centre de secours de Luxeuil. Sensibilisation du public aux usages civils et de sécurité civile.</p>
-      <button class="actu-lire" onclick="openArticle(this.closest('.actu-card'))">Lire la suite <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
-    </div>
-  </article>
-
-  <!-- ── MAI 2026 ── -->
-  <div class="actu-mois"><span>Mai 2026</span></div>
-
-  <article class="actu-card actu-card--sm reveal" data-cat="Mission"
-    data-tpl="tpl-thermographie" data-tag="Mission" data-tagcol="actu-tag--vert"
-    data-date="Mai 2026"
-    data-title="Thermographie sur site industriel en Haute-Saône"
-    data-cta-text="Découvrir la prestation thermographie" data-cta-href="prestations/thermographie.html">
-    <div class="actu-img"><span class="actu-img-placeholder">Photo</span><span class="actu-tag actu-tag--vert">Mission</span></div>
-    <div class="actu-body">
-      <time class="actu-date">Mai 2026</time>
-      <h3 class="actu-title">Thermographie sur site industriel en Haute-Saône</h3>
-      <p class="actu-excerpt">Diagnostic complet de toiture et installations électriques pour un client industriel local. Rapport de restitution livré sous 48h.</p>
-      <button class="actu-lire" onclick="openArticle(this.closest('.actu-card'))">Lire la suite <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
-    </div>
-  </article>
-
-  <article class="actu-card actu-card--span2 reveal" data-cat="Formation"
-    data-tpl="tpl-vol-nuit" data-tag="Formation" data-tagcol="actu-tag--bleu"
-    data-date="Mai 2026"
-    data-title="Lancement du programme Vol de nuit — une formation rare en France"
-    data-cta-text="Voir la formation Vol de nuit" data-cta-href="formations/vol-nuit.html">
-    <div class="actu-img"><span class="actu-img-placeholder">Photo</span><span class="actu-tag actu-tag--bleu">Formation</span></div>
-    <div class="actu-body">
-      <time class="actu-date">Mai 2026</time>
-      <h3 class="actu-title">Lancement du programme Vol de nuit — une formation rare en France</h3>
-      <p class="actu-excerpt">Formation complète au vol de nuit réglementé, sur 3 jours incluant 2 nuits de pratique terrain. Unique en Bourgogne-Franche-Comté.</p>
-      <button class="actu-lire" onclick="openArticle(this.closest('.actu-card'))">Lire la suite <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
-    </div>
-  </article>
-
-  <!-- ── AVRIL 2026 ── -->
-  <div class="actu-mois"><span>Avril 2026</span></div>
-
-  <article class="actu-card actu-card--md reveal" data-cat="Réglementation"
-    data-tpl="tpl-easa" data-tag="Réglementation" data-tagcol="actu-tag--rouge"
-    data-date="Avril 2026"
-    data-title="Évolutions EASA 2026 : ce qui change pour les télépilotes"
-    data-cta-text="" data-cta-href="">
-    <div class="actu-img"><span class="actu-img-placeholder">Photo</span><span class="actu-tag actu-tag--rouge">Réglementation</span></div>
-    <div class="actu-body">
-      <time class="actu-date">Avril 2026</time>
-      <h3 class="actu-title">Évolutions EASA 2026 : ce qui change pour les télépilotes</h3>
-      <p class="actu-excerpt">Point complet sur les nouvelles exigences applicables aux opérateurs en catégorie Spécifique et Open A2 à compter du second semestre 2026.</p>
-      <button class="actu-lire" onclick="openArticle(this.closest('.actu-card'))">Lire la suite <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
-    </div>
-  </article>
-
-  <article class="actu-card actu-card--sm reveal" data-cat="Mission"
-    data-tpl="tpl-cartographie" data-tag="Mission" data-tagcol="actu-tag--vert"
-    data-date="Avril 2026"
-    data-title="Cartographie de carrière en Franche-Comté — modélisation 3D complète"
-    data-cta-text="Découvrir la prestation cartographie" data-cta-href="prestations/cartographie.html">
-    <div class="actu-img"><span class="actu-img-placeholder">Photo</span><span class="actu-tag actu-tag--vert">Mission</span></div>
-    <div class="actu-body">
-      <time class="actu-date">Avril 2026</time>
-      <h3 class="actu-title">Cartographie de carrière en Franche-Comté — modélisation 3D complète</h3>
-      <p class="actu-excerpt">Mission photogrammétrique sur une carrière de 12 ha. MNT, nuage de points haute densité et calcul de volumes.</p>
-      <button class="actu-lire" onclick="openArticle(this.closest('.actu-card'))">Lire la suite <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
-    </div>
-  </article>
-
-  <article class="actu-card actu-card--md reveal" data-cat="Agriculture"
-    data-tpl="tpl-multispectral-saison" data-tag="Agriculture" data-tagcol="actu-tag--orange"
-    data-date="Avril 2026"
-    data-title="Démarrage de la saison multispectrale — premières analyses de cultures"
-    data-cta-text="Agriculture de précision" data-cta-href="prestations/agriculture.html">
-    <div class="actu-img"><span class="actu-img-placeholder">Photo</span><span class="actu-tag actu-tag--orange">Agriculture</span></div>
-    <div class="actu-body">
-      <time class="actu-date">Avril 2026</time>
-      <h3 class="actu-title">Démarrage de la saison multispectrale — premières analyses de cultures</h3>
-      <p class="actu-excerpt">Premières missions d'imagerie multispectrale de la saison sur céréales en Haute-Saône, avec restitution d'indices NDVI et NDRE.</p>
-      <button class="actu-lire" onclick="openArticle(this.closest('.actu-card'))">Lire la suite <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
-    </div>
-  </article>
-
-  <!-- ── MARS 2026 ── -->
-  <div class="actu-mois"><span>Mars 2026</span></div>
-
-  <article class="actu-card actu-card--span2 reveal" data-cat="Événement"
-    data-tpl="tpl-salon" data-tag="Événement" data-tagcol="actu-tag--violet"
-    data-date="Mars 2026"
-    data-title="APH Drone au salon Drone Expo Grand Est — retour sur notre participation"
-    data-cta-text="" data-cta-href="">
-    <div class="actu-img"><span class="actu-img-placeholder">Photo</span><span class="actu-tag actu-tag--violet">Événement</span></div>
-    <div class="actu-body">
-      <time class="actu-date">Mars 2026</time>
-      <h3 class="actu-title">APH Drone au salon Drone Expo Grand Est — retour sur notre participation</h3>
-      <p class="actu-excerpt">Rencontres professionnelles, démonstrations de vol et présentation de nos offres. Plus de 40 contacts établis sur les deux jours.</p>
-      <button class="actu-lire" onclick="openArticle(this.closest('.actu-card'))">Lire la suite <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
-    </div>
-  </article>
-
-  <article class="actu-card actu-card--sm reveal" data-cat="Sécurité civile"
-    data-tpl="tpl-exercice-sdis" data-tag="Sécurité civile" data-tagcol="actu-tag--marine"
-    data-date="Mars 2026"
-    data-title="Exercice SDIS 70 — recherche de personne disparue en forêt"
-    data-cta-text="Formation Sécurité et Secours" data-cta-href="formations/securite-secours.html">
-    <div class="actu-img"><span class="actu-img-placeholder">Photo</span><span class="actu-tag actu-tag--marine">Sécurité civile</span></div>
-    <div class="actu-body">
-      <time class="actu-date">Mars 2026</time>
-      <h3 class="actu-title">Exercice SDIS 70 — recherche de personne disparue en forêt</h3>
-      <p class="actu-excerpt">Exercice grandeur nature de recherche de personne disparue en milieu forestier avec drone thermique. Cible localisée en 12 minutes.</p>
-      <button class="actu-lire" onclick="openArticle(this.closest('.actu-card'))">Lire la suite <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
-    </div>
-  </article>
-
-  <!-- ── JANVIER 2026 ── -->
-  <div class="actu-mois"><span>Janvier 2026</span></div>
-
-  <article class="actu-card actu-card--md reveal" data-cat="Sécurité civile"
-    data-tpl="tpl-fmpa" data-tag="Sécurité civile" data-tagcol="actu-tag--marine"
-    data-date="Janvier 2026"
-    data-title="Formation FMPA SDIS 70 — bilan de la session hivernale"
-    data-cta-text="" data-cta-href="">
-    <div class="actu-img"><span class="actu-img-placeholder">Photo</span><span class="actu-tag actu-tag--marine">Sécurité civile</span></div>
-    <div class="actu-body">
-      <time class="actu-date">Janvier 2026</time>
-      <h3 class="actu-title">Formation FMPA SDIS 70 — bilan de la session hivernale</h3>
-      <p class="actu-excerpt">Session de formation opérationnelle avec les sapeurs-pompiers de Haute-Saône en conditions hivernales difficiles.</p>
-      <button class="actu-lire" onclick="openArticle(this.closest('.actu-card'))">Lire la suite <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
-    </div>
-  </article>
-
-  <article class="actu-card actu-card--sm reveal" data-cat="Agriculture"
-    data-tpl="tpl-vigne" data-tag="Agriculture" data-tagcol="actu-tag--orange"
-    data-date="Janvier 2026"
-    data-title="Première mission multispectrale sur vigne — Jura"
-    data-cta-text="Agriculture de précision" data-cta-href="prestations/agriculture.html">
-    <div class="actu-img"><span class="actu-img-placeholder">Photo</span><span class="actu-tag actu-tag--orange">Agriculture</span></div>
-    <div class="actu-body">
-      <time class="actu-date">Janvier 2026</time>
-      <h3 class="actu-title">Première mission multispectrale sur vigne — Jura</h3>
-      <p class="actu-excerpt">Analyse de parcelles viticoles en Jura avec restitution d'indicateurs de vigueur végétative pour gestion agronomique différenciée.</p>
-      <button class="actu-lire" onclick="openArticle(this.closest('.actu-card'))">Lire la suite <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
-    </div>
-  </article>
-
-  <article class="actu-card actu-card--md reveal" data-cat="Réglementation"
-    data-tpl="tpl-sora" data-tag="Réglementation" data-tagcol="actu-tag--rouge"
-    data-date="Janvier 2026"
-    data-title="SORA v2.5 — nouveautés pour les opérateurs en catégorie Spécifique"
-    data-cta-text="Expertise SORA et PDRA" data-cta-href="prestations/sora-pdra.html">
-    <div class="actu-img"><span class="actu-img-placeholder">Photo</span><span class="actu-tag actu-tag--rouge">Réglementation</span></div>
-    <div class="actu-body">
-      <time class="actu-date">Janvier 2026</time>
-      <h3 class="actu-title">SORA v2.5 — nouveautés pour les opérateurs en catégorie Spécifique</h3>
-      <p class="actu-excerpt">Analyse des changements introduits par la version 2.5 du SORA et impact sur les dossiers DGAC en cours.</p>
-      <button class="actu-lire" onclick="openArticle(this.closest('.actu-card'))">Lire la suite <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
-    </div>
-  </article>
-
-</div>
-</div>
-
 <!-- ═══ PANEL ARTICLE ═══ -->
 <div id="article-overlay" onclick="closePanel()"></div>
 <div id="article-panel">
@@ -1700,42 +1477,6 @@ document.addEventListener('keydown', function(e){
   },{threshold:0.1});
   els.forEach(function(el){ io.observe(el); });
 })();
-
-// Filtres par catégorie
-(function(){
-  var btns = document.querySelectorAll('.filtre-btn');
-  var cards = document.querySelectorAll('#actu-mosaic .actu-card, #firebase-mosaic .actu-card');
-  var separateurs = document.querySelectorAll('.actu-mois');
-
-  btns.forEach(function(btn){
-    btn.addEventListener('click', function(){
-      btns.forEach(function(b){ b.classList.remove('active'); });
-      btn.classList.add('active');
-      var cat = btn.dataset.cat;
-
-      cards.forEach(function(card){
-        if(cat === 'Tous' || card.dataset.cat === cat){
-          card.classList.remove('hidden');
-        } else {
-          card.classList.add('hidden');
-        }
-      });
-
-      // Masquer les séparateurs de mois si aucune carte visible après eux
-      separateurs.forEach(function(sep){
-        var next = sep.nextElementSibling;
-        var hasVisible = false;
-        while(next && !next.classList.contains('actu-mois')){
-          if(!next.classList.contains('hidden') && next.classList.contains('actu-card')){
-            hasVisible = true;
-          }
-          next = next.nextElementSibling;
-        }
-        sep.style.display = hasVisible ? '' : 'none';
-      });
-    });
-  });
-})();
 </script>
 <!-- Firebase SDK -->
 <script type="module">
@@ -1809,9 +1550,6 @@ try {
       i++;
     });
 
-    // Afficher le séparateur Archives
-    document.getElementById('archive-sep').style.display = 'block';
-
     // Activer reveal sur les nouvelles cartes
     const io = new IntersectionObserver(function(entries){
       entries.forEach(function(e){
@@ -1820,17 +1558,13 @@ try {
     },{threshold:0.1});
     mosaic.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
-    // Mettre à jour les filtres pour inclure les cartes Firebase
-    // Réinitialiser les filtres pour inclure les cartes Firebase
-    var activeBtn = document.querySelector('.filtre-btn.active');
-    if(activeBtn && activeBtn.dataset.cat !== 'Tous'){
-      var cat = activeBtn.dataset.cat;
-      mosaic.querySelectorAll('.actu-card').forEach(function(c){
-        c.classList.toggle('hidden', c.dataset.cat !== cat);
-      });
-    }
-
     window._firebaseLoaded = true;
+  } else {
+    document.getElementById('firebase-mosaic').innerHTML =
+      '<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:#7a8fa5;">' +
+      '<p style="font-size:1rem;">Aucune actualité publiée pour le moment.</p>' +
+      '<p style="font-size:.85rem;margin-top:6px;">Revenez bientôt pour suivre nos dernières nouvelles.</p>' +
+      '</div>';
   }
 } catch(e) {
   console.warn('Firebase non disponible:', e.message);
