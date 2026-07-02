@@ -107,6 +107,19 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
 .related-link{font-size:13px;color:var(--secondary);text-decoration:none;font-weight:500;display:block;margin-bottom:8px;}
 .related-link:hover{color:var(--accent);}
 
+/* Emplacement photo */
+.media-photo{position:relative;border-radius:14px;overflow:hidden;height:320px;background:var(--light);box-shadow:0 4px 24px rgba(0,0,0,.06);}
+.media-photo img{width:100%;height:100%;object-fit:cover;display:block;}
+.media-photo-caption{position:absolute;left:0;right:0;bottom:0;padding:18px 22px;background:linear-gradient(180deg,transparent,rgba(11,31,58,.85));color:white;font-size:13px;font-weight:500;}
+
+/* Emplacement vidéo */
+.media-video{position:relative;border-radius:14px;overflow:hidden;aspect-ratio:16/9;background:linear-gradient(135deg,var(--primary),#1a3a6e);box-shadow:0 4px 24px rgba(0,0,0,.06);cursor:pointer;}
+.media-video img{width:100%;height:100%;object-fit:cover;opacity:.55;}
+.media-video-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;}
+.media-video-play{width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.4);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;color:white;transition:.25s;}
+.media-video:hover .media-video-play{background:var(--accent);border-color:var(--accent);transform:scale(1.08);}
+.media-video-label{color:white;font-size:13px;font-weight:600;letter-spacing:.02em;}
+
 /* ── Responsive mobile ── */
 @media(max-width:768px){
   .page-hero{grid-template-columns:1fr !important;padding:80px 6% 40px !important;}
@@ -116,6 +129,7 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
   .appli-grid{grid-template-columns:1fr !important;}
   .materiel-grid{grid-template-columns:1fr !important;}
   .form-row{grid-template-columns:1fr !important;}
+  .media-photo{height:220px !important;}
 }
 </style>
 </head>
@@ -204,6 +218,14 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
       </div>
     </div>
 
+    <!-- Emplacement photo -->
+    <div class="section-block">
+      <div class="media-photo">
+        <img src="https://images.unsplash.com/photo-1508444845599-5c89863b1c44?w=1200&q=80" alt="Mission de surveillance par drone">
+        <div class="media-photo-caption">Photo à remplacer par un visuel réel de mission APH Drone</div>
+      </div>
+    </div>
+
     <!-- Déroulement -->
     <div class="section-block">
       <h2>Déroulement d'une mission</h2>
@@ -242,6 +264,20 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
             <h3>Rapport et livrables</h3>
             <p>Rapport d'intervention détaillé, images et vidéos géolocalisées, compte-rendu opérationnel remis dans les 48h suivant la mission.</p>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Emplacement vidéo -->
+    <div class="section-block">
+      <h2>Exemple de mission</h2>
+      <div class="media-video" onclick="alert('Emplacement réservé pour une vidéo de mission — à connecter à un fichier ou un lien YouTube/Vimeo.')">
+        <img src="https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=1200&q=80" alt="Aperçu vidéo de mission">
+        <div class="media-video-overlay">
+          <div class="media-video-play">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+          <span class="media-video-label">Vidéo à intégrer</span>
         </div>
       </div>
     </div>
