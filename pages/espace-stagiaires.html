@@ -770,11 +770,20 @@ document.getElementById('btn-save-account').addEventListener('click', async () =
   }
 });
 
+// Liens réels des formulaires — data-doc → url. Complète cette table au fur et à mesure que tu crées les autres pages.
+const DOC_LINKS = {
+  'formulaire-satisfaction': 'formulaire-satisfaction.html'
+};
+
 document.querySelectorAll('.doc-card').forEach(card => {
   card.addEventListener('click', e => {
     e.preventDefault();
-    // TODO : remplacer par le vrai lien du formulaire une fois créé (data-doc identifie le document)
-    showToast('Formulaire "' + card.querySelector('h4').textContent + '" — bientôt disponible.');
+    const key = card.dataset.doc;
+    if(DOC_LINKS[key]){
+      window.location.href = DOC_LINKS[key];
+    } else {
+      showToast('Formulaire "' + card.querySelector('h4').textContent + '" — bientôt disponible.');
+    }
   });
 });
 
