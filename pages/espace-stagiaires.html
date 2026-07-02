@@ -150,8 +150,9 @@ body{background:var(--light);color:#222;min-height:100vh;padding-top:80px;}
   .stag-hero{padding:32px 5%;}
   .stag-hero h1{font-size:1.3rem;}
   .stag-hero-top{flex-direction:column;align-items:stretch;gap:14px;}
-  .hero-actions{width:100%;}
-  .btn-account,.btn-logout-stag{flex:1;justify-content:center;white-space:nowrap;}
+  .hero-actions{width:100%;flex-wrap:wrap;}
+  .btn-account,.btn-logout-stag{flex:1 1 calc(50% - 5px);justify-content:center;white-space:nowrap;}
+  #btn-back-site{flex-basis:100%;}
   .progress-top{flex-direction:column;align-items:flex-start;gap:4px;}
   .emarg-row{flex-direction:column;align-items:flex-start;}
   .emarg-actions{width:100%;}
@@ -199,6 +200,10 @@ body{background:var(--light);color:#222;min-height:100vh;padding-top:80px;}
           <p id="stag-sub">Retrouvez vos formations, vos documents et vos émargements.</p>
         </div>
         <div class="hero-actions">
+          <a class="btn-logout-stag" href="/index.html" id="btn-back-site">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+            Retour au site
+          </a>
           <button class="btn-account" id="btn-account">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
             Mon compte
