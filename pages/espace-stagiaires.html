@@ -221,6 +221,11 @@ body{background:var(--light);color:#222;min-height:100vh;padding-top:80px;}
           <h4>Fiche renseignements</h4>
           <span class="doc-card-arrow">Ouvrir <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
         </a>
+        <a href="#" class="doc-card" data-doc="reglement-interieur">
+          <span class="doc-card-tag">Administratif</span>
+          <h4>Règlement intérieur</h4>
+          <span class="doc-card-arrow">Ouvrir <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+        </a>
         <a href="#" class="doc-card" data-doc="attestation-zone-exclusion">
           <span class="doc-card-tag">Sécurité</span>
           <h4>Attestation zone d'exclusion</h4>
@@ -775,7 +780,8 @@ const DOC_LINKS = {
   'formulaire-satisfaction': 'formulaire-satisfaction.html',
   'formulaire-reclamation': 'formulaire-reclamation.html',
   'fiche-renseignements': 'fiche-renseignements.html',
-  'attestation-zone-exclusion': 'attestation-zone-exclusion.html'
+  'attestation-zone-exclusion': 'attestation-zone-exclusion.html',
+  'reglement-interieur': 'reglement-interieur.html'
 };
 
 document.querySelectorAll('.doc-card').forEach(card => {
