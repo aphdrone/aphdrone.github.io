@@ -217,8 +217,8 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
         <!-- Emplacement photo -->
     <div class="section-block">
       <div class="media-photo">
-        <img src="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=1200&q=80" alt="Photo à venir">
-        <div class="media-photo-caption">Photo à remplacer par un visuel réel de mission APH Drone</div>
+        <img src="/assets/images/agriculture1.png" alt="Mission agriculture de précision APH Drone">
+        <div class="media-photo-caption">Mission agriculture de précision — APH Drone</div>
       </div>
     </div>
 
@@ -267,15 +267,27 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
         <!-- Emplacement vidéo -->
     <div class="section-block">
       <h2>Exemple de mission</h2>
-      <div class="media-video" onclick="alert('Emplacement réservé pour une vidéo de mission — à connecter à un fichier ou un lien YouTube/Vimeo.')">
-        <img src="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=1200&q=80" alt="Aperçu vidéo de mission">
+      <div class="media-video" id="video-mission-agriculture" onclick="chargerVideoMissionAgriculture()">
+        <img src="https://img.youtube.com/vi/wbLvy7GEuQ4/maxresdefault.jpg" alt="Aperçu vidéo de mission agriculture">
         <div class="media-video-overlay">
           <div class="media-video-play">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
           </div>
-          <span class="media-video-label">Vidéo à intégrer</span>
+          <span class="media-video-label">Voir la vidéo</span>
         </div>
       </div>
+      <script>
+        function chargerVideoMissionAgriculture(){
+          document.getElementById('video-mission-agriculture').outerHTML =
+            '<div class="media-video" style="cursor:default;">' +
+              '<iframe src="https://www.youtube.com/embed/wbLvy7GEuQ4?autoplay=1&rel=0" ' +
+                'title="Vid\u00e9o mission agriculture APH Drone" ' +
+                'style="position:absolute;inset:0;width:100%;height:100%;border:0;" ' +
+                'allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" ' +
+                'allowfullscreen></iframe>' +
+            '</div>';
+        }
+      </script>
     </div>
 
     <!-- Livrables -->
