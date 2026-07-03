@@ -145,6 +145,15 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 let selectedRole = 'stagiaire';
 
+// Si on arrive ici juste après un clic sur "Se déconnecter", on ignore toute session
+// résiduelle détectée au premier chargement (course possible entre les deux pages),
+// et on force une nouvelle déconnexion pour purger proprement l'état persistant.
+const urlParams = new URLSearchParams(window.location.search);
+let skipInitialAuth = urlParams.get('loggedout') === '1';
+if(skipInitialAuth){
+  window.history.replaceState({}, document.title, window.location.pathname);
+}
+
 window.selectRole = function(role, btn){
   selectedRole = role;
   document.querySelectorAll('.role-tab').forEach(b => b.classList.remove('active'));
@@ -175,6 +184,14 @@ window.doLogin = async function(){
 };
 
 onAuthStateChanged(auth, async user => {
+  if(skipInitialAuth){
+    skipInitialAuth = false;
+    if(user){
+      // Session fantôme détectée juste après une déconnexion : on la purge sans rediriger.
+      await signOut(auth).catch(() => {});
+    }
+    return;
+  }
   if(!user) return;
   try {
     if(user.email === ADMIN_EMAIL){ window.location.href = '../office/'; return; }

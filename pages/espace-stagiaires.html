@@ -703,7 +703,9 @@ function generateAttestation(formation, signature){
 }
 
 document.getElementById('btn-logout-stag').addEventListener('click', () => {
-  signOut(auth).then(() => window.location.href = 'connexion.html');
+  signOut(auth).then(() => {
+    window.location.href = 'connexion.html?loggedout=1';
+  });
 });
 
 document.getElementById('btn-account').addEventListener('click', () => {
