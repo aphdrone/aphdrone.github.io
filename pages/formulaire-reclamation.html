@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Formulaire de réclamation — APH Drone</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/style.css">
+<style>
+:root{--primary:#0B1F3A;--secondary:#1F5FAF;--accent:#4A90E2;--light:#F5F7FA;--red:#dc2626;--redbg:#fee2e2;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
+body{background:#fff;color:#222;min-height:100vh;padding-top:80px;}
+
+.legal-hero{background:var(--light);border-bottom:1px solid #e8edf4;padding:44px 5%;}
+.legal-hero-inner{max-width:820px;margin:0 auto;}
+.legal-hero a.back{color:var(--secondary);text-decoration:none;font-size:.8rem;font-weight:600;display:inline-flex;align-items:center;gap:6px;margin-bottom:14px;}
+.legal-hero a.back:hover{color:var(--accent);}
+.legal-hero a.back svg{width:14px;height:14px;}
+.legal-hero h1{font-size:1.6rem;color:var(--primary);font-weight:800;margin-bottom:8px;}
+.legal-hero p{font-size:.88rem;color:#7a8fa5;line-height:1.55;max-width:600px;}
+
+.consignes{background:var(--redbg);border-left:4px solid var(--red);border-radius:10px;padding:18px 22px;margin-top:24px;}
+.consignes-title{display:flex;align-items:center;gap:8px;color:var(--primary);font-size:.85rem;font-weight:700;margin-bottom:10px;}
+.consignes-title svg{width:16px;height:16px;color:var(--red);flex-shrink:0;}
+.consignes ul{list-style:none;display:flex;flex-direction:column;gap:7px;}
+.consignes li{display:flex;gap:9px;font-size:.83rem;color:#334155;line-height:1.5;}
+.consignes li::before{content:'—';color:var(--red);flex-shrink:0;}
+
+.sat-wrap{max-width:820px;margin:0 auto;padding:36px 5% 70px;}
+
+.info-card{background:#fff;border:1px solid #e8edf4;border-radius:16px;padding:24px 26px;margin-bottom:22px;}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.info-grid.full{grid-template-columns:1fr;}
+.f-group{margin-bottom:0;}
+.f-group label{display:block;font-size:.72rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.03em;margin-bottom:6px;}
+.f-group input,.f-group select,.f-group textarea{width:100%;padding:11px 14px;border:1.5px solid #dde3ec;border-radius:9px;font-size:.9rem;outline:none;font-family:'Inter',sans-serif;background:white;}
+.f-group input:focus,.f-group select:focus,.f-group textarea:focus{border-color:var(--accent);}
+.f-group textarea{resize:vertical;min-height:110px;line-height:1.5;}
+.f-hint{font-size:.75rem;color:#94a3b8;margin-top:6px;}
+
+.sat-section{background:#fff;border:1px solid #e8edf4;border-radius:16px;padding:26px 26px 22px;margin-bottom:20px;}
+.sat-section-title{display:flex;align-items:center;gap:10px;margin-bottom:4px;}
+.sat-section-num{width:26px;height:26px;border-radius:8px;background:var(--light);color:var(--secondary);font-size:.78rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.sat-section-title h3{font-size:1rem;color:var(--primary);font-weight:700;}
+.sat-section-sub{font-size:.8rem;color:#94a3b8;margin:2px 0 18px 36px;}
+
+.type-grid{display:flex;flex-wrap:wrap;gap:10px;}
+.type-btn{padding:10px 18px;border-radius:9px;border:1.5px solid #dde3ec;background:white;font-size:.85rem;font-weight:600;color:#64748b;cursor:pointer;transition:.15s;}
+.type-btn.active{background:var(--redbg);border-color:var(--red);color:var(--red);}
+
+.f-check{display:flex;align-items:flex-start;gap:10px;font-size:.82rem;color:#475569;line-height:1.5;}
+.f-check input{width:16px;height:16px;margin-top:2px;flex-shrink:0;accent-color:var(--secondary);}
+
+.submit-bar{display:flex;flex-direction:column;gap:16px;background:#fff;border:1px solid #e8edf4;border-radius:16px;padding:24px 26px;}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:13px 22px;border-radius:9px;font-size:.9rem;font-weight:700;cursor:pointer;border:none;text-decoration:none;transition:.15s;justify-content:center;}
+.btn-primary{background:var(--red);color:white;width:100%;}
+.btn-primary:hover{background:#b91c1c;}
+.btn:disabled{opacity:.55;cursor:not-allowed;}
+
+.sat-thanks{display:none;text-align:center;padding:70px 5% 90px;max-width:520px;margin:0 auto;}
+.sat-thanks .icon{width:64px;height:64px;border-radius:50%;background:#dcfce7;color:#16a34a;display:flex;align-items:center;justify-content:center;margin:0 auto 22px;}
+.sat-thanks .icon svg{width:30px;height:30px;}
+.sat-thanks h2{font-size:1.4rem;color:var(--primary);margin-bottom:10px;}
+.sat-thanks p{font-size:.9rem;color:#7a8fa5;line-height:1.6;margin-bottom:26px;}
+
+.toast{position:fixed;bottom:24px;right:24px;background:var(--primary);color:white;padding:13px 20px;border-radius:10px;font-size:.85rem;font-weight:500;box-shadow:0 12px 32px rgba(0,0,0,.2);z-index:2000;display:none;}
+
+@media(max-width:640px){
+  .info-grid{grid-template-columns:1fr;}
+  .legal-hero h1{font-size:1.35rem;}
+}
+</style>
+</head>
+<body>
+
+<div id="header-placeholder"></div>
+
+<section class="legal-hero">
+  <div class="legal-hero-inner">
+    <a class="back" href="espace-stagiaires.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+      Retour à mon espace
+    </a>
+    <h1>Formulaire de réclamation</h1>
+    <p>Vous rencontrez un problème lié à une formation ou une prestation APH Drone ? Décrivez-le précisément ci-dessous, nous reviendrons vers vous dans les meilleurs délais.</p>
+
+    <div class="consignes">
+      <div class="consignes-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
+        Avant de commencer
+      </div>
+      <ul>
+        <li>Décrivez les faits de la manière la plus factuelle et précise possible (dates, personnes, circonstances).</li>
+        <li>Votre réclamation est transmise nominativement à APH Drone et fait l'objet d'un suivi.</li>
+        <li>Une réponse vous sera apportée dans les meilleurs délais, par le même canal que celui indiqué ci-dessous.</li>
+        <li>Une fois envoyé, le formulaire ne peut plus être modifié. Vérifiez vos informations avant validation.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<div class="sat-wrap" id="pdf-capture-zone">
+
+  <!-- Coordonnées -->
+  <div class="info-card">
+    <div class="info-grid">
+      <div class="f-group">
+        <label>Nom et prénom</label>
+        <input type="text" id="info-name" placeholder="Chargement…">
+      </div>
+      <div class="f-group">
+        <label>Formation ou prestation concernée</label>
+        <select id="info-formation"><option value="">Sélectionnez</option></select>
+      </div>
+      <div class="f-group">
+        <label>Email de contact</label>
+        <input type="email" id="info-email" placeholder="votre@email.fr">
+      </div>
+      <div class="f-group">
+        <label>Téléphone (facultatif)</label>
+        <input type="tel" id="info-phone" placeholder="06 00 00 00 00">
+      </div>
+      <div class="f-group">
+        <label>Date des faits</label>
+        <input type="date" id="info-date">
+      </div>
+    </div>
+  </div>
+
+  <!-- Nature -->
+  <div class="sat-section">
+    <div class="sat-section-title"><span class="sat-section-num">1</span><h3>Nature de la réclamation</h3></div>
+    <p class="sat-section-sub">Sélectionnez la catégorie la plus proche de votre situation</p>
+    <div class="type-grid" id="type-grid">
+      <button type="button" class="type-btn" data-type="Qualité pédagogique">Qualité pédagogique</button>
+      <button type="button" class="type-btn" data-type="Formateur">Formateur</button>
+      <button type="button" class="type-btn" data-type="Organisation / logistique">Organisation / logistique</button>
+      <button type="button" class="type-btn" data-type="Matériel / équipement">Matériel / équipement</button>
+      <button type="button" class="type-btn" data-type="Facturation / administratif">Facturation / administratif</button>
+      <button type="button" class="type-btn" data-type="Autre">Autre</button>
+    </div>
+  </div>
+
+  <!-- Description -->
+  <div class="sat-section">
+    <div class="sat-section-title"><span class="sat-section-num">2</span><h3>Description des faits</h3></div>
+    <p class="sat-section-sub">Soyez le plus précis possible</p>
+    <div class="f-group" style="margin-bottom:18px;">
+      <label>Description détaillée</label>
+      <textarea id="q-description" placeholder="Décrivez précisément ce qui s'est passé…"></textarea>
+      <p class="f-hint">Champ obligatoire.</p>
+    </div>
+    <div class="f-group">
+      <label>Conséquences ou impact (facultatif)</label>
+      <textarea id="q-consequences" placeholder="En quoi cela vous a-t-il impacté ?" style="min-height:80px;"></textarea>
+    </div>
+  </div>
+
+  <!-- Attentes -->
+  <div class="sat-section">
+    <div class="sat-section-title"><span class="sat-section-num">3</span><h3>Résolution souhaitée</h3></div>
+    <p class="sat-section-sub">Qu'attendez-vous comme suite à votre réclamation ?</p>
+    <div class="f-group">
+      <textarea id="q-attentes" placeholder="Ex : explication, remboursement, nouvelle session, excuses, etc."></textarea>
+    </div>
+  </div>
+
+  <!-- Validation -->
+  <div class="submit-bar">
+    <label class="f-check">
+      <input type="checkbox" id="cert-check">
+      Je certifie sur l'honneur l'exactitude des faits décrits ci-dessus.
+    </label>
+    <button class="btn btn-primary" id="btn-submit">Envoyer ma réclamation</button>
+  </div>
+
+</div>
+
+<div class="sat-thanks" id="sat-thanks">
+  <div class="icon">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+  </div>
+  <h2>Réclamation transmise</h2>
+  <p>Votre réclamation a bien été enregistrée et transmise à APH Drone. Une réponse vous sera apportée dans les meilleurs délais.</p>
+  <a href="espace-stagiaires.html" class="btn btn-primary" style="width:auto;background:var(--secondary);">Retour à mon espace</a>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div id="footer-placeholder"></div>
+
+<script src="/assets/include.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, onAuthStateChanged }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, collection, getDocs, query, where, addDoc }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAV5NQWfp8n9RkTrHSwqssBJ4R9lNAuYK8",
+  authDomain: "aph-drone.firebaseapp.com",
+  projectId: "aph-drone",
+  storageBucket: "aph-drone.firebasestorage.app",
+  messagingSenderId: "316810168380",
+  appId: "1:316810168380:web:66cb916cec4fdc00b9db39"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// ── Envoi du PDF par email via Google Apps Script ──
+// IMPORTANT : ceci doit être un déploiement Apps Script séparé de celui du formulaire de satisfaction
+// (nouveau projet script.google.com dédié à la réclamation), pour ne jamais risquer de casser
+// le formulaire de satisfaction qui fonctionne déjà.
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxWDgXlqJ1nL4SkL8jdGGOxgSg--aknCKygTXXeEey_g8eckCzwQRuq-wYwiOmz0-OwiQ/exec';
+
+async function sendReclamationPdf({ name, formation, pdfBase64 }) {
+  const res = await fetch(APPS_SCRIPT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({ name, formation, pdfBase64 })
+  });
+  const result = await res.json();
+  if(!result.success){ throw new Error(result.error || 'Échec de l\'envoi côté Apps Script'); }
+  return result;
+}
+
+let currentStagiaire = null;
+let currentStagId = null;
+let typeReclamation = null;
+
+const CATALOGUE_COMPLET = [
+  'Initiation A1/A3','BAPD A2','CATS STS','Vol de nuit','Sylviculture & biodiversité',
+  'Surveillance, Sécurité & Secours','Agriculture de précision','Thermographie','Cartographie & 3D',
+  'Production de données exploitables','Inspection Technique','Maîtrise opérationnelle',
+  'Mise à niveau réglementaire','Catégorie Spécifique','Changer de carrière','Autre prestation'
+];
+
+function fillFormationSelect(list){
+  const sel = document.getElementById('info-formation');
+  sel.innerHTML = '<option value="">Sélectionnez</option>'
+    + list.map(m => `<option value="${m}">${m}</option>`).join('');
+}
+fillFormationSelect(CATALOGUE_COMPLET);
+
+document.querySelectorAll('.type-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    typeReclamation = btn.dataset.type;
+    document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+
+onAuthStateChanged(auth, async user => {
+  if(!user){
+    document.getElementById('info-name').placeholder = 'Prénom Nom';
+    document.getElementById('info-name').removeAttribute('disabled');
+    return;
+  }
+  try{
+    const snap = await getDocs(query(collection(db,'stagiaires'), where('email','==',user.email)));
+    if(snap.empty) return;
+    const d = snap.docs[0];
+    currentStagId = d.id;
+    currentStagiaire = d.data();
+    document.getElementById('info-name').value = currentStagiaire.name || '';
+    document.getElementById('info-email').value = user.email || '';
+  }catch(e){
+    console.error('Erreur chargement stagiaire :', e);
+  }
+});
+
+// ── Génère un PDF qui est une capture fidèle du formulaire tel que rempli à l'écran ──
+async function buildPdf(data){
+  const zone = document.getElementById('pdf-capture-zone');
+  const submitBtn = document.getElementById('btn-submit');
+
+  const header = document.createElement('div');
+  header.style.cssText = 'background:#0B1F3A;color:#fff;padding:20px 26px;border-radius:16px;margin-bottom:20px;font-family:Inter,sans-serif;';
+  header.innerHTML =
+    '<div style="font-size:1.05rem;font-weight:800;">APH Drone — Formulaire de réclamation</div>' +
+    '<div style="font-size:.82rem;opacity:.85;margin-top:5px;">Réclamant : ' + (data.name || '—') + ' — Concerné : ' + (data.formation || '—') + '</div>' +
+    '<div style="font-size:.76rem;opacity:.7;margin-top:2px;">Envoyé le ' + new Date(data.timestamp).toLocaleDateString('fr-FR') + ' à ' + new Date(data.timestamp).toLocaleTimeString('fr-FR') + '</div>';
+  zone.insertBefore(header, zone.firstChild);
+  submitBtn.style.display = 'none';
+
+  let canvas;
+  try{
+    canvas = await html2canvas(zone, { scale: 2, backgroundColor: '#ffffff', useCORS: true });
+  } finally {
+    header.remove();
+    submitBtn.style.display = '';
+  }
+
+  const imgData = canvas.toDataURL('image/jpeg', 0.95);
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF('p', 'mm', 'a4');
+  const pageWidth = 210, pageHeight = 297, margin = 10;
+  const imgWidth = pageWidth - margin * 2;
+  const imgHeight = canvas.height * imgWidth / canvas.width;
+
+  let heightLeft = imgHeight;
+  let position = margin;
+  doc.addImage(imgData, 'JPEG', margin, position, imgWidth, imgHeight);
+  heightLeft -= (pageHeight - margin * 2);
+
+  while(heightLeft > 0){
+    position = margin - (imgHeight - heightLeft);
+    doc.addPage();
+    doc.addImage(imgData, 'JPEG', margin, position, imgWidth, imgHeight);
+    heightLeft -= (pageHeight - margin * 2);
+  }
+
+  return doc;
+}
+
+document.getElementById('btn-submit').addEventListener('click', async () => {
+  const name = document.getElementById('info-name').value.trim();
+  const formation = document.getElementById('info-formation').value;
+  const email = document.getElementById('info-email').value.trim();
+  const phone = document.getElementById('info-phone').value.trim();
+  const dateFaits = document.getElementById('info-date').value;
+  const description = document.getElementById('q-description').value.trim();
+  const consequences = document.getElementById('q-consequences').value.trim();
+  const attentes = document.getElementById('q-attentes').value.trim();
+
+  if(!name){ showToast('Merci de renseigner votre nom.'); return; }
+  if(!formation){ showToast('Merci de sélectionner la formation ou prestation concernée.'); return; }
+  if(!email){ showToast('Merci de renseigner votre email de contact.'); return; }
+  if(!typeReclamation){ showToast('Merci de sélectionner la nature de votre réclamation.'); return; }
+  if(!description){ showToast('Merci de décrire les faits.'); document.getElementById('q-description').scrollIntoView({behavior:'smooth', block:'center'}); return; }
+  if(!document.getElementById('cert-check').checked){
+    showToast('Merci de cocher la case de certification avant d\'envoyer.');
+    return;
+  }
+
+  const btn = document.getElementById('btn-submit');
+  btn.disabled = true;
+  btn.textContent = 'Envoi…';
+
+  const payload = {
+    name, formation, email, phone, dateFaits,
+    typeReclamation, description, consequences, attentes,
+    timestamp: Date.now()
+  };
+
+  try{
+    const pdfDoc = await buildPdf(payload);
+    const pdfBase64 = pdfDoc.output('datauristring').split(',')[1];
+
+    if(currentStagId){
+      await addDoc(collection(db,'reclamations'), { stagiaireId: currentStagId, ...payload });
+    }
+
+    await sendReclamationPdf({ name, formation, pdfBase64 });
+
+    document.querySelectorAll('.sat-wrap, .legal-hero').forEach(el => el.style.display = 'none');
+    document.getElementById('sat-thanks').style.display = 'block';
+  }catch(e){
+    showToast('Erreur lors de l\'envoi : ' + e.message);
+    btn.disabled = false;
+    btn.textContent = 'Envoyer ma réclamation';
+  }
+});
+
+function showToast(msg){
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.style.display = 'block';
+  setTimeout(() => el.style.display = 'none', 3800);
+}
+</script>
+</body>
+</html>
