@@ -345,23 +345,13 @@ body{background:var(--light);color:#222;min-height:100vh;padding-top:80px;}
 <div class="modal-overlay" id="modal-sign">
   <div class="modal-box">
     <h3 id="sign-title">Signer ma présence</h3>
-    <p>En signant, vous attestez avoir suivi la session de formation indiquée, conformément aux exigences réglementaires DGAC.</p>
+    <p>Ajoutez un ou plusieurs créneaux à signer (pratique pour rattraper des jours en retard), puis signez une seule fois pour valider l'ensemble.</p>
 
-    <div class="info-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
-      <div class="f-group">
-        <label>Date</label>
-        <input type="text" id="sign-date-display" disabled>
-      </div>
-      <div class="f-group">
-        <label>Créneau</label>
-        <div class="reco-choices" id="sign-creneau-grid" style="display:flex;gap:8px;">
-          <button type="button" class="reco-btn" data-creneau="Matin" style="flex:1;">Matin</button>
-          <button type="button" class="reco-btn" data-creneau="Après-midi" style="flex:1;">Après-midi</button>
-        </div>
-      </div>
-    </div>
+    <div class="f-group" style="margin-bottom:8px;"><label>Créneaux à signer</label></div>
+    <div id="sign-rows" style="display:flex;flex-direction:column;gap:8px;margin-bottom:10px;"></div>
+    <button type="button" id="sign-add-row" style="font-size:.8rem;font-weight:600;color:var(--secondary);background:none;border:1.5px dashed #cbd5e1;border-radius:9px;padding:9px;cursor:pointer;width:100%;margin-bottom:16px;">+ Ajouter un créneau</button>
 
-    <div class="f-group" style="margin-bottom:8px;"><label>Signature manuscrite</label></div>
+    <div class="f-group" style="margin-bottom:8px;"><label>Signature manuscrite (valable pour tous les créneaux ci-dessus)</label></div>
     <div class="sig-pad-wrap" style="border:1.5px dashed #cbd5e1;border-radius:12px;background:#fbfcfe;padding:10px;">
       <canvas id="sign-canvas" style="width:100%;height:140px;display:block;border-radius:8px;background:#fff;touch-action:none;cursor:crosshair;"></canvas>
       <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
@@ -372,7 +362,7 @@ body{background:var(--light);color:#222;min-height:100vh;padding-top:80px;}
 
     <div class="f-check" style="margin-top:14px;">
       <input type="checkbox" id="sign-confirm">
-      <label for="sign-confirm">Je certifie sur l'honneur avoir suivi cette session de formation en présentiel ou distanciel, à la date et au créneau indiqués.</label>
+      <label for="sign-confirm">Je certifie sur l'honneur avoir suivi cette session de formation en présentiel ou distanciel, aux dates et créneaux indiqués ci-dessus.</label>
     </div>
     <div class="modal-actions">
       <button class="btn btn-outline" onclick="closeModal()">Annuler</button>
@@ -606,13 +596,9 @@ async function renderEmargement(){
     snap.forEach(d => allEntries.push(d.data()));
   }catch(e){}
 
-  const todayStr = new Date().toISOString().slice(0,10);
-
   list.innerHTML = '';
   modules.forEach(name => {
     const entries = allEntries.filter(s => s.formation === name).sort((a,b) => a.timestamp - b.timestamp);
-    const signedToday = entries.filter(e => e.date === todayStr).map(e => e.creneau);
-    const remaining = ['Matin','Après-midi'].filter(c => !signedToday.includes(c));
 
     const row = document.createElement('div');
     row.className = 'emarg-row';
@@ -637,9 +623,7 @@ async function renderEmargement(){
         <div class="emarg-actions">
           ${adminViewId
             ? '<span class="btn btn-outline" style="opacity:.6;cursor:default;">Signature réservée au stagiaire</span>'
-            : (remaining.length
-                ? '<button class="btn btn-primary" data-sign="'+name+'">Signer ma présence</button>'
-                : '<span class="btn btn-outline" style="opacity:.6;cursor:default;">Journée déjà signée</span>')}
+            : '<button class="btn btn-primary" data-sign="'+name+'">Signer ma présence</button>'}
           ${entries.length ? '<button class="btn btn-outline" data-pdf="'+name+'">Télécharger la feuille d\'émargement</button>' : ''}
         </div>
       </div>
@@ -655,29 +639,48 @@ async function renderEmargement(){
   });
 }
 
-let selectedCreneau = null;
-let signedTodayFor = [];
+let rowCounter = 0;
+
+function addSignRow(prefillDate){
+  rowCounter++;
+  const id = rowCounter;
+  const wrap = document.createElement('div');
+  wrap.className = 'sign-row-item';
+  wrap.dataset.rowId = id;
+  wrap.style.cssText = 'display:flex;gap:8px;align-items:center;';
+  wrap.innerHTML = `
+    <input type="date" class="row-date" style="flex:1.3;padding:9px 10px;border:1.5px solid #dde3ec;border-radius:9px;font-size:.85rem;font-family:'Inter',sans-serif;">
+    <select class="row-creneau" style="flex:1;padding:9px 10px;border:1.5px solid #dde3ec;border-radius:9px;font-size:.85rem;font-family:'Inter',sans-serif;background:white;">
+      <option value="Matin">Matin</option>
+      <option value="Après-midi">Après-midi</option>
+    </select>
+    <button type="button" class="row-remove" style="flex-shrink:0;width:34px;height:34px;border-radius:8px;border:1.5px solid #fee2e2;background:#fff;color:#dc2626;cursor:pointer;font-size:1rem;line-height:1;">×</button>`;
+  document.getElementById('sign-rows').appendChild(wrap);
+  wrap.querySelector('.row-date').value = prefillDate || new Date().toISOString().slice(0,10);
+  wrap.querySelector('.row-remove').addEventListener('click', () => {
+    if(document.querySelectorAll('.sign-row-item').length > 1){ wrap.remove(); }
+    else{ showToast('Il faut conserver au moins un créneau.'); }
+  });
+}
+
+document.getElementById('sign-add-row').addEventListener('click', () => {
+  const rows = document.querySelectorAll('.sign-row-item');
+  const last = rows[rows.length - 1];
+  const lastDate = last ? last.querySelector('.row-date').value : null;
+  addSignRow(lastDate);
+});
 
 function openSignModal(formation){
   pendingSign = formation;
-  selectedCreneau = null;
   document.getElementById('sign-title').textContent = 'Signer ma présence — ' + formation;
-  document.getElementById('sign-date-display').value = new Date().toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
   document.getElementById('sign-confirm').checked = false;
-  document.querySelectorAll('#sign-creneau-grid .reco-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('sign-rows').innerHTML = '';
+  addSignRow(new Date().toISOString().slice(0,10));
   clearSignCanvas();
   document.getElementById('modal-sign').classList.add('open');
   setTimeout(resizeSignCanvas, 50);
 }
 window.closeModal = function(){ document.getElementById('modal-sign').classList.remove('open'); };
-
-document.querySelectorAll('#sign-creneau-grid .reco-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    selectedCreneau = btn.dataset.creneau;
-    document.querySelectorAll('#sign-creneau-grid .reco-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-  });
-});
 
 // ── Pad de signature manuscrite (modal émargement) ──
 const signCanvas = document.getElementById('sign-canvas');
@@ -714,7 +717,7 @@ function clearSignCanvas(){ signCtx.clearRect(0,0,signCanvas.width,signCanvas.he
 document.getElementById('sign-clear').addEventListener('click', clearSignCanvas);
 window.addEventListener('resize', () => { if(document.getElementById('modal-sign').classList.contains('open')){ const data = hasSignDrawing ? signCanvas.toDataURL() : null; resizeSignCanvas(); if(data){ const img = new Image(); img.onload = () => signCtx.drawImage(img,0,0,signCanvas.width,signCanvas.height); img.src = data; } } });
 
-// ── Envoi d'une copie de chaque signature par email (preuve archivée côté APH Drone) ──
+// ── Envoi d'une copie de la signature groupée par email (preuve archivée côté APH Drone) ──
 const APPS_SCRIPT_URL_EMARGEMENT = 'https://script.google.com/macros/s/AKfycbwXqKXYriQcYSyUxavZMxhoyocUW6LDsvUrRkJeWgFhNTuwo3HC0IKtLASHLuICdfsg/exec';
 async function sendEmargementPdf({ name, formation, pdfBase64 }){
   const res = await fetch(APPS_SCRIPT_URL_EMARGEMENT, {
@@ -729,7 +732,20 @@ async function sendEmargementPdf({ name, formation, pdfBase64 }){
 
 document.getElementById('btn-confirm-sign').addEventListener('click', async () => {
   const confirmed = document.getElementById('sign-confirm').checked;
-  if(!selectedCreneau){ showToast('Merci de sélectionner un créneau (matin ou après-midi).'); return; }
+
+  const rows = Array.from(document.querySelectorAll('.sign-row-item')).map(r => ({
+    date: r.querySelector('.row-date').value,
+    creneau: r.querySelector('.row-creneau').value
+  }));
+
+  if(rows.some(r => !r.date)){ showToast('Merci de renseigner une date pour chaque créneau.'); return; }
+  // Doublons internes à la sélection (même date + même créneau ajoutés deux fois)
+  const seen = new Set();
+  for(const r of rows){
+    const k = r.date + '|' + r.creneau;
+    if(seen.has(k)){ showToast('Vous avez ajouté deux fois le même créneau (' + new Date(r.date).toLocaleDateString('fr-FR') + ' — ' + r.creneau + ').'); return; }
+    seen.add(k);
+  }
   if(!hasSignDrawing){ showToast('Merci de signer avant de valider.'); return; }
   if(!confirmed){ showToast("Merci de cocher la case d'attestation."); return; }
 
@@ -737,24 +753,24 @@ document.getElementById('btn-confirm-sign').addEventListener('click', async () =
   btn.disabled = true;
   btn.textContent = 'Envoi…';
 
-  const todayStr = new Date().toISOString().slice(0,10);
   const name = currentStagiaire.name || '—';
   const signatureDataUrl = signCanvas.toDataURL('image/png');
 
   try{
-    // Vérifie qu'il n'existe pas déjà une signature pour ce créneau aujourd'hui
-    const dupSnap = await getDocs(query(collection(db,'emargements'),
+    // Vérifie qu'aucun des créneaux sélectionnés n'a déjà été signé précédemment
+    const existingSnap = await getDocs(query(collection(db,'emargements'),
       where('stagiaireId','==',currentStagId), where('formation','==',pendingSign)));
-    const already = dupSnap.docs.some(d => d.data().date === todayStr && d.data().creneau === selectedCreneau);
-    if(already){
-      showToast('Ce créneau a déjà été signé aujourd\'hui.');
+    const existing = existingSnap.docs.map(d => d.data().date + '|' + d.data().creneau);
+    const conflict = rows.find(r => existing.includes(r.date + '|' + r.creneau));
+    if(conflict){
+      showToast('Le créneau du ' + new Date(conflict.date).toLocaleDateString('fr-FR') + ' (' + conflict.creneau + ') a déjà été signé.');
       btn.disabled = false; btn.textContent = 'Valider ma signature';
       return;
     }
 
     const timestamp = Date.now();
 
-    // PDF individuel de preuve pour ce créneau, envoyé par email à APH Drone
+    // PDF récapitulatif de cette signature groupée, envoyé par email à APH Drone
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
     doc.setFillColor(11,31,58);
@@ -769,34 +785,46 @@ document.getElementById('btn-confirm-sign').addEventListener('click', async () =
     doc.setFont('helvetica','bold'); doc.setFontSize(11);
     doc.text('Stagiaire : ' + name, 20, 46);
     doc.text('Formation : ' + pendingSign, 20, 54);
+
     doc.setFont('helvetica','normal'); doc.setFontSize(10);
-    doc.text('Date : ' + new Date(timestamp).toLocaleDateString('fr-FR'), 20, 64);
-    doc.text('Créneau : ' + selectedCreneau, 20, 71);
-    doc.text('Heure de signature : ' + new Date(timestamp).toLocaleTimeString('fr-FR'), 20, 78);
-    doc.setFont('helvetica','bold'); doc.setFontSize(10);
-    doc.text('Signature :', 20, 92);
-    doc.addImage(signatureDataUrl, 'PNG', 20, 96, 80, 35);
+    let y = 66;
+    doc.setFont('helvetica','bold'); doc.text('Créneaux signés :', 20, y); y += 7;
+    doc.setFont('helvetica','normal');
+    rows.forEach(r => {
+      doc.text('— ' + new Date(r.date).toLocaleDateString('fr-FR') + '   ' + r.creneau, 24, y);
+      y += 6;
+    });
+    y += 4;
+    doc.text('Heure de signature : ' + new Date(timestamp).toLocaleTimeString('fr-FR'), 20, y);
+    y += 12;
+    doc.setFont('helvetica','bold');
+    doc.text('Signature (valable pour l\'ensemble des créneaux ci-dessus) :', 20, y);
+    y += 4;
+    doc.addImage(signatureDataUrl, 'PNG', 20, y, 80, 35);
+    y += 45;
     doc.setDrawColor(31,95,175);
-    doc.line(20, 140, 190, 140);
+    doc.line(20, y, 190, y);
     doc.setFontSize(8); doc.setTextColor(120,120,120);
-    doc.text('APH Drone — Luxeuil-les-Bains (70) — Formateur : Arnaud MOREAU', 20, 148);
+    doc.text('APH Drone — Luxeuil-les-Bains (70) — Formateur : Arnaud MOREAU', 20, y+10);
 
     const pdfBase64 = doc.output('datauristring').split(',')[1];
     await sendEmargementPdf({ name, formation: pendingSign, pdfBase64 });
 
-    // Stockage de la signature (image compressée) pour la feuille récapitulative
-    await addDoc(collection(db,'emargements'), {
-      stagiaireId: currentStagId,
-      stagiaireName: name,
-      formation: pendingSign,
-      date: todayStr,
-      creneau: selectedCreneau,
-      signatureImage: signatureDataUrl,
-      timestamp
-    });
+    // Un enregistrement Firestore par créneau signé, tous liés à la même signature
+    for(const r of rows){
+      await addDoc(collection(db,'emargements'), {
+        stagiaireId: currentStagId,
+        stagiaireName: name,
+        formation: pendingSign,
+        date: r.date,
+        creneau: r.creneau,
+        signatureImage: signatureDataUrl,
+        timestamp
+      });
+    }
 
     closeModal();
-    showToast('Présence signée avec succès.');
+    showToast(rows.length > 1 ? rows.length + ' créneaux signés avec succès.' : 'Présence signée avec succès.');
     renderEmargement();
   }catch(e){
     showToast('Erreur : ' + e.message);
