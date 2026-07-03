@@ -383,6 +383,7 @@ body{background:var(--light);color:#222;min-height:100vh;padding-top:80px;}
 
 <script src="/assets/include.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -407,6 +408,10 @@ const db = getFirestore(app);
 
 const urlParams = new URLSearchParams(window.location.search);
 const adminViewId = urlParams.get('admin_view');
+
+// Logo préchargé pour l'en-tête de la feuille d'émargement PDF
+const logoImgEl = new Image();
+logoImgEl.src = '/assets/logo.jpg';
 
 // ── Catalogue des 15 formations : nom Firestore → { slug page, description courte } ──
 // ⚠️ À VÉRIFIER : adapte le champ "url" si le nom réel de tes fichiers formations diffère.
@@ -839,51 +844,100 @@ function generateFeuilleEmargement(formation, entries){
   const doc = new jsPDF();
   const primary = [11,31,58];
   const secondary = [31,95,175];
-  const sorted = [...entries].sort((a,b) => a.timestamp - b.timestamp);
 
+  // Regroupe les créneaux par date : une ligne par jour, colonnes Matin / Après-midi
+  const byDate = {};
+  entries.forEach(e => {
+    if(!byDate[e.date]) byDate[e.date] = {};
+    byDate[e.date][e.creneau] = e;
+  });
+  const days = Object.keys(byDate).sort().map((date, i) => ({
+    index: i + 1,
+    date,
+    Matin: byDate[date]['Matin'],
+    'Après-midi': byDate[date]['Après-midi']
+  }));
+
+  // ── En-tête ──
   doc.setFillColor(...primary);
-  doc.rect(0, 0, 210, 34, 'F');
+  doc.rect(0, 0, 210, 30, 'F');
+  if(logoImgEl.complete && logoImgEl.naturalWidth){
+    try{ doc.addImage(logoImgEl, 'JPEG', 16, 6, 18, 18); }catch(err){}
+  }
   doc.setTextColor(255,255,255);
-  doc.setFont('helvetica','bold'); doc.setFontSize(16);
-  doc.text('APH Drone', 20, 18);
-  doc.setFontSize(9.5); doc.setFont('helvetica','normal');
-  doc.text('Feuille d\'émargement — ' + formation, 20, 26);
+  doc.setFont('helvetica','bold'); doc.setFontSize(15);
+  doc.text('APH Drone', 42, 15);
+  doc.setFontSize(9); doc.setFont('helvetica','normal');
+  doc.text('Feuille d\'émargement', 42, 22);
 
   doc.setTextColor(30,30,30);
-  doc.setFont('helvetica','bold'); doc.setFontSize(11);
-  doc.text('Stagiaire : ' + (currentStagiaire.name || '—'), 20, 46);
+  doc.setFont('helvetica','bold'); doc.setFontSize(10.5);
+  doc.text('Stagiaire : ' + (currentStagiaire.name || '—'), 16, 40);
+  doc.text('Formation : ' + formation, 16, 47);
 
-  let y = 60;
-  doc.setFontSize(9); doc.setTextColor(100,100,100);
-  doc.text('Date', 20, y);
-  doc.text('Créneau', 60, y);
-  doc.text('Heure', 100, y);
-  doc.text('Signature', 130, y);
-  doc.setDrawColor(...secondary);
-  doc.line(20, y+3, 190, y+3);
-  y += 10;
-
-  sorted.forEach(e => {
-    if(y > 260){ doc.addPage(); y = 20; }
-    doc.setFont('helvetica','normal'); doc.setFontSize(9.5); doc.setTextColor(50,50,50);
-    doc.text(new Date(e.date).toLocaleDateString('fr-FR'), 20, y+8);
-    doc.text(e.creneau, 60, y+8);
-    doc.text(new Date(e.timestamp).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}), 100, y+8);
-    if(e.signatureImage){
-      try{ doc.addImage(e.signatureImage, 'PNG', 130, y-2, 45, 16); }catch(err){}
+  // ── Grille des jours ──
+  doc.autoTable({
+    startY: 54,
+    margin: { left: 16, right: 16 },
+    head: [
+      [
+        { content: 'Date', rowSpan: 2, styles: { valign: 'middle' } },
+        { content: 'Matin', colSpan: 2, styles: { halign: 'center' } },
+        { content: 'Après-midi', colSpan: 2, styles: { halign: 'center' } }
+      ],
+      ['Heure', 'Signature', 'Heure', 'Signature']
+    ],
+    body: days.map(d => [
+      'Jour ' + d.index + '\n' + new Date(d.date).toLocaleDateString('fr-FR'),
+      d.Matin ? new Date(d.Matin.timestamp).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}) : '—',
+      '',
+      d['Après-midi'] ? new Date(d['Après-midi'].timestamp).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}) : '—',
+      ''
+    ]),
+    styles: { font: 'helvetica', fontSize: 9, cellPadding: 3, lineColor: [230,235,242], lineWidth: 0.3, minCellHeight: 16 },
+    headStyles: { fillColor: secondary, textColor: 255, fontStyle: 'bold', halign: 'center' },
+    columnStyles: {
+      0: { cellWidth: 34 },
+      1: { cellWidth: 20, halign: 'center' },
+      2: { cellWidth: 48 },
+      3: { cellWidth: 20, halign: 'center' },
+      4: { cellWidth: 48 }
+    },
+    didParseCell: function(data){
+      if(data.section === 'body' && (data.column.index === 1 || data.column.index === 3)){
+        data.cell.styles.textColor = [22,163,74];
+        data.cell.styles.fontStyle = 'bold';
+      }
+    },
+    didDrawCell: function(data){
+      if(data.section !== 'body') return;
+      const day = days[data.row.index];
+      if(data.column.index === 2 && day.Matin && day.Matin.signatureImage){
+        try{ doc.addImage(day.Matin.signatureImage, 'PNG', data.cell.x + 2, data.cell.y + 2, data.cell.width - 4, data.cell.height - 4); }catch(err){}
+      }
+      if(data.column.index === 4 && day['Après-midi'] && day['Après-midi'].signatureImage){
+        try{ doc.addImage(day['Après-midi'].signatureImage, 'PNG', data.cell.x + 2, data.cell.y + 2, data.cell.width - 4, data.cell.height - 4); }catch(err){}
+      }
     }
-    doc.setDrawColor(230,235,242);
-    doc.line(20, y+14, 190, y+14);
-    y += 22;
   });
 
-  y += 10;
-  if(y > 270){ doc.addPage(); y = 20; }
+  let y = doc.lastAutoTable.finalY + 12;
+  if(y > 265){ doc.addPage(); y = 20; }
+
+  doc.setFillColor(245,247,250);
+  doc.roundedRect(16, y - 6, 178, 14, 2, 2, 'F');
+  doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(80,80,80);
+  doc.text('Signature du formateur (fin de session) :', 20, y + 2);
+  doc.setDrawColor(200,205,215);
+  doc.line(120, y + 2.5, 188, y + 2.5);
+
+  y += 20;
+  if(y > 275){ doc.addPage(); y = 20; }
   doc.setDrawColor(...secondary);
-  doc.line(20, y, 190, y);
-  doc.setFontSize(8); doc.setTextColor(120,120,120);
-  doc.text('APH Drone — Luxeuil-les-Bains (70) — Formateur : Arnaud MOREAU', 20, y+10);
-  doc.text('Document généré depuis l\'espace stagiaire APH Drone. Chaque signature a été transmise individuellement par email au moment de sa validation.', 20, y+15);
+  doc.line(16, y, 194, y);
+  doc.setFontSize(7.5); doc.setTextColor(120,120,120);
+  doc.text('APH Drone — Luxeuil-les-Bains (70) — Formateur : Arnaud MOREAU', 16, y+8);
+  doc.text('Document généré depuis l\'espace stagiaire APH Drone. Chaque signature a été transmise individuellement par email au moment de sa validation.', 16, y+13);
 
   doc.save('Feuille_emargement_' + formation.replace(/[^a-z0-9]/gi,'_') + '.pdf');
 }
