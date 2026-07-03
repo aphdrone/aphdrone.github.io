@@ -287,7 +287,7 @@ document.getElementById('sig-clear').addEventListener('click', () => {
 // ── Génère un PDF qui est une capture fidèle de l'attestation telle que remplie et signée ──
 async function buildPdf(data){
   const zone = document.getElementById('pdf-capture-zone');
-  const submitBtn = document.getElementById('btn-submit');
+  const submitBar = document.querySelector('.submit-bar');
 
   const header = document.createElement('div');
   header.style.cssText = 'background:#0B1F3A;color:#fff;padding:20px 26px;border-radius:16px;margin-bottom:20px;font-family:Inter,sans-serif;';
@@ -296,14 +296,14 @@ async function buildPdf(data){
     '<div style="font-size:.82rem;opacity:.85;margin-top:5px;">Signataire : ' + (data.name || '—') + ' — Mission : ' + (data.formation || '—') + '</div>' +
     '<div style="font-size:.76rem;opacity:.7;margin-top:2px;">Envoyé le ' + new Date(data.timestamp).toLocaleDateString('fr-FR') + ' à ' + new Date(data.timestamp).toLocaleTimeString('fr-FR') + '</div>';
   zone.insertBefore(header, zone.firstChild);
-  submitBtn.style.display = 'none';
+  submitBar.style.display = 'none';
 
   let canvasCap;
   try{
     canvasCap = await html2canvas(zone, { scale: 2, backgroundColor: '#ffffff', useCORS: true });
   } finally {
     header.remove();
-    submitBtn.style.display = '';
+    submitBar.style.display = '';
   }
 
   const imgData = canvasCap.toDataURL('image/jpeg', 0.95);
