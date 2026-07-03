@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fiche de renseignements stagiaire — APH Drone</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/style.css">
+<style>
+:root{--primary:#0B1F3A;--secondary:#1F5FAF;--accent:#4A90E2;--light:#F5F7FA;--green:#16a34a;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
+body{background:#fff;color:#222;min-height:100vh;padding-top:80px;}
+
+.legal-hero{background:var(--light);border-bottom:1px solid #e8edf4;padding:44px 5%;}
+.legal-hero-inner{max-width:820px;margin:0 auto;}
+.legal-hero a.back{color:var(--secondary);text-decoration:none;font-size:.8rem;font-weight:600;display:inline-flex;align-items:center;gap:6px;margin-bottom:14px;}
+.legal-hero a.back:hover{color:var(--accent);}
+.legal-hero a.back svg{width:14px;height:14px;}
+.legal-hero h1{font-size:1.6rem;color:var(--primary);font-weight:800;margin-bottom:8px;}
+.legal-hero p{font-size:.88rem;color:#7a8fa5;line-height:1.55;max-width:600px;}
+
+.consignes{background:#eef4fd;border-left:4px solid var(--secondary);border-radius:10px;padding:18px 22px;margin-top:24px;}
+.consignes-title{display:flex;align-items:center;gap:8px;color:var(--primary);font-size:.85rem;font-weight:700;margin-bottom:10px;}
+.consignes-title svg{width:16px;height:16px;color:var(--secondary);flex-shrink:0;}
+.consignes ul{list-style:none;display:flex;flex-direction:column;gap:7px;}
+.consignes li{display:flex;gap:9px;font-size:.83rem;color:#334155;line-height:1.5;}
+.consignes li::before{content:'—';color:var(--secondary);flex-shrink:0;}
+
+.sat-wrap{max-width:820px;margin:0 auto;padding:36px 5% 70px;}
+
+.info-card{background:#fff;border:1px solid #e8edf4;border-radius:16px;padding:24px 26px;margin-bottom:22px;}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.f-group{margin-bottom:0;}
+.f-group label{display:block;font-size:.72rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.03em;margin-bottom:6px;}
+.f-group input,.f-group select,.f-group textarea{width:100%;padding:11px 14px;border:1.5px solid #dde3ec;border-radius:9px;font-size:.9rem;outline:none;font-family:'Inter',sans-serif;background:white;}
+.f-group input:focus,.f-group select:focus,.f-group textarea:focus{border-color:var(--accent);}
+
+.sat-section{background:#fff;border:1px solid #e8edf4;border-radius:16px;padding:26px 26px 22px;margin-bottom:20px;}
+.sat-section-title{display:flex;align-items:center;gap:10px;margin-bottom:4px;}
+.sat-section-num{width:26px;height:26px;border-radius:8px;background:var(--light);color:var(--secondary);font-size:.78rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.sat-section-title h3{font-size:1rem;color:var(--primary);font-weight:700;}
+.sat-section-sub{font-size:.8rem;color:#94a3b8;margin:2px 0 18px 36px;}
+
+.chip-grid{display:flex;flex-wrap:wrap;gap:10px;}
+.chip-btn{padding:9px 16px;border-radius:9px;border:1.5px solid #dde3ec;background:white;font-size:.83rem;font-weight:600;color:#64748b;cursor:pointer;transition:.15s;}
+.chip-btn.active{background:#eef4fd;border-color:var(--secondary);color:var(--secondary);}
+
+.f-check{display:flex;align-items:flex-start;gap:10px;font-size:.82rem;color:#475569;line-height:1.5;margin-bottom:12px;}
+.f-check:last-child{margin-bottom:0;}
+.f-check input{width:16px;height:16px;margin-top:2px;flex-shrink:0;accent-color:var(--secondary);}
+
+/* Signature */
+.sig-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px;}
+.sig-pad-wrap{border:1.5px dashed #cbd5e1;border-radius:12px;background:#fbfcfe;padding:10px;}
+.sig-pad-wrap canvas{width:100%;height:170px;display:block;border-radius:8px;background:#fff;touch-action:none;cursor:crosshair;}
+.sig-actions{display:flex;justify-content:space-between;align-items:center;margin-top:8px;}
+.sig-hint{font-size:.75rem;color:#94a3b8;}
+.sig-clear{font-size:.78rem;font-weight:600;color:var(--secondary);background:none;border:none;cursor:pointer;padding:4px 8px;}
+.sig-clear:hover{color:var(--accent);}
+
+.submit-bar{display:flex;flex-direction:column;gap:16px;background:#fff;border:1px solid #e8edf4;border-radius:16px;padding:24px 26px;}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:13px 22px;border-radius:9px;font-size:.9rem;font-weight:700;cursor:pointer;border:none;text-decoration:none;transition:.15s;justify-content:center;}
+.btn-primary{background:var(--secondary);color:white;width:100%;}
+.btn-primary:hover{background:var(--accent);}
+.btn:disabled{opacity:.55;cursor:not-allowed;}
+
+.sat-thanks{display:none;text-align:center;padding:70px 5% 90px;max-width:520px;margin:0 auto;}
+.sat-thanks .icon{width:64px;height:64px;border-radius:50%;background:#dcfce7;color:var(--green);display:flex;align-items:center;justify-content:center;margin:0 auto 22px;}
+.sat-thanks .icon svg{width:30px;height:30px;}
+.sat-thanks h2{font-size:1.4rem;color:var(--primary);margin-bottom:10px;}
+.sat-thanks p{font-size:.9rem;color:#7a8fa5;line-height:1.6;margin-bottom:26px;}
+
+.toast{position:fixed;bottom:24px;right:24px;background:var(--primary);color:white;padding:13px 20px;border-radius:10px;font-size:.85rem;font-weight:500;box-shadow:0 12px 32px rgba(0,0,0,.2);z-index:2000;display:none;}
+
+@media(max-width:640px){
+  .info-grid,.sig-row{grid-template-columns:1fr;}
+  .legal-hero h1{font-size:1.35rem;}
+}
+</style>
+</head>
+<body>
+
+<div id="header-placeholder"></div>
+
+<section class="legal-hero">
+  <div class="legal-hero-inner">
+    <a class="back" href="espace-stagiaires.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+      Retour à mon espace
+    </a>
+    <h1>Fiche de renseignements stagiaire</h1>
+    <p>Ces informations sont nécessaires à votre inscription et à votre suivi administratif chez APH Drone. Comptez environ 5 minutes.</p>
+
+    <div class="consignes">
+      <div class="consignes-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+        Consignes avant de commencer
+      </div>
+      <ul>
+        <li>Renseignez des informations exactes et à jour, elles seront utilisées pour votre dossier de formation.</li>
+        <li>La signature manuscrite se fait directement dans le cadre prévu, avec le doigt ou la souris.</li>
+        <li>Une fois envoyée, la fiche ne peut plus être modifiée en ligne — contactez APH Drone pour toute correction.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<div class="sat-wrap" id="pdf-capture-zone">
+
+  <!-- Identité -->
+  <div class="sat-section">
+    <div class="sat-section-title"><span class="sat-section-num">1</span><h3>Identité</h3></div>
+    <p class="sat-section-sub">État civil du stagiaire</p>
+    <div class="info-grid">
+      <div class="f-group"><label>Nom</label><input type="text" id="f-nom"></div>
+      <div class="f-group"><label>Prénom</label><input type="text" id="f-prenom"></div>
+      <div class="f-group"><label>Date de naissance</label><input type="date" id="f-naissance-date"></div>
+      <div class="f-group"><label>Lieu de naissance</label><input type="text" id="f-naissance-lieu" placeholder="Ville, pays"></div>
+      <div class="f-group"><label>Nationalité</label><input type="text" id="f-nationalite" value="Française"></div>
+      <div class="f-group"><label>Formation concernée</label><select id="f-formation"><option value="">Sélectionnez</option></select></div>
+    </div>
+  </div>
+
+  <!-- Coordonnées -->
+  <div class="sat-section">
+    <div class="sat-section-title"><span class="sat-section-num">2</span><h3>Coordonnées</h3></div>
+    <p class="sat-section-sub">Pour vous contacter durant la formation et après</p>
+    <div class="info-grid">
+      <div class="f-group" style="grid-column:1 / -1;"><label>Adresse</label><input type="text" id="f-adresse" placeholder="N°, rue"></div>
+      <div class="f-group"><label>Code postal</label><input type="text" id="f-cp"></div>
+      <div class="f-group"><label>Ville</label><input type="text" id="f-ville"></div>
+      <div class="f-group"><label>Téléphone</label><input type="tel" id="f-tel"></div>
+      <div class="f-group"><label>Email</label><input type="email" id="f-email"></div>
+    </div>
+  </div>
+
+  <!-- Situation -->
+  <div class="sat-section">
+    <div class="sat-section-title"><span class="sat-section-num">3</span><h3>Situation professionnelle</h3></div>
+    <p class="sat-section-sub">Contexte de votre inscription</p>
+    <div class="info-grid" style="margin-bottom:16px;">
+      <div class="f-group"><label>Profession / activité</label><input type="text" id="f-profession"></div>
+      <div class="f-group"><label>Employeur (si applicable)</label><input type="text" id="f-employeur"></div>
+    </div>
+    <p class="sat-section-sub" style="margin:0 0 10px;">Statut</p>
+    <div class="chip-grid" id="statut-grid">
+      <button type="button" class="chip-btn" data-val="Salarié">Salarié</button>
+      <button type="button" class="chip-btn" data-val="Indépendant">Indépendant</button>
+      <button type="button" class="chip-btn" data-val="Demandeur d'emploi">Demandeur d'emploi</button>
+      <button type="button" class="chip-btn" data-val="Étudiant">Étudiant</button>
+      <button type="button" class="chip-btn" data-val="Fonctionnaire">Fonctionnaire</button>
+      <button type="button" class="chip-btn" data-val="Retraité">Retraité</button>
+      <button type="button" class="chip-btn" data-val="Autre">Autre</button>
+    </div>
+  </div>
+
+  <!-- Expérience drone -->
+  <div class="sat-section">
+    <div class="sat-section-title"><span class="sat-section-num">4</span><h3>Expérience en pilotage de drone</h3></div>
+    <p class="sat-section-sub">Niveau actuel</p>
+    <div class="chip-grid" id="niveau-grid" style="margin-bottom:20px;">
+      <button type="button" class="chip-btn" data-val="Aucune expérience">Aucune expérience</button>
+      <button type="button" class="chip-btn" data-val="Débutant">Débutant</button>
+      <button type="button" class="chip-btn" data-val="Intermédiaire">Intermédiaire</button>
+      <button type="button" class="chip-btn" data-val="Confirmé">Confirmé</button>
+    </div>
+    <p class="sat-section-sub" style="margin:0 0 10px;">Licence(s) déjà détenue(s) — plusieurs choix possibles</p>
+    <div class="chip-grid" id="licence-grid">
+      <button type="button" class="chip-btn" data-val="A1/A3">A1/A3</button>
+      <button type="button" class="chip-btn" data-val="A2">A2</button>
+      <button type="button" class="chip-btn" data-val="STS-01">STS-01</button>
+      <button type="button" class="chip-btn" data-val="STS-02">STS-02</button>
+      <button type="button" class="chip-btn" data-val="Aucune">Aucune</button>
+    </div>
+  </div>
+
+  <!-- Contact d'urgence -->
+  <div class="sat-section">
+    <div class="sat-section-title"><span class="sat-section-num">5</span><h3>Contact d'urgence</h3></div>
+    <p class="sat-section-sub">Personne à prévenir en cas de besoin durant la formation</p>
+    <div class="info-grid">
+      <div class="f-group"><label>Nom du contact</label><input type="text" id="f-urg-nom"></div>
+      <div class="f-group"><label>Lien</label>
+        <select id="f-urg-lien">
+          <option value="">Sélectionnez</option>
+          <option>Conjoint</option><option>Parent</option><option>Ami</option><option>Collègue</option><option>Autre</option>
+        </select>
+      </div>
+      <div class="f-group" style="grid-column:1 / -1;"><label>Téléphone du contact</label><input type="tel" id="f-urg-tel"></div>
+    </div>
+  </div>
+
+  <!-- Déclarations et signature -->
+  <div class="sat-section">
+    <div class="sat-section-title"><span class="sat-section-num">6</span><h3>Déclarations et signature</h3></div>
+    <p class="sat-section-sub">À lire avant de signer</p>
+
+    <label class="f-check">
+      <input type="checkbox" id="check-aptitude">
+      Je déclare être apte physiquement à suivre cette formation et ne présenter aucune contre-indication médicale connue à la pratique du pilotage de drone.
+    </label>
+    <label class="f-check">
+      <input type="checkbox" id="check-exactitude">
+      Je certifie l'exactitude des informations renseignées dans cette fiche.
+    </label>
+
+    <div class="sig-row" style="margin-top:20px;">
+      <div class="f-group"><label>Fait à</label><input type="text" id="f-sig-lieu" placeholder="Luxeuil-les-Bains"></div>
+      <div class="f-group"><label>Le</label><input type="date" id="f-sig-date"></div>
+    </div>
+
+    <div class="f-group" style="margin-bottom:8px;">
+      <label>Signature manuscrite</label>
+    </div>
+    <div class="sig-pad-wrap">
+      <canvas id="sig-canvas"></canvas>
+      <div class="sig-actions">
+        <span class="sig-hint">Signez avec le doigt (mobile) ou la souris (ordinateur)</span>
+        <button type="button" class="sig-clear" id="sig-clear">Effacer la signature</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Validation -->
+  <div class="submit-bar">
+    <button class="btn btn-primary" id="btn-submit">Valider ma fiche de renseignements</button>
+  </div>
+
+</div>
+
+<div class="sat-thanks" id="sat-thanks">
+  <div class="icon">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+  </div>
+  <h2>Fiche envoyée</h2>
+  <p>Votre fiche de renseignements a bien été enregistrée et transmise à APH Drone.</p>
+  <a href="espace-stagiaires.html" class="btn btn-primary" style="width:auto;">Retour à mon espace</a>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div id="footer-placeholder"></div>
+
+<script src="/assets/include.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, onAuthStateChanged }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, collection, getDocs, query, where, addDoc }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAV5NQWfp8n9RkTrHSwqssBJ4R9lNAuYK8",
+  authDomain: "aph-drone.firebaseapp.com",
+  projectId: "aph-drone",
+  storageBucket: "aph-drone.firebasestorage.app",
+  messagingSenderId: "316810168380",
+  appId: "1:316810168380:web:66cb916cec4fdc00b9db39"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// ── Envoi du PDF par email via Google Apps Script ──
+// Déploiement SÉPARÉ des deux autres formulaires (satisfaction / réclamation).
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyLNTXne5hfXGQqlxueVMw_OLRJA_Lm1A3fr4aJL_v0UIreUWSu7cTfmMM7tLt-ZQ-6Aw/exec';
+
+async function sendFichePdf({ name, formation, pdfBase64 }) {
+  const res = await fetch(APPS_SCRIPT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({ name, formation, pdfBase64 })
+  });
+  const result = await res.json();
+  if(!result.success){ throw new Error(result.error || 'Échec de l\'envoi côté Apps Script'); }
+  return result;
+}
+
+let currentStagiaire = null;
+let currentStagId = null;
+let statut = null;
+let niveau = null;
+let licences = [];
+
+const CATALOGUE_COMPLET = [
+  'Initiation A1/A3','BAPD A2','CATS STS','Vol de nuit','Sylviculture & biodiversité',
+  'Surveillance, Sécurité & Secours','Agriculture de précision','Thermographie','Cartographie & 3D',
+  'Production de données exploitables','Inspection Technique','Maîtrise opérationnelle',
+  'Mise à niveau réglementaire','Catégorie Spécifique','Changer de carrière'
+];
+function fillFormationSelect(list){
+  const sel = document.getElementById('f-formation');
+  sel.innerHTML = '<option value="">Sélectionnez</option>' + list.map(m => `<option value="${m}">${m}</option>`).join('');
+}
+fillFormationSelect(CATALOGUE_COMPLET);
+
+document.getElementById('f-sig-date').value = new Date().toISOString().slice(0,10);
+
+document.querySelectorAll('#statut-grid .chip-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    statut = btn.dataset.val;
+    document.querySelectorAll('#statut-grid .chip-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+document.querySelectorAll('#niveau-grid .chip-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    niveau = btn.dataset.val;
+    document.querySelectorAll('#niveau-grid .chip-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+document.querySelectorAll('#licence-grid .chip-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const v = btn.dataset.val;
+    if(licences.includes(v)){ licences = licences.filter(x => x !== v); btn.classList.remove('active'); }
+    else{ licences.push(v); btn.classList.add('active'); }
+  });
+});
+
+onAuthStateChanged(auth, async user => {
+  if(!user) return;
+  try{
+    const snap = await getDocs(query(collection(db,'stagiaires'), where('email','==',user.email)));
+    if(snap.empty) return;
+    const d = snap.docs[0];
+    currentStagId = d.id;
+    currentStagiaire = d.data();
+    const parts = (currentStagiaire.name || '').split(' ');
+    document.getElementById('f-prenom').value = parts[0] || '';
+    document.getElementById('f-nom').value = parts.slice(1).join(' ') || '';
+    document.getElementById('f-email').value = user.email || '';
+  }catch(e){
+    console.error('Erreur chargement stagiaire :', e);
+  }
+});
+
+// ── Pad de signature manuscrite ──
+const canvas = document.getElementById('sig-canvas');
+const ctx = canvas.getContext('2d');
+let drawing = false, hasSignature = false;
+
+function resizeCanvas(){
+  const ratio = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width * ratio;
+  canvas.height = rect.height * ratio;
+  ctx.scale(ratio, ratio);
+  ctx.lineWidth = 2.2;
+  ctx.lineCap = 'round';
+  ctx.strokeStyle = '#0B1F3A';
+}
+window.addEventListener('resize', () => { const data = hasSignature ? canvas.toDataURL() : null; resizeCanvas(); if(data){ const img = new Image(); img.onload = () => ctx.drawImage(img,0,0,canvas.width,canvas.height); img.src = data; } });
+resizeCanvas();
+
+function getPos(e){
+  const rect = canvas.getBoundingClientRect();
+  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+  return { x: clientX - rect.left, y: clientY - rect.top };
+}
+function startDraw(e){ drawing = true; hasSignature = true; const p = getPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); e.preventDefault(); }
+function moveDraw(e){ if(!drawing) return; const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); e.preventDefault(); }
+function endDraw(){ drawing = false; }
+
+canvas.addEventListener('mousedown', startDraw);
+canvas.addEventListener('mousemove', moveDraw);
+window.addEventListener('mouseup', endDraw);
+canvas.addEventListener('touchstart', startDraw, { passive:false });
+canvas.addEventListener('touchmove', moveDraw, { passive:false });
+canvas.addEventListener('touchend', endDraw);
+
+document.getElementById('sig-clear').addEventListener('click', () => {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  hasSignature = false;
+});
+
+// ── Génère un PDF qui est une capture fidèle de la fiche telle que remplie et signée ──
+async function buildPdf(data){
+  const zone = document.getElementById('pdf-capture-zone');
+  const submitBtn = document.getElementById('btn-submit');
+
+  const header = document.createElement('div');
+  header.style.cssText = 'background:#0B1F3A;color:#fff;padding:20px 26px;border-radius:16px;margin-bottom:20px;font-family:Inter,sans-serif;';
+  header.innerHTML =
+    '<div style="font-size:1.05rem;font-weight:800;">APH Drone — Fiche de renseignements stagiaire</div>' +
+    '<div style="font-size:.82rem;opacity:.85;margin-top:5px;">Stagiaire : ' + (data.name || '—') + ' — Formation : ' + (data.formation || '—') + '</div>' +
+    '<div style="font-size:.76rem;opacity:.7;margin-top:2px;">Envoyé le ' + new Date(data.timestamp).toLocaleDateString('fr-FR') + ' à ' + new Date(data.timestamp).toLocaleTimeString('fr-FR') + '</div>';
+  zone.insertBefore(header, zone.firstChild);
+  submitBtn.style.display = 'none';
+
+  let canvasCap;
+  try{
+    canvasCap = await html2canvas(zone, { scale: 2, backgroundColor: '#ffffff', useCORS: true });
+  } finally {
+    header.remove();
+    submitBtn.style.display = '';
+  }
+
+  const imgData = canvasCap.toDataURL('image/jpeg', 0.95);
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF('p', 'mm', 'a4');
+  const pageWidth = 210, pageHeight = 297, margin = 10;
+  const imgWidth = pageWidth - margin * 2;
+  const imgHeight = canvasCap.height * imgWidth / canvasCap.width;
+
+  let heightLeft = imgHeight;
+  let position = margin;
+  doc.addImage(imgData, 'JPEG', margin, position, imgWidth, imgHeight);
+  heightLeft -= (pageHeight - margin * 2);
+
+  while(heightLeft > 0){
+    position = margin - (imgHeight - heightLeft);
+    doc.addPage();
+    doc.addImage(imgData, 'JPEG', margin, position, imgWidth, imgHeight);
+    heightLeft -= (pageHeight - margin * 2);
+  }
+
+  return doc;
+}
+
+document.getElementById('btn-submit').addEventListener('click', async () => {
+  const nom = document.getElementById('f-nom').value.trim();
+  const prenom = document.getElementById('f-prenom').value.trim();
+  const formation = document.getElementById('f-formation').value;
+  const email = document.getElementById('f-email').value.trim();
+
+  if(!nom || !prenom){ showToast('Merci de renseigner votre nom et prénom.'); return; }
+  if(!formation){ showToast('Merci de sélectionner la formation concernée.'); return; }
+  if(!email){ showToast('Merci de renseigner votre email.'); return; }
+  if(!document.getElementById('check-aptitude').checked){ showToast('Merci de cocher la déclaration d\'aptitude.'); return; }
+  if(!document.getElementById('check-exactitude').checked){ showToast('Merci de cocher la certification d\'exactitude.'); return; }
+  if(!hasSignature){ showToast('Merci de signer avant d\'envoyer.'); document.querySelector('.sig-pad-wrap').scrollIntoView({behavior:'smooth', block:'center'}); return; }
+
+  const btn = document.getElementById('btn-submit');
+  btn.disabled = true;
+  btn.textContent = 'Envoi…';
+
+  const name = prenom + ' ' + nom;
+  const payload = {
+    name, nom, prenom, formation, email,
+    timestamp: Date.now()
+  };
+
+  try{
+    const pdfDoc = await buildPdf(payload);
+    const pdfBase64 = pdfDoc.output('datauristring').split(',')[1];
+
+    if(currentStagId){
+      await addDoc(collection(db,'fichesRenseignements'), { stagiaireId: currentStagId, ...payload });
+    }
+
+    await sendFichePdf({ name, formation, pdfBase64 });
+
+    document.querySelectorAll('.sat-wrap, .legal-hero').forEach(el => el.style.display = 'none');
+    document.getElementById('sat-thanks').style.display = 'block';
+  }catch(e){
+    showToast('Erreur lors de l\'envoi : ' + e.message);
+    btn.disabled = false;
+    btn.textContent = 'Valider ma fiche de renseignements';
+  }
+});
+
+function showToast(msg){
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.style.display = 'block';
+  setTimeout(() => el.style.display = 'none', 3800);
+}
+</script>
+</body>
+</html>
