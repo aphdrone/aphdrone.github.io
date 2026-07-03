@@ -56,6 +56,9 @@ body{background:#fff;color:#222;min-height:100vh;padding-top:80px;}
 .rating-scale{display:flex;gap:0;flex-shrink:0;}
 .rating-opt{width:44px;display:flex;align-items:center;justify-content:center;}
 .rating-opt input{width:19px;height:19px;accent-color:var(--secondary);cursor:pointer;}
+.rating-opt.is-selected{position:relative;}
+.rating-opt.is-selected::after{content:attr(data-val);position:absolute;width:26px;height:26px;border-radius:50%;background:var(--secondary);color:#fff;font-size:.72rem;font-weight:800;display:flex;align-items:center;justify-content:center;pointer-events:none;}
+.rating-opt.is-selected input{opacity:0;}
 
 .reco-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 0 4px;}
 .reco-row .rating-label{font-weight:600;color:var(--primary);}
@@ -125,7 +128,7 @@ body{background:#fff;color:#222;min-height:100vh;padding-top:80px;}
   </div>
 </section>
 
-<div class="sat-wrap">
+<div class="sat-wrap" id="pdf-capture-zone">
 
   <!-- Infos formation -->
   <div class="info-card">
@@ -243,6 +246,7 @@ body{background:#fff;color:#222;min-height:100vh;padding-top:80px;}
 
 <script src="/assets/include.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -250,8 +254,6 @@ import { getAuth, onAuthStateChanged }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { getFirestore, collection, getDocs, query, where, addDoc }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-import { getFunctions, httpsCallable }
-  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-functions.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAV5NQWfp8n9RkTrHSwqssBJ4R9lNAuYK8",
@@ -265,8 +267,21 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-const functionsInstance = getFunctions(app, 'europe-west1');
-const sendSatisfactionPdf = httpsCallable(functionsInstance, 'sendSatisfactionPdf');
+
+// ── Envoi du PDF par email via Google Apps Script (remplace la Cloud Function Firebase) ──
+// Remplace cette URL par celle obtenue après déploiement du script (voir instructions).
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby5yqCgpg5FmCkWr2CvHsb18mRdK0x9F9YXPKZ62AEAqTqhYvdlMtSwLitXMqKcKz_VCg/exec';
+
+async function sendSatisfactionPdf({ name, formation, pdfBase64 }) {
+  const res = await fetch(APPS_SCRIPT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // évite le préflight CORS
+    body: JSON.stringify({ name, formation, pdfBase64 })
+  });
+  const result = await res.json();
+  if(!result.success){ throw new Error(result.error || 'Échec de l\'envoi côté Apps Script'); }
+  return result;
+}
 
 // ── Libellés des questions notées, dans l'ordre exact du formulaire (pour le PDF) ──
 const QUESTIONS = [
@@ -296,7 +311,12 @@ document.querySelectorAll('.rating-row').forEach(row => {
   for(let i=1;i<=5;i++){
     const opt = document.createElement('label');
     opt.className = 'rating-opt';
+    opt.dataset.val = i;
     opt.innerHTML = `<input type="radio" name="${q}" value="${i}"><span>${i}</span>`;
+    opt.querySelector('input').addEventListener('change', () => {
+      scale.querySelectorAll('.rating-opt').forEach(o => o.classList.remove('is-selected'));
+      opt.classList.add('is-selected');
+    });
     scale.appendChild(opt);
   }
 });
@@ -355,104 +375,48 @@ function initForm(){
   if(modules.length) fillFormationSelect(modules);
 }
 
-// ── Génère un PDF strictement identique aux réponses saisies dans le formulaire ──
-function buildPdf(data){
+// ── Génère un PDF qui est une capture fidèle du formulaire tel que rempli à l'écran ──
+// (valeur probante : ce que voit le stagiaire = ce qui part en PDF, notes et textes inclus)
+async function buildPdf(data){
+  const zone = document.getElementById('pdf-capture-zone');
+  const submitBtn = document.getElementById('btn-submit');
+
+  // Bandeau d'identification + horodatage, ajouté juste avant la capture (retiré juste après)
+  const header = document.createElement('div');
+  header.style.cssText = 'background:#0B1F3A;color:#fff;padding:20px 26px;border-radius:16px;margin-bottom:20px;font-family:Inter,sans-serif;';
+  header.innerHTML =
+    '<div style="font-size:1.05rem;font-weight:800;">APH Drone — Formulaire de satisfaction</div>' +
+    '<div style="font-size:.82rem;opacity:.85;margin-top:5px;">Stagiaire : ' + (data.name || '—') + ' — Formation : ' + (data.formation || '—') + '</div>' +
+    '<div style="font-size:.76rem;opacity:.7;margin-top:2px;">Envoyé le ' + new Date(data.timestamp).toLocaleDateString('fr-FR') + ' à ' + new Date(data.timestamp).toLocaleTimeString('fr-FR') + '</div>';
+  zone.insertBefore(header, zone.firstChild);
+  submitBtn.style.display = 'none';
+
+  let canvas;
+  try{
+    canvas = await html2canvas(zone, { scale: 2, backgroundColor: '#ffffff', useCORS: true });
+  } finally {
+    header.remove();
+    submitBtn.style.display = '';
+  }
+
+  const imgData = canvas.toDataURL('image/jpeg', 0.95);
   const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
-  const primary = [11,31,58];
-  const secondary = [31,95,175];
-  let y = 0;
+  const doc = new jsPDF('p', 'mm', 'a4');
+  const pageWidth = 210, pageHeight = 297, margin = 10;
+  const imgWidth = pageWidth - margin * 2;
+  const imgHeight = canvas.height * imgWidth / canvas.width;
 
-  doc.setFillColor(...primary);
-  doc.rect(0, 0, 210, 32, 'F');
-  doc.setTextColor(255,255,255);
-  doc.setFont('helvetica','bold');
-  doc.setFontSize(16);
-  doc.text('APH Drone', 20, 18);
-  doc.setFontSize(9.5);
-  doc.setFont('helvetica','normal');
-  doc.text('Formulaire de satisfaction — fin de formation', 20, 25);
+  let heightLeft = imgHeight;
+  let position = margin;
+  doc.addImage(imgData, 'JPEG', margin, position, imgWidth, imgHeight);
+  heightLeft -= (pageHeight - margin * 2);
 
-  y = 44;
-  doc.setTextColor(30,30,30);
-  doc.setFont('helvetica','bold');
-  doc.setFontSize(10.5);
-  doc.text('Stagiaire : ' + (data.name || '—'), 20, y);
-  doc.text('Formation : ' + (data.formation || '—'), 20, y + 6);
-  doc.setFont('helvetica','normal');
-  doc.setFontSize(9);
-  doc.setTextColor(110,110,110);
-  doc.text('Envoyé le ' + new Date(data.timestamp).toLocaleDateString('fr-FR') + ' à ' + new Date(data.timestamp).toLocaleTimeString('fr-FR'), 20, y + 12);
-  y += 22;
-
-  let currentSection = '';
-  QUESTIONS.forEach(q => {
-    if(q.section !== currentSection){
-      currentSection = q.section;
-      if(y > 265){ doc.addPage(); y = 20; }
-      y += 4;
-      doc.setFont('helvetica','bold');
-      doc.setFontSize(10.5);
-      doc.setTextColor(...secondary);
-      doc.text(currentSection, 20, y);
-      doc.setDrawColor(220,225,235);
-      doc.line(20, y+2, 190, y+2);
-      y += 8;
-    }
-    if(y > 275){ doc.addPage(); y = 20; }
-    doc.setFont('helvetica','normal');
-    doc.setFontSize(9.5);
-    doc.setTextColor(50,50,50);
-    const lines = doc.splitTextToSize(q.label, 140);
-    doc.text(lines, 20, y);
-    doc.setFont('helvetica','bold');
-    doc.setTextColor(...primary);
-    doc.text((data.ratings[q.key] || '—') + ' / 5', 175, y, { align:'right' });
-    y += (lines.length * 5) + 4;
-  });
-
-  if(y > 250){ doc.addPage(); y = 20; }
-  y += 6;
-  doc.setFont('helvetica','bold');
-  doc.setFontSize(10.5);
-  doc.setTextColor(...secondary);
-  doc.text('Recommandation', 20, y);
-  doc.line(20, y+2, 190, y+2);
-  y += 9;
-  doc.setFont('helvetica','normal');
-  doc.setFontSize(9.5);
-  doc.setTextColor(50,50,50);
-  doc.text('Recommanderait cette formation : ' + (data.recommandation === 'oui' ? 'Oui' : 'Non'), 20, y);
-  y += 12;
-
-  const openFields = [
-    ['Points forts de la formation', data.pointsForts],
-    ['Points à améliorer', data.pointsAmeliorer],
-    ['Suggestions ou remarques libres', data.suggestions]
-  ];
-  openFields.forEach(([label, value]) => {
-    if(!value) return;
-    if(y > 260){ doc.addPage(); y = 20; }
-    doc.setFont('helvetica','bold');
-    doc.setFontSize(9.5);
-    doc.setTextColor(...primary);
-    doc.text(label, 20, y);
-    y += 6;
-    doc.setFont('helvetica','normal');
-    doc.setTextColor(50,50,50);
-    const lines = doc.splitTextToSize(value, 170);
-    doc.text(lines, 20, y);
-    y += (lines.length * 5) + 8;
-  });
-
-  if(y > 270){ doc.addPage(); y = 20; }
-  y += 6;
-  doc.setDrawColor(...secondary);
-  doc.line(20, y, 190, y);
-  doc.setFontSize(8);
-  doc.setTextColor(120,120,120);
-  doc.text('APH Drone — Luxeuil-les-Bains (70) — Formateur : Arnaud MOREAU', 20, y+8);
-  doc.text('Document généré automatiquement depuis l\'espace stagiaire APH Drone.', 20, y+13);
+  while(heightLeft > 0){
+    position = margin - (imgHeight - heightLeft);
+    doc.addPage();
+    doc.addImage(imgData, 'JPEG', margin, position, imgWidth, imgHeight);
+    heightLeft -= (pageHeight - margin * 2);
+  }
 
   return doc;
 }
@@ -500,8 +464,8 @@ document.getElementById('btn-submit').addEventListener('click', async () => {
   };
 
   try{
-    // 1. Génère le PDF strictement identique aux réponses saisies
-    const pdfDoc = buildPdf(payload);
+    // 1. Génère le PDF : capture fidèle du formulaire tel que rempli à l'écran
+    const pdfDoc = await buildPdf(payload);
     const pdfBase64 = pdfDoc.output('datauristring').split(',')[1];
 
     // 2. Enregistre les données brutes dans Firestore (si stagiaire identifié)
