@@ -720,7 +720,13 @@ tr:last-child td{border-bottom:none;}
 <!-- ═══ MODAL : Fiche client ═══ -->
 <div class="modal-overlay" id="modal-client-fiche">
   <div class="modal-box" style="max-width:480px;">
-    <h3 id="fiche-client-name">Fiche client</h3>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+      <h3 id="fiche-client-name" style="margin-bottom:0;">Fiche client</h3>
+      <label class="toggle" title="Actif / Inactif">
+        <input type="checkbox" id="fiche-client-active-toggle">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
     <div class="fiche-tabs">
       <button class="fiche-tab active" data-tab="tab-missions">Missions</button>
       <button class="fiche-tab" data-tab="tab-docs">Documents</button>
@@ -806,7 +812,13 @@ tr:last-child td{border-bottom:none;}
 <!-- ═══ MODAL : Modules stagiaire ═══ -->
 <div class="modal-overlay" id="modal-modules">
   <div class="modal-box" style="max-width:460px;">
-    <h3 id="modules-stag-name">Modules débloqués</h3>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+      <h3 id="modules-stag-name" style="margin-bottom:0;">Modules débloqués</h3>
+      <label class="toggle" title="Actif / Inactif">
+        <input type="checkbox" id="fiche-stag-active-toggle">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
     <div class="module-list" id="modules-list"></div>
 
     <p class="modal-subtitle">Documents</p>
@@ -1017,7 +1029,7 @@ async function loadClients(){
         </div></td>`;
       tbody.appendChild(tr);
 
-      if(dashTbody){
+      if(dashTbody && isActive){
         const trDash = document.createElement('tr');
         trDash.innerHTML = `<td class="cell-main">${c.name || '—'}</td><td class="cell-sub">${c.email || '—'}</td>
           <td><div class="row-actions" style="justify-content:flex-end;">
@@ -1033,6 +1045,9 @@ async function loadClients(){
       }
     });
     document.getElementById('stat-clients').textContent = activeClientsCount;
+    if(dashTbody && !dashTbody.children.length){
+      dashTbody.innerHTML = '<tr><td colspan="3" class="empty-row">Aucun client actif.</td></tr>';
+    }
     document.querySelectorAll('[data-toggle-active-client]').forEach(cb => {
       cb.addEventListener('change', async () => {
         await updateDoc(doc(db,'clients',cb.dataset.toggleActiveClient), { active: cb.checked });
@@ -1080,12 +1095,21 @@ async function openClientFicheModal(clientId){
   window._currentModalClientId = clientId;
   window._currentModalClientEmail = data.email;
   document.getElementById('fiche-client-name').textContent = 'Fiche — ' + (data.name || '');
+  document.getElementById('fiche-client-active-toggle').checked = data.active !== false;
   renderMissionAdminList(data.missions || []);
   renderClientDocAdminList(data.documents || []);
   renderDevisAdminList(data.devis || []);
   renderFactureAdminList(data.factures || []);
   openModal('modal-client-fiche');
 }
+
+document.getElementById('fiche-client-active-toggle').addEventListener('change', async (e) => {
+  const clientId = window._currentModalClientId;
+  if(!clientId) return;
+  await updateDoc(doc(db,'clients',clientId), { active: e.target.checked });
+  showToast(e.target.checked ? 'Client activé.' : 'Client désactivé.');
+  loadClients();
+});
 
 // Missions
 function renderMissionAdminList(missions){
@@ -1530,7 +1554,7 @@ async function loadStagiaires(){
         </div></td>`;
       tbody.appendChild(tr);
 
-      if(dashTbody){
+      if(dashTbody && isActive){
         const trDash = document.createElement('tr');
         trDash.innerHTML = `<td class="cell-main">${s.name || '—'}</td><td class="cell-sub">${s.formation || '—'}</td>
           <td><div class="row-actions" style="justify-content:flex-end;">
@@ -1546,6 +1570,9 @@ async function loadStagiaires(){
       }
     });
     document.getElementById('stat-stagiaires').textContent = activeStagiairesCount;
+    if(dashTbody && !dashTbody.children.length){
+      dashTbody.innerHTML = '<tr><td colspan="3" class="empty-row">Aucun stagiaire actif.</td></tr>';
+    }
     computeMissingEmargements();
     populateStagiaireFilters();
 
@@ -1609,6 +1636,7 @@ async function openModulesModal(stagId){
   window._currentModalStagId = stagId;
   window._currentModalStagEmail = data.email;
   document.getElementById('modules-stag-name').textContent = 'Modules — ' + (data.name || '');
+  document.getElementById('fiche-stag-active-toggle').checked = data.active !== false;
   const list = document.getElementById('modules-list');
   list.innerHTML = '';
   AVAILABLE_MODULES.forEach(mod => {
@@ -1639,6 +1667,14 @@ async function openModulesModal(stagId){
   renderDocAdminList(data.documents || []);
   openModal('modal-modules');
 }
+
+document.getElementById('fiche-stag-active-toggle').addEventListener('change', async (e) => {
+  const stagId = window._currentModalStagId;
+  if(!stagId) return;
+  await updateDoc(doc(db,'stagiaires',stagId), { active: e.target.checked });
+  showToast(e.target.checked ? 'Stagiaire activé.' : 'Stagiaire désactivé.');
+  loadStagiaires();
+});
 
 function renderDocAdminList(docs){
   const list = document.getElementById('doc-admin-list');
