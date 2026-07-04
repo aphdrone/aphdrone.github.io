@@ -154,21 +154,45 @@ tr:last-child td{border-bottom:none;}
 .quick-link-card p{font-size:.78rem;color:#94a3b8;}
 
 /* Responsive */
+.mobile-nav-toggle{display:none;}
+.mobile-nav-backdrop{display:none;}
+
 @media(max-width:900px){
   .admin-shell{flex-direction:column;}
-  .admin-sidebar{width:100%;flex-direction:row;align-items:center;padding:10px 12px;overflow-x:auto;gap:6px;-webkit-overflow-scrolling:touch;}
-  .admin-brand{border:none;padding:0 10px 0 0;margin:0;flex-shrink:0;gap:8px;}
-  .admin-brand img{width:30px;height:30px;}
-  .admin-brand-text{font-size:.76rem;white-space:nowrap;}
-  .admin-brand-text span{display:none;}
-  .admin-nav{flex-direction:row;padding:0;gap:4px;}
-  .admin-nav-item{padding:8px 12px;font-size:.76rem;white-space:nowrap;flex-shrink:0;gap:6px;}
-  .admin-nav-item svg{width:15px;height:15px;flex-shrink:0;}
-  .admin-foot{display:none;}
-  .stat-row{grid-template-columns:1fr 1fr;}
-  .quick-links{grid-template-columns:1fr;}
+
+  .mobile-nav-toggle{
+    display:flex;align-items:center;justify-content:center;
+    width:40px;height:40px;border-radius:9px;
+    background:var(--primary);color:white;border:none;cursor:pointer;
+    position:fixed;top:12px;left:12px;z-index:2001;
+    box-shadow:0 4px 14px rgba(0,0,0,.2);
+  }
+  .mobile-nav-backdrop{
+    display:block;position:fixed;inset:0;background:rgba(11,31,58,.5);
+    z-index:1999;opacity:0;pointer-events:none;transition:opacity .2s;
+  }
+  .mobile-nav-backdrop.open{opacity:1;pointer-events:auto;}
+
+  .admin-sidebar{
+    position:fixed;top:0;left:0;height:100vh;width:260px;max-width:80vw;
+    flex-direction:column;align-items:stretch;padding:20px 0;
+    transform:translateX(-100%);transition:transform .25s ease;
+    z-index:2000;overflow-y:auto;
+  }
+  .admin-sidebar.mobile-open{transform:translateX(0);}
+  .admin-brand{padding:0 20px 20px;margin:0 0 12px;gap:10px;}
+  .admin-brand img{width:36px;height:36px;}
+  .admin-brand-text{font-size:.85rem;}
+  .admin-brand-text span{display:block;}
+  .admin-nav{flex-direction:column;padding:0 12px;gap:2px;}
+  .admin-nav-item{padding:11px 14px;font-size:.85rem;white-space:normal;}
+  .admin-nav-item svg{width:17px;height:17px;}
+  .admin-foot{display:block;}
+
+  .admin-topbar{padding:14px 16px 14px 60px;}
   .admin-content{padding:20px 16px 50px;}
-  .admin-topbar{padding:14px 16px;}
+  .stat-row{grid-template-columns:1fr 1fr !important;}
+  .quick-links{grid-template-columns:1fr;}
   .dash-preview-grid{grid-template-columns:1fr !important;}
 }
 </style>
@@ -193,8 +217,13 @@ tr:last-child td{border-bottom:none;}
 <div id="admin-app">
 <div class="admin-shell">
 
+  <button class="mobile-nav-toggle" id="mobile-nav-toggle" aria-label="Menu">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+  </button>
+  <div class="mobile-nav-backdrop" id="mobile-nav-backdrop"></div>
+
   <!-- Sidebar -->
-  <aside class="admin-sidebar">
+  <aside class="admin-sidebar" id="admin-sidebar">
     <div class="admin-brand">
       <img src="/assets/logo.jpg" alt="APH Drone">
       <div class="admin-brand-text">APH Drone<span>Administration</span></div>
@@ -455,6 +484,10 @@ tr:last-child td{border-bottom:none;}
     <div class="admin-panel" id="panel-documents">
       <div class="admin-topbar">
         <div><h1>Documents</h1><p>Registre unifié de tous les documents signés depuis l'espace stagiaire</p></div>
+        <button class="btn btn-primary" id="btn-add-reclamation">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Ajouter une réclamation
+        </button>
       </div>
       <div class="admin-content">
         <div class="panel-section">
@@ -468,6 +501,9 @@ tr:last-child td{border-bottom:none;}
                 <option value="fiche">Fiche renseignements</option>
                 <option value="reglement">Règlement intérieur</option>
                 <option value="attestation">Attestation zone d'exclusion</option>
+              </select>
+              <select id="doc-stagiaire-filter" style="padding:10px 13px;border:1.5px solid #dde3ec;border-radius:8px;font-size:.86rem;outline:none;font-family:'Inter',sans-serif;background:white;">
+                <option value="">Tous les stagiaires</option>
               </select>
             </div>
             <table>
@@ -489,11 +525,16 @@ tr:last-child td{border-bottom:none;}
       <div class="admin-content">
         <div class="panel-section">
           <div class="panel-section-body" style="padding-top:14px;">
-            <input type="text" id="emarg-search" placeholder="Rechercher un stagiaire ou une formation…" style="width:100%;margin-bottom:16px;padding:10px 13px;border:1.5px solid #dde3ec;border-radius:8px;font-size:.86rem;outline:none;font-family:'Inter',sans-serif;">
+            <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
+              <input type="text" id="emarg-search" placeholder="Rechercher un stagiaire ou une formation…" style="flex:1;min-width:180px;padding:10px 13px;border:1.5px solid #dde3ec;border-radius:8px;font-size:.86rem;outline:none;font-family:'Inter',sans-serif;">
+              <select id="emarg-stagiaire-filter" style="padding:10px 13px;border:1.5px solid #dde3ec;border-radius:8px;font-size:.86rem;outline:none;font-family:'Inter',sans-serif;background:white;">
+                <option value="">Tous les stagiaires</option>
+              </select>
+            </div>
             <table>
-              <thead><tr><th>Stagiaire</th><th>Formation</th><th>Date</th><th>Créneau</th><th>Heure</th><th>Signature</th></tr></thead>
+              <thead><tr><th>Stagiaire</th><th>Formation</th><th>Date</th><th>Créneau</th><th>Heure</th><th>Signature</th><th></th></tr></thead>
               <tbody id="emargements-tbody">
-                <tr><td colspan="6" class="empty-row">Chargement…</td></tr>
+                <tr><td colspan="7" class="empty-row">Chargement…</td></tr>
               </tbody>
             </table>
           </div>
@@ -510,8 +551,49 @@ tr:last-child td{border-bottom:none;}
   <div class="modal-box" style="max-width:520px;">
     <h3 id="doc-detail-title">Détail du document</h3>
     <div id="doc-detail-body" style="display:flex;flex-direction:column;gap:12px;font-size:.85rem;"></div>
+
+    <div id="doc-detail-reclamation-zone" style="display:none;margin-top:16px;padding-top:16px;border-top:1px solid #eef1f6;">
+      <div class="f-group">
+        <label>Réponse / notes de traitement</label>
+        <textarea id="doc-detail-reponse" rows="4" style="width:100%;padding:10px 13px;border:1.5px solid #dde3ec;border-radius:8px;font-size:.86rem;outline:none;font-family:'Inter',sans-serif;resize:vertical;"></textarea>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn btn-outline btn-sm" id="btn-doc-reply-email">Répondre par email</button>
+        <button class="btn btn-primary btn-sm" id="btn-doc-save-reponse">Enregistrer et marquer traitée</button>
+      </div>
+    </div>
+
     <div class="modal-actions">
+      <button class="btn btn-outline" id="btn-doc-download">Télécharger en PDF</button>
       <button class="btn btn-outline" onclick="closeModal('modal-document-detail')">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAL : Ajouter une réclamation (saisie manuelle, ex : reçue par téléphone) ═══ -->
+<div class="modal-overlay" id="modal-add-reclamation">
+  <div class="modal-box">
+    <h3>Ajouter une réclamation</h3>
+    <p style="font-size:.8rem;color:#7a8fa5;margin-bottom:16px;">Pour enregistrer une réclamation reçue par un autre canal (téléphone, en personne...).</p>
+    <div class="f-group">
+      <label>Nom du réclamant</label>
+      <input type="text" id="new-reclam-nom" placeholder="Prénom Nom">
+    </div>
+    <div class="f-group">
+      <label>Email (facultatif)</label>
+      <input type="email" id="new-reclam-email" placeholder="email@exemple.fr">
+    </div>
+    <div class="f-group">
+      <label>Formation / contexte concerné</label>
+      <input type="text" id="new-reclam-formation" placeholder="Ex : CATS STS">
+    </div>
+    <div class="f-group">
+      <label>Description</label>
+      <textarea id="new-reclam-description" rows="4" style="width:100%;padding:10px 13px;border:1.5px solid #dde3ec;border-radius:8px;font-size:.86rem;outline:none;font-family:'Inter',sans-serif;resize:vertical;"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal('modal-add-reclamation')">Annuler</button>
+      <button class="btn btn-primary" id="btn-create-reclamation">Ajouter</button>
     </div>
   </div>
 </div>
@@ -755,6 +837,8 @@ tr:last-child td{border-bottom:none;}
 
 <div class="toast" id="toast"></div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <script type="module">
 import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
@@ -843,6 +927,14 @@ document.getElementById('btn-logout').addEventListener('click', () => {
   signOut(auth).then(() => window.location.href = '/pages/connexion.html?loggedout=1');
 });
 
+// ── Menu hamburger mobile ──
+const mobileSidebar = document.getElementById('admin-sidebar');
+const mobileBackdrop = document.getElementById('mobile-nav-backdrop');
+function openMobileNav(){ mobileSidebar.classList.add('mobile-open'); mobileBackdrop.classList.add('open'); }
+function closeMobileNav(){ mobileSidebar.classList.remove('mobile-open'); mobileBackdrop.classList.remove('open'); }
+document.getElementById('mobile-nav-toggle').addEventListener('click', openMobileNav);
+mobileBackdrop.addEventListener('click', closeMobileNav);
+
 // ── Navigation sidebar ──
 document.querySelectorAll('.admin-nav-item[data-panel]').forEach(btn => {
   btn.addEventListener('click', () => {
@@ -850,6 +942,7 @@ document.querySelectorAll('.admin-nav-item[data-panel]').forEach(btn => {
     document.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
     btn.classList.add('active');
     document.getElementById(btn.dataset.panel).classList.add('active');
+    closeMobileNav();
   });
 });
 
@@ -1442,6 +1535,7 @@ async function loadStagiaires(){
     });
     document.getElementById('stat-stagiaires').textContent = activeStagiairesCount;
     computeMissingEmargements();
+    populateStagiaireFilters();
 
     document.querySelectorAll('[data-toggle-active-stag]').forEach(cb => {
       cb.addEventListener('change', async () => {
@@ -1640,9 +1734,11 @@ function renderDocumentsTable(){
   const tbody = document.getElementById('documents-tbody');
   const searchVal = (document.getElementById('doc-search').value || '').toLowerCase();
   const typeVal = document.getElementById('doc-type-filter').value;
+  const stagVal = document.getElementById('doc-stagiaire-filter').value;
 
   const filtered = allDocumentsCache.filter(d => {
     if(typeVal && d.type !== typeVal) return false;
+    if(stagVal && d.nom !== stagVal) return false;
     if(searchVal && !d.nom.toLowerCase().includes(searchVal)) return false;
     return true;
   });
@@ -1694,6 +1790,7 @@ function renderDocumentsTable(){
 
 document.getElementById('doc-search').addEventListener('input', renderDocumentsTable);
 document.getElementById('doc-type-filter').addEventListener('change', renderDocumentsTable);
+document.getElementById('doc-stagiaire-filter').addEventListener('change', renderDocumentsTable);
 
 const DOC_FIELD_LABELS = {
   name:'Nom', nom:'Nom', prenom:'Prénom', formation:'Formation', mission:'Mission', email:'Email',
@@ -1707,9 +1804,12 @@ const DOC_FIELD_LABELS = {
   role:'Rôle', date:'Date', lieu:'Lieu', mesures:"Mesures d'urgence", statut:'Statut', timestamp:null, ratings:null
 };
 
+let currentDocDetail = null;
+
 function openDocumentDetail(id, col){
   const entry = allDocumentsCache.find(d => d.id === id && d.col === col);
   if(!entry) return;
+  currentDocDetail = entry;
   document.getElementById('doc-detail-title').textContent = DOC_TYPE_LABELS[entry.type] + ' — ' + entry.nom;
   const body = document.getElementById('doc-detail-body');
   body.innerHTML = '';
@@ -1732,8 +1832,102 @@ function openDocumentDetail(id, col){
     const ratingsStr = Object.entries(entry.raw.ratings).map(([q,v]) => q + ' : ' + v + '/5').join('<br>');
     addRow('Notes', ratingsStr);
   }
+
+  const reclamZone = document.getElementById('doc-detail-reclamation-zone');
+  if(entry.type === 'reclamation'){
+    reclamZone.style.display = 'block';
+    document.getElementById('doc-detail-reponse').value = entry.raw.reponseAdmin || '';
+  } else {
+    reclamZone.style.display = 'none';
+  }
+
   openModal('modal-document-detail');
 }
+
+document.getElementById('btn-doc-reply-email').addEventListener('click', () => {
+  if(!currentDocDetail) return;
+  const email = currentDocDetail.raw.email;
+  if(!email){ showToast("Aucun email n'est renseigné pour cette réclamation."); return; }
+  const subject = encodeURIComponent('Réponse à votre réclamation — APH Drone');
+  const bodyText = encodeURIComponent('Bonjour ' + (currentDocDetail.nom || '') + ',\n\n');
+  window.location.href = `mailto:${email}?subject=${subject}&body=${bodyText}`;
+});
+
+document.getElementById('btn-doc-save-reponse').addEventListener('click', async () => {
+  if(!currentDocDetail) return;
+  const reponse = document.getElementById('doc-detail-reponse').value.trim();
+  await updateDoc(doc(db, currentDocDetail.col, currentDocDetail.id), { reponseAdmin: reponse, statut: 'traitee' });
+  currentDocDetail.raw.reponseAdmin = reponse;
+  currentDocDetail.statut = 'traitee';
+  showToast('Réponse enregistrée, réclamation marquée traitée.');
+  closeModal('modal-document-detail');
+  renderDocumentsTable();
+  updateDashboardAlerts();
+});
+
+document.getElementById('btn-doc-download').addEventListener('click', () => {
+  if(!currentDocDetail) return;
+  const { jsPDF } = window.jspdf;
+  const docPdf = new jsPDF();
+  const primary = [11,31,58];
+  const secondary = [31,95,175];
+  docPdf.setFillColor(...primary);
+  docPdf.rect(0,0,210,30,'F');
+  docPdf.setTextColor(255,255,255);
+  docPdf.setFont('helvetica','bold'); docPdf.setFontSize(15);
+  docPdf.text('APH Drone', 16, 15);
+  docPdf.setFontSize(9.5); docPdf.setFont('helvetica','normal');
+  docPdf.text(DOC_TYPE_LABELS[currentDocDetail.type] + ' — ' + currentDocDetail.nom, 16, 22);
+
+  let y = 42;
+  docPdf.setTextColor(30,30,30);
+  docPdf.setFont('helvetica','normal'); docPdf.setFontSize(10);
+  const addLine = (label, value) => {
+    if(value === undefined || value === null || value === '') return;
+    if(y > 275){ docPdf.addPage(); y = 20; }
+    docPdf.setFont('helvetica','bold'); docPdf.setTextColor(...secondary);
+    docPdf.text(String(label), 16, y);
+    docPdf.setFont('helvetica','normal'); docPdf.setTextColor(30,30,30);
+    const lines = docPdf.splitTextToSize(String(value), 170);
+    docPdf.text(lines, 16, y + 6);
+    y += 6 + lines.length * 5.5 + 5;
+  };
+
+  addLine('Date', currentDocDetail.timestamp ? new Date(currentDocDetail.timestamp).toLocaleString('fr-FR') : '—');
+  Object.entries(currentDocDetail.raw).forEach(([key, val]) => {
+    if(key === 'timestamp' || key === 'ratings' || key === 'signatureImage') return;
+    if(typeof val === 'object') return;
+    addLine(DOC_FIELD_LABELS[key] || key, val);
+  });
+  if(currentDocDetail.raw.ratings){
+    addLine('Notes', Object.entries(currentDocDetail.raw.ratings).map(([q,v]) => q + ' : ' + v + '/5').join(' | '));
+  }
+
+  docPdf.save(DOC_TYPE_LABELS[currentDocDetail.type].replace(/[^a-z0-9]/gi,'_') + '_' + currentDocDetail.nom.replace(/[^a-z0-9]/gi,'_') + '.pdf');
+});
+
+// ── Ajouter une réclamation manuellement ──
+document.getElementById('btn-add-reclamation').addEventListener('click', () => {
+  document.getElementById('new-reclam-nom').value = '';
+  document.getElementById('new-reclam-email').value = '';
+  document.getElementById('new-reclam-formation').value = '';
+  document.getElementById('new-reclam-description').value = '';
+  openModal('modal-add-reclamation');
+});
+
+document.getElementById('btn-create-reclamation').addEventListener('click', async () => {
+  const name = document.getElementById('new-reclam-nom').value.trim();
+  const email = document.getElementById('new-reclam-email').value.trim();
+  const formation = document.getElementById('new-reclam-formation').value.trim();
+  const description = document.getElementById('new-reclam-description').value.trim();
+  if(!name || !description){ alert('Renseignez au moins le nom et la description.'); return; }
+  await addDoc(collection(db,'reclamations'), {
+    name, email, formation, description, statut: 'nouvelle', timestamp: Date.now()
+  });
+  closeModal('modal-add-reclamation');
+  showToast('Réclamation ajoutée.');
+  loadDocumentsRegistry();
+});
 
 document.getElementById('btn-goto-reclamations').addEventListener('click', () => {
   document.querySelectorAll('.admin-nav-item').forEach(b => b.classList.remove('active'));
@@ -1762,6 +1956,17 @@ async function loadEmargementsGlobal(){
   }catch(e){
     document.getElementById('emargements-tbody').innerHTML = '<tr><td colspan="6" class="empty-row">Erreur de chargement : ' + e.message + '</td></tr>';
   }
+}
+
+function populateStagiaireFilters(){
+  const names = [...new Set(allStagiairesCache.map(s => s.name).filter(Boolean))].sort();
+  ['doc-stagiaire-filter','emarg-stagiaire-filter'].forEach(id => {
+    const sel = document.getElementById(id);
+    if(!sel) return;
+    const current = sel.value;
+    sel.innerHTML = '<option value="">Tous les stagiaires</option>' + names.map(n => `<option value="${n}">${n}</option>`).join('');
+    sel.value = current;
+  });
 }
 
 function computeMissingEmargements(){
@@ -1798,16 +2003,18 @@ function computeMissingEmargements(){
 function renderEmargementsGlobalTable(){
   const tbody = document.getElementById('emargements-tbody');
   const searchVal = (document.getElementById('emarg-search').value || '').toLowerCase();
+  const stagVal = document.getElementById('emarg-stagiaire-filter').value;
   const filtered = allEmargementsCache.filter(e => {
+    if(stagVal && e.stagiaireName !== stagVal) return false;
     if(!searchVal) return true;
     return (e.stagiaireName||'').toLowerCase().includes(searchVal) || (e.formation||'').toLowerCase().includes(searchVal);
   });
   if(!filtered.length){
-    tbody.innerHTML = '<tr><td colspan="6" class="empty-row">Aucun émargement trouvé.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="7" class="empty-row">Aucun émargement trouvé.</td></tr>';
     return;
   }
   tbody.innerHTML = '';
-  filtered.forEach(e => {
+  filtered.forEach((e, i) => {
     const dateStr = e.date ? new Date(e.date).toLocaleDateString('fr-FR') : '—';
     const heureStr = e.timestamp ? new Date(e.timestamp).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}) : '—';
     const sigThumb = e.signatureImage ? `<img src="${e.signatureImage}" style="height:28px;max-width:70px;object-fit:contain;">` : '—';
@@ -1818,12 +2025,47 @@ function renderEmargementsGlobalTable(){
       <td class="cell-sub">${dateStr}</td>
       <td class="cell-sub">${e.creneau || '—'}</td>
       <td class="cell-sub">${heureStr}</td>
-      <td>${sigThumb}</td>`;
+      <td>${sigThumb}</td>
+      <td><button class="icon-btn" title="Télécharger" data-download-emarg="${i}">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
+      </button></td>`;
     tbody.appendChild(tr);
+  });
+
+  tbody.querySelectorAll('[data-download-emarg]').forEach(btn => {
+    btn.addEventListener('click', () => downloadEmargementPdf(filtered[parseInt(btn.dataset.downloadEmarg,10)]));
   });
 }
 
+function downloadEmargementPdf(e){
+  const { jsPDF } = window.jspdf;
+  const docPdf = new jsPDF();
+  docPdf.setFillColor(11,31,58);
+  docPdf.rect(0,0,210,30,'F');
+  docPdf.setTextColor(255,255,255);
+  docPdf.setFont('helvetica','bold'); docPdf.setFontSize(15);
+  docPdf.text('APH Drone', 16, 15);
+  docPdf.setFontSize(9.5); docPdf.setFont('helvetica','normal');
+  docPdf.text('Émargement — ' + (e.stagiaireName||''), 16, 22);
+
+  docPdf.setTextColor(30,30,30);
+  docPdf.setFont('helvetica','bold'); docPdf.setFontSize(11);
+  docPdf.text('Stagiaire : ' + (e.stagiaireName||'—'), 16, 46);
+  docPdf.text('Formation : ' + (e.formation||'—'), 16, 54);
+  docPdf.setFont('helvetica','normal'); docPdf.setFontSize(10);
+  docPdf.text('Date : ' + (e.date ? new Date(e.date).toLocaleDateString('fr-FR') : '—'), 16, 64);
+  docPdf.text('Créneau : ' + (e.creneau||'—'), 16, 71);
+  docPdf.text('Heure de signature : ' + (e.timestamp ? new Date(e.timestamp).toLocaleTimeString('fr-FR') : '—'), 16, 78);
+  if(e.signatureImage){
+    docPdf.setFont('helvetica','bold');
+    docPdf.text('Signature :', 16, 92);
+    try{ docPdf.addImage(e.signatureImage, 'PNG', 16, 96, 70, 30); }catch(err){}
+  }
+  docPdf.save('Emargement_' + (e.stagiaireName||'').replace(/[^a-z0-9]/gi,'_') + '_' + (e.date||'').replace(/[^a-z0-9]/gi,'_') + '.pdf');
+}
+
 document.getElementById('emarg-search').addEventListener('input', renderEmargementsGlobalTable);
+document.getElementById('emarg-stagiaire-filter').addEventListener('change', renderEmargementsGlobalTable);
 
 // ══════════════════════════════════════════════════════════════
 // ── Alertes tableau de bord ──
