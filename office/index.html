@@ -36,6 +36,8 @@ body{background:var(--light);color:#222;min-height:100vh;}
 .admin-nav-item:hover{background:rgba(255,255,255,.06);color:white;}
 .admin-nav-item.active{background:var(--secondary);color:white;}
 .admin-nav-item svg{flex-shrink:0;width:17px;height:17px;}
+.admin-nav-item{position:relative;}
+.nav-alert-dot{position:absolute;top:8px;right:10px;width:8px;height:8px;border-radius:50%;background:var(--red);border:2px solid var(--primary);}
 .admin-foot{padding:16px 24px 0;border-top:1px solid rgba(255,255,255,.1);margin-top:16px;}
 .admin-foot-email{font-size:.72rem;color:rgba(255,255,255,.4);margin-bottom:10px;word-break:break-all;}
 .admin-logout{font-size:.78rem;color:rgba(255,255,255,.65);background:none;border:1px solid rgba(255,255,255,.15);border-radius:7px;padding:8px 12px;cursor:pointer;width:100%;transition:.15s;}
@@ -154,9 +156,14 @@ tr:last-child td{border-bottom:none;}
 /* Responsive */
 @media(max-width:900px){
   .admin-shell{flex-direction:column;}
-  .admin-sidebar{width:100%;flex-direction:row;align-items:center;padding:12px 16px;overflow-x:auto;}
-  .admin-brand{border:none;padding:0 16px 0 0;margin:0;}
-  .admin-nav{flex-direction:row;padding:0;}
+  .admin-sidebar{width:100%;flex-direction:row;align-items:center;padding:10px 12px;overflow-x:auto;gap:6px;-webkit-overflow-scrolling:touch;}
+  .admin-brand{border:none;padding:0 10px 0 0;margin:0;flex-shrink:0;gap:8px;}
+  .admin-brand img{width:30px;height:30px;}
+  .admin-brand-text{font-size:.76rem;white-space:nowrap;}
+  .admin-brand-text span{display:none;}
+  .admin-nav{flex-direction:row;padding:0;gap:4px;}
+  .admin-nav-item{padding:8px 12px;font-size:.76rem;white-space:nowrap;flex-shrink:0;gap:6px;}
+  .admin-nav-item svg{width:15px;height:15px;flex-shrink:0;}
   .admin-foot{display:none;}
   .stat-row{grid-template-columns:1fr 1fr;}
   .quick-links{grid-template-columns:1fr;}
@@ -212,6 +219,15 @@ tr:last-child td{border-bottom:none;}
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
         Outils
       </button>
+      <button class="admin-nav-item" data-panel="panel-documents">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 13h6"/><path d="M9 17h6"/></svg>
+        Documents
+        <span class="nav-alert-dot" id="nav-alert-documents" style="display:none;"></span>
+      </button>
+      <button class="admin-nav-item" data-panel="panel-emargements">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        Émargements
+      </button>
       <a class="admin-nav-item" href="/index.html" style="margin-top:10px;padding-top:11px;border-top:1px solid rgba(255,255,255,.1);">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
         Retour au site
@@ -232,11 +248,30 @@ tr:last-child td{border-bottom:none;}
         <div><h1>Vue d'ensemble</h1><p>Résumé de l'activité APH Drone</p></div>
       </div>
       <div class="admin-content">
+        <div id="dashboard-alert-banner" style="display:none;background:#fef2f2;border:1px solid #fecaca;border-radius:12px;padding:16px 20px;margin-bottom:20px;display:none;align-items:center;justify-content:space-between;gap:16px;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="width:36px;height:36px;border-radius:50%;background:#fee2e2;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
+            </div>
+            <div>
+              <div style="font-weight:700;color:var(--primary);font-size:.9rem;" id="alert-banner-text">—</div>
+              <div style="font-size:.78rem;color:#94a3b8;">Réclamation(s) non traitée(s)</div>
+            </div>
+          </div>
+          <button class="btn btn-outline btn-sm" id="btn-goto-reclamations">Voir</button>
+        </div>
+
         <div class="stat-row">
           <div class="stat-card"><div class="num" id="stat-clients">—</div><div class="lbl">Clients actifs</div></div>
           <div class="stat-card"><div class="num" id="stat-stagiaires">—</div><div class="lbl">Stagiaires</div></div>
           <div class="stat-card"><div class="num" id="stat-modules">—</div><div class="lbl">Modules débloqués</div></div>
           <div class="stat-card"><div class="num">2</div><div class="lbl">Outils de publication</div></div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-card"><div class="num" id="stat-docs-semaine">—</div><div class="lbl">Documents reçus (7 derniers jours)</div></div>
+          <div class="stat-card"><div class="num" id="stat-reclamations-attente" style="color:var(--red);">—</div><div class="lbl">Réclamations en attente</div></div>
+          <div class="stat-card"><div class="num" id="stat-emargements-total">—</div><div class="lbl">Émargements signés</div></div>
+          <div class="stat-card"><div class="num" id="stat-satisfactions-total">—</div><div class="lbl">Avis de satisfaction</div></div>
         </div>
 
         <div class="panel-section">
@@ -265,10 +300,16 @@ tr:last-child td{border-bottom:none;}
     <div class="admin-panel" id="panel-clients">
       <div class="admin-topbar">
         <div><h1>Clients</h1><p>Comptes professionnels et accès à leur espace personnel</p></div>
-        <button class="btn btn-primary" id="btn-add-client">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          Ajouter un client
-        </button>
+        <div style="display:flex;gap:10px;">
+          <button class="btn btn-outline" id="btn-export-clients">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
+            Exporter CSV
+          </button>
+          <button class="btn btn-primary" id="btn-add-client">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Ajouter un client
+          </button>
+        </div>
       </div>
       <div class="admin-content">
         <div class="panel-section">
@@ -288,10 +329,16 @@ tr:last-child td{border-bottom:none;}
     <div class="admin-panel" id="panel-stagiaires">
       <div class="admin-topbar">
         <div><h1>Stagiaires</h1><p>Accès aux modules de formation, débloqués individuellement</p></div>
-        <button class="btn btn-primary" id="btn-add-stagiaire">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          Ajouter un stagiaire
-        </button>
+        <div style="display:flex;gap:10px;">
+          <button class="btn btn-outline" id="btn-export-stagiaires">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
+            Exporter CSV
+          </button>
+          <button class="btn btn-primary" id="btn-add-stagiaire">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Ajouter un stagiaire
+          </button>
+        </div>
       </div>
       <div class="admin-content">
         <div class="panel-section">
@@ -354,8 +401,69 @@ tr:last-child td{border-bottom:none;}
       </div>
     </div>
 
+    <!-- ── Panel : Documents ── -->
+    <div class="admin-panel" id="panel-documents">
+      <div class="admin-topbar">
+        <div><h1>Documents</h1><p>Registre unifié de tous les documents signés depuis l'espace stagiaire</p></div>
+      </div>
+      <div class="admin-content">
+        <div class="panel-section">
+          <div class="panel-section-body" style="padding-top:14px;">
+            <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
+              <input type="text" id="doc-search" placeholder="Rechercher un nom…" style="flex:1;min-width:180px;padding:10px 13px;border:1.5px solid #dde3ec;border-radius:8px;font-size:.86rem;outline:none;font-family:'Inter',sans-serif;">
+              <select id="doc-type-filter" style="padding:10px 13px;border:1.5px solid #dde3ec;border-radius:8px;font-size:.86rem;outline:none;font-family:'Inter',sans-serif;background:white;">
+                <option value="">Tous les types</option>
+                <option value="satisfaction">Satisfaction</option>
+                <option value="reclamation">Réclamation</option>
+                <option value="fiche">Fiche renseignements</option>
+                <option value="reglement">Règlement intérieur</option>
+                <option value="attestation">Attestation zone d'exclusion</option>
+              </select>
+            </div>
+            <table>
+              <thead><tr><th>Type</th><th>Nom</th><th>Contexte</th><th>Date</th><th>Statut</th><th></th></tr></thead>
+              <tbody id="documents-tbody">
+                <tr><td colspan="6" class="empty-row">Chargement…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Panel : Émargements ── -->
+    <div class="admin-panel" id="panel-emargements">
+      <div class="admin-topbar">
+        <div><h1>Émargements</h1><p>Vue globale des présences signées, tous stagiaires confondus</p></div>
+      </div>
+      <div class="admin-content">
+        <div class="panel-section">
+          <div class="panel-section-body" style="padding-top:14px;">
+            <input type="text" id="emarg-search" placeholder="Rechercher un stagiaire ou une formation…" style="width:100%;margin-bottom:16px;padding:10px 13px;border:1.5px solid #dde3ec;border-radius:8px;font-size:.86rem;outline:none;font-family:'Inter',sans-serif;">
+            <table>
+              <thead><tr><th>Stagiaire</th><th>Formation</th><th>Date</th><th>Créneau</th><th>Heure</th><th>Signature</th></tr></thead>
+              <tbody id="emargements-tbody">
+                <tr><td colspan="6" class="empty-row">Chargement…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </main>
 </div>
+</div>
+
+<!-- ═══ MODAL : Détail d'un document ═══ -->
+<div class="modal-overlay" id="modal-document-detail">
+  <div class="modal-box" style="max-width:520px;">
+    <h3 id="doc-detail-title">Détail du document</h3>
+    <div id="doc-detail-body" style="display:flex;flex-direction:column;gap:12px;font-size:.85rem;"></div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal('modal-document-detail')">Fermer</button>
+    </div>
+  </div>
 </div>
 
 <!-- ═══ MODAL : Ajouter un outil ═══ -->
@@ -677,10 +785,12 @@ onAuthStateChanged(auth, user => {
   loadClients();
   loadStagiaires();
   loadOutils();
+  loadDocumentsRegistry();
+  loadEmargementsGlobal();
 });
 
 document.getElementById('btn-logout').addEventListener('click', () => {
-  signOut(auth).then(() => window.location.href = '/pages/connexion.html');
+  signOut(auth).then(() => window.location.href = '/pages/connexion.html?loggedout=1');
 });
 
 // ── Navigation sidebar ──
@@ -1357,6 +1467,276 @@ document.getElementById('btn-add-doc').addEventListener('click', async () => {
   document.getElementById('new-doc-url').value = '';
   renderDocAdminList(docsArr);
   showToast('Document ajouté.');
+});
+
+// ══════════════════════════════════════════════════════════════
+// ── Registre unifié des documents signés (satisfaction, réclamation, fiche, règlement, attestation) ──
+// ══════════════════════════════════════════════════════════════
+
+const DOC_TYPE_LABELS = {
+  satisfaction: 'Satisfaction',
+  reclamation: 'Réclamation',
+  fiche: 'Fiche renseignements',
+  reglement: 'Règlement intérieur',
+  attestation: "Attestation zone d'exclusion"
+};
+
+let allDocumentsCache = [];
+
+async function loadDocumentsRegistry(){
+  const sources = [
+    { col: 'satisfactions', type: 'satisfaction' },
+    { col: 'reclamations', type: 'reclamation' },
+    { col: 'fichesRenseignements', type: 'fiche' },
+    { col: 'reglementsSignes', type: 'reglement' },
+    { col: 'attestationsInformation', type: 'attestation' }
+  ];
+
+  let all = [];
+  for(const src of sources){
+    try{
+      const snap = await getDocs(collection(db, src.col));
+      snap.forEach(d => {
+        const data = d.data();
+        all.push({
+          id: d.id,
+          col: src.col,
+          type: src.type,
+          nom: data.name || (data.prenom ? (data.prenom + ' ' + (data.nom||'')) : '—'),
+          contexte: data.formation || data.mission || '—',
+          timestamp: data.timestamp || 0,
+          statut: data.statut || (src.type === 'reclamation' ? 'nouvelle' : null),
+          raw: data
+        });
+      });
+    }catch(e){ /* collection potentiellement vide ou inaccessible : on ignore */ }
+  }
+  all.sort((a,b) => b.timestamp - a.timestamp);
+  allDocumentsCache = all;
+  renderDocumentsTable();
+  updateDashboardAlerts();
+}
+
+function renderDocumentsTable(){
+  const tbody = document.getElementById('documents-tbody');
+  const searchVal = (document.getElementById('doc-search').value || '').toLowerCase();
+  const typeVal = document.getElementById('doc-type-filter').value;
+
+  const filtered = allDocumentsCache.filter(d => {
+    if(typeVal && d.type !== typeVal) return false;
+    if(searchVal && !d.nom.toLowerCase().includes(searchVal)) return false;
+    return true;
+  });
+
+  if(!filtered.length){
+    tbody.innerHTML = '<tr><td colspan="6" class="empty-row">Aucun document trouvé.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = '';
+  filtered.forEach(d => {
+    const dateStr = d.timestamp ? new Date(d.timestamp).toLocaleDateString('fr-FR') : '—';
+    let statutHtml = '<span class="cell-sub">—</span>';
+    if(d.type === 'reclamation'){
+      const statut = d.statut || 'nouvelle';
+      const colors = { nouvelle:'badge-active', 'en cours':'badge-active', traitee:'badge-inactive' };
+      statutHtml = `<select class="doc-statut-select" data-doc-id="${d.id}" data-doc-col="${d.col}" style="font-size:.74rem;padding:4px 8px;border-radius:6px;border:1.5px solid #dde3ec;font-family:'Inter',sans-serif;">
+        <option value="nouvelle" ${statut==='nouvelle'?'selected':''}>Nouvelle</option>
+        <option value="en cours" ${statut==='en cours'?'selected':''}>En cours</option>
+        <option value="traitee" ${statut==='traitee'?'selected':''}>Traitée</option>
+      </select>`;
+    }
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><span class="module-badge">${DOC_TYPE_LABELS[d.type]}</span></td>
+      <td class="cell-main">${d.nom}</td>
+      <td class="cell-sub">${d.contexte}</td>
+      <td class="cell-sub">${dateStr}</td>
+      <td>${statutHtml}</td>
+      <td><button class="icon-btn" title="Voir le détail" data-view-doc="${d.id}" data-view-col="${d.col}">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/><circle cx="12" cy="12" r="3"/></svg>
+      </button></td>`;
+    tbody.appendChild(tr);
+  });
+
+  tbody.querySelectorAll('[data-view-doc]').forEach(btn => {
+    btn.addEventListener('click', () => openDocumentDetail(btn.dataset.viewDoc, btn.dataset.viewCol));
+  });
+  tbody.querySelectorAll('.doc-statut-select').forEach(sel => {
+    sel.addEventListener('change', async () => {
+      await updateDoc(doc(db, sel.dataset.docCol, sel.dataset.docId), { statut: sel.value });
+      const entry = allDocumentsCache.find(d => d.id === sel.dataset.docId && d.col === sel.dataset.docCol);
+      if(entry) entry.statut = sel.value;
+      showToast('Statut mis à jour.');
+      updateDashboardAlerts();
+    });
+  });
+}
+
+document.getElementById('doc-search').addEventListener('input', renderDocumentsTable);
+document.getElementById('doc-type-filter').addEventListener('change', renderDocumentsTable);
+
+const DOC_FIELD_LABELS = {
+  name:'Nom', nom:'Nom', prenom:'Prénom', formation:'Formation', mission:'Mission', email:'Email',
+  phone:'Téléphone', dateFaits:'Date des faits', typeReclamation:'Type de réclamation',
+  description:'Description', consequences:'Conséquences', attentes:'Attentes',
+  pointsForts:'Points forts', pointsAmeliorer:'Points à améliorer', suggestions:'Suggestions',
+  recommandation:'Recommandation', naissanceDate:'Date de naissance', naissanceLieu:'Lieu de naissance',
+  nationalite:'Nationalité', adresse:'Adresse', cp:'Code postal', ville:'Ville', profession:'Profession',
+  employeur:'Employeur', statutPro:'Statut', niveau:'Niveau', licences:'Licences',
+  urgNom:'Contact urgence', urgLien:'Lien', urgTel:'Téléphone urgence',
+  role:'Rôle', date:'Date', lieu:'Lieu', mesures:"Mesures d'urgence", statut:'Statut', timestamp:null, ratings:null
+};
+
+function openDocumentDetail(id, col){
+  const entry = allDocumentsCache.find(d => d.id === id && d.col === col);
+  if(!entry) return;
+  document.getElementById('doc-detail-title').textContent = DOC_TYPE_LABELS[entry.type] + ' — ' + entry.nom;
+  const body = document.getElementById('doc-detail-body');
+  body.innerHTML = '';
+
+  const addRow = (label, value) => {
+    if(value === undefined || value === null || value === '') return;
+    const row = document.createElement('div');
+    row.innerHTML = `<div style="font-size:.7rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.03em;margin-bottom:2px;">${label}</div><div style="color:var(--primary);">${value}</div>`;
+    body.appendChild(row);
+  };
+
+  addRow('Date', entry.timestamp ? new Date(entry.timestamp).toLocaleString('fr-FR') : '—');
+  Object.entries(entry.raw).forEach(([key, val]) => {
+    if(key === 'timestamp' || key === 'ratings' || key === 'signatureImage') return;
+    if(typeof val === 'object') return;
+    const label = DOC_FIELD_LABELS[key] || key;
+    addRow(label, val);
+  });
+  if(entry.raw.ratings){
+    const ratingsStr = Object.entries(entry.raw.ratings).map(([q,v]) => q + ' : ' + v + '/5').join('<br>');
+    addRow('Notes', ratingsStr);
+  }
+  openModal('modal-document-detail');
+}
+
+document.getElementById('btn-goto-reclamations').addEventListener('click', () => {
+  document.querySelectorAll('.admin-nav-item').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
+  document.querySelector('[data-panel="panel-documents"]').classList.add('active');
+  document.getElementById('panel-documents').classList.add('active');
+  document.getElementById('doc-type-filter').value = 'reclamation';
+  renderDocumentsTable();
+});
+
+// ══════════════════════════════════════════════════════════════
+// ── Émargements : vue globale tous stagiaires ──
+// ══════════════════════════════════════════════════════════════
+
+let allEmargementsCache = [];
+
+async function loadEmargementsGlobal(){
+  try{
+    const snap = await getDocs(collection(db,'emargements'));
+    let all = [];
+    snap.forEach(d => all.push(d.data()));
+    all.sort((a,b) => (b.timestamp||0) - (a.timestamp||0));
+    allEmargementsCache = all;
+    document.getElementById('stat-emargements-total').textContent = all.length;
+    renderEmargementsGlobalTable();
+  }catch(e){
+    document.getElementById('emargements-tbody').innerHTML = '<tr><td colspan="6" class="empty-row">Erreur de chargement : ' + e.message + '</td></tr>';
+  }
+}
+
+function renderEmargementsGlobalTable(){
+  const tbody = document.getElementById('emargements-tbody');
+  const searchVal = (document.getElementById('emarg-search').value || '').toLowerCase();
+  const filtered = allEmargementsCache.filter(e => {
+    if(!searchVal) return true;
+    return (e.stagiaireName||'').toLowerCase().includes(searchVal) || (e.formation||'').toLowerCase().includes(searchVal);
+  });
+  if(!filtered.length){
+    tbody.innerHTML = '<tr><td colspan="6" class="empty-row">Aucun émargement trouvé.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = '';
+  filtered.forEach(e => {
+    const dateStr = e.date ? new Date(e.date).toLocaleDateString('fr-FR') : '—';
+    const heureStr = e.timestamp ? new Date(e.timestamp).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}) : '—';
+    const sigThumb = e.signatureImage ? `<img src="${e.signatureImage}" style="height:28px;max-width:70px;object-fit:contain;">` : '—';
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="cell-main">${e.stagiaireName || '—'}</td>
+      <td class="cell-sub">${e.formation || '—'}</td>
+      <td class="cell-sub">${dateStr}</td>
+      <td class="cell-sub">${e.creneau || '—'}</td>
+      <td class="cell-sub">${heureStr}</td>
+      <td>${sigThumb}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+document.getElementById('emarg-search').addEventListener('input', renderEmargementsGlobalTable);
+
+// ══════════════════════════════════════════════════════════════
+// ── Alertes tableau de bord ──
+// ══════════════════════════════════════════════════════════════
+
+function updateDashboardAlerts(){
+  const weekAgo = Date.now() - 7*24*60*60*1000;
+  const docsThisWeek = allDocumentsCache.filter(d => d.timestamp >= weekAgo).length;
+  document.getElementById('stat-docs-semaine').textContent = docsThisWeek;
+
+  const satisfactionsCount = allDocumentsCache.filter(d => d.type === 'satisfaction').length;
+  document.getElementById('stat-satisfactions-total').textContent = satisfactionsCount;
+
+  const reclamationsEnAttente = allDocumentsCache.filter(d => d.type === 'reclamation' && (d.statut||'nouvelle') !== 'traitee');
+  document.getElementById('stat-reclamations-attente').textContent = reclamationsEnAttente.length;
+
+  const banner = document.getElementById('dashboard-alert-banner');
+  const navDot = document.getElementById('nav-alert-documents');
+  if(reclamationsEnAttente.length > 0){
+    banner.style.display = 'flex';
+    document.getElementById('alert-banner-text').textContent =
+      reclamationsEnAttente.length + ' réclamation' + (reclamationsEnAttente.length > 1 ? 's' : '') + ' non traitée' + (reclamationsEnAttente.length > 1 ? 's' : '');
+    navDot.style.display = 'block';
+  } else {
+    banner.style.display = 'none';
+    navDot.style.display = 'none';
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+// ── Export CSV ──
+// ══════════════════════════════════════════════════════════════
+
+function downloadCSV(filename, rows){
+  const csv = rows.map(row => row.map(cell => {
+    const val = (cell === null || cell === undefined) ? '' : String(cell);
+    return '"' + val.replace(/"/g,'""') + '"';
+  }).join(';')).join('\r\n');
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = filename;
+  link.click();
+}
+
+document.getElementById('btn-export-clients').addEventListener('click', async () => {
+  const snap = await getDocs(collection(db,'clients'));
+  const rows = [['Nom','Email','Créé le']];
+  snap.forEach(d => {
+    const c = d.data();
+    rows.push([c.name||'', c.email||'', c.createdAt ? new Date(c.createdAt).toLocaleDateString('fr-FR') : '']);
+  });
+  downloadCSV('clients_aphdrone.csv', rows);
+});
+
+document.getElementById('btn-export-stagiaires').addEventListener('click', async () => {
+  const snap = await getDocs(collection(db,'stagiaires'));
+  const rows = [['Nom','Email','Formation','Modules débloqués']];
+  snap.forEach(d => {
+    const s = d.data();
+    rows.push([s.name||'', s.email||'', s.formation||'', (s.modules||[]).join(', ')]);
+  });
+  downloadCSV('stagiaires_aphdrone.csv', rows);
 });
 </script>
 </body>
