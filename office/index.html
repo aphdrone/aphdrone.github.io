@@ -169,6 +169,7 @@ tr:last-child td{border-bottom:none;}
   .quick-links{grid-template-columns:1fr;}
   .admin-content{padding:20px 16px 50px;}
   .admin-topbar{padding:14px 16px;}
+  .dash-preview-grid{grid-template-columns:1fr !important;}
 }
 </style>
 </head>
@@ -272,6 +273,37 @@ tr:last-child td{border-bottom:none;}
           <div class="stat-card"><div class="num" id="stat-reclamations-attente" style="color:var(--red);">—</div><div class="lbl">Réclamations en attente</div></div>
           <div class="stat-card"><div class="num" id="stat-emargements-total">—</div><div class="lbl">Émargements signés</div></div>
           <div class="stat-card"><div class="num" id="stat-satisfactions-total">—</div><div class="lbl">Avis de satisfaction</div></div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;" class="dash-preview-grid">
+          <div class="panel-section" style="margin-bottom:0;">
+            <div class="panel-section-head">
+              <h3>Stagiaires</h3>
+              <button class="btn btn-outline btn-sm" data-goto-panel="panel-stagiaires">Voir tous</button>
+            </div>
+            <div class="panel-section-body" style="padding-top:14px;max-height:340px;overflow-y:auto;">
+              <table>
+                <thead><tr><th>Stagiaire</th><th>Formation</th></tr></thead>
+                <tbody id="dash-stagiaires-preview">
+                  <tr><td colspan="2" class="empty-row">Chargement…</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="panel-section" style="margin-bottom:0;">
+            <div class="panel-section-head">
+              <h3>Clients</h3>
+              <button class="btn btn-outline btn-sm" data-goto-panel="panel-clients">Voir tous</button>
+            </div>
+            <div class="panel-section-body" style="padding-top:14px;max-height:340px;overflow-y:auto;">
+              <table>
+                <thead><tr><th>Client</th><th>Email</th></tr></thead>
+                <tbody id="dash-clients-preview">
+                  <tr><td colspan="2" class="empty-row">Chargement…</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
 
         <div class="panel-section">
@@ -803,6 +835,16 @@ document.querySelectorAll('.admin-nav-item[data-panel]').forEach(btn => {
   });
 });
 
+// ── Boutons "Voir tous" du tableau de bord ──
+document.querySelectorAll('[data-goto-panel]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.admin-nav-item').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
+    document.querySelector('[data-panel="' + btn.dataset.gotoPanel + '"]').classList.add('active');
+    document.getElementById(btn.dataset.gotoPanel).classList.add('active');
+  });
+});
+
 // ── Helpers ──
 function genPassword(){
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
@@ -822,15 +864,18 @@ function openModal(id){ document.getElementById(id).classList.add('open'); }
 // ── Clients ──
 async function loadClients(){
   const tbody = document.getElementById('clients-tbody');
+  const dashTbody = document.getElementById('dash-clients-preview');
   try{
     const snap = await getDocs(collection(db,'clients'));
     if(snap.empty){
       tbody.innerHTML = '<tr><td colspan="5" class="empty-row">Aucun client pour le moment.</td></tr>';
+      if(dashTbody) dashTbody.innerHTML = '<tr><td colspan="2" class="empty-row">Aucun client pour le moment.</td></tr>';
       document.getElementById('stat-clients').textContent = '0';
       return;
     }
     document.getElementById('stat-clients').textContent = snap.size;
     tbody.innerHTML = '';
+    if(dashTbody) dashTbody.innerHTML = '';
     snap.forEach(d => {
       const c = d.data();
       const created = c.createdAt ? new Date(c.createdAt).toLocaleDateString('fr-FR') : '—';
@@ -852,6 +897,12 @@ async function loadClients(){
           </button>
         </div></td>`;
       tbody.appendChild(tr);
+
+      if(dashTbody){
+        const trDash = document.createElement('tr');
+        trDash.innerHTML = `<td class="cell-main">${c.name || '—'}</td><td class="cell-sub">${c.email || '—'}</td>`;
+        dashTbody.appendChild(trDash);
+      }
     });
     document.querySelectorAll('[data-manage-client]').forEach(btn => {
       btn.addEventListener('click', () => openClientFicheModal(btn.dataset.manageClient));
@@ -866,6 +917,7 @@ async function loadClients(){
     });
   }catch(e){
     tbody.innerHTML = '<tr><td colspan="5" class="empty-row">Erreur de chargement : ' + e.message + '</td></tr>';
+    if(dashTbody) dashTbody.innerHTML = '<tr><td colspan="2" class="empty-row">Erreur de chargement.</td></tr>';
   }
 }
 
@@ -1296,10 +1348,12 @@ document.getElementById('btn-create-client').addEventListener('click', async () 
 // ── Stagiaires ──
 async function loadStagiaires(){
   const tbody = document.getElementById('stagiaires-tbody');
+  const dashTbody = document.getElementById('dash-stagiaires-preview');
   try{
     const snap = await getDocs(collection(db,'stagiaires'));
     if(snap.empty){
       tbody.innerHTML = '<tr><td colspan="5" class="empty-row">Aucun stagiaire pour le moment.</td></tr>';
+      if(dashTbody) dashTbody.innerHTML = '<tr><td colspan="2" class="empty-row">Aucun stagiaire pour le moment.</td></tr>';
       document.getElementById('stat-stagiaires').textContent = '0';
       document.getElementById('stat-modules').textContent = '0';
       return;
@@ -1307,6 +1361,7 @@ async function loadStagiaires(){
     document.getElementById('stat-stagiaires').textContent = snap.size;
     let totalModules = 0;
     tbody.innerHTML = '';
+    if(dashTbody) dashTbody.innerHTML = '';
     snap.forEach(d => {
       const s = d.data();
       const modules = s.modules || [];
@@ -1329,6 +1384,12 @@ async function loadStagiaires(){
           </button>
         </div></td>`;
       tbody.appendChild(tr);
+
+      if(dashTbody){
+        const trDash = document.createElement('tr');
+        trDash.innerHTML = `<td class="cell-main">${s.name || '—'}</td><td class="cell-sub">${s.formation || '—'}</td>`;
+        dashTbody.appendChild(trDash);
+      }
     });
     document.getElementById('stat-modules').textContent = totalModules;
 
@@ -1345,6 +1406,7 @@ async function loadStagiaires(){
     });
   }catch(e){
     tbody.innerHTML = '<tr><td colspan="5" class="empty-row">Erreur de chargement : ' + e.message + '</td></tr>';
+    if(dashTbody) dashTbody.innerHTML = '<tr><td colspan="2" class="empty-row">Erreur de chargement.</td></tr>';
   }
 }
 
