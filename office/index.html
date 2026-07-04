@@ -393,6 +393,7 @@ tr:last-child td{border-bottom:none;}
       <div class="admin-content">
         <div class="panel-section">
           <div class="panel-section-body" style="padding-top:14px;">
+            <input type="text" id="clients-search" placeholder="Rechercher un client (nom ou email)…" style="width:100%;margin-bottom:16px;padding:10px 13px;border:1.5px solid #dde3ec;border-radius:8px;font-size:.86rem;outline:none;font-family:'Inter',sans-serif;">
             <table>
               <thead><tr><th>Client</th><th>Email</th><th>Statut</th><th>Créé le</th><th></th></tr></thead>
               <tbody id="clients-tbody">
@@ -422,6 +423,7 @@ tr:last-child td{border-bottom:none;}
       <div class="admin-content">
         <div class="panel-section">
           <div class="panel-section-body" style="padding-top:14px;">
+            <input type="text" id="stagiaires-search" placeholder="Rechercher un stagiaire (nom, email ou formation)…" style="width:100%;margin-bottom:16px;padding:10px 13px;border:1.5px solid #dde3ec;border-radius:8px;font-size:.86rem;outline:none;font-family:'Inter',sans-serif;">
             <table>
               <thead><tr><th>Stagiaire</th><th>Email</th><th>Formation</th><th>Modules débloqués</th><th>Statut</th><th></th></tr></thead>
               <tbody id="stagiaires-tbody">
@@ -985,92 +987,115 @@ window.closeModal = function(id){ document.getElementById(id).classList.remove('
 function openModal(id){ document.getElementById(id).classList.add('open'); }
 
 // ── Clients ──
+let allClientsCache = [];
+
 async function loadClients(){
   const tbody = document.getElementById('clients-tbody');
   const dashTbody = document.getElementById('dash-clients-preview');
   try{
     const snap = await getDocs(collection(db,'clients'));
-    if(snap.empty){
-      tbody.innerHTML = '<tr><td colspan="5" class="empty-row">Aucun client pour le moment.</td></tr>';
-      if(dashTbody) dashTbody.innerHTML = '<tr><td colspan="3" class="empty-row">Aucun client pour le moment.</td></tr>';
-      document.getElementById('stat-clients').textContent = '0';
-      return;
-    }
-    document.getElementById('stat-clients').textContent = snap.size;
+    allClientsCache = [];
+    snap.forEach(d => allClientsCache.push({ id: d.id, ...d.data() }));
+    renderClientsTable();
+  }catch(e){
+    tbody.innerHTML = '<tr><td colspan="5" class="empty-row">Erreur de chargement : ' + e.message + '</td></tr>';
+    if(dashTbody) dashTbody.innerHTML = '<tr><td colspan="3" class="empty-row">Erreur de chargement.</td></tr>';
+  }
+}
+
+function renderClientsTable(){
+  const tbody = document.getElementById('clients-tbody');
+  const dashTbody = document.getElementById('dash-clients-preview');
+  const searchEl = document.getElementById('clients-search');
+  const searchVal = searchEl ? searchEl.value.toLowerCase() : '';
+
+  const activeClientsCount = allClientsCache.filter(c => c.active !== false).length;
+  document.getElementById('stat-clients').textContent = activeClientsCount;
+
+  const filtered = allClientsCache.filter(c =>
+    !searchVal || (c.name||'').toLowerCase().includes(searchVal) || (c.email||'').toLowerCase().includes(searchVal)
+  );
+
+  if(!allClientsCache.length){
+    tbody.innerHTML = '<tr><td colspan="5" class="empty-row">Aucun client pour le moment.</td></tr>';
+  } else if(!filtered.length){
+    tbody.innerHTML = '<tr><td colspan="5" class="empty-row">Aucun client ne correspond à la recherche.</td></tr>';
+  } else {
     tbody.innerHTML = '';
-    if(dashTbody) dashTbody.innerHTML = '';
-    let activeClientsCount = 0;
-    snap.forEach(d => {
-      const c = d.data();
+    filtered.forEach(c => {
       const isActive = c.active !== false;
-      if(isActive) activeClientsCount++;
       const created = c.createdAt ? new Date(c.createdAt).toLocaleDateString('fr-FR') : '—';
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td class="cell-main">${c.name || '—'}</td>
         <td>${c.email || '—'}</td>
         <td>
-          <label class="toggle" title="${isActive ? 'Actif' : 'Inactif'}">
-            <input type="checkbox" ${isActive ? 'checked' : ''} data-toggle-active-client="${d.id}">
-            <span class="toggle-slider"></span>
-          </label>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <label class="toggle" title="${isActive ? 'Actif' : 'Inactif'}">
+              <input type="checkbox" ${isActive ? 'checked' : ''} data-toggle-active-client="${c.id}">
+              <span class="toggle-slider"></span>
+            </label>
+            <span class="badge ${isActive ? 'badge-active' : 'badge-inactive'}">${isActive ? 'Actif' : 'Inactif'}</span>
+          </div>
         </td>
         <td class="cell-sub">${created}</td>
         <td><div class="row-actions">
-          <a class="icon-btn" title="Voir son espace" href="/pages/espace-clients.html?admin_view=${d.id}" target="_blank">
+          <a class="icon-btn" title="Voir son espace" href="/pages/espace-clients.html?admin_view=${c.id}" target="_blank">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/><circle cx="12" cy="12" r="3"/></svg>
           </a>
-          <button class="icon-btn" title="Gérer la fiche" data-manage-client="${d.id}">
+          <button class="icon-btn" title="Gérer la fiche" data-manage-client="${c.id}">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
           </button>
-          <button class="icon-btn" title="Supprimer" data-del-client="${d.id}">
+          <button class="icon-btn" title="Supprimer" data-del-client="${c.id}">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
           </button>
         </div></td>`;
       tbody.appendChild(tr);
-
-      if(dashTbody && isActive){
-        const trDash = document.createElement('tr');
-        trDash.innerHTML = `<td class="cell-main">${c.name || '—'}</td><td class="cell-sub">${c.email || '—'}</td>
-          <td><div class="row-actions" style="justify-content:flex-end;">
-            <label class="toggle" title="${isActive ? 'Actif' : 'Inactif'}">
-              <input type="checkbox" ${isActive ? 'checked' : ''} data-toggle-active-client="${d.id}">
-              <span class="toggle-slider"></span>
-            </label>
-            <button class="icon-btn" title="Modifier" data-manage-client="${d.id}">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-            </button>
-          </div></td>`;
-        dashTbody.appendChild(trDash);
-      }
     });
-    document.getElementById('stat-clients').textContent = activeClientsCount;
-    if(dashTbody && !dashTbody.children.length){
+  }
+
+  if(dashTbody){
+    dashTbody.innerHTML = '';
+    allClientsCache.filter(c => c.active !== false).forEach(c => {
+      const trDash = document.createElement('tr');
+      trDash.innerHTML = `<td class="cell-main">${c.name || '—'}</td><td class="cell-sub">${c.email || '—'}</td>
+        <td><div class="row-actions" style="justify-content:flex-end;">
+          <label class="toggle" title="Actif">
+            <input type="checkbox" checked data-toggle-active-client="${c.id}">
+            <span class="toggle-slider"></span>
+          </label>
+          <button class="icon-btn" title="Modifier" data-manage-client="${c.id}">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          </button>
+        </div></td>`;
+      dashTbody.appendChild(trDash);
+    });
+    if(!dashTbody.children.length){
       dashTbody.innerHTML = '<tr><td colspan="3" class="empty-row">Aucun client actif.</td></tr>';
     }
-    document.querySelectorAll('[data-toggle-active-client]').forEach(cb => {
-      cb.addEventListener('change', async () => {
-        await updateDoc(doc(db,'clients',cb.dataset.toggleActiveClient), { active: cb.checked });
-        showToast(cb.checked ? 'Client activé.' : 'Client désactivé.');
-        loadClients();
-      });
-    });
-    document.querySelectorAll('[data-manage-client]').forEach(btn => {
-      btn.addEventListener('click', () => openClientFicheModal(btn.dataset.manageClient));
-    });
-    document.querySelectorAll('[data-del-client]').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        if(!confirm('Supprimer ce client ?')) return;
-        await deleteDoc(doc(db,'clients',btn.dataset.delClient));
-        showToast('Client supprimé.');
-        loadClients();
-      });
-    });
-  }catch(e){
-    tbody.innerHTML = '<tr><td colspan="5" class="empty-row">Erreur de chargement : ' + e.message + '</td></tr>';
-    if(dashTbody) dashTbody.innerHTML = '<tr><td colspan="3" class="empty-row">Erreur de chargement.</td></tr>';
   }
+
+  document.querySelectorAll('[data-toggle-active-client]').forEach(cb => {
+    cb.addEventListener('change', async () => {
+      await updateDoc(doc(db,'clients',cb.dataset.toggleActiveClient), { active: cb.checked });
+      showToast(cb.checked ? 'Client activé.' : 'Client désactivé.');
+      loadClients();
+    });
+  });
+  document.querySelectorAll('[data-manage-client]').forEach(btn => {
+    btn.addEventListener('click', () => openClientFicheModal(btn.dataset.manageClient));
+  });
+  document.querySelectorAll('[data-del-client]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      if(!confirm('Supprimer ce client ?')) return;
+      await deleteDoc(doc(db,'clients',btn.dataset.delClient));
+      showToast('Client supprimé.');
+      loadClients();
+    });
+  });
 }
+
+document.getElementById('clients-search').addEventListener('input', renderClientsTable);
 
 // ── Fiche client : onglets, missions, documents, devis ──
 document.querySelectorAll('.fiche-tab').forEach(tab => {
@@ -1513,21 +1538,36 @@ async function loadStagiaires(){
   const dashTbody = document.getElementById('dash-stagiaires-preview');
   try{
     const snap = await getDocs(collection(db,'stagiaires'));
-    if(snap.empty){
-      tbody.innerHTML = '<tr><td colspan="6" class="empty-row">Aucun stagiaire pour le moment.</td></tr>';
-      if(dashTbody) dashTbody.innerHTML = '<tr><td colspan="3" class="empty-row">Aucun stagiaire pour le moment.</td></tr>';
-      document.getElementById('stat-stagiaires').textContent = '0';
-      return;
-    }
-    tbody.innerHTML = '';
-    if(dashTbody) dashTbody.innerHTML = '';
     allStagiairesCache = [];
-    let activeStagiairesCount = 0;
-    snap.forEach(d => {
-      const s = d.data();
+    snap.forEach(d => allStagiairesCache.push({ id: d.id, ...d.data(), modules: d.data().modules || [] }));
+    renderStagiairesTable();
+  }catch(e){
+    tbody.innerHTML = '<tr><td colspan="6" class="empty-row">Erreur de chargement : ' + e.message + '</td></tr>';
+    if(dashTbody) dashTbody.innerHTML = '<tr><td colspan="3" class="empty-row">Erreur de chargement.</td></tr>';
+  }
+}
+
+function renderStagiairesTable(){
+  const tbody = document.getElementById('stagiaires-tbody');
+  const dashTbody = document.getElementById('dash-stagiaires-preview');
+  const searchEl = document.getElementById('stagiaires-search');
+  const searchVal = searchEl ? searchEl.value.toLowerCase() : '';
+
+  const activeStagiairesCount = allStagiairesCache.filter(s => s.active !== false).length;
+  document.getElementById('stat-stagiaires').textContent = activeStagiairesCount;
+
+  const filtered = allStagiairesCache.filter(s =>
+    !searchVal || (s.name||'').toLowerCase().includes(searchVal) || (s.email||'').toLowerCase().includes(searchVal) || (s.formation||'').toLowerCase().includes(searchVal)
+  );
+
+  if(!allStagiairesCache.length){
+    tbody.innerHTML = '<tr><td colspan="6" class="empty-row">Aucun stagiaire pour le moment.</td></tr>';
+  } else if(!filtered.length){
+    tbody.innerHTML = '<tr><td colspan="6" class="empty-row">Aucun stagiaire ne correspond à la recherche.</td></tr>';
+  } else {
+    tbody.innerHTML = '';
+    filtered.forEach(s => {
       const isActive = s.active !== false;
-      if(isActive) activeStagiairesCount++;
-      allStagiairesCache.push({ id: d.id, name: s.name, modules: s.modules || [] });
       const modules = s.modules || [];
       const tr = document.createElement('tr');
       tr.innerHTML = `
@@ -1536,69 +1576,74 @@ async function loadStagiaires(){
         <td class="cell-sub">${s.formation || '—'}</td>
         <td>${modules.length ? '<div class="module-badges">' + modules.map(m => '<span class="module-badge">'+m+'</span>').join('') + '</div>' : '<span class="module-badge-none">Aucun accès</span>'}</td>
         <td>
-          <label class="toggle" title="${isActive ? 'Actif' : 'Inactif'}">
-            <input type="checkbox" ${isActive ? 'checked' : ''} data-toggle-active-stag="${d.id}">
-            <span class="toggle-slider"></span>
-          </label>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <label class="toggle" title="${isActive ? 'Actif' : 'Inactif'}">
+              <input type="checkbox" ${isActive ? 'checked' : ''} data-toggle-active-stag="${s.id}">
+              <span class="toggle-slider"></span>
+            </label>
+            <span class="badge ${isActive ? 'badge-active' : 'badge-inactive'}">${isActive ? 'Actif' : 'Inactif'}</span>
+          </div>
         </td>
         <td><div class="row-actions">
-          <a class="icon-btn" title="Voir son espace" href="/pages/espace-stagiaires.html?admin_view=${d.id}" target="_blank">
+          <a class="icon-btn" title="Voir son espace" href="/pages/espace-stagiaires.html?admin_view=${s.id}" target="_blank">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/><circle cx="12" cy="12" r="3"/></svg>
           </a>
-          <button class="icon-btn" title="Gérer les modules" data-manage-stag="${d.id}">
+          <button class="icon-btn" title="Gérer les modules" data-manage-stag="${s.id}">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
           </button>
-          <button class="icon-btn" title="Supprimer" data-del-stag="${d.id}">
+          <button class="icon-btn" title="Supprimer" data-del-stag="${s.id}">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
           </button>
         </div></td>`;
       tbody.appendChild(tr);
-
-      if(dashTbody && isActive){
-        const trDash = document.createElement('tr');
-        trDash.innerHTML = `<td class="cell-main">${s.name || '—'}</td><td class="cell-sub">${s.formation || '—'}</td>
-          <td><div class="row-actions" style="justify-content:flex-end;">
-            <label class="toggle" title="${isActive ? 'Actif' : 'Inactif'}">
-              <input type="checkbox" ${isActive ? 'checked' : ''} data-toggle-active-stag="${d.id}">
-              <span class="toggle-slider"></span>
-            </label>
-            <button class="icon-btn" title="Modifier" data-manage-stag="${d.id}">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-            </button>
-          </div></td>`;
-        dashTbody.appendChild(trDash);
-      }
     });
-    document.getElementById('stat-stagiaires').textContent = activeStagiairesCount;
-    if(dashTbody && !dashTbody.children.length){
+  }
+
+  if(dashTbody){
+    dashTbody.innerHTML = '';
+    allStagiairesCache.filter(s => s.active !== false).forEach(s => {
+      const trDash = document.createElement('tr');
+      trDash.innerHTML = `<td class="cell-main">${s.name || '—'}</td><td class="cell-sub">${s.formation || '—'}</td>
+        <td><div class="row-actions" style="justify-content:flex-end;">
+          <label class="toggle" title="Actif">
+            <input type="checkbox" checked data-toggle-active-stag="${s.id}">
+            <span class="toggle-slider"></span>
+          </label>
+          <button class="icon-btn" title="Modifier" data-manage-stag="${s.id}">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          </button>
+        </div></td>`;
+      dashTbody.appendChild(trDash);
+    });
+    if(!dashTbody.children.length){
       dashTbody.innerHTML = '<tr><td colspan="3" class="empty-row">Aucun stagiaire actif.</td></tr>';
     }
-    computeMissingEmargements();
-    populateStagiaireFilters();
-
-    document.querySelectorAll('[data-toggle-active-stag]').forEach(cb => {
-      cb.addEventListener('change', async () => {
-        await updateDoc(doc(db,'stagiaires',cb.dataset.toggleActiveStag), { active: cb.checked });
-        showToast(cb.checked ? 'Stagiaire activé.' : 'Stagiaire désactivé.');
-        loadStagiaires();
-      });
-    });
-    document.querySelectorAll('[data-manage-stag]').forEach(btn => {
-      btn.addEventListener('click', () => openModulesModal(btn.dataset.manageStag));
-    });
-    document.querySelectorAll('[data-del-stag]').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        if(!confirm('Supprimer ce stagiaire ?')) return;
-        await deleteDoc(doc(db,'stagiaires',btn.dataset.delStag));
-        showToast('Stagiaire supprimé.');
-        loadStagiaires();
-      });
-    });
-  }catch(e){
-    tbody.innerHTML = '<tr><td colspan="5" class="empty-row">Erreur de chargement : ' + e.message + '</td></tr>';
-    if(dashTbody) dashTbody.innerHTML = '<tr><td colspan="3" class="empty-row">Erreur de chargement.</td></tr>';
   }
+
+  computeMissingEmargements();
+  populateStagiaireFilters();
+
+  document.querySelectorAll('[data-toggle-active-stag]').forEach(cb => {
+    cb.addEventListener('change', async () => {
+      await updateDoc(doc(db,'stagiaires',cb.dataset.toggleActiveStag), { active: cb.checked });
+      showToast(cb.checked ? 'Stagiaire activé.' : 'Stagiaire désactivé.');
+      loadStagiaires();
+    });
+  });
+  document.querySelectorAll('[data-manage-stag]').forEach(btn => {
+    btn.addEventListener('click', () => openModulesModal(btn.dataset.manageStag));
+  });
+  document.querySelectorAll('[data-del-stag]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      if(!confirm('Supprimer ce stagiaire ?')) return;
+      await deleteDoc(doc(db,'stagiaires',btn.dataset.delStag));
+      showToast('Stagiaire supprimé.');
+      loadStagiaires();
+    });
+  });
 }
+
+document.getElementById('stagiaires-search').addEventListener('input', renderStagiairesTable);
 
 document.getElementById('btn-add-stagiaire').addEventListener('click', () => {
   document.getElementById('new-stag-name').value = '';
