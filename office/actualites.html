@@ -430,24 +430,28 @@ function compresserEtInsererImage(file){
   reader.readAsDataURL(file);
 }
 
-document.getElementById('f-contenu').addEventListener('paste', (e) => {
-  const items = e.clipboardData && e.clipboardData.items;
-  if(!items) return;
-  for(const item of items){
-    if(item.type.startsWith('image/')){
-      e.preventDefault();
-      compresserEtInsererImage(item.getAsFile());
-      return;
+try{
+  document.getElementById('f-contenu').addEventListener('paste', (e) => {
+    const items = e.clipboardData && e.clipboardData.items;
+    if(!items) return;
+    for(const item of items){
+      if(item.type.startsWith('image/')){
+        e.preventDefault();
+        compresserEtInsererImage(item.getAsFile());
+        return;
+      }
     }
-  }
-  // Sinon, laisser le collage de texte se faire normalement
-});
+    // Sinon, laisser le collage de texte se faire normalement
+  });
 
-document.getElementById('f-contenu-file').addEventListener('change', (e) => {
-  const file = e.target.files[0];
-  if(file) compresserEtInsererImage(file);
-  e.target.value = '';
-});
+  document.getElementById('f-contenu-file').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if(file) compresserEtInsererImage(file);
+    e.target.value = '';
+  });
+}catch(err){
+  console.error('Éditeur riche (collage image) non initialisé :', err);
+}
 
 // ── Publier / mettre à jour ──
 window.publierActu = async function(){
