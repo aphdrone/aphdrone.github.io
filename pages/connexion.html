@@ -125,7 +125,7 @@ body{background:var(--light);color:#222;min-height:100vh;padding-top:80px;}
 <!-- Firebase -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, onAuthStateChanged }
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { getFirestore, collection, getDocs, query, where }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -195,10 +195,31 @@ onAuthStateChanged(auth, async user => {
   if(!user) return;
   try {
     if(user.email === ADMIN_EMAIL){ window.location.href = '../office/'; return; }
+
     const stagSnap = await getDocs(query(collection(db,'stagiaires'), where('email','==',user.email)));
-    if(!stagSnap.empty){ window.location.href = 'espace-stagiaires.html'; return; }
+    if(!stagSnap.empty){
+      const stagData = stagSnap.docs[0].data();
+      if(stagData.active === false){
+        await signOut(auth).catch(() => {});
+        showError('Ce compte a été désactivé. Contactez APH Drone pour plus d\'informations.');
+        return;
+      }
+      window.location.href = 'espace-stagiaires.html';
+      return;
+    }
+
     const clientSnap = await getDocs(query(collection(db,'clients'), where('email','==',user.email)));
-    if(!clientSnap.empty){ window.location.href = 'espace-clients.html'; return; }
+    if(!clientSnap.empty){
+      const clientData = clientSnap.docs[0].data();
+      if(clientData.active === false){
+        await signOut(auth).catch(() => {});
+        showError('Ce compte a été désactivé. Contactez APH Drone pour plus d\'informations.');
+        return;
+      }
+      window.location.href = 'espace-clients.html';
+      return;
+    }
+
     window.location.href = selectedRole === 'client' ? 'espace-clients.html' : 'espace-stagiaires.html';
   } catch(e){
     window.location.href = selectedRole === 'client' ? 'espace-clients.html' : 'espace-stagiaires.html';
