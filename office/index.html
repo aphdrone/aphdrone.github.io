@@ -1020,9 +1020,15 @@ async function loadClients(){
       if(dashTbody){
         const trDash = document.createElement('tr');
         trDash.innerHTML = `<td class="cell-main">${c.name || '—'}</td><td class="cell-sub">${c.email || '—'}</td>
-          <td style="text-align:right;"><button class="icon-btn" title="Modifier" data-manage-client="${d.id}">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-          </button></td>`;
+          <td><div class="row-actions" style="justify-content:flex-end;">
+            <label class="toggle" title="${isActive ? 'Actif' : 'Inactif'}">
+              <input type="checkbox" ${isActive ? 'checked' : ''} data-toggle-active-client="${d.id}">
+              <span class="toggle-slider"></span>
+            </label>
+            <button class="icon-btn" title="Modifier" data-manage-client="${d.id}">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            </button>
+          </div></td>`;
         dashTbody.appendChild(trDash);
       }
     });
@@ -1527,9 +1533,15 @@ async function loadStagiaires(){
       if(dashTbody){
         const trDash = document.createElement('tr');
         trDash.innerHTML = `<td class="cell-main">${s.name || '—'}</td><td class="cell-sub">${s.formation || '—'}</td>
-          <td style="text-align:right;"><button class="icon-btn" title="Modifier" data-manage-stag="${d.id}">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-          </button></td>`;
+          <td><div class="row-actions" style="justify-content:flex-end;">
+            <label class="toggle" title="${isActive ? 'Actif' : 'Inactif'}">
+              <input type="checkbox" ${isActive ? 'checked' : ''} data-toggle-active-stag="${d.id}">
+              <span class="toggle-slider"></span>
+            </label>
+            <button class="icon-btn" title="Modifier" data-manage-stag="${d.id}">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            </button>
+          </div></td>`;
         dashTbody.appendChild(trDash);
       }
     });
