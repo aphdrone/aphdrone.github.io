@@ -189,11 +189,20 @@ tr:last-child td{border-bottom:none;}
   .admin-nav-item svg{width:17px;height:17px;}
   .admin-foot{display:block;}
 
-  .admin-topbar{padding:14px 16px 14px 60px;}
+  .admin-topbar{padding:14px 16px 14px 60px;flex-direction:column;align-items:flex-start;gap:12px;}
+  .admin-topbar h1{font-size:1.05rem;}
+  .admin-topbar > button, .admin-topbar > div[style*="display:flex"]{width:100%;}
+  .admin-topbar > div[style*="display:flex"]{flex-wrap:wrap;}
+  .admin-topbar .btn{width:100%;justify-content:center;}
+  .admin-topbar > div[style*="display:flex"] .btn{width:auto;flex:1;}
   .admin-content{padding:20px 16px 50px;}
   .stat-row{grid-template-columns:1fr 1fr !important;}
   .quick-links{grid-template-columns:1fr;}
   .dash-preview-grid{grid-template-columns:1fr !important;}
+
+  /* Tableaux : défilement horizontal contenu, plutôt qu'un débordement de toute la page */
+  .panel-section-body{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  .panel-section-body table{min-width:560px;}
 }
 </style>
 </head>
