@@ -664,7 +664,7 @@ padding:60px 10% 0;
 .fiche-img{width:100%;height:180px;position:relative;overflow:hidden;flex-shrink:0;}
 .fiche-img img{width:100%;height:100%;object-fit:cover;}
 .fiche-cat{position:absolute;top:14px;left:14px;color:white;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 12px;border-radius:20px;}
-.cat-hotel{background:#0B1F3A;}.cat-resto{background:#b45309;}.cat-chambre{background:#15803d;}.cat-meuble{background:#6d28d9;}
+.cat-hotel{background:#0B1F3A;}.cat-resto{background:#b45309;}.cat-chambre{background:#15803d;}.cat-meuble{background:#6d28d9;}.cat-rapide{background:#dc2626;}
 .fiche-body{padding:20px 22px 24px;flex:1;display:flex;flex-direction:column;}
 .fiche-nom{font-size:1rem;font-weight:700;color:#0B1F3A;margin-bottom:6px;}
 .fiche-desc{font-size:.82rem;color:#555;line-height:1.65;flex:1;margin-bottom:14px;}
@@ -711,7 +711,7 @@ padding:60px 10% 0;
 .fiche-img{width:100%;height:180px;position:relative;overflow:hidden;flex-shrink:0;}
 .fiche-img img{width:100%;height:100%;object-fit:cover;}
 .fiche-cat{position:absolute;top:14px;left:14px;color:white;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 12px;border-radius:20px;}
-.cat-hotel{background:#0B1F3A;}.cat-resto{background:#b45309;}.cat-chambre{background:#15803d;}.cat-meuble{background:#6d28d9;}
+.cat-hotel{background:#0B1F3A;}.cat-resto{background:#b45309;}.cat-chambre{background:#15803d;}.cat-meuble{background:#6d28d9;}.cat-rapide{background:#dc2626;}
 .fiche-body{padding:20px 22px 24px;flex:1;display:flex;flex-direction:column;}
 .fiche-nom{font-size:1rem;font-weight:700;color:#0B1F3A;margin-bottom:6px;}
 .fiche-desc{font-size:.82rem;color:#555;line-height:1.65;flex:1;margin-bottom:14px;}
@@ -770,6 +770,7 @@ document.addEventListener('DOMContentLoaded', function(){
   <button class="filtre-btn" data-cat="Restaurant">Restaurants</button>
   <button class="filtre-btn" data-cat="Chambre d'hôtes">Chambres d'hôtes</button>
   <button class="filtre-btn" data-cat="Meublé">Meublés &amp; Gîtes</button>
+  <button class="filtre-btn" data-cat="Restauration rapide">Restauration rapide</button>
 </div>
 
 <div class="annuaire-wrap">
@@ -871,6 +872,49 @@ document.addEventListener('DOMContentLoaded', function(){
         <div class="fiche-nom">Résidence Les Thermes — Métropole</div>
         <div class="fiche-desc">64 studios et appartements meublés équipés, face au Centre Thermal. Idéal pour séjours longue durée.</div>
         <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>4 rue des Thermes, 70300 Luxeuil-les-Bains</div>
+        <div class="fiche-actions"><a href="contact.html" class="btn-fiche btn-fiche-primary">Nous contacter</a></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sep-label" style="margin-top:32px;">Restauration rapide</div>
+  <div class="annuaire-grid">
+    <div class="fiche" data-cat="Restauration rapide">
+      <div class="fiche-img"><img src="https://images.unsplash.com/photo-1552566626-52f8b828add9?w=600&q=80" alt="McDonald's Luxeuil Froideconche"><span class="fiche-cat cat-rapide">Restauration rapide</span></div>
+      <div class="fiche-body">
+        <div class="fiche-nom">McDonald's — Luxeuil Froideconche</div>
+        <div class="fiche-desc">Burgers, menus et desserts, service sur place, à emporter ou au drive. Espace enfants et wifi gratuit.</div>
+        <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>ZI de la Zouzette, 70300 Froideconche</div>
+        <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.5 19.79 19.79 0 0 1 1.61 5a2 2 0 0 1 1.95-2H6a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 10a16 16 0 0 0 6 6l.27-.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 18z"/></svg>03 84 40 04 60</div>
+        <div class="fiche-actions"><a href="tel:0384400460" class="btn-fiche btn-fiche-primary">Appeler</a><a href="https://www.mcdonalds.fr/restaurants/mcdonalds-luxeuil-froideconche/1155" target="_blank" class="btn-fiche btn-fiche-outline">Site web</a></div>
+      </div>
+    </div>
+    <div class="fiche" data-cat="Restauration rapide">
+      <div class="fiche-img"><img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&q=80" alt="O'Malo Saint-Sauveur"><span class="fiche-cat cat-rapide">Restauration rapide</span></div>
+      <div class="fiche-body">
+        <div class="fiche-nom">O'Malo — Saint-Sauveur</div>
+        <div class="fiche-desc">Fast-food gourmand : burgers, tacos, kebabs, paniers et salades préparés à la commande avec des produits frais et certifiés halal. Sur place ou à emporter.</div>
+        <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>29 rue Édouard Herriot, 70300 Saint-Sauveur</div>
+        <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.5 19.79 19.79 0 0 1 1.61 5a2 2 0 0 1 1.95-2H6a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 10a16 16 0 0 0 6 6l.27-.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 18z"/></svg>03 84 40 73 22</div>
+        <div class="fiche-actions"><a href="tel:0384407322" class="btn-fiche btn-fiche-primary">Appeler</a></div>
+      </div>
+    </div>
+    <div class="fiche" data-cat="Restauration rapide">
+      <div class="fiche-img"><img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?w=600&q=80" alt="Cathy Pizza"><span class="fiche-cat cat-rapide">Restauration rapide</span></div>
+      <div class="fiche-body">
+        <div class="fiche-nom">Cathy Pizza</div>
+        <div class="fiche-desc">Pizzas cuites au feu de bois, généreusement garnies, à emporter. Large choix de recettes, accueil chaleureux.</div>
+        <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>10 rue de l'Étang de la Poche, 70300 Luxeuil-les-Bains</div>
+        <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.5 19.79 19.79 0 0 1 1.61 5a2 2 0 0 1 1.95-2H6a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 10a16 16 0 0 0 6 6l.27-.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 18z"/></svg>03 84 40 07 72</div>
+        <div class="fiche-actions"><a href="tel:0384400772" class="btn-fiche btn-fiche-primary">Appeler</a></div>
+      </div>
+    </div>
+    <div class="fiche" data-cat="Restauration rapide">
+      <div class="fiche-img"><img src="https://images.unsplash.com/photo-1590947132387-155cc02f3212?w=600&q=80" alt="Machine à Pizza (distributeur automatique)"><span class="fiche-cat cat-rapide">Restauration rapide</span></div>
+      <div class="fiche-body">
+        <div class="fiche-nom">Machine à Pizza — Distributeur automatique</div>
+        <div class="fiche-desc">Distributeur automatique ouvert 7j/7 et 24h/24. Plus de 20 recettes de pizzas artisanales, livrées froides en 30 secondes ou chaudes en 3 minutes.</div>
+        <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>70300 Froideconche</div>
         <div class="fiche-actions"><a href="contact.html" class="btn-fiche btn-fiche-primary">Nous contacter</a></div>
       </div>
     </div>
