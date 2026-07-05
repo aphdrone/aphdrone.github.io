@@ -34,6 +34,9 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
 .formations-section h2{font-size:1.5rem;font-weight:700;color:var(--primary);margin-bottom:6px;}
 .formations-section .sub{font-size:.95rem;color:#666;margin-bottom:36px;}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.grid-reconversion{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:800px;}
+.fcard-reconversion{min-height:300px;}
+.fcard-sur-mesure{min-height:300px;background:var(--light);border:2px dashed #dde3ec;}
 
 /* Carte formation */
 .fcard{border-radius:16px;overflow:hidden;position:relative;cursor:pointer;min-height:260px;transition:transform .3s ease,box-shadow .3s ease;}
@@ -95,7 +98,10 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
   .intro-sep{display:none;}
   .formations-section{padding:50px 6%;}
   .grid{grid-template-columns:1fr;}
+  .grid-reconversion{grid-template-columns:1fr;}
   .fcard{min-height:auto;}
+  .fcard-reconversion{min-height:auto;}
+  .fcard-sur-mesure{min-height:auto;}
   .fcard-front{display:none;}
   .fcard-back{opacity:1;pointer-events:auto;position:relative;inset:auto;border:1.5px solid #e8edf4;}
   .cta-section{padding:50px 6%;}
@@ -535,9 +541,9 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
   <div class="section-label">Construire son projet professionnel</div>
   <h2>Reconversion professionnelle</h2>
   <p class="sub">Un parcours complet pour faire du drone votre métier — de zéro à professionnel en 3 semaines.</p>
-  <div class="grid" style="grid-template-columns:1fr 1fr;max-width:800px;">
+  <div class="grid grid-reconversion">
 
-    <div class="fcard" style="min-height:300px;">
+    <div class="fcard fcard-reconversion">
       <div class="fcard-bg bg-reconversion"></div>
       <div class="fcard-front">
         <span class="fcard-level level-reconversion">Reconversion</span>
@@ -565,7 +571,7 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
       </div>
     </div>
 
-    <div class="fcard" style="min-height:300px;background:var(--light);border:2px dashed #dde3ec;">
+    <div class="fcard fcard-sur-mesure">
       <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;text-align:center;">
         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#4A90E2" stroke-width="1.5" style="margin-bottom:16px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
         <h3 style="font-size:1rem;font-weight:700;color:var(--primary);margin-bottom:8px;">Parcours sur mesure</h3>
