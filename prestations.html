@@ -12,74 +12,53 @@
 body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
 
 /* Hero */
-.page-hero{background:linear-gradient(135deg,var(--primary) 0%,#1a3a6b 100%);color:white;padding:70px 10% 60px;position:relative;overflow:hidden;}
-.page-hero::before{content:'';position:absolute;right:-100px;top:-100px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(74,144,226,.08),transparent 70%);}
-.hero-breadcrumb{display:flex;align-items:center;gap:8px;font-size:12px;color:rgba(255,255,255,.5);margin-bottom:20px;}
+.page-hero{background:linear-gradient(135deg,var(--primary) 0%,#1a3a6b 100%);color:white;padding:80px 10% 56px;position:relative;overflow:hidden;}
+.page-hero::before{content:'';position:absolute;right:-120px;top:-120px;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,rgba(74,144,226,.1),transparent 70%);}
+.hero-breadcrumb{display:flex;align-items:center;gap:8px;font-size:12px;color:rgba(255,255,255,.5);margin-bottom:28px;position:relative;z-index:1;}
 .hero-breadcrumb a{color:rgba(255,255,255,.5);text-decoration:none;}
 .hero-breadcrumb span{color:rgba(255,255,255,.3);}
-.page-hero h1{font-size:3rem;font-weight:800;margin-bottom:16px;position:relative;z-index:1;}
-.page-hero h1 em{font-style:normal;color:#4A90E2;}
-.page-hero p{font-size:1.05rem;color:rgba(255,255,255,.7);max-width:580px;line-height:1.75;position:relative;z-index:1;}
+.hero-eyebrow{font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:18px;position:relative;z-index:1;}
+.page-hero h1{font-size:3.1rem;font-weight:900;line-height:1.08;letter-spacing:-.01em;margin-bottom:22px;position:relative;z-index:1;max-width:780px;}
+.page-hero h1 .thin{font-weight:300;color:rgba(255,255,255,.55);}
+.page-hero p{font-size:1.05rem;font-weight:300;color:rgba(255,255,255,.65);max-width:560px;line-height:1.75;position:relative;z-index:1;margin-bottom:36px;}
+.hero-nav{display:flex;gap:12px;flex-wrap:wrap;position:relative;z-index:1;}
+.hero-nav a{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);color:white;padding:11px 20px;border-radius:30px;text-decoration:none;font-size:13px;font-weight:600;transition:.2s;}
+.hero-nav a:hover{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.32);}
+.hero-nav a .count{color:var(--accent);font-weight:800;}
 
-/* Stats band */
-.intro-band{background:var(--light);padding:40px 10%;display:flex;gap:48px;align-items:center;justify-content:space-between;}
-.intro-stat{text-align:center;}
-.intro-stat .val{font-size:2rem;font-weight:800;color:var(--accent);}
-.intro-stat .lbl{font-size:12px;color:#888;text-transform:uppercase;letter-spacing:.08em;margin-top:2px;}
-.intro-sep{width:1px;height:48px;background:#dde3ec;}
+/* Boussole des besoins (élément signature) */
+.compass{background:var(--light);padding:36px 10%;border-bottom:1px solid #e8edf4;}
+.compass-label{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#8a94a3;margin-bottom:14px;}
+.compass-btns{display:flex;gap:10px;flex-wrap:wrap;}
+.need-btn{background:white;border:1.5px solid #dde3ec;color:var(--primary);padding:10px 18px;border-radius:24px;font-size:13px;font-weight:600;cursor:pointer;transition:.2s;}
+.need-btn:hover{border-color:var(--accent);}
+.need-btn.active{background:var(--primary);border-color:var(--primary);color:white;}
 
-/* Section */
-.formations-section{padding:70px 10%;}
-.section-label{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:10px;}
-.formations-section h2{font-size:1.5rem;font-weight:700;color:var(--primary);margin-bottom:6px;}
-.formations-section .sub{font-size:.95rem;color:#666;margin-bottom:36px;}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+/* Sections catégories */
+.cat-section{padding:64px 10%;}
+.cat-section:nth-of-type(even){background:var(--light);}
+.cat-head{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:6px;}
+.cat-eyebrow{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);}
+.cat-section h2{font-size:1.7rem;font-weight:800;color:var(--primary);margin-bottom:8px;}
+.cat-sub{font-size:.95rem;color:#667;max-width:640px;margin-bottom:40px;line-height:1.6;}
 
-/* Carte formation */
-.fcard{border-radius:16px;overflow:hidden;position:relative;cursor:pointer;min-height:260px;transition:transform .3s ease,box-shadow .3s ease;}
-.fcard:hover{transform:translateY(-4px);box-shadow:0 20px 50px rgba(11,31,58,.2);}
-.fcard-front{position:absolute;inset:0;padding:28px;display:flex;flex-direction:column;justify-content:flex-end;transition:opacity .35s ease;}
-.fcard-front::before{content:'';position:absolute;inset:0;background:linear-gradient(160deg,rgba(11,31,58,.2) 0%,rgba(11,31,58,.88) 100%);z-index:1;}
-.fcard-bg{position:absolute;inset:0;z-index:0;}
-.fcard-level{position:absolute;top:20px;left:20px;z-index:2;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:10px;}
-.level-debutant{background:rgba(22,163,74,.25);color:#86efac;}
-.level-intermediaire{background:rgba(74,144,226,.25);color:#93c5fd;}
-.level-avance{background:rgba(234,88,12,.25);color:#fdba74;}
-.level-pro{background:rgba(139,92,246,.25);color:#c4b5fd;}
-.level-reconversion{background:rgba(236,72,153,.25);color:#f9a8d4;}
-.fcard-front h3{font-size:1.05rem;font-weight:700;color:white;position:relative;z-index:2;margin-bottom:6px;}
-.fcard-meta{display:flex;gap:10px;position:relative;z-index:2;}
-.fcard-meta span{font-size:11px;color:rgba(255,255,255,.7);display:flex;align-items:center;gap:4px;}
-
-/* Face arrière */
-.fcard-back{position:absolute;inset:0;padding:22px;display:flex;flex-direction:column;justify-content:space-between;background:white;opacity:0;pointer-events:none;transition:opacity .35s ease;}
-.fcard:hover .fcard-front{opacity:0;pointer-events:none;}
-.fcard:hover .fcard-back{opacity:1;pointer-events:auto;}
-.fcard-back-top h3{font-size:14px;font-weight:700;color:var(--primary);margin-bottom:6px;}
-.fcard-back-top p{font-size:12px;color:#555;line-height:1.6;margin-bottom:10px;}
-.fcard-price{font-size:1.3rem;font-weight:800;color:var(--primary);}
-.fcard-price span{font-size:.8rem;font-weight:500;color:#888;}
-.fcard-infos{display:flex;gap:12px;margin:8px 0;}
-.fcard-info{display:flex;align-items:center;gap:5px;font-size:11px;color:#666;}
-.fcard-info svg{color:var(--accent);flex-shrink:0;}
-.fcard-price{font-size:1.3rem;font-weight:800;color:var(--primary);}
-.fcard-price span{font-size:.8rem;font-weight:500;color:#888;}
-.fcard-infos{display:flex;gap:12px;margin:8px 0;}
-.fcard-info{display:flex;align-items:center;gap:5px;font-size:11px;color:#666;}
-.fcard-info svg{color:var(--accent);flex-shrink:0;}
-.fcard-financement{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--green);font-weight:600;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;padding:4px 8px;margin-bottom:10px;width:fit-content;}
-.fcard-btns{display:flex;gap:8px;margin-top:auto;}
-.btn-fcard-primary{flex:1;padding:9px 6px;background:var(--secondary);color:white;border:none;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center;transition:.2s;}
-.btn-fcard-primary:hover{background:var(--accent);}
-.btn-fcard-secondary{flex:1;padding:9px 6px;background:transparent;color:var(--secondary);border:1.5px solid var(--secondary);border-radius:8px;font-size:11px;font-weight:700;text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center;transition:.2s;}
-.btn-fcard-secondary:hover{background:var(--secondary);color:white;}
-
-/* Couleurs bg par type */
-.bg-certif{background:linear-gradient(135deg,#0B1F3A,#1F5FAF);}
-.bg-speciali{background:linear-gradient(135deg,#0a2a1a,#1a5f3a);}
-.bg-terrain{background:linear-gradient(135deg,#1a0a2a,#4a1a8f);}
-.bg-reglementaire{background:linear-gradient(135deg,#2a1a0a,#6f3a1a);}
-.bg-reconversion{background:linear-gradient(135deg,#1a0a1a,#6f1a5f);}
+/* Liste de services */
+.service-row{display:flex;align-items:center;justify-content:space-between;gap:28px;padding:26px 0;border-bottom:1px solid #e2e7ef;transition:opacity .25s ease,transform .25s ease;}
+.service-row:first-child{border-top:1px solid #e2e7ef;}
+.service-row.is-hidden{display:none;}
+.service-main{display:flex;align-items:flex-start;gap:18px;flex:1;min-width:0;}
+.service-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);margin-top:9px;flex-shrink:0;}
+.service-text h3{font-size:1.1rem;font-weight:700;color:var(--primary);margin-bottom:5px;}
+.service-text a.title-link{color:inherit;text-decoration:none;}
+.service-text a.title-link:hover{color:var(--secondary);}
+.service-text p{font-size:.9rem;color:#666;line-height:1.55;max-width:560px;}
+.service-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;}
+.service-tags span{font-size:10.5px;font-weight:600;color:#8a94a3;background:#eef1f6;border-radius:6px;padding:3px 8px;}
+.service-actions{display:flex;flex-direction:column;gap:8px;align-items:flex-end;flex-shrink:0;}
+.btn-discover{display:flex;align-items:center;gap:6px;background:var(--secondary);color:white;padding:10px 18px;border-radius:8px;font-size:12.5px;font-weight:700;text-decoration:none;white-space:nowrap;transition:.2s;}
+.btn-discover:hover{background:var(--accent);}
+.link-devis{font-size:11.5px;color:#8a94a3;text-decoration:none;white-space:nowrap;}
+.link-devis:hover{color:var(--secondary);text-decoration:underline;}
 
 /* CTA */
 .cta-section{background:linear-gradient(135deg,var(--primary),#1a3a6b);padding:70px 10%;text-align:center;color:white;}
@@ -92,17 +71,13 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
 .btn-cta-secondary:hover{background:rgba(255,255,255,.1);}
 
 /* Responsive */
-@media(max-width:1024px){.grid{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:768px){
   .page-hero{padding:50px 6% 40px;}
-  .page-hero h1{font-size:2rem;}
-  .intro-band{flex-wrap:wrap;gap:24px;padding:30px 6%;}
-  .intro-sep{display:none;}
-  .formations-section{padding:50px 6%;}
-  .grid{grid-template-columns:1fr;}
-  .fcard{min-height:auto;}
-  .fcard-front{display:none;}
-  .fcard-back{opacity:1;pointer-events:auto;position:relative;inset:auto;border:1.5px solid #e8edf4;}
+  .page-hero h1{font-size:2.1rem;}
+  .compass{padding:28px 6%;}
+  .cat-section{padding:48px 6%;}
+  .service-row{flex-direction:column;align-items:flex-start;gap:16px;}
+  .service-actions{flex-direction:row;align-items:center;width:100%;justify-content:space-between;}
   .cta-section{padding:50px 6%;}
 }
 </style>
@@ -119,277 +94,212 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
     <span>›</span>
     <span style="color:rgba(255,255,255,.8);">Nos Prestations</span>
   </div>
-  <h1>Ce que nous faisons<br><em>pour vous</em></h1>
-  <p>Opérateur professionnel certifié en Bourgogne-Franche-Comté. Prestations spécialisées, une exigence constante : des données exploitables, des rapports rigoureux, des missions qui servent à quelque chose.</p>
+  <div class="hero-eyebrow">Catalogue de prestations</div>
+  <h1>Onze façons de voir<br><span class="thin">ce que le sol ne montre pas.</span></h1>
+  <p>Opérateur professionnel certifié basé en Haute-Saône. Chaque mission produit des données exploitables — pas seulement de belles images — pour vos cultures, vos ouvrages, vos sites et vos dossiers réglementaires.</p>
+  <div class="hero-nav">
+    <a href="#terrain">Missions terrain <span class="count">· 8</span></a>
+    <a href="#expertise">Expertise &amp; accompagnement <span class="count">· 3</span></a>
+  </div>
 </div>
 
-<!-- Prestations -->
-<div class="formations-section">
-  <div class="section-label">Toutes nos prestations</div>
-  <h2>Notre expertise au service de vos projets</h2>
-  <p class="sub">Passez la souris sur une carte pour découvrir le détail de la prestation.</p>
-  <div class="grid">
+<!-- Boussole des besoins -->
+<div class="compass">
+  <div class="compass-label">Vous cherchez plutôt à…</div>
+  <div class="compass-btns" id="compass-btns">
+    <button class="need-btn active" data-need="all">Tout afficher</button>
+    <button class="need-btn" data-need="diagnostiquer">Diagnostiquer un bâtiment</button>
+    <button class="need-btn" data-need="surveiller">Surveiller ou sécuriser un site</button>
+    <button class="need-btn" data-need="parcelle">Traiter une parcelle</button>
+    <button class="need-btn" data-need="images">Capter des images</button>
+    <button class="need-btn" data-need="structurer">Structurer mon activité drone</button>
+  </div>
+</div>
 
-    <div class="fcard">
-      <div class="fcard-bg bg-certif"></div>
-      <div class="fcard-front">
-        <span class="fcard-level level-intermediaire">Sécurité</span>
-        <h3>Sécurité, Recherche &amp; Secours</h3>
-        <div class="fcard-meta">
-          <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Une vision aérienne au service de votre sécurité</span>
-        </div>
-      </div>
-      <div class="fcard-back">
-        <div class="fcard-back-top">
-          <h3>Sécurité, Recherche &amp; Secours</h3>
-          <p>Surveillance aérienne de sites sensibles, sécurisation d'événements, appui aux opérations de recherche et missions de repérage par drone.</p>
-        </div>
-        <div class="fcard-price"><span>Réponse sous 48h</span></div>
-        <div class="fcard-infos">
-          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> France entière</span>
-        </div>
-        <div class="fcard-financement"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Devis gratuit </div>
-        <div class="fcard-btns">
-          <a href="pages/prestations/surveillance.html" class="btn-fcard-primary">Découvrir</a>
-          <a href="pages/contact.html" class="btn-fcard-secondary">Demander un Devis</a>
-        </div>
+<!-- Missions terrain -->
+<div class="cat-section" id="terrain">
+  <div class="cat-head">
+    <div>
+      <div class="cat-eyebrow">01 — Sur le terrain</div>
+      <h2>Missions terrain</h2>
+    </div>
+  </div>
+  <p class="cat-sub">Le drone se déplace chez vous : sur une parcelle, un toit, une forêt ou un site à surveiller. Huit missions qui couvrent la quasi-totalité des besoins d'observation et de traitement aérien.</p>
+
+  <div class="service-row" data-need="surveiller">
+    <div class="service-main">
+      <span class="service-dot"></span>
+      <div class="service-text">
+        <h3><a href="pages/prestations/surveillance.html" class="title-link">Surveillance &amp; Sécurité</a></h3>
+        <p>Vision aérienne en temps réel pour la sécurisation de sites sensibles, d'événements et l'appui aux opérations de recherche.</p>
+        <div class="service-tags"><span>France entière</span><span>Vidéo en direct possible</span></div>
       </div>
     </div>
+    <div class="service-actions">
+      <a href="pages/prestations/surveillance.html" class="btn-discover">Découvrir</a>
+      <a href="pages/contact.html" class="link-devis">Demander un devis</a>
+    </div>
+  </div>
 
-    <div class="fcard">
-      <div class="fcard-bg bg-speciali"></div>
-      <div class="fcard-front">
-        <span class="fcard-level level-debutant">Agriculture</span>
-        <h3>Agriculture & Arboriculture</h3>
-        <div class="fcard-meta">
-          <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Des données aériennes pour des cultures et des vergers plus performants</span>
-        </div>
-      </div>
-      <div class="fcard-back">
-        <div class="fcard-back-top">
-          <h3>Agriculture & Arboriculture</h3>
-          <p>Imagerie multispectrale, cartographie des parcelles et détection précoce du stress hydrique, des carences et des maladies pour optimiser vos cultures et vergers.</p>
-        </div>
-        <div class="fcard-price"><span>Réponse sous 48h</span></div>
-        <div class="fcard-infos">
-          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> France entière</span>
-        </div>
-        <div class="fcard-financement"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Devis gratuit </div>
-        <div class="fcard-btns">
-          <a href="pages/prestations/agriculture.html" class="btn-fcard-primary">Découvrir</a>
-          <a href="pages/contact.html" class="btn-fcard-secondary">Demander un devis</a>
-        </div>
+  <div class="service-row" data-need="parcelle">
+    <div class="service-main">
+      <span class="service-dot"></span>
+      <div class="service-text">
+        <h3><a href="pages/prestations/agriculture.html" class="title-link">Agriculture &amp; Arboriculture</a></h3>
+        <p>Pulvérisation et épandage de précision sur grandes cultures, vergers et vignes ; détection du gibier avant fauche.</p>
+        <div class="service-tags"><span>DJI AGRAS T100</span><span>SORA v2.5</span></div>
       </div>
     </div>
+    <div class="service-actions">
+      <a href="pages/prestations/agriculture.html" class="btn-discover">Découvrir</a>
+      <a href="pages/contact.html" class="link-devis">Demander un devis</a>
+    </div>
+  </div>
 
-    <div class="fcard">
-      <div class="fcard-bg bg-speciali"></div>
-      <div class="fcard-front">
-        <span class="fcard-level level-avance">Diagnostic</span>
-        <h3>Thermographie infrarouge</h3>
-        <div class="fcard-meta">
-          <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Révélez l'invisible pour prévenir les défaillances et optimiser vos installations</span>
-        </div>
-      </div>
-      <div class="fcard-back">
-        <div class="fcard-back-top">
-          <h3>Thermographie infrarouge</h3>
-          <p>Détectez les anomalies thermiques invisibles grâce à l'infrarouge : bâtiments, toitures, façades, panneaux photovoltaïques, réseaux électriques et installations industrielles.</p>
-        </div>
-        <div class="fcard-price"><span>Réponse sous 48h</span></div>
-        <div class="fcard-infos">
-          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> France entière</span>
-        </div>
-        <div class="fcard-financement"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Devis gratuit </div>
-        <div class="fcard-btns">
-          <a href="pages/prestations/thermographie.html" class="btn-fcard-primary">Découvrir</a>
-          <a href="pages/contact.html" class="btn-fcard-secondary">Demander un devis</a>
-        </div>
+  <div class="service-row" data-need="diagnostiquer">
+    <div class="service-main">
+      <span class="service-dot"></span>
+      <div class="service-text">
+        <h3><a href="pages/prestations/thermographie.html" class="title-link">Thermographie infrarouge</a></h3>
+        <p>Détection des anomalies thermiques invisibles : déperditions, points chauds industriels, cellules photovoltaïques défectueuses.</p>
+        <div class="service-tags"><span>Caméra thermique</span><span>Rapport cartographié</span></div>
       </div>
     </div>
+    <div class="service-actions">
+      <a href="pages/prestations/thermographie.html" class="btn-discover">Découvrir</a>
+      <a href="pages/contact.html" class="link-devis">Demander un devis</a>
+    </div>
+  </div>
 
-    <div class="fcard">
-      <div class="fcard-bg bg-speciali"></div>
-      <div class="fcard-front">
-        <span class="fcard-level level-avance">Diagnostic</span>
-        <h3>Inspection technique</h3>
-        <div class="fcard-meta">
-          <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Des inspections précises, rapides et sans mise en danger des intervenants</span>
-        </div>
-      </div>
-      <div class="fcard-back">
-        <div class="fcard-back-top">
-          <h3>Inspection technique</h3>
-          <p>Inspectez vos ouvrages en toute sécurité grâce au drone : toitures, façades, ponts, pylônes, éoliennes, cheminées industrielles et autres structures difficiles d'accès.</p>
-        </div>
-        <div class="fcard-price"><span>Réponse sous 48h</span></div>
-        <div class="fcard-infos">
-          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> France entière</span>
-        </div>
-        <div class="fcard-financement"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Devis gratuit </div>
-        <div class="fcard-btns">
-          <a href="pages/prestations/inspection.html" class="btn-fcard-primary">Découvrir</a>
-          <a href="pages/contact.html" class="btn-fcard-secondary">Demander un devis</a>
-        </div>
+  <div class="service-row" data-need="diagnostiquer">
+    <div class="service-main">
+      <span class="service-dot"></span>
+      <div class="service-text">
+        <h3><a href="pages/prestations/inspection.html" class="title-link">Inspection technique</a></h3>
+        <p>Toitures, ponts, pylônes, éoliennes, cheminées : des inspections précises, sans échafaudage ni mise en danger.</p>
+        <div class="service-tags"><span>Zoom HD</span><span>Sans nacelle</span></div>
       </div>
     </div>
+    <div class="service-actions">
+      <a href="pages/prestations/inspection.html" class="btn-discover">Découvrir</a>
+      <a href="pages/contact.html" class="link-devis">Demander un devis</a>
+    </div>
+  </div>
 
-    <div class="fcard">
-      <div class="fcard-bg bg-speciali"></div>
-      <div class="fcard-front">
-        <span class="fcard-level level-pro">Topographie</span>
-        <h3>Cartographie &amp; Modélisation 3D</h3>
-        <div class="fcard-meta">
-          <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Transformez vos relevés aériens en données précises et exploitables</span>
-        </div>
-      </div>
-      <div class="fcard-back">
-        <div class="fcard-back-top">
-          <h3>Cartographie &amp; Modélisation 3D</h3>
-          <p>Photogrammétrie par drone pour la production d'orthophotos, modèles 3D, nuages de points et calculs de cubatures avec une précision centimétrique.</p>
-        </div>
-        <div class="fcard-price"><span>Réponse sous 48h</span></div>
-        <div class="fcard-infos">
-          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> France entière</span>
-        </div>
-        <div class="fcard-financement"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Devis gratuit </div>
-        <div class="fcard-btns">
-          <a href="pages/prestations/cartographie.html" class="btn-fcard-primary">Découvrir</a>
-          <a href="pages/contact.html" class="btn-fcard-secondary">Demander un devis</a>
-        </div>
+  <div class="service-row" data-need="diagnostiquer">
+    <div class="service-main">
+      <span class="service-dot"></span>
+      <div class="service-text">
+        <h3><a href="pages/prestations/cartographie.html" class="title-link">Cartographie &amp; Modélisation 3D</a></h3>
+        <p>Orthophotos, modèles 3D, nuages de points et calculs de volumes avec une précision centimétrique.</p>
+        <div class="service-tags"><span>RTK</span><span>Export SIG/CAO/BIM</span></div>
       </div>
     </div>
+    <div class="service-actions">
+      <a href="pages/prestations/cartographie.html" class="btn-discover">Découvrir</a>
+      <a href="pages/contact.html" class="link-devis">Demander un devis</a>
+    </div>
+  </div>
 
-    <div class="fcard">
-      <div class="fcard-bg bg-terrain"></div>
-      <div class="fcard-front">
-        <span class="fcard-level level-debutant">Environnement</span>
-        <h3>Environnement, Forêt &amp; Biodiversité</h3>
-        <div class="fcard-meta">
-          <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Des données aériennes au service de la préservation des écosystèmes</span>
-        </div>
-      </div>
-      <div class="fcard-back">
-        <div class="fcard-back-top">
-          <h3>Environnement, Forêt &amp; Biodiversité</h3>
-          <p>Accompagnez vos projets environnementaux grâce à la cartographie forestière, au suivi des milieux naturels et aux inventaires de la biodiversité.</p>
-        </div>
-        <div class="fcard-price"><span>Réponse sous 48h</span></div>
-        <div class="fcard-infos">
-          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> France entière</span>
-        </div>
-        <div class="fcard-financement"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Devis gratuit </div>
-        <div class="fcard-btns">
-          <a href="pages/prestations/environnement.html" class="btn-fcard-primary">Découvrir</a>
-          <a href="pages/contact.html" class="btn-fcard-secondary">Demander un devis</a>
-        </div>
+  <div class="service-row" data-need="parcelle">
+    <div class="service-main">
+      <span class="service-dot"></span>
+      <div class="service-text">
+        <h3><a href="pages/prestations/environnement.html" class="title-link">Environnement, Forêt &amp; Biodiversité</a></h3>
+        <p>Suivi de la biodiversité, détection de faune avant travaux, prévention incendie et état sanitaire des forêts.</p>
+        <div class="service-tags"><span>Zones sensibles respectées</span></div>
       </div>
     </div>
+    <div class="service-actions">
+      <a href="pages/prestations/environnement.html" class="btn-discover">Découvrir</a>
+      <a href="pages/contact.html" class="link-devis">Demander un devis</a>
+    </div>
+  </div>
 
-    <div class="fcard">
-      <div class="fcard-bg bg-reglementaire"></div>
-      <div class="fcard-front">
-        <span class="fcard-level level-reconversion">Réglementaire</span>
-        <h3>Expertise SORA,PDRA &amp; MANEX</h3>
-        <div class="fcard-meta">
-          <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Sécurisez vos missions grâce à une expertise réglementaire reconnue</span>
-        </div>
-      </div>
-      <div class="fcard-back">
-        <div class="fcard-back-top">
-          <h3>Expertise SORA, PDRA &amp; MANEX</h3>
-          <p>Expertise SORA, PDRA et MANEX, analyse de conformité et préparation des dossiers réglementaires pour vos opérations.</p>
-        </div>
-        <div class="fcard-price"><span>Réponse sous 48h</span></div>
-        <div class="fcard-infos">
-          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> France entière + visio</span>
-        </div>
-        <div class="fcard-financement"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Premier échange gratuit</div>
-        <div class="fcard-btns">
-          <a href="pages/prestations/sora-pdra.html" class="btn-fcard-primary">Découvrir</a>
-          <a href="pages/contact.html" class="btn-fcard-secondary">Demander un devis</a>
-        </div>
+  <div class="service-row" data-need="images">
+    <div class="service-main">
+      <span class="service-dot"></span>
+      <div class="service-text">
+        <h3><a href="pages/prestations/photo-video.html" class="title-link">Photo &amp; Vidéo aérienne</a></h3>
+        <p>Immobilier, communication d'entreprise, événementiel, tourisme : des images prêtes à l'emploi pour vos supports.</p>
+        <div class="service-tags"><span>Photo + vidéo</span><span>Montage inclus sur demande</span></div>
       </div>
     </div>
+    <div class="service-actions">
+      <a href="pages/prestations/photo-video.html" class="btn-discover">Découvrir</a>
+      <a href="pages/contact.html" class="link-devis">Demander un devis</a>
+    </div>
+  </div>
 
-    <div class="fcard">
-      <div class="fcard-bg bg-reglementaire"></div>
-      <div class="fcard-front">
-        <span class="fcard-level level-reconversion">Stratégie</span>
-        <h3>Conseil &amp; Audit Opérationnel</h3>
-        <div class="fcard-meta">
-          <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Optimisez vos opérations grâce à une expertise technique et réglementaire</span>
-        </div>
-      </div>
-      <div class="fcard-back">
-        <div class="fcard-back-top">
-          <h3>Conseil &amp; Audit Opérationnel</h3>
-          <p>Audit opérationnel, accompagnement réglementaire et conseils techniques pour optimiser vos opérations par drone.</p>
-        </div>
-        <div class="fcard-price"><span>Réponse sous 48h</span></div>
-        <div class="fcard-infos">
-          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> France entière + visio</span>
-        </div>
-        <div class="fcard-financement"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Premier échange gratuit</div>
-        <div class="fcard-btns">
-          <a href="pages/prestations/conseil-audit.html" class="btn-fcard-primary">Découvrir</a>
-          <a href="pages/contact.html" class="btn-fcard-secondary">Demander un devis</a>
-        </div>
+  <div class="service-row" data-need="parcelle">
+    <div class="service-main">
+      <span class="service-dot"></span>
+      <div class="service-text">
+        <h3><a href="pages/prestations/nettoyage-desinsectisation.html" class="title-link">Nettoyage &amp; Désinsectisation</a></h3>
+        <p>Traitement biologique des chenilles processionnaires, lutte anti-moustiques, nids de guêpes en hauteur, nettoyage de toitures.</p>
+        <div class="service-tags"><span>DIA Nuisibles</span></div>
       </div>
     </div>
+    <div class="service-actions">
+      <a href="pages/prestations/nettoyage-desinsectisation.html" class="btn-discover">Découvrir</a>
+      <a href="pages/contact.html" class="link-devis">Demander un devis</a>
+    </div>
+  </div>
+</div>
 
-    <div class="fcard">
-      <div class="fcard-bg bg-terrain"></div>
-      <div class="fcard-front">
-        <span class="fcard-level level-intermediaire">Renfort</span>
-        <h3>Mission Télépilote Professionnel</h3>
-        <div class="fcard-meta">
-          <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Un télépilote expérimenté pour des missions réalisées en toute sécurité et conformité</span>
-        </div>
-      </div>
-      <div class="fcard-back">
-        <div class="fcard-back-top">
-          <h3>Mission Télépilote Professionnel</h3>
-          <p>Mise à disposition d'un télépilote professionnel pour vos missions de prises de vues, inspections, cartographie, thermographie et autres opérations spécifiques.</p>
-        </div>
-        <div class="fcard-price"><span>Réponse sous 48h</span></div>
-        <div class="fcard-infos">
-          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> France entière</span>
-        </div>
-        <div class="fcard-financement"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Devis gratuit </div>
-        <div class="fcard-btns">
-          <a href="pages/prestations/mission-telepilote.html" class="btn-fcard-primary">Découvrir</a>
-          <a href="pages/contact.html" class="btn-fcard-secondary">Demander un devis</a>
-        </div>
+<!-- Expertise & accompagnement -->
+<div class="cat-section" id="expertise">
+  <div class="cat-head">
+    <div>
+      <div class="cat-eyebrow">02 — Sans forcément voler</div>
+      <h2>Expertise &amp; accompagnement</h2>
+    </div>
+  </div>
+  <p class="cat-sub">Trois prestations qui ne nécessitent pas toujours un vol : structurer votre activité drone, sécuriser vos dossiers réglementaires, ou renforcer votre équipe avec un télépilote qualifié.</p>
+
+  <div class="service-row" data-need="structurer">
+    <div class="service-main">
+      <span class="service-dot"></span>
+      <div class="service-text">
+        <h3><a href="pages/prestations/sora-pdra.html" class="title-link">Expertise SORA, PDRA &amp; MANEX</a></h3>
+        <p>Analyse de risques, orientation vers un scénario PDRA, rédaction du manuel d'exploitation (MANEX) et accompagnement au dépôt DGAC.</p>
+        <div class="service-tags"><span>Construit sur nos propres dossiers</span></div>
       </div>
     </div>
+    <div class="service-actions">
+      <a href="pages/prestations/sora-pdra.html" class="btn-discover">Découvrir</a>
+      <a href="pages/contact.html" class="link-devis">Demander un devis</a>
+    </div>
+  </div>
 
-    <div class="fcard">
-      <div class="fcard-bg bg-speciali"></div>
-      <div class="fcard-front">
-        <span class="fcard-level level-debutant">Créatif</span>
-        <h3>Photo &amp; Vidéo aérienne</h3>
-        <div class="fcard-meta">
-          <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Prenez de la hauteur pour révéler tout le potentiel de vos projets</span>
-        </div>
-      </div>
-      <div class="fcard-back">
-        <div class="fcard-back-top">
-          <h3>Photo &amp; Vidéo aérienne</h3>
-          <p>Prises de vues aériennes en haute résolution pour l'immobilier, les chantiers, le tourisme, le patrimoine, les événements et vos supports de communication.</p>
-        </div>
-        <div class="fcard-price"><span>Réponse sous 48h</span></div>
-        <div class="fcard-infos">
-          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> France entière</span>
-        </div>
-        <div class="fcard-financement"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Devis gratuit </div>
-        <div class="fcard-btns">
-          <a href="pages/prestations/photo-video.html" class="btn-fcard-primary">Découvrir</a>
-          <a href="pages/contact.html" class="btn-fcard-secondary">Demander un devis</a>
-        </div>
+  <div class="service-row" data-need="structurer">
+    <div class="service-main">
+      <span class="service-dot"></span>
+      <div class="service-text">
+        <h3><a href="pages/prestations/conseil-audit.html" class="title-link">Conseil &amp; Audit Opérationnel</a></h3>
+        <p>Audit de conformité, structuration documentaire, création d'activité : un regard extérieur appuyé sur 25 ans de direction générale.</p>
+        <div class="service-tags"><span>Confidentialité garantie</span></div>
       </div>
     </div>
+    <div class="service-actions">
+      <a href="pages/prestations/conseil-audit.html" class="btn-discover">Découvrir</a>
+      <a href="pages/contact.html" class="link-devis">Demander un devis</a>
+    </div>
+  </div>
 
+  <div class="service-row" data-need="surveiller">
+    <div class="service-main">
+      <span class="service-dot"></span>
+      <div class="service-text">
+        <h3><a href="pages/prestations/mission-telepilote.html" class="title-link">Prestation de télépilotage</a></h3>
+        <p>Un télépilote certifié à disposition sur votre propre matériel, pour un renfort ponctuel ou une mission réglementée.</p>
+        <div class="service-tags"><span>Sur votre matériel</span></div>
+      </div>
+    </div>
+    <div class="service-actions">
+      <a href="pages/prestations/mission-telepilote.html" class="btn-discover">Découvrir</a>
+      <a href="pages/contact.html" class="link-devis">Demander un devis</a>
+    </div>
   </div>
 </div>
 
@@ -418,5 +328,25 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
 <div id="footer-placeholder"></div>
 
 <script src="/assets/include.js"></script>
+<script>
+(function(){
+  var btns = document.querySelectorAll('.need-btn');
+  var rows = document.querySelectorAll('.service-row');
+  btns.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      btns.forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      var need = btn.getAttribute('data-need');
+      rows.forEach(function(row){
+        if(need === 'all' || row.getAttribute('data-need') === need){
+          row.classList.remove('is-hidden');
+        } else {
+          row.classList.add('is-hidden');
+        }
+      });
+    });
+  });
+})();
+</script>
 </body>
 </html>
