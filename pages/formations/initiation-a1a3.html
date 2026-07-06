@@ -134,20 +134,28 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
 .media-video-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;}
 .media-video-play{width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.4);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;color:white;transition:.25s;}
 .media-video:hover .media-video-play{background:var(--accent);border-color:var(--accent);transform:scale(1.08);}
-.media-video-label{color:white;font-size:13px;font-weight:600;letter-spacing:.02em;}}
+.media-video-label{color:white;font-size:13px;font-weight:600;letter-spacing:.02em;}
 
 /* ── Responsive ── */
 @media(max-width:768px){
   .formation-hero{padding:50px 6% 0;}
   .formation-hero-inner{grid-template-columns:1fr;gap:32px;}
+  .formation-hero h1{font-size:2rem;}
+  .formation-hero .accroche{font-size:1rem;max-width:none;}
   .prix-card{position:static;}
   .stats-band-inner{flex-wrap:wrap;gap:20px;}
+  .pour-qui{padding:50px 6%;}
   .profils-grid{grid-template-columns:1fr;}
+  .programme{padding:50px 6%;}
   .modules-grid{grid-template-columns:1fr;}
+  .livrables{padding:50px 6%;}
   .livrables-grid{grid-template-columns:1fr;}
+  .formateur{padding:50px 6%;}
   .formateur-inner{grid-template-columns:1fr;gap:32px;}
+  .form-section{padding:50px 6%;}
   .form-inner{grid-template-columns:1fr;gap:32px;}
   .form-row{grid-template-columns:1fr;}
+  .media-photo{height:220px;}
 }
 </style>
 </head>
@@ -229,7 +237,7 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
 <!-- Emplacement photo -->
 <div class="programme" style="padding-top:50px;padding-bottom:0;">
   <div class="media-photo">
-    <img src="https:/assets/images/formation/A1A3.jpeg" alt="">
+    <img src="/assets/images/formation/A1A3.jpeg" alt="">
     <div class="media-photo-caption"></div>
   </div>
 </div>
@@ -282,7 +290,7 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
 <div class="programme" style="padding-top:0;">
   <h2 style="font-size:1.6rem;font-weight:700;color:var(--primary);margin-bottom:20px;"></h2>
   <div class="media-video" onclick="alert('vidéo à venir prochainement.')">
-    <img src="https:/assets/logo.jpg" alt="Aperçu vidéo de formation">
+    <img src="/assets/logo.jpg" alt="Aperçu vidéo de formation">
     <div class="media-video-overlay">
       <div class="media-video-play">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
