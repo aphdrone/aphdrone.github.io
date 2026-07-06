@@ -12,72 +12,73 @@
 body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
 
 /* Hero */
-.page-hero{background:linear-gradient(135deg,var(--primary) 0%,#1a3a6b 100%);color:white;padding:70px 10% 60px;position:relative;overflow:hidden;}
-.page-hero::before{content:'';position:absolute;right:-100px;top:-100px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(74,144,226,.08),transparent 70%);}
-.hero-breadcrumb{display:flex;align-items:center;gap:8px;font-size:12px;color:rgba(255,255,255,.5);margin-bottom:20px;}
+.page-hero{background:linear-gradient(135deg,var(--primary) 0%,#1a3a6b 100%);color:white;padding:80px 10% 56px;position:relative;overflow:hidden;}
+.page-hero::before{content:'';position:absolute;right:-120px;top:-120px;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,rgba(74,144,226,.1),transparent 70%);}
+.hero-breadcrumb{display:flex;align-items:center;gap:8px;font-size:12px;color:rgba(255,255,255,.5);margin-bottom:28px;position:relative;z-index:1;}
 .hero-breadcrumb a{color:rgba(255,255,255,.5);text-decoration:none;}
 .hero-breadcrumb span{color:rgba(255,255,255,.3);}
-.page-hero h1{font-size:3rem;font-weight:800;margin-bottom:16px;position:relative;z-index:1;}
-.page-hero h1 em{font-style:normal;color:#4A90E2;}
-.page-hero p{font-size:1.05rem;color:rgba(255,255,255,.7);max-width:580px;line-height:1.75;position:relative;z-index:1;}
+.hero-eyebrow{font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:18px;position:relative;z-index:1;}
+.page-hero h1{font-size:3.1rem;font-weight:900;line-height:1.08;letter-spacing:-.01em;margin-bottom:22px;position:relative;z-index:1;max-width:780px;}
+.page-hero h1 .thin{font-weight:300;color:rgba(255,255,255,.55);}
+.page-hero p{font-size:1.05rem;font-weight:300;color:rgba(255,255,255,.65);max-width:580px;line-height:1.75;position:relative;z-index:1;margin-bottom:36px;}
+.hero-nav{display:flex;gap:12px;flex-wrap:wrap;position:relative;z-index:1;}
+.hero-nav a{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);color:white;padding:11px 20px;border-radius:30px;text-decoration:none;font-size:13px;font-weight:600;transition:.2s;}
+.hero-nav a:hover{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.32);}
+.hero-nav a .count{color:var(--accent);font-weight:800;}
 
-/* Stats band */
-.intro-band{background:var(--light);padding:40px 10%;display:flex;gap:48px;align-items:center;justify-content:space-between;}
-.intro-stat{text-align:center;}
-.intro-stat .val{font-size:2rem;font-weight:800;color:var(--accent);}
-.intro-stat .lbl{font-size:12px;color:#888;text-transform:uppercase;letter-spacing:.08em;margin-top:2px;}
-.intro-sep{width:1px;height:48px;background:#dde3ec;}
+/* Boussole des profils (élément signature) */
+.compass{background:var(--light);padding:36px 10%;border-bottom:1px solid #e8edf4;}
+.compass-label{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#8a94a3;margin-bottom:14px;}
+.compass-btns{display:flex;gap:10px;flex-wrap:wrap;}
+.need-btn{background:white;border:1.5px solid #dde3ec;color:var(--primary);padding:10px 18px;border-radius:24px;font-size:13px;font-weight:600;cursor:pointer;transition:.2s;}
+.need-btn:hover{border-color:var(--accent);}
+.need-btn.active{background:var(--primary);border-color:var(--primary);color:white;}
 
-/* Section */
-.formations-section{padding:70px 10%;}
-.section-label{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:10px;}
-.formations-section h2{font-size:1.5rem;font-weight:700;color:var(--primary);margin-bottom:6px;}
-.formations-section .sub{font-size:.95rem;color:#666;margin-bottom:36px;}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
-.grid-reconversion{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:800px;}
-.fcard-reconversion{min-height:300px;}
-.fcard-sur-mesure{min-height:300px;background:var(--light);border:2px dashed #dde3ec;}
+/* Sections catégories */
+.cat-section{padding:64px 10%;}
+.cat-section:nth-of-type(even){background:var(--light);}
+.cat-head{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:6px;}
+.cat-eyebrow{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);}
+.cat-section h2{font-size:1.7rem;font-weight:800;color:var(--primary);margin-bottom:8px;}
+.cat-sub{font-size:.95rem;color:#667;max-width:640px;margin-bottom:40px;line-height:1.6;}
 
-/* Carte formation */
-.fcard{border-radius:16px;overflow:hidden;position:relative;cursor:pointer;min-height:260px;transition:transform .3s ease,box-shadow .3s ease;}
-.fcard:hover{transform:translateY(-4px);box-shadow:0 20px 50px rgba(11,31,58,.2);}
-.fcard-front{position:absolute;inset:0;padding:28px;display:flex;flex-direction:column;justify-content:flex-end;transition:opacity .35s ease;}
-.fcard-front::before{content:'';position:absolute;inset:0;background:linear-gradient(160deg,rgba(11,31,58,.2) 0%,rgba(11,31,58,.88) 100%);z-index:1;}
-.fcard-bg{position:absolute;inset:0;z-index:0;}
-.fcard-level{position:absolute;top:20px;left:20px;z-index:2;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:10px;}
-.level-debutant{background:rgba(22,163,74,.25);color:#86efac;}
-.level-intermediaire{background:rgba(74,144,226,.25);color:#93c5fd;}
-.level-avance{background:rgba(234,88,12,.25);color:#fdba74;}
-.level-pro{background:rgba(139,92,246,.25);color:#c4b5fd;}
-.level-reconversion{background:rgba(236,72,153,.25);color:#f9a8d4;}
-.fcard-front h3{font-size:1.05rem;font-weight:700;color:white;position:relative;z-index:2;margin-bottom:6px;}
-.fcard-meta{display:flex;gap:10px;position:relative;z-index:2;}
-.fcard-meta span{font-size:11px;color:rgba(255,255,255,.7);display:flex;align-items:center;gap:4px;}
+/* Liste de formations */
+.service-row{display:flex;align-items:center;justify-content:space-between;gap:28px;padding:26px 0;border-bottom:1px solid #e2e7ef;transition:opacity .25s ease,transform .25s ease;}
+.service-row:first-child{border-top:1px solid #e2e7ef;}
+.service-row.is-hidden{display:none;}
+.service-main{display:flex;align-items:flex-start;gap:18px;flex:1;min-width:0;}
+.service-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);margin-top:9px;flex-shrink:0;}
+.service-text h3{font-size:1.1rem;font-weight:700;color:var(--primary);margin-bottom:5px;}
+.service-text a.title-link{color:inherit;text-decoration:none;}
+.service-text a.title-link:hover{color:var(--secondary);}
+.service-text p{font-size:.9rem;color:#666;line-height:1.55;max-width:560px;}
+.service-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;}
+.service-tags span{font-size:10.5px;font-weight:600;color:#8a94a3;background:#eef1f6;border-radius:6px;padding:3px 8px;}
+.service-price{font-size:.95rem;font-weight:800;color:var(--primary);white-space:nowrap;margin-top:2px;}
+.service-price small{font-size:10.5px;font-weight:500;color:#8a94a3;display:block;margin-top:1px;}
+.service-actions{display:flex;flex-direction:column;gap:8px;align-items:flex-end;flex-shrink:0;}
+.btn-discover{display:flex;align-items:center;gap:6px;background:var(--secondary);color:white;padding:10px 18px;border-radius:8px;font-size:12.5px;font-weight:700;text-decoration:none;white-space:nowrap;transition:.2s;}
+.btn-discover:hover{background:var(--accent);}
+.link-devis{font-size:11.5px;color:#8a94a3;text-decoration:none;white-space:nowrap;}
+.link-devis:hover{color:var(--secondary);text-decoration:underline;}
 
-/* Face arrière */
-.fcard-back{position:absolute;inset:0;padding:22px;display:flex;flex-direction:column;justify-content:space-between;background:white;opacity:0;pointer-events:none;transition:opacity .35s ease;}
-.fcard:hover .fcard-front{opacity:0;pointer-events:none;}
-.fcard:hover .fcard-back{opacity:1;pointer-events:auto;}
-.fcard-back-top h3{font-size:14px;font-weight:700;color:var(--primary);margin-bottom:6px;}
-.fcard-back-top p{font-size:12px;color:#555;line-height:1.6;margin-bottom:10px;}
-.fcard-price{font-size:1.3rem;font-weight:800;color:var(--primary);}
-.fcard-price span{font-size:.8rem;font-weight:500;color:#888;}
-.fcard-infos{display:flex;gap:12px;margin:8px 0;}
-.fcard-info{display:flex;align-items:center;gap:5px;font-size:11px;color:#666;}
-.fcard-info svg{color:var(--accent);flex-shrink:0;}
-.fcard-financement{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--green);font-weight:600;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;padding:4px 8px;margin-bottom:10px;width:fit-content;}
-.fcard-btns{display:flex;gap:8px;margin-top:auto;}
-.btn-fcard-primary{flex:1;padding:9px 6px;background:var(--secondary);color:white;border:none;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center;transition:.2s;}
-.btn-fcard-primary:hover{background:var(--accent);}
-.btn-fcard-secondary{flex:1;padding:9px 6px;background:transparent;color:var(--secondary);border:1.5px solid var(--secondary);border-radius:8px;font-size:11px;font-weight:700;text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center;transition:.2s;}
-.btn-fcard-secondary:hover{background:var(--secondary);color:white;}
-
-/* Couleurs bg par type */
-.bg-certif{background:linear-gradient(135deg,#0B1F3A,#1F5FAF);}
-.bg-speciali{background:linear-gradient(135deg,#0a2a1a,#1a5f3a);}
-.bg-terrain{background:linear-gradient(135deg,#1a0a2a,#4a1a8f);}
-.bg-reglementaire{background:linear-gradient(135deg,#2a1a0a,#6f3a1a);}
-.bg-reconversion{background:linear-gradient(135deg,#1a0a1a,#6f1a5f);}
+/* Bloc reconversion mis en avant */
+.reconversion-block{display:grid;grid-template-columns:1.4fr 1fr;gap:24px;margin-top:8px;}
+.reconversion-card{background:linear-gradient(135deg,var(--primary),#1a3a6b);border-radius:20px;padding:36px;color:white;}
+.reconversion-card .rc-eyebrow{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;}
+.reconversion-card h3{font-size:1.5rem;font-weight:800;margin-bottom:12px;}
+.reconversion-card p{font-size:.92rem;color:rgba(255,255,255,.72);line-height:1.7;margin-bottom:20px;max-width:480px;}
+.reconversion-card .rc-price{font-size:1.6rem;font-weight:800;margin-bottom:4px;}
+.reconversion-card .rc-price small{font-size:11px;font-weight:500;color:rgba(255,255,255,.5);display:block;}
+.reconversion-card .rc-meta{display:flex;gap:16px;margin:16px 0 24px;flex-wrap:wrap;}
+.reconversion-card .rc-meta span{font-size:12px;color:rgba(255,255,255,.65);display:flex;align-items:center;gap:6px;}
+.reconversion-card .rc-btns{display:flex;gap:12px;flex-wrap:wrap;}
+.btn-rc-primary{background:white;color:var(--primary);padding:12px 24px;border-radius:8px;font-size:13px;font-weight:700;text-decoration:none;}
+.btn-rc-secondary{background:transparent;color:white;border:1.5px solid rgba(255,255,255,.4);padding:12px 24px;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none;}
+.surmesure-card{background:white;border:2px dashed #dde3ec;border-radius:20px;padding:32px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;}
+.surmesure-card h4{font-size:1rem;font-weight:700;color:var(--primary);margin:14px 0 8px;}
+.surmesure-card p{font-size:.85rem;color:#666;line-height:1.6;margin-bottom:18px;}
+.surmesure-card a{background:var(--secondary);color:white;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none;}
 
 /* CTA */
 .cta-section{background:linear-gradient(135deg,var(--primary),#1a3a6b);padding:70px 10%;text-align:center;color:white;}
@@ -90,20 +91,14 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
 .btn-cta-secondary:hover{background:rgba(255,255,255,.1);}
 
 /* Responsive */
-@media(max-width:1024px){.grid{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:768px){
   .page-hero{padding:50px 6% 40px;}
-  .page-hero h1{font-size:2rem;}
-  .intro-band{flex-wrap:wrap;gap:24px;padding:30px 6%;}
-  .intro-sep{display:none;}
-  .formations-section{padding:50px 6%;}
-  .grid{grid-template-columns:1fr;}
-  .grid-reconversion{grid-template-columns:1fr;}
-  .fcard{min-height:auto;}
-  .fcard-reconversion{min-height:auto;}
-  .fcard-sur-mesure{min-height:auto;}
-  .fcard-front{display:none;}
-  .fcard-back{opacity:1;pointer-events:auto;position:relative;inset:auto;border:1.5px solid #e8edf4;}
+  .page-hero h1{font-size:2.1rem;}
+  .compass{padding:28px 6%;}
+  .cat-section{padding:48px 6%;}
+  .service-row{flex-direction:column;align-items:flex-start;gap:16px;}
+  .service-actions{flex-direction:row;align-items:center;width:100%;justify-content:space-between;}
+  .reconversion-block{grid-template-columns:1fr;}
   .cta-section{padding:50px 6%;}
 }
 </style>
@@ -120,466 +115,307 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
     <span>›</span>
     <span style="color:rgba(255,255,255,.8);">Nos Formations</span>
   </div>
-  <h1>Formez-vous avec<br><em>un professionnel du terrain</em></h1>
-  <p>Formations dispensées par un télépilote certifié actif, pilote. De l'initiation à la spécialisation avancée.</p>
-</div>
-
-<!-- Certifications -->
-<div class="formations-section">
-  <div class="section-label">certifications</div>
-  <h2>Accompagnement vers la réussite</h2>
-  <p class="sub">Pour exercer légalement en France et dans l'Union européenne.</p>
-  <div class="grid">
-
-    <div class="fcard">
-      <div class="fcard-bg bg-certif"></div>
-      <div class="fcard-front">
-        <span class="fcard-level level-debutant">Débutant</span>
-        <h3>Initiation A1/A3</h3>
-        <div class="fcard-meta">
-          <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> 1 jour</span>
-          <span>290 € HT</span>
-        </div>
-      </div>
-      <div class="fcard-back">
-        <div class="fcard-back-top">
-          <h3>Initiation drone A1/A3</h3>
-          <p>Maîtrisez les fondamentaux du pilotage de drone : réglementation EASA, espaces aériens, météo, sécurité et mise en pratique sur le terrain. Préparez sereinement l'obtention de votre attestation A1/A3.</p>
-        </div>
-        <div class="fcard-price">290 € <span>HT / pers. — 348 € TTC</span></div>
-        <div class="fcard-infos">
-          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> 1 jour (7h)</span>
-          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> 4 à 6 pers.</span>
-        </div>
-        <div class="fcard-financement"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Solutions de financement</div>
-        <div class="fcard-btns">
-          <a href="pages/formations/initiation-a1a3.html" class="btn-fcard-primary">Découvrir</a>
-          <a href="pages/contact.html" class="btn-fcard-secondary">S'inscrire</a>
-        </div>
-      </div>
-    </div>
-
-    <div class="fcard">
-      <div class="fcard-bg bg-certif"></div>
-      <div class="fcard-front">
-        <span class="fcard-level level-intermediaire">Intermédiaire</span>
-        <h3>BAPD — Catégorie A2</h3>
-        <div class="fcard-meta">
-          <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> 3 jours</span>
-          <span>590 € HT</span>
-        </div>
-      </div>
-      <div class="fcard-back">
-        <div class="fcard-back-top">
-          <h3>BAPD — Catégorie A2</h3>
-          <p>Volez à 5 m des personnes. Mécanique du vol, météo avancée, pilotage terrain. Brevet DGAC officiel reconnu dans toute l'UE. Préparez sereinement l'obtention de votre attestation A2</p>
-        </div>
-        <div class="fcard-price">590 € <span>HT / pers. — 708 € TTC</span></div>
-        <div class="fcard-infos">
-          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> 3 jours (21h)</span>
-          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> 1 à 6 pers.</span>
-        </div>
-        <div class="fcard-financement"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Solutions de financement</div>
-        <div class="fcard-btns">
-          <a href="pages/formations/bapd-a2.html" class="btn-fcard-primary">Découvrir</a>
-          <a href="pages/contact.html" class="btn-fcard-secondary">S'inscrire</a>
-        </div>
-      </div>
-    </div>
-
-    <div class="fcard">
-      <div class="fcard-bg bg-certif"></div>
-      <div class="fcard-front">
-        <span class="fcard-level level-avance">Avancé</span>
-        <h3>Préparation CATS STS</h3>
-        <div class="fcard-meta">
-          <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> 10 jours</span>
-          <span>1 490 € HT</span>
-        </div>
-      </div>
-      <div class="fcard-back">
-        <div class="fcard-back-top">
-          <h3>Préparation CATS STS</h3>
-          <p>Un parcours intensif de 10 jours combinant théorie à distance et mises en situation opérationnelles. Préparez le certificat théorique CATS, maîtrisez les exigences des scénarios STS et développez les compétences attendues en catégorie Spécifique.</p>
-        </div>
-        <div class="fcard-price">1 490 € <span>HT / pers. — 1 788 € TTC</span></div>
-        <div class="fcard-infos">
-          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> 10 jours (70h)</span>
-          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> 1 à 6 pers.</span>
-        </div>
-        <div class="fcard-financement"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Solutions de financement</div>
-        <div class="fcard-btns">
-          <a href="pages/formations/cats-sts.html" class="btn-fcard-primary">Découvrir</a>
-          <a href="pages/contact.html" class="btn-fcard-secondary">S'inscrire</a>
-        </div>
-      </div>
-    </div>
-
-    <div class="fcard">
-      <div class="fcard-bg bg-certif"></div>
-      <div class="fcard-front">
-        <span class="fcard-level level-avance">Avancé</span>
-        <h3>Vol de nuit</h3>
-        <div class="fcard-meta">
-          <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> 2 jours</span>
-          <span>1 490 € HT</span>
-        </div>
-      </div>
-      <div class="fcard-back">
-        <div class="fcard-back-top">
-          <h3>Vol de nuit</h3>
-          <p>Dédiée aux opérations nocturnes : réglementation, facteurs humains, météorologie, préparation de mission, équipements spécifiques et vols pratiques encadrés pour acquérir les compétences nécessaires à une exploitation en toute sécurité.</p>
-        </div>
-        <div class="fcard-price">1 490 € <span>HT / pers. — 1 788 € TTC</span></div>
-        <div class="fcard-infos">
-          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> 3 jours (21h)</span>
-          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> Prérequis : 2 à 4 pers</span>
-        </div>
-        <div class="fcard-financement"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Solutions de financement</div>
-        <div class="fcard-btns">
-          <a href="pages/formations/vol-nuit.html" class="btn-fcard-primary">Découvrir</a>
-          <a href="pages/contact.html" class="btn-fcard-secondary">S'inscrire</a>
-        </div>
-      </div>
-    </div>
-
-    <div class="fcard">
-      <div class="fcard-bg bg-reglementaire"></div>
-      <div class="fcard-front">
-        <span class="fcard-level level-intermediaire">Mise à jour</span>
-        <h3>Mise à niveau réglementaire</h3>
-        <div class="fcard-meta">
-          <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> 2 jours</span>
-          <span>890 € HT</span>
-        </div>
-      </div>
-      <div class="fcard-back">
-        <div class="fcard-back-top">
-          <h3>Mise à niveau réglementaire</h3>
-          <p>Actualisez vos compétences pour répondre aux dernières exigences de la réglementation européenne. Destinée aux télépilotes déjà qualifiés, une journée de théorie et une journée de pratique pour onsolider vos connaissances réglementaires et opérationnelles.</p>
-        </div>
-        <div class="fcard-price">890 € <span>HT / pers. — 1 068 € TTC</span></div>
-        <div class="fcard-infos">
-          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> 2 jours (14h)</span>
-          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> 2 à 6 pers</span>
-        </div>
-        <div class="fcard-financement"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Solutions de financement</div>
-        <div class="fcard-btns">
-          <a href="pages/formations/maj-reglementaire.html" class="btn-fcard-primary">Découvrir</a>
-          <a href="pages/contact.html" class="btn-fcard-secondary">S'inscrire</a>
-        </div>
-      </div>
-    </div>
-
-    <div class="fcard">
-      <div class="fcard-bg bg-certif"></div>
-      <div class="fcard-front">
-        <span class="fcard-level level-pro">Expert</span>
-        <h3>Catégorie Spécifique SORA</h3>
-        <div class="fcard-meta">
-          <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> 4 jours</span>
-          <span>1 490 € HT</span>
-        </div>
-      </div>
-      <div class="fcard-back">
-        <div class="fcard-back-top">
-          <h3>Gestion des opérations en catégorie Spécifique</h3>
-          <p>MANEX, SORA, PDRA, analyse des risques et démarches administratives. Travail sur vos propres missions, documents. Prérequis : CATS.</p>
-        </div>
-        <div class="fcard-price">1 490 € <span>HT / pers. — 1 788 € TTC</span></div>
-        <div class="fcard-infos">
-          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> 4 jours (28h)</span>
-          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> 2 à 6 pers</span>
-        </div>
-        <div class="fcard-financement"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Solutions de financement</div>
-        <div class="fcard-btns">
-          <a href="pages/formations/sora-pdra.html" class="btn-fcard-primary">Découvrir</a>
-          <a href="pages/contact.html" class="btn-fcard-secondary">S'inscrire</a>
-        </div>
-      </div>
-    </div>
-
+  <div class="hero-eyebrow">Catalogue de formations</div>
+  <h1>Apprenez avec quelqu'un<br><span class="thin">qui vole encore la semaine prochaine.</span></h1>
+  <p>Toutes nos formations sont dispensées par un télépilote professionnel actif, pas seulement un formateur théorique. Du premier brevet à la reconversion complète, en passant par les spécialisations métier.</p>
+  <div class="hero-nav">
+    <a href="#fondamentaux">Fondamentaux &amp; réglementation <span class="count">· 6</span></a>
+    <a href="#specialisations">Spécialisations métier <span class="count">· 9</span></a>
+    <a href="#reconversion">Reconversion professionnelle</a>
   </div>
 </div>
 
-<!-- Spécialisations -->
-<div class="formations-section" style="background:var(--light);padding-top:70px;padding-bottom:70px;">
-  <div class="section-label">Spécialisations métier</div>
-  <h2>Devenez expert dans votre domaine</h2>
-  <p class="sub">Formations terrain axées sur la production de données exploitables et les livrables clients.</p>
-  <div class="grid">
+<!-- Boussole des profils -->
+<div class="compass">
+  <div class="compass-label">Vous en êtes où ?</div>
+  <div class="compass-btns" id="compass-btns">
+    <button class="need-btn active" data-need="all">Tout afficher</button>
+    <button class="need-btn" data-need="debuter">Je débute</button>
+    <button class="need-btn" data-need="brevet">Je veux un brevet officiel</button>
+    <button class="need-btn" data-need="specialiser">Je veux me spécialiser</button>
+    <button class="need-btn" data-need="perfectionner">Je veux me mettre à jour</button>
+    <button class="need-btn" data-need="reconversion">Je veux changer de métier</button>
+  </div>
+</div>
 
-    <div class="fcard">
-      <div class="fcard-bg bg-speciali"></div>
-      <div class="fcard-front">
-        <span class="fcard-level level-intermediaire">Spécialisation</span>
-        <h3>Thermographie infrarouge</h3>
-        <div class="fcard-meta">
-          <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> 3 jours</span>
-          <span>1 190 € HT</span>
-        </div>
-      </div>
-      <div class="fcard-back">
-        <div class="fcard-back-top">
-          <h3>Thermographie infrarouge</h3>
-          <p>Thermographie, acquisition et analyse des données thermiques. Applications bâtiment, photovoltaïque et industrie avec rapport d'inspection.</p>
-        </div>
-        <div class="fcard-price">1 190 € <span>HT / pers. — 1 428 € TTC</span></div>
-        <div class="fcard-infos">
-          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> 3 jours (21h)</span>
-          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> 2 à 6 pers</span>
-        </div>
-        <div class="fcard-financement"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Solutions de financement</div>
-        <div class="fcard-btns">
-          <a href="pages/formations/thermographie.html" class="btn-fcard-primary">Découvrir</a>
-          <a href="pages/contact.html" class="btn-fcard-secondary">S'inscrire</a>
-        </div>
+<!-- Fondamentaux & réglementation -->
+<div class="cat-section" id="fondamentaux">
+  <div class="cat-head">
+    <div>
+      <div class="cat-eyebrow">01 — Le cadre légal</div>
+      <h2>Fondamentaux &amp; réglementation</h2>
+    </div>
+  </div>
+  <p class="cat-sub">Les brevets et mises à niveau nécessaires pour voler légalement, du premier vol de loisir jusqu'aux opérations les plus encadrées de la catégorie Spécifique.</p>
+
+  <div class="service-row" data-need="debuter">
+    <div class="service-main">
+      <span class="service-dot"></span>
+      <div class="service-text">
+        <h3><a href="pages/formations/initiation-a1a3.html" class="title-link">Initiation A1/A3</a></h3>
+        <p>Réglementation EASA, espaces aériens, météo, sécurité et pratique terrain pour obtenir votre attestation A1/A3.</p>
+        <div class="service-tags"><span>1 jour (7h)</span><span>4 à 6 pers.</span></div>
       </div>
     </div>
+    <div class="service-actions">
+      <div class="service-price">290 € HT<small>348 € TTC</small></div>
+      <a href="pages/formations/initiation-a1a3.html" class="btn-discover">Découvrir</a>
+    </div>
+  </div>
 
-    <div class="fcard">
-      <div class="fcard-bg bg-speciali"></div>
-      <div class="fcard-front">
-        <span class="fcard-level level-intermediaire">Spécialisation</span>
-        <h3>Cartographie &amp; Modélisation 3D</h3>
-        <div class="fcard-meta">
-          <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> 3 jours</span>
-          <span>1 190 € HT</span>
-        </div>
-      </div>
-      <div class="fcard-back">
-        <div class="fcard-back-top">
-          <h3>Cartographie &amp; Modélisation 3D</h3>
-          <p>Photogrammétrie professionnelle, géoréférencement, orthophotos, modèles numériques de terrain et de surface, nuages de points, maillages 3D et livrables conformes à vos exigences.</p>
-        </div>
-        <div class="fcard-price">1 190 € <span>HT / pers. — 1 428 € TTC</span></div>
-        <div class="fcard-infos">
-          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> 3 jours (21h)</span>
-          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> 2 à 6 pers</span>
-        </div>
-        <div class="fcard-financement"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Solutions de financement</div>
-        <div class="fcard-btns">
-          <a href="pages/formations/cartographie.html" class="btn-fcard-primary">Découvrir</a>
-          <a href="pages/contact.html" class="btn-fcard-secondary">S'inscrire</a>
-        </div>
+  <div class="service-row" data-need="brevet">
+    <div class="service-main">
+      <span class="service-dot"></span>
+      <div class="service-text">
+        <h3><a href="pages/formations/bapd-a2.html" class="title-link">BAPD — Catégorie A2</a></h3>
+        <p>Volez à 5 m des personnes. Mécanique du vol, météo avancée, pilotage terrain. Brevet DGAC reconnu dans toute l'UE.</p>
+        <div class="service-tags"><span>3 jours (21h)</span><span>1 à 6 pers.</span></div>
       </div>
     </div>
+    <div class="service-actions">
+      <div class="service-price">590 € HT<small>708 € TTC</small></div>
+      <a href="pages/formations/bapd-a2.html" class="btn-discover">Découvrir</a>
+    </div>
+  </div>
 
-    <div class="fcard">
-      <div class="fcard-bg bg-speciali"></div>
-      <div class="fcard-front">
-        <span class="fcard-level level-intermediaire">Spécialisation</span>
-        <h3>Inspection technique</h3>
-        <div class="fcard-meta">
-          <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> 3 jours</span>
-          <span>1 190 € HT</span>
-        </div>
-      </div>
-      <div class="fcard-back">
-        <div class="fcard-back-top">
-          <h3>Inspection technique</h3>
-          <p>Inspection d'ouvrages, bâtiments et équipements sensibles. Imagerie HD et analyse des pathologies pour produire des rapports fiables, sécuriser les interventions et optimiser les opérations de maintenance.</p>
-        </div>
-        <div class="fcard-price">1 190 € <span>HT / pers. — 1 428 € TTC</span></div>
-        <div class="fcard-infos">
-          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> 3 jours (21h)</span>
-          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> 2 à  6 pers</span>
-        </div>
-        <div class="fcard-financement"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Solutions de financement</div>
-        <div class="fcard-btns">
-          <a href="pages/formations/inspection.html" class="btn-fcard-primary">Découvrir</a>
-          <a href="pages/contact.html" class="btn-fcard-secondary">S'inscrire</a>
-        </div>
+  <div class="service-row" data-need="brevet">
+    <div class="service-main">
+      <span class="service-dot"></span>
+      <div class="service-text">
+        <h3><a href="pages/formations/cats-sts.html" class="title-link">Préparation CATS STS</a></h3>
+        <p>Parcours intensif combinant théorie à distance et mises en situation pour le certificat CATS et les scénarios STS.</p>
+        <div class="service-tags"><span>10 jours (70h)</span><span>1 à 6 pers.</span></div>
       </div>
     </div>
+    <div class="service-actions">
+      <div class="service-price">1 490 € HT<small>1 788 € TTC</small></div>
+      <a href="pages/formations/cats-sts.html" class="btn-discover">Découvrir</a>
+    </div>
+  </div>
 
-    <div class="fcard">
-      <div class="fcard-bg bg-speciali"></div>
-      <div class="fcard-front">
-        <span class="fcard-level level-intermediaire">Spécialisation</span>
-        <h3>Agriculture de précision</h3>
-        <div class="fcard-meta">
-          <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> 4 jours</span>
-          <span>1 390 € HT</span>
-        </div>
-      </div>
-      <div class="fcard-back">
-        <div class="fcard-back-top">
-          <h3>Agriculture de précision &amp; arboriculture</h3>
-          <p>Solutions dédiées à l'agriculture et à l'arboriculture : cartographie, imagerie multispectrale, analyse de la vigueur végétale, suivi des parcelles et production de données d'aide à la décision.</p>
-        </div>
-        <div class="fcard-price">1 390 € <span>HT / pers. — 1 668 € TTC</span></div>
-        <div class="fcard-infos">
-          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> 4 jours (28h)</span>
-          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> 2 à 6 pers</span>
-        </div>
-        <div class="fcard-financement"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Solutions de financement</div>
-        <div class="fcard-btns">
-          <a href="pages/formations/agriculture.html" class="btn-fcard-primary">Découvrir</a>
-          <a href="pages/contact.html" class="btn-fcard-secondary">S'inscrire</a>
-        </div>
+  <div class="service-row" data-need="perfectionner">
+    <div class="service-main">
+      <span class="service-dot"></span>
+      <div class="service-text">
+        <h3><a href="pages/formations/vol-nuit.html" class="title-link">Vol de nuit</a></h3>
+        <p>Réglementation, facteurs humains, météorologie et équipements spécifiques pour opérer de nuit en toute sécurité.</p>
+        <div class="service-tags"><span>3 jours (21h)</span><span>2 à 4 pers.</span></div>
       </div>
     </div>
+    <div class="service-actions">
+      <div class="service-price">1 490 € HT<small>1 788 € TTC</small></div>
+      <a href="pages/formations/vol-nuit.html" class="btn-discover">Découvrir</a>
+    </div>
+  </div>
 
-    <div class="fcard">
-      <div class="fcard-bg bg-terrain"></div>
-      <div class="fcard-front">
-        <span class="fcard-level level-intermediaire">Spécialisation</span>
-        <h3>Surveillance, Sécurité &amp; Secours</h3>
-        <div class="fcard-meta">
-          <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> 5 jours</span>
-          <span>1 490 € HT</span>
-        </div>
-      </div>
-      <div class="fcard-back">
-        <div class="fcard-back-top">
-          <h3>Surveillance, Sécurité &amp; Secours</h3>
-          <p>Appui aux missions de surveillance, de sécurisation et d'assistance opérationnelle. Observation, levée de doute, recherche et transmission d'images vers les équipes au sol.</p>
-        </div>
-        <div class="fcard-price">1 490 € <span>HT / pers. — 1 788 € TTC</span></div>
-        <div class="fcard-infos">
-          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> 4 jours (28h)</span>
-          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> 2 à 6 pers</span>
-        </div>
-        <div class="fcard-financement"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Solutions de financement</div>
-        <div class="fcard-btns">
-          <a href="pages/formations/securite-secours.html" class="btn-fcard-primary">Découvrir</a>
-          <a href="pages/contact.html" class="btn-fcard-secondary">S'inscrire</a>
-        </div>
+  <div class="service-row" data-need="perfectionner">
+    <div class="service-main">
+      <span class="service-dot"></span>
+      <div class="service-text">
+        <h3><a href="pages/formations/maj-reglementaire.html" class="title-link">Mise à niveau réglementaire</a></h3>
+        <p>Pour les télépilotes déjà qualifiés : actualisez vos connaissances face aux dernières exigences européennes.</p>
+        <div class="service-tags"><span>2 jours (14h)</span><span>2 à 6 pers.</span></div>
       </div>
     </div>
+    <div class="service-actions">
+      <div class="service-price">890 € HT<small>1 068 € TTC</small></div>
+      <a href="pages/formations/maj-reglementaire.html" class="btn-discover">Découvrir</a>
+    </div>
+  </div>
 
-    <div class="fcard">
-      <div class="fcard-bg bg-speciali"></div>
-      <div class="fcard-front">
-        <span class="fcard-level level-intermediaire">Spécialisation</span>
-        <h3>Sylviculture &amp; Biodiversité</h3>
-        <div class="fcard-meta">
-          <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> 5 jours</span>
-          <span>1 190 € HT</span>
-        </div>
-      </div>
-      <div class="fcard-back">
-        <div class="fcard-back-top">
-          <h3>Sylviculture, faune &amp; biodiversité</h3>
-          <p>Expertise pour la gestion des milieux naturels : suivi forestier, observation de la faune, cartographie des habitats, détection d'espèces invasives, nuisibles, ou de ravageurs afin d'optimiser les interventions.</p>
-        </div>
-        <div class="fcard-price">1 190 € <span>HT / pers. — 1 428 € TTC</span></div>
-        <div class="fcard-infos">
-          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> 5 jours (35h)</span>
-          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> 2 à 6 pers</span>
-        </div>
-        <div class="fcard-financement"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Solutions de financement</div>
-        <div class="fcard-btns">
-          <a href="pages/formations/sylviculture.html" class="btn-fcard-primary">Découvrir</a>
-          <a href="pages/contact.html" class="btn-fcard-secondary">S'inscrire</a>
-        </div>
+  <div class="service-row" data-need="perfectionner brevet">
+    <div class="service-main">
+      <span class="service-dot"></span>
+      <div class="service-text">
+        <h3><a href="pages/formations/sora-pdra.html" class="title-link">SORA, PDRA &amp; MANEX</a></h3>
+        <p>Méthode SORA v2.5, PDRA, rédaction du MANEX et dépôt de dossier DGAC pour opérer en catégorie Spécifique.</p>
+        <div class="service-tags"><span>4 jours (28h)</span><span>2 à 6 pers.</span><span>Prérequis CATS</span></div>
       </div>
     </div>
+    <div class="service-actions">
+      <div class="service-price">1 490 € HT<small>1 788 € TTC</small></div>
+      <a href="pages/formations/sora-pdra.html" class="btn-discover">Découvrir</a>
+    </div>
+  </div>
+</div>
 
-    <div class="fcard">
-      <div class="fcard-bg bg-reglementaire"></div>
-      <div class="fcard-front">
-        <span class="fcard-level level-pro">Expert</span>
-        <h3>Données exploitables</h3>
-        <div class="fcard-meta">
-          <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> 3 jours</span>
-          <span>1 390 € HT</span>
-        </div>
-      </div>
-      <div class="fcard-back">
-        <div class="fcard-back-top">
-          <h3>Production de données techniques exploitables</h3>
-          <p>Méthodologie d'acquisition, contrôle qualité, géoréférencement, horodatage, traçabilité, structuration des données et réalisation de rapports normalisés, livrables directement exploitables.</p>
-        </div>
-        <div class="fcard-price">1 390 € <span>HT / pers. — 1 668 € TTC</span></div>
-        <div class="fcard-infos">
-          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> 3 jours (21h)</span>
-          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> 2 à 6 pers</span>
-        </div>
-        <div class="fcard-financement"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Solutions de financement</div>
-        <div class="fcard-btns">
-          <a href="pages/formations/donnees-exploitables.html" class="btn-fcard-primary">Découvrir</a>
-          <a href="pages/contact.html" class="btn-fcard-secondary">S'inscrire</a>
-        </div>
+<!-- Spécialisations métier -->
+<div class="cat-section" id="specialisations">
+  <div class="cat-head">
+    <div>
+      <div class="cat-eyebrow">02 — Votre spécialité</div>
+      <h2>Spécialisations métier</h2>
+    </div>
+  </div>
+  <p class="cat-sub">Une fois le brevet en poche, ces formations vous rendent opérationnel sur un métier précis — avec les techniques, le matériel et les livrables attendus par vos clients.</p>
+
+  <div class="service-row" data-need="specialiser">
+    <div class="service-main">
+      <span class="service-dot"></span>
+      <div class="service-text">
+        <h3><a href="pages/formations/thermographie.html" class="title-link">Thermographie infrarouge</a></h3>
+        <p>Acquisition et analyse de données thermiques. Applications bâtiment, photovoltaïque et industrie.</p>
+        <div class="service-tags"><span>3 jours (21h)</span><span>2 à 6 pers.</span></div>
       </div>
     </div>
+    <div class="service-actions">
+      <div class="service-price">1 190 € HT<small>1 428 € TTC</small></div>
+      <a href="pages/formations/thermographie.html" class="btn-discover">Découvrir</a>
+    </div>
+  </div>
 
-    <div class="fcard">
-      <div class="fcard-bg bg-terrain"></div>
-      <div class="fcard-front">
-        <span class="fcard-level level-intermediaire">Perfectionnement</span>
-        <h3>Maîtrise opérationnelle</h3>
-        <div class="fcard-meta">
-          <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> 3 jours</span>
-          <span>990 € HT</span>
-        </div>
-      </div>
-      <div class="fcard-back">
-        <div class="fcard-back-top">
-          <h3>Maîtrise opérationnelle &amp; perfectionnement</h3>
-          <p>Perfectionnement intensif du pilotage : missions complexes, maîtrise des bonnes pratiques pour intervenir avec efficacité, sécurité et professionnalisme.</p>
-        </div>
-        <div class="fcard-price">990 € <span>HT / pers. — 1 188 € TTC</span></div>
-        <div class="fcard-infos">
-          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> 3 jours (21h)</span>
-          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> 2 à 6 pers</span>
-        </div>
-        <div class="fcard-financement"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Solutions de financement</div>
-        <div class="fcard-btns">
-          <a href="pages/formations/maitrise-pilotage.html" class="btn-fcard-primary">Découvrir</a>
-          <a href="pages/contact.html" class="btn-fcard-secondary">S'inscrire</a>
-        </div>
+  <div class="service-row" data-need="specialiser">
+    <div class="service-main">
+      <span class="service-dot"></span>
+      <div class="service-text">
+        <h3><a href="pages/formations/cartographie.html" class="title-link">Cartographie &amp; Modélisation 3D</a></h3>
+        <p>Photogrammétrie, géoréférencement, orthophotos, modèles 3D et nuages de points conformes à vos exigences.</p>
+        <div class="service-tags"><span>3 jours (21h)</span><span>2 à 6 pers.</span></div>
       </div>
     </div>
+    <div class="service-actions">
+      <div class="service-price">1 190 € HT<small>1 428 € TTC</small></div>
+      <a href="pages/formations/cartographie.html" class="btn-discover">Découvrir</a>
+    </div>
+  </div>
 
+  <div class="service-row" data-need="specialiser">
+    <div class="service-main">
+      <span class="service-dot"></span>
+      <div class="service-text">
+        <h3><a href="pages/formations/inspection.html" class="title-link">Inspection technique</a></h3>
+        <p>Inspection d'ouvrages, bâtiments et équipements sensibles. Imagerie HD et analyse des pathologies.</p>
+        <div class="service-tags"><span>3 jours (21h)</span><span>2 à 6 pers.</span></div>
+      </div>
+    </div>
+    <div class="service-actions">
+      <div class="service-price">1 190 € HT<small>1 428 € TTC</small></div>
+      <a href="pages/formations/inspection.html" class="btn-discover">Découvrir</a>
+    </div>
+  </div>
+
+  <div class="service-row" data-need="specialiser">
+    <div class="service-main">
+      <span class="service-dot"></span>
+      <div class="service-text">
+        <h3><a href="pages/formations/agriculture.html" class="title-link">Agriculture de précision &amp; arboriculture</a></h3>
+        <p>Cartographie, imagerie multispectrale, analyse de la vigueur végétale et suivi des parcelles.</p>
+        <div class="service-tags"><span>4 jours (28h)</span><span>2 à 6 pers.</span></div>
+      </div>
+    </div>
+    <div class="service-actions">
+      <div class="service-price">1 390 € HT<small>1 668 € TTC</small></div>
+      <a href="pages/formations/agriculture.html" class="btn-discover">Découvrir</a>
+    </div>
+  </div>
+
+  <div class="service-row" data-need="specialiser">
+    <div class="service-main">
+      <span class="service-dot"></span>
+      <div class="service-text">
+        <h3><a href="pages/formations/nettoyage-desinsectisation.html" class="title-link">Nettoyage &amp; Désinsectisation</a></h3>
+        <p>Chenilles processionnaires, moustiques, nids de guêpes, nettoyage de toitures et panneaux solaires par drone.</p>
+        <div class="service-tags"><span>4 jours (28h)</span><span>2 à 4 pers.</span></div>
+      </div>
+    </div>
+    <div class="service-actions">
+      <div class="service-price">1 790 € HT<small>2 148 € TTC</small></div>
+      <a href="pages/formations/nettoyage-desinsectisation.html" class="btn-discover">Découvrir</a>
+    </div>
+  </div>
+
+  <div class="service-row" data-need="specialiser">
+    <div class="service-main">
+      <span class="service-dot"></span>
+      <div class="service-text">
+        <h3><a href="pages/formations/securite-secours.html" class="title-link">Surveillance, Sécurité &amp; Secours</a></h3>
+        <p>Appui aux missions de surveillance et d'assistance opérationnelle : observation, levée de doute, recherche.</p>
+        <div class="service-tags"><span>4 jours (28h)</span><span>2 à 6 pers.</span></div>
+      </div>
+    </div>
+    <div class="service-actions">
+      <div class="service-price">1 490 € HT<small>1 788 € TTC</small></div>
+      <a href="pages/formations/securite-secours.html" class="btn-discover">Découvrir</a>
+    </div>
+  </div>
+
+  <div class="service-row" data-need="specialiser">
+    <div class="service-main">
+      <span class="service-dot"></span>
+      <div class="service-text">
+        <h3><a href="pages/formations/sylviculture.html" class="title-link">Sylviculture, faune &amp; biodiversité</a></h3>
+        <p>Suivi forestier, observation de la faune, cartographie des habitats et détection d'espèces invasives.</p>
+        <div class="service-tags"><span>5 jours (35h)</span><span>2 à 6 pers.</span></div>
+      </div>
+    </div>
+    <div class="service-actions">
+      <div class="service-price">1 190 € HT<small>1 428 € TTC</small></div>
+      <a href="pages/formations/sylviculture.html" class="btn-discover">Découvrir</a>
+    </div>
+  </div>
+
+  <div class="service-row" data-need="specialiser">
+    <div class="service-main">
+      <span class="service-dot"></span>
+      <div class="service-text">
+        <h3><a href="pages/formations/donnees-exploitables.html" class="title-link">Production de données exploitables</a></h3>
+        <p>Méthodologie d'acquisition, contrôle qualité, géoréférencement, traçabilité et rapports normalisés.</p>
+        <div class="service-tags"><span>3 jours (21h)</span><span>2 à 6 pers.</span></div>
+      </div>
+    </div>
+    <div class="service-actions">
+      <div class="service-price">1 390 € HT<small>1 668 € TTC</small></div>
+      <a href="pages/formations/donnees-exploitables.html" class="btn-discover">Découvrir</a>
+    </div>
+  </div>
+
+  <div class="service-row" data-need="perfectionner">
+    <div class="service-main">
+      <span class="service-dot"></span>
+      <div class="service-text">
+        <h3><a href="pages/formations/maitrise-pilotage.html" class="title-link">Maîtrise opérationnelle &amp; perfectionnement</a></h3>
+        <p>Perfectionnement intensif du pilotage : missions complexes, bonnes pratiques, efficacité et sécurité.</p>
+        <div class="service-tags"><span>3 jours (21h)</span><span>2 à 6 pers.</span></div>
+      </div>
+    </div>
+    <div class="service-actions">
+      <div class="service-price">990 € HT<small>1 188 € TTC</small></div>
+      <a href="pages/formations/maitrise-pilotage.html" class="btn-discover">Découvrir</a>
+    </div>
   </div>
 </div>
 
 <!-- Reconversion -->
-<div class="formations-section">
-  <div class="section-label">Construire son projet professionnel</div>
-  <h2>Reconversion professionnelle</h2>
-  <p class="sub">Un parcours complet pour faire du drone votre métier — de zéro à professionnel en 3 semaines.</p>
-  <div class="grid grid-reconversion">
+<div class="cat-section" id="reconversion">
+  <div class="cat-head">
+    <div>
+      <div class="cat-eyebrow">03 — Changer de vie</div>
+      <h2>Reconversion professionnelle</h2>
+    </div>
+  </div>
+  <p class="cat-sub">Un parcours complet pour faire du drone votre métier — de zéro à professionnel en 3 semaines.</p>
 
-    <div class="fcard fcard-reconversion">
-      <div class="fcard-bg bg-reconversion"></div>
-      <div class="fcard-front">
-        <span class="fcard-level level-reconversion">Reconversion</span>
-        <h3>Reconversion professionnelle</h3>
-        <div class="fcard-meta">
-          <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> 3 semaines</span>
-          <span>4 900 € HT</span>
-        </div>
+  <div class="reconversion-block" data-need="reconversion">
+    <div class="reconversion-card">
+      <div class="rc-eyebrow">Parcours complet</div>
+      <h3>Reconversion professionnelle</h3>
+      <p>Un parcours conçu pour accompagner votre transition vers les métiers du drone : réglementation, compétences techniques, choix du matériel, spécialisation, stratégie commerciale et création d'une activité durable.</p>
+      <div class="rc-price">4 900 € HT<small>5 880 € TTC / pers.</small></div>
+      <div class="rc-meta">
+        <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> 3 semaines (105h)</span>
+        <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/></svg> Aucun prérequis</span>
       </div>
-      <div class="fcard-back">
-        <div class="fcard-back-top">
-          <h3>Reconversion professionnelle</h3>
-          <p>Un parcours conçu pour accompagner votre transition vers les métiers du drone : réglementation, compétences techniques, choix du matériel, spécialisation, stratégie commerciale et création d'une activité durable.</p>
-        </div>
-        <div class="fcard-price">4 900 € <span>HT / pers. — 5 880 € TTC</span></div>
-        <div class="fcard-infos">
-          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> 3 semaines (105h)</span>
-          <span class="fcard-info"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> Aucun prérequis</span>
-        </div>
-        <div class="fcard-financement"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Solutions de financement</div>
-        <div class="fcard-btns">
-          <a href="pages/formations/changer-carriere.html" class="btn-fcard-primary">Découvrir</a>
-          <a href="pages/contact.html" class="btn-fcard-secondary">S'inscrire</a>
-        </div>
+      <div class="rc-btns">
+        <a href="pages/formations/changer-carriere.html" class="btn-rc-primary">Découvrir le parcours</a>
+        <a href="pages/contact.html" class="btn-rc-secondary">S'inscrire</a>
       </div>
     </div>
-
-    <div class="fcard fcard-sur-mesure">
-      <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;text-align:center;">
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#4A90E2" stroke-width="1.5" style="margin-bottom:16px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        <h3 style="font-size:1rem;font-weight:700;color:var(--primary);margin-bottom:8px;">Parcours sur mesure</h3>
-        <p style="font-size:13px;color:#666;line-height:1.6;margin-bottom:20px;">Vous avez des besoins spécifiques ? APH Drone construit un programme personnalisé adapté à votre profil et vos objectifs.</p>
-        <a href="pages/contact.html" style="display:inline-flex;align-items:center;gap:6px;background:var(--secondary);color:white;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none;">Nous contacter</a>
-      </div>
+    <div class="surmesure-card">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#4A90E2" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <h4>Parcours sur mesure</h4>
+      <p>Des besoins spécifiques ? Nous construisons un programme personnalisé adapté à votre profil et vos objectifs.</p>
+      <a href="pages/contact.html">Nous contacter</a>
     </div>
-
   </div>
 </div>
 
@@ -608,5 +444,26 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
 <div id="footer-placeholder"></div>
 
 <script src="/assets/include.js"></script>
+<script>
+(function(){
+  var btns = document.querySelectorAll('.need-btn');
+  var rows = document.querySelectorAll('.service-row, .reconversion-block');
+  btns.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      btns.forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      var need = btn.getAttribute('data-need');
+      rows.forEach(function(row){
+        var rowNeeds = (row.getAttribute('data-need') || '').split(' ');
+        if(need === 'all' || rowNeeds.indexOf(need) !== -1){
+          row.classList.remove('is-hidden');
+        } else {
+          row.classList.add('is-hidden');
+        }
+      });
+    });
+  });
+})();
+</script>
 </body>
 </html>
