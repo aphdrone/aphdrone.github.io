@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>APH Drone — Agriculture</title>
+<title>APH Drone — Agriculture & Arboriculture</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/style.css">
 <style>
@@ -144,14 +144,14 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
       <span style="color:rgba(255,255,255,.3);">›</span>
       <a href="../../prestations.html" style="color:rgba(255,255,255,.5);text-decoration:none;">Prestations</a>
       <span style="color:rgba(255,255,255,.3);">›</span>
-      <span style="color:rgba(255,255,255,.8);">Agriculture</span>
+      <span style="color:rgba(255,255,255,.8);">Agriculture &amp; Arboriculture</span>
     </div>
     <div class="hero-badge">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
       Prestation
     </div>
-    <h1>Pulvérisation &amp; épandage<br><span>agricole par drone</span></h1>
-    <p>Traitements phytosanitaires ciblés, épandage de semences ou d'engrais et détection du gibier avant fauche : une solution de précision qui réduit la dérive, optimise les intrants et facilite l'accès aux parcelles difficiles.</p>
+    <h1>Pulvérisation &amp; épandage<br><span>agricole et arboricole</span></h1>
+    <p>Traitements phytosanitaires ciblés sur grandes cultures, vergers et vignes, épandage de semences ou d'engrais et détection du gibier avant fauche : une solution de précision qui réduit la dérive, optimise les intrants et facilite l'accès aux parcelles et rangs difficiles.</p>
     <div class="hero-meta">
       <div class="hero-meta-item">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
@@ -192,7 +192,10 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
       <h2>Domaines d'application</h2>
       <div class="appli-grid">
         <div class="appli-card">
-          <div><h3>Pulvérisation de précision</h3><p>Traitements phytosanitaires ciblés par cartographie RTK, réduction significative de la dérive et de la consommation de produits.</p></div>
+          <div><h3>Pulvérisation de précision</h3><p>Traitements phytosanitaires ciblés par cartographie RTK sur grandes cultures, réduction significative de la dérive et de la consommation de produits.</p></div>
+        </div>
+        <div class="appli-card">
+          <div><h3>Traitement des vergers et vignes</h3><p>Pulvérisation adaptée au rang par rang, y compris sur les pentes et les parcelles difficiles d'accès pour le matériel terrestre.</p></div>
         </div>
         <div class="appli-card">
           <div><h3>Épandage de semences et engrais</h3><p>Semis aérien et fertilisation localisée, adaptés aux besoins réels de chaque zone de la parcelle.</p></div>
@@ -201,10 +204,7 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
           <div><h3>Détection du gibier avant fauche</h3><p>Repérage thermique du gibier caché dans les hautes herbes pour prévenir les accidents lors de la fauche.</p></div>
         </div>
         <div class="appli-card">
-          <div><h3>Suivi de l'état sanitaire des cultures</h3><p>Détection du stress hydrique et des zones de maladie par imagerie thermique et multispectrale.</p></div>
-        </div>
-        <div class="appli-card">
-          <div><h3>Traitement de zones difficiles d'accès</h3><p>Pentes, sols humides, parcelles enclavées : le drone accède là où le matériel terrestre ne peut pas intervenir.</p></div>
+          <div><h3>Suivi sanitaire des cultures et arbres fruitiers</h3><p>Détection du stress hydrique et des zones de maladie par imagerie thermique et multispectrale, sur cultures comme sur vergers.</p></div>
         </div>
         <div class="appli-card">
           <div><h3>Optimisation des intrants</h3><p>Dosage calibré et traçabilité complète des interventions, limitant le surdosage et le gaspillage.</p></div>
@@ -414,7 +414,7 @@ function sendDevis() {
   fetch('https://formspree.io/f/xrewbond', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-    body: JSON.stringify({ prestation: 'Agriculture', nom, email, telephone: tel, date_souhaitee: date, type_mission: type, duree, message })
+    body: JSON.stringify({ prestation: 'Agriculture & Arboriculture', nom, email, telephone: tel, date_souhaitee: date, type_mission: type, duree, message })
   })
   .then(function(r) { return r.json(); })
   .then(function(data) {
