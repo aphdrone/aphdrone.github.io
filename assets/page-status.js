@@ -58,20 +58,18 @@ import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10
   }
 
   function showBadge(text) {
-    var hero = getHero();
-    if (!hero) return;
-    var computedPosition = window.getComputedStyle(hero).position;
-    if (computedPosition === 'static') hero.style.position = 'relative';
-
-    var badge = document.createElement('div');
-    badge.textContent = text;
-    badge.style.cssText =
-      'position:absolute;top:22px;right:22px;z-index:5;' +
-      'background:#FF7A1A;color:white;' +
-      'padding:9px 22px;border-radius:24px;' +
-      "font-family:'Inter',sans-serif;font-size:13px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;" +
-      'box-shadow:0 8px 24px rgba(0,0,0,.35),0 0 0 2px rgba(255,255,255,.25);white-space:nowrap;';
-    hero.appendChild(badge);
+    // Ruban incliné, position fixe à l'écran : reste visible en permanence,
+    // même pendant le scroll, peu importe le template de la page.
+    var ribbon = document.createElement('div');
+    ribbon.textContent = text;
+    ribbon.style.cssText =
+      'position:fixed;top:150px;left:-52px;z-index:500;' +
+      'width:200px;padding:9px 0;text-align:center;' +
+      'transform:rotate(-45deg);transform-origin:center;' +
+      'background:rgba(16,150,105,.82);color:white;' +
+      "font-family:'Inter',sans-serif;font-size:13px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;" +
+      'box-shadow:0 6px 18px rgba(0,0,0,.28);pointer-events:none;';
+    document.body.appendChild(ribbon);
   }
 
   function showUnavailable(type) {
