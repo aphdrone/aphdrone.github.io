@@ -1544,7 +1544,8 @@ async function loadVisibilite(){
 function renderVisibiliteTable(type, list, statusMap, tbodyId){
   const tbody = document.getElementById(tbodyId);
   tbody.innerHTML = '';
-  list.forEach(item => {
+  const sortedList = [...list].sort((a, b) => a.label.localeCompare(b.label, 'fr', { sensitivity: 'base' }));
+  sortedList.forEach(item => {
     const docId = type + '__' + item.slug;
     const isActive = statusMap[docId] !== false; // actif par défaut si aucun document
     const tr = document.createElement('tr');
