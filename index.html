@@ -823,6 +823,11 @@ Découvrir nos formations
     <div class="card-body"><h3>Photo &amp; Vidéo</h3><p>Des images aériennes pour particuliers et professionnels.</p></div>
   </div>
 
+  <div class="card-img" data-type="prestation" data-slug="nettoyage-desinsectisation" onclick="window.location='pages/prestations/nettoyage-desinsectisation.html'" style="cursor:pointer;">
+    <div class="card-thumb"><img src="assets/logo.jpg" alt="Nettoyage & Désinsectisation"></div>
+    <div class="card-body"><h3>Nettoyage &amp; Désinsectisation</h3><p>Traitement des nuisibles, nettoyage de toitures et panneaux solaires par drone.</p></div>
+  </div>
+
 </div>
 <button class="carousel-btn carousel-btn--next" onclick="scrollCarousel(this,1)" aria-label="Suivant">
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
@@ -970,6 +975,11 @@ Découvrir nos formations
   <div class="card-img" data-type="formation" data-slug="changer-carriere" onclick="window.location='pages/formations/changer-carriere.html'" style="cursor:pointer;">
     <div class="card-thumb"><img src="assets/logo.jpg" alt="Changer de carrière"></div>
     <div class="card-body"><h3>Changer de carrière — métiers du drone</h3><p>Réussir sa reconversion dans le secteur du drone.</p></div>
+  </div>
+
+  <div class="card-img" data-type="formation" data-slug="nettoyage-desinsectisation" onclick="window.location='pages/formations/nettoyage-desinsectisation.html'" style="cursor:pointer;">
+    <div class="card-thumb"><img src="assets/logo.jpg" alt="Nettoyage & Désinsectisation"></div>
+    <div class="card-body"><h3>Nettoyage &amp; Désinsectisation</h3><p>Traitement des nuisibles, nettoyage de toitures et panneaux solaires par drone.</p></div>
   </div>
 
 </div>
@@ -1143,22 +1153,15 @@ Découvrir nos formations
 
   function setupCarousel(track, customSpeed){
     var spd = customSpeed || SPEED;
-    // 1. Cloner les cartes pour boucle infinie
-    var origCards = Array.from(track.children);
-    origCards.forEach(function(card){
-      var clone = card.cloneNode(true);
-      clone.setAttribute('aria-hidden','true');
-      track.appendChild(clone);
-    });
-    var halfWidth = track.scrollWidth / 2;
 
-    // 2. Désactiver scroll-snap (incompatible avec scrollLeft+=)
+    // Désactiver scroll-snap (incompatible avec scrollLeft+=)
     track.style.scrollSnapType = 'none';
 
     function autoScroll(){
       track.scrollLeft += spd;
-      if(track.scrollLeft >= halfWidth){
-        track.scrollLeft -= halfWidth;
+      var maxScroll = track.scrollWidth - track.clientWidth;
+      if(track.scrollLeft >= maxScroll){
+        track.scrollLeft = 0;
       }
       requestAnimationFrame(autoScroll);
     }
