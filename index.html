@@ -1271,28 +1271,28 @@ import { getFirestore, collection, getDocs } from "https://www.gstatic.com/fireb
     const snap = await getDocs(collection(db, 'pageStatus'));
     snap.forEach(docSnap => {
       const d = docSnap.data();
-      const card = document.querySelector('.card-img[data-type="' + d.type + '"][data-slug="' + d.slug + '"]');
-      if (!card) return;
+      const cards = document.querySelectorAll('.card-img[data-type="' + d.type + '"][data-slug="' + d.slug + '"]');
+      cards.forEach(card => {
+        if (d.active === false) {
+          card.style.display = 'none';
+          return;
+        }
 
-      if (d.active === false) {
-        card.style.display = 'none';
-        return;
-      }
-
-      if (d.badge && d.badge.enabled && d.badge.text) {
-        card.style.position = card.style.position || 'relative';
-        card.style.overflow = 'visible';
-        const ribbon = document.createElement('div');
-        ribbon.textContent = d.badge.text;
-        ribbon.style.cssText =
-          'position:absolute;top:10px;left:-28px;z-index:5;' +
-          'width:120px;padding:4px 0;text-align:center;' +
-          'transform:rotate(-45deg);transform-origin:center;' +
-          'background:rgba(16,150,105,.85);color:white;border-radius:4px;' +
-          "font-family:'Inter',sans-serif;font-size:10.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;" +
-          'box-shadow:0 4px 10px rgba(0,0,0,.25);pointer-events:none;';
-        card.appendChild(ribbon);
-      }
+        if (d.badge && d.badge.enabled && d.badge.text) {
+          card.style.position = card.style.position || 'relative';
+          card.style.overflow = 'visible';
+          const ribbon = document.createElement('div');
+          ribbon.textContent = d.badge.text;
+          ribbon.style.cssText =
+            'position:absolute;top:10px;left:-28px;z-index:5;' +
+            'width:120px;padding:4px 0;text-align:center;' +
+            'transform:rotate(-45deg);transform-origin:center;' +
+            'background:rgba(16,150,105,.85);color:white;border-radius:4px;' +
+            "font-family:'Inter',sans-serif;font-size:10.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;" +
+            'box-shadow:0 4px 10px rgba(0,0,0,.25);pointer-events:none;';
+          card.appendChild(ribbon);
+        }
+      });
     });
   } catch (e) {
     console.warn('home-cards-status:', e.message);
