@@ -70,8 +70,43 @@
     });
   }
 
-  // ── Masque les liens de menu (header + footer) des formations/prestations
-  //    désactivées depuis l'admin (onglet "Visibilité"). ──
+  // ── Masque les liens de menu (header + footer) des formations/prestations/pages
+  //    désactivées depuis l'admin (onglet "Visibilité"), et bloque la page
+  //    elle-même si elle est de type "page" et désactivée. ──
+  var KNOWN_PAGES = ['apropos', 'hebergement', 'partenaires', 'actualites', 'recrutement', 'reglementation', 'preparation-vol'];
+
+  function getCurrentPageInfo() {
+    var path = window.location.pathname;
+    var m = path.match(/\/pages\/(?:outils\/)?([a-z0-9-]+)\.html$/i);
+    if (m && KNOWN_PAGES.indexOf(m[1]) !== -1) {
+      return { type: 'page', slug: m[1] };
+    }
+    return null;
+  }
+
+  function showGenericUnavailable() {
+    var header = document.getElementById('site-header');
+    var mobileMenu = document.getElementById('mobile-menu');
+    var anchor = mobileMenu || header;
+    Array.prototype.forEach.call(document.body.children, function (child) {
+      if (child === header || child === mobileMenu || child.tagName === 'SCRIPT' || child.tagName === 'FOOTER') return;
+      child.style.display = 'none';
+    });
+
+    var block = document.createElement('div');
+    block.style.cssText = 'max-width:640px;margin:110px auto 100px;padding:0 24px;text-align:center;';
+    block.innerHTML =
+      '<div style="width:64px;height:64px;border-radius:50%;background:#eef1f6;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;">' +
+      '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8a94a3" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>' +
+      '</div>' +
+      '<h1 style="font-family:\'Inter\',sans-serif;font-size:1.6rem;font-weight:700;color:#0B1F3A;margin-bottom:12px;">Page temporairement indisponible</h1>' +
+      '<p style="font-family:\'Inter\',sans-serif;font-size:.95rem;color:#666;line-height:1.7;margin-bottom:28px;">Cette page n\'est pas accessible pour le moment. Merci de revenir un peu plus tard.</p>' +
+      '<a href="/index.html" style="display:inline-flex;align-items:center;gap:8px;background:#1F5FAF;color:white;padding:12px 26px;border-radius:8px;font-family:\'Inter\',sans-serif;font-size:14px;font-weight:600;text-decoration:none;">Retour à l\'accueil</a>';
+
+    if (anchor) { anchor.insertAdjacentElement('afterend', block); }
+    else { document.body.appendChild(block); }
+  }
+
   function hideInactiveNavLinks() {
     import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js').then(function (appMod) {
       import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js').then(function (fsMod) {
@@ -86,6 +121,7 @@
         try {
           var app = appMod.initializeApp(firebaseConfig, 'NavStatus-' + Date.now());
           var db = fsMod.getFirestore(app);
+          var currentPage = getCurrentPageInfo();
           fsMod.getDocs(fsMod.collection(db, 'pageStatus')).then(function (snap) {
             snap.forEach(function (docSnap) {
               var d = docSnap.data();
@@ -96,6 +132,9 @@
                   var li = a.closest('li');
                   if (li) { li.style.display = 'none'; } else { a.style.display = 'none'; }
                 });
+                if (currentPage && d.type === currentPage.type && d.slug === currentPage.slug) {
+                  showGenericUnavailable();
+                }
               }
             });
           });
