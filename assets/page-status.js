@@ -66,7 +66,7 @@ import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10
       'position:fixed;top:150px;left:-52px;z-index:500;' +
       'width:200px;padding:9px 0;text-align:center;' +
       'transform:rotate(-45deg);transform-origin:center;' +
-      'background:rgba(16,150,105,.82);color:white;' +
+      'background:rgba(16,150,105,.82);color:white;border-radius:6px;' +
       "font-family:'Inter',sans-serif;font-size:13px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;" +
       'box-shadow:0 6px 18px rgba(0,0,0,.28);pointer-events:none;';
     document.body.appendChild(ribbon);
