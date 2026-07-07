@@ -539,9 +539,13 @@ async function chargerActus(){
           <div class="actu-item-meta">
             <span class="actu-item-tag" style="background:${color}">${d.cat}</span>
             <span class="actu-item-date">${d.date}</span>
+            ${d.active === false
+              ? '<span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#f1f5f9;color:#64748b;">MASQUÉE</span>'
+              : '<span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#dcfce7;color:#15803d;">VISIBLE</span>'}
           </div>
         </div>
         <div class="actu-item-actions">
+          <button class="btn-edit" onclick="toggleActifActu('${docSnap.id}', ${d.active === false})">${d.active === false ? 'Activer' : 'Désactiver'}</button>
           <button class="btn-edit" onclick="editerActu('${docSnap.id}')">Modifier</button>
           <button class="btn-delete" onclick="supprimerActu('${docSnap.id}','${d.titre.replace(/'/g,"\\'")}')">✕</button>
         </div>
@@ -589,6 +593,16 @@ window.supprimerActu = async function(id, titre){
   if(!confirm('Supprimer "' + titre + '" ?')) return;
   try {
     await deleteDoc(doc(db, 'actualites', id));
+    chargerActus();
+  } catch(e){
+    alert('Erreur : ' + e.message);
+  }
+};
+
+// ── Activer / désactiver (masquer de l'accueil et de la page actualités) ──
+window.toggleActifActu = async function(id, makeActive){
+  try {
+    await updateDoc(doc(db, 'actualites', id), { active: makeActive });
     chargerActus();
   } catch(e){
     alert('Erreur : ' + e.message);
