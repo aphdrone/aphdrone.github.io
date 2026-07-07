@@ -1224,12 +1224,13 @@ const catClass = {
 try {
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
-  const q = query(collection(db, 'actualites'), orderBy('ordre','desc'), limit(6));
+  const q = query(collection(db, 'actualites'), orderBy('ordre','desc'), limit(12));
   const snap = await getDocs(q);
-  if(!snap.empty){
+  const docsActifs = snap.docs.filter(docSnap => docSnap.data().active !== false).slice(0, 6);
+  if(docsActifs.length > 0){
     const grid = document.getElementById('news-grid');
     grid.innerHTML = '';
-    snap.forEach(docSnap => {
+    docsActifs.forEach(docSnap => {
       const d = docSnap.data();
       const cls = catClass[d.cat] || 'bleu';
       const imgSrc = d.photoUrl || 'https://images.unsplash.com/photo-1508614999368-9260051292e5?w=600&q=80';
