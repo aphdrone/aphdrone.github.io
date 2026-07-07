@@ -512,9 +512,9 @@ tr:last-child td{border-bottom:none;}
           <div class="panel-section-body" style="padding-top:14px;">
             <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
             <table>
-              <thead><tr><th>Formation</th><th>Statut</th><th style="text-align:right;">Visible sur le site</th></tr></thead>
+              <thead><tr><th>Formation</th><th>Statut</th><th>Message (nouveauté, promo…)</th><th style="text-align:right;">Visible sur le site</th></tr></thead>
               <tbody id="visibilite-formations-tbody">
-                <tr><td colspan="3" class="empty-row">Chargement…</td></tr>
+                <tr><td colspan="4" class="empty-row">Chargement…</td></tr>
               </tbody>
             </table>
             </div>
@@ -525,9 +525,9 @@ tr:last-child td{border-bottom:none;}
           <div class="panel-section-body" style="padding-top:14px;">
             <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
             <table>
-              <thead><tr><th>Prestation</th><th>Statut</th><th style="text-align:right;">Visible sur le site</th></tr></thead>
+              <thead><tr><th>Prestation</th><th>Statut</th><th>Message (nouveauté, promo…)</th><th style="text-align:right;">Visible sur le site</th></tr></thead>
               <tbody id="visibilite-prestations-tbody">
-                <tr><td colspan="3" class="empty-row">Chargement…</td></tr>
+                <tr><td colspan="4" class="empty-row">Chargement…</td></tr>
               </tbody>
             </table>
             </div>
@@ -1530,30 +1530,44 @@ const VISIBILITE_PAGES = [
 async function loadVisibilite(){
   try{
     const snap = await getDocs(collection(db, 'pageStatus'));
-    const statusMap = {}; // ex: statusMap['formation__cats-sts'] = false
-    snap.forEach(d => { statusMap[d.id] = d.data().active; });
+    const statusMap = {}; // ex: statusMap['formation__cats-sts'] = { active, badge }
+    snap.forEach(d => { statusMap[d.id] = d.data(); });
 
-    renderVisibiliteTable('formation', VISIBILITE_FORMATIONS, statusMap, 'visibilite-formations-tbody');
-    renderVisibiliteTable('prestation', VISIBILITE_PRESTATIONS, statusMap, 'visibilite-prestations-tbody');
-    renderVisibiliteTable('page', VISIBILITE_PAGES, statusMap, 'visibilite-pages-tbody');
+    renderVisibiliteTable('formation', VISIBILITE_FORMATIONS, statusMap, 'visibilite-formations-tbody', true);
+    renderVisibiliteTable('prestation', VISIBILITE_PRESTATIONS, statusMap, 'visibilite-prestations-tbody', true);
+    renderVisibiliteTable('page', VISIBILITE_PAGES, statusMap, 'visibilite-pages-tbody', false);
   } catch(e){
     console.warn('loadVisibilite:', e.message);
   }
 }
 
-function renderVisibiliteTable(type, list, statusMap, tbodyId){
+function renderVisibiliteTable(type, list, statusMap, tbodyId, showBadgeColumn){
   const tbody = document.getElementById(tbodyId);
   tbody.innerHTML = '';
   const sortedList = [...list].sort((a, b) => a.label.localeCompare(b.label, 'fr', { sensitivity: 'base' }));
   sortedList.forEach(item => {
     const docId = type + '__' + item.slug;
-    const isActive = statusMap[docId] !== false; // actif par défaut si aucun document
+    const data = statusMap[docId] || {};
+    const isActive = data.active !== false; // actif par défaut si aucun document
+    const badge = data.badge || { enabled: false, text: '' };
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td class="cell-main">${item.label}</td>
       <td>${isActive
         ? '<span class="badge badge-active">Visible</span>'
         : '<span class="badge badge-inactive">Masquée</span>'}</td>
+      ${showBadgeColumn ? `
+      <td>
+        <div style="display:flex;gap:8px;align-items:center;min-width:220px;">
+          <input type="text" data-badge-text="${docId}" data-slug="${item.slug}" data-type="${type}"
+                 value="${(badge.text || '').replace(/"/g, '&quot;')}" placeholder="ex: Nouveauté, Promo…"
+                 style="flex:1;padding:8px 11px;border:1.5px solid #dde3ec;border-radius:7px;font-size:.78rem;font-family:'Inter',sans-serif;outline:none;">
+          <label class="toggle" style="flex-shrink:0;" title="Afficher ce message sur la page">
+            <input type="checkbox" data-badge-toggle="${docId}" data-slug="${item.slug}" data-type="${type}" ${badge.enabled ? 'checked' : ''}>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </td>` : ''}
       <td style="text-align:right;">
         <label class="toggle" style="display:inline-block;">
           <input type="checkbox" data-visibilite-toggle="${docId}" data-slug="${item.slug}" data-type="${type}" ${isActive ? 'checked' : ''}>
@@ -1576,6 +1590,47 @@ function renderVisibiliteTable(type, list, statusMap, tbodyId){
       } catch(e){
         showToast('Erreur : ' + e.message);
         input.checked = !active;
+      }
+    });
+  });
+
+  // ── Message (badge "Nouveauté", "Promo"...) : texte sauvegardé au blur, activation immédiate au toggle ──
+  tbody.querySelectorAll('[data-badge-text]').forEach(input => {
+    input.addEventListener('blur', async () => {
+      const docId = input.dataset.badgeText;
+      const slug = input.dataset.slug;
+      const type = input.dataset.type;
+      const text = input.value.trim();
+      const toggleInput = tbody.querySelector('[data-badge-toggle="' + docId + '"]');
+      const enabled = toggleInput ? toggleInput.checked : false;
+      try{
+        await setDoc(doc(db, 'pageStatus', docId), { type, slug, badge: { enabled, text } }, { merge: true });
+        showToast('Message enregistré');
+      } catch(e){
+        showToast('Erreur : ' + e.message);
+      }
+    });
+  });
+
+  tbody.querySelectorAll('[data-badge-toggle]').forEach(toggleInput => {
+    toggleInput.addEventListener('change', async () => {
+      const docId = toggleInput.dataset.badgeToggle;
+      const slug = toggleInput.dataset.slug;
+      const type = toggleInput.dataset.type;
+      const enabled = toggleInput.checked;
+      const textInput = tbody.querySelector('[data-badge-text="' + docId + '"]');
+      const text = textInput ? textInput.value.trim() : '';
+      if (enabled && !text) {
+        showToast('Renseigne un texte avant d\'activer le message');
+        toggleInput.checked = false;
+        return;
+      }
+      try{
+        await setDoc(doc(db, 'pageStatus', docId), { type, slug, badge: { enabled, text } }, { merge: true });
+        showToast(enabled ? 'Message activé sur la page' : 'Message désactivé');
+      } catch(e){
+        showToast('Erreur : ' + e.message);
+        toggleInput.checked = !enabled;
       }
     });
   });
