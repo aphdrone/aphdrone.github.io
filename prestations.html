@@ -126,7 +126,7 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
   </div>
   <p class="cat-sub">Le drone se déplace chez vous : sur une parcelle, un toit, une forêt ou un site à surveiller. Huit missions qui couvrent la quasi-totalité des besoins d'observation et de traitement aérien.</p>
 
-  <div class="service-row" data-need="surveiller">
+  <div class="service-row" data-need="surveiller" data-slug="surveillance">
     <div class="service-main">
       <span class="service-dot"></span>
       <div class="service-text">
@@ -141,7 +141,7 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
     </div>
   </div>
 
-  <div class="service-row" data-need="parcelle">
+  <div class="service-row" data-need="parcelle" data-slug="agriculture">
     <div class="service-main">
       <span class="service-dot"></span>
       <div class="service-text">
@@ -156,7 +156,7 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
     </div>
   </div>
 
-  <div class="service-row" data-need="diagnostiquer">
+  <div class="service-row" data-need="diagnostiquer" data-slug="thermographie">
     <div class="service-main">
       <span class="service-dot"></span>
       <div class="service-text">
@@ -171,7 +171,7 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
     </div>
   </div>
 
-  <div class="service-row" data-need="diagnostiquer">
+  <div class="service-row" data-need="diagnostiquer" data-slug="inspection">
     <div class="service-main">
       <span class="service-dot"></span>
       <div class="service-text">
@@ -186,7 +186,7 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
     </div>
   </div>
 
-  <div class="service-row" data-need="diagnostiquer">
+  <div class="service-row" data-need="diagnostiquer" data-slug="cartographie">
     <div class="service-main">
       <span class="service-dot"></span>
       <div class="service-text">
@@ -201,7 +201,7 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
     </div>
   </div>
 
-  <div class="service-row" data-need="parcelle">
+  <div class="service-row" data-need="parcelle" data-slug="environnement">
     <div class="service-main">
       <span class="service-dot"></span>
       <div class="service-text">
@@ -216,7 +216,7 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
     </div>
   </div>
 
-  <div class="service-row" data-need="images">
+  <div class="service-row" data-need="images" data-slug="photo-video">
     <div class="service-main">
       <span class="service-dot"></span>
       <div class="service-text">
@@ -231,7 +231,7 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
     </div>
   </div>
 
-  <div class="service-row" data-need="parcelle">
+  <div class="service-row" data-need="parcelle" data-slug="nettoyage-desinsectisation">
     <div class="service-main">
       <span class="service-dot"></span>
       <div class="service-text">
@@ -257,7 +257,7 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
   </div>
   <p class="cat-sub">Trois prestations qui ne nécessitent pas toujours un vol : structurer votre activité drone, sécuriser vos dossiers réglementaires, ou renforcer votre équipe avec un télépilote qualifié.</p>
 
-  <div class="service-row" data-need="structurer">
+  <div class="service-row" data-need="structurer" data-slug="sora-pdra">
     <div class="service-main">
       <span class="service-dot"></span>
       <div class="service-text">
@@ -272,7 +272,7 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
     </div>
   </div>
 
-  <div class="service-row" data-need="structurer">
+  <div class="service-row" data-need="structurer" data-slug="conseil-audit">
     <div class="service-main">
       <span class="service-dot"></span>
       <div class="service-text">
@@ -287,7 +287,7 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
     </div>
   </div>
 
-  <div class="service-row" data-need="surveiller">
+  <div class="service-row" data-need="surveiller" data-slug="mission-telepilote">
     <div class="service-main">
       <span class="service-dot"></span>
       <div class="service-text">
@@ -346,6 +346,37 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
       });
     });
   });
+})();
+</script>
+
+<!-- Masque les prestations désactivées depuis l'admin -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+(async function () {
+  const firebaseConfig = {
+    apiKey: "AIzaSyAV5NQWfp8n9RkTrHSwqssBJ4R9lNAuYK8",
+    authDomain: "aph-drone.firebaseapp.com",
+    projectId: "aph-drone",
+    storageBucket: "aph-drone.firebasestorage.app",
+    messagingSenderId: "316810168380",
+    appId: "1:316810168380:web:66cb916cec4fdc00b9db39"
+  };
+  try {
+    const app = initializeApp(firebaseConfig, 'ListingStatus-' + Date.now());
+    const db = getFirestore(app);
+    const snap = await getDocs(collection(db, 'pageStatus'));
+    snap.forEach(docSnap => {
+      const d = docSnap.data();
+      if (d.type === 'prestation' && d.active === false) {
+        const el = document.querySelector('[data-slug="' + d.slug + '"]');
+        if (el) el.style.display = 'none';
+      }
+    });
+  } catch (e) {
+    console.warn('page-status listing:', e.message);
+  }
 })();
 </script>
 </body>
