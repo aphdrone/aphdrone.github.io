@@ -533,6 +533,19 @@ tr:last-child td{border-bottom:none;}
             </div>
           </div>
         </div>
+        <div class="panel-section">
+          <div class="panel-section-head"><h3>Autres pages</h3></div>
+          <div class="panel-section-body" style="padding-top:14px;">
+            <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
+            <table>
+              <thead><tr><th>Page</th><th>Statut</th><th style="text-align:right;">Visible sur le site</th></tr></thead>
+              <tbody id="visibilite-pages-tbody">
+                <tr><td colspan="3" class="empty-row">Chargement…</td></tr>
+              </tbody>
+            </table>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -1504,6 +1517,16 @@ const VISIBILITE_PRESTATIONS = [
   { slug: 'mission-telepilote', label: 'Prestation de télépilotage' }
 ];
 
+const VISIBILITE_PAGES = [
+  { slug: 'apropos', label: 'À propos' },
+  { slug: 'hebergement', label: 'Hébergement & Restauration' },
+  { slug: 'partenaires', label: 'Nos partenaires et clients' },
+  { slug: 'actualites', label: 'Actualités' },
+  { slug: 'recrutement', label: 'Recrutement' },
+  { slug: 'reglementation', label: 'Réglementation (Outils)' },
+  { slug: 'preparation-vol', label: 'Préparation de vol (Outils)' }
+];
+
 async function loadVisibilite(){
   try{
     const snap = await getDocs(collection(db, 'pageStatus'));
@@ -1512,6 +1535,7 @@ async function loadVisibilite(){
 
     renderVisibiliteTable('formation', VISIBILITE_FORMATIONS, statusMap, 'visibilite-formations-tbody');
     renderVisibiliteTable('prestation', VISIBILITE_PRESTATIONS, statusMap, 'visibilite-prestations-tbody');
+    renderVisibiliteTable('page', VISIBILITE_PAGES, statusMap, 'visibilite-pages-tbody');
   } catch(e){
     console.warn('loadVisibilite:', e.message);
   }
