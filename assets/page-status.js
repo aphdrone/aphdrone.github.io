@@ -56,10 +56,10 @@ import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10
     badge.textContent = text;
     badge.style.cssText =
       'position:absolute;top:22px;right:22px;z-index:5;' +
-      'background:linear-gradient(135deg,#4A90E2,#1F5FAF);color:white;' +
-      'padding:8px 20px;border-radius:24px;' +
-      "font-family:'Inter',sans-serif;font-size:12.5px;font-weight:700;letter-spacing:.03em;" +
-      'box-shadow:0 8px 22px rgba(0,0,0,.22);white-space:nowrap;';
+      'background:#FF7A1A;color:white;' +
+      'padding:9px 22px;border-radius:24px;' +
+      "font-family:'Inter',sans-serif;font-size:13px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;" +
+      'box-shadow:0 8px 24px rgba(0,0,0,.35),0 0 0 2px rgba(255,255,255,.25);white-space:nowrap;';
     hero.appendChild(badge);
   }
 
