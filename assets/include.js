@@ -5,9 +5,11 @@
    <script src="/assets/include.js"></script>
 */
 (function () {
+  var partialsLoaded = 0;
+
   function loadPartial(url, placeholderId, callback) {
     var el = document.getElementById(placeholderId);
-    if (!el) return;
+    if (!el) { partialsLoaded++; return; }
     fetch(url)
       .then(function (res) {
         if (!res.ok) throw new Error('Erreur chargement ' + url);
@@ -19,6 +21,10 @@
       })
       .catch(function (err) {
         console.error(err);
+      })
+      .finally(function () {
+        partialsLoaded++;
+        if (partialsLoaded === 2) hideInactiveNavLinks();
       });
   }
 
@@ -61,6 +67,42 @@
           a.classList.add('active-link');
         }
       } catch (e) {}
+    });
+  }
+
+  // ── Masque les liens de menu (header + footer) des formations/prestations
+  //    désactivées depuis l'admin (onglet "Visibilité"). ──
+  function hideInactiveNavLinks() {
+    import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js').then(function (appMod) {
+      import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js').then(function (fsMod) {
+        var firebaseConfig = {
+          apiKey: "AIzaSyAV5NQWfp8n9RkTrHSwqssBJ4R9lNAuYK8",
+          authDomain: "aph-drone.firebaseapp.com",
+          projectId: "aph-drone",
+          storageBucket: "aph-drone.firebasestorage.app",
+          messagingSenderId: "316810168380",
+          appId: "1:316810168380:web:66cb916cec4fdc00b9db39"
+        };
+        try {
+          var app = appMod.initializeApp(firebaseConfig, 'NavStatus-' + Date.now());
+          var db = fsMod.getFirestore(app);
+          fsMod.getDocs(fsMod.collection(db, 'pageStatus')).then(function (snap) {
+            snap.forEach(function (docSnap) {
+              var d = docSnap.data();
+              if (d.active === false) {
+                document.querySelectorAll(
+                  'a[data-type="' + d.type + '"][data-slug="' + d.slug + '"]'
+                ).forEach(function (a) {
+                  var li = a.closest('li');
+                  if (li) { li.style.display = 'none'; } else { a.style.display = 'none'; }
+                });
+              }
+            });
+          });
+        } catch (e) {
+          console.warn('nav-status:', e.message);
+        }
+      });
     });
   }
 
