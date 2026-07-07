@@ -258,6 +258,10 @@ tr:last-child td{border-bottom:none;}
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
         Outils
       </button>
+      <button class="admin-nav-item" data-panel="panel-visibilite">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        Visibilité
+      </button>
       <button class="admin-nav-item" data-panel="panel-documents">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 13h6"/><path d="M9 17h6"/></svg>
         Documents
@@ -489,6 +493,41 @@ tr:last-child td{border-bottom:none;}
               <thead><tr><th>Outil</th><th>Description</th><th>Lien</th><th></th></tr></thead>
               <tbody id="outils-tbody">
                 <tr><td colspan="4" class="empty-row">Chargement…</td></tr>
+              </tbody>
+            </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Panel : Visibilité ── -->
+    <div class="admin-panel" id="panel-visibilite">
+      <div class="admin-topbar">
+        <div><h1>Visibilité</h1><p>Activez ou désactivez temporairement une formation ou une prestation (maintenance, absence, etc.)</p></div>
+      </div>
+      <div class="admin-content">
+        <div class="panel-section">
+          <div class="panel-section-head"><h3>Formations</h3></div>
+          <div class="panel-section-body" style="padding-top:14px;">
+            <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
+            <table>
+              <thead><tr><th>Formation</th><th>Statut</th><th style="text-align:right;">Visible sur le site</th></tr></thead>
+              <tbody id="visibilite-formations-tbody">
+                <tr><td colspan="3" class="empty-row">Chargement…</td></tr>
+              </tbody>
+            </table>
+            </div>
+          </div>
+        </div>
+        <div class="panel-section">
+          <div class="panel-section-head"><h3>Prestations</h3></div>
+          <div class="panel-section-body" style="padding-top:14px;">
+            <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
+            <table>
+              <thead><tr><th>Prestation</th><th>Statut</th><th style="text-align:right;">Visible sur le site</th></tr></thead>
+              <tbody id="visibilite-prestations-tbody">
+                <tr><td colspan="3" class="empty-row">Chargement…</td></tr>
               </tbody>
             </table>
             </div>
@@ -954,6 +993,7 @@ onAuthStateChanged(auth, user => {
   loadOutils();
   loadDocumentsRegistry();
   loadEmargementsGlobal();
+  loadVisibilite();
 });
 
 document.getElementById('btn-logout').addEventListener('click', () => {
@@ -1427,6 +1467,95 @@ document.getElementById('btn-reset-pwd-client').addEventListener('click', async 
 });
 
 // ── Outils ──
+// ══════════════════════════════════════════════════════════════
+// ── Visibilité : activer / désactiver formations & prestations ──
+// ══════════════════════════════════════════════════════════════
+
+const VISIBILITE_FORMATIONS = [
+  { slug: 'initiation-a1a3', label: 'Initiation A1/A3' },
+  { slug: 'bapd-a2', label: 'BAPD — Catégorie A2' },
+  { slug: 'cats-sts', label: 'Préparation CATS STS' },
+  { slug: 'vol-nuit', label: 'Vol de nuit' },
+  { slug: 'maj-reglementaire', label: 'Mise à niveau réglementaire' },
+  { slug: 'sora-pdra', label: 'SORA, PDRA & MANEX' },
+  { slug: 'thermographie', label: 'Thermographie infrarouge' },
+  { slug: 'cartographie', label: 'Cartographie & Modélisation 3D' },
+  { slug: 'inspection', label: 'Inspection technique' },
+  { slug: 'agriculture', label: 'Agriculture de précision & arboriculture' },
+  { slug: 'nettoyage-desinsectisation', label: 'Nettoyage & Désinsectisation' },
+  { slug: 'securite-secours', label: 'Surveillance, Sécurité & Secours' },
+  { slug: 'sylviculture', label: 'Sylviculture, faune & biodiversité' },
+  { slug: 'donnees-exploitables', label: 'Production de données exploitables' },
+  { slug: 'maitrise-pilotage', label: 'Maîtrise opérationnelle & perfectionnement' },
+  { slug: 'changer-carriere', label: 'Reconversion professionnelle' }
+];
+
+const VISIBILITE_PRESTATIONS = [
+  { slug: 'surveillance', label: 'Surveillance & Sécurité' },
+  { slug: 'agriculture', label: 'Agriculture & Arboriculture' },
+  { slug: 'thermographie', label: 'Thermographie infrarouge' },
+  { slug: 'inspection', label: 'Inspection technique' },
+  { slug: 'cartographie', label: 'Cartographie & Modélisation 3D' },
+  { slug: 'environnement', label: 'Environnement, Forêt & Biodiversité' },
+  { slug: 'photo-video', label: 'Photo & Vidéo aérienne' },
+  { slug: 'nettoyage-desinsectisation', label: 'Nettoyage & Désinsectisation' },
+  { slug: 'sora-pdra', label: 'Expertise SORA, PDRA & MANEX' },
+  { slug: 'conseil-audit', label: 'Conseil & Audit Opérationnel' },
+  { slug: 'mission-telepilote', label: 'Prestation de télépilotage' }
+];
+
+async function loadVisibilite(){
+  try{
+    const snap = await getDocs(collection(db, 'pageStatus'));
+    const statusMap = {}; // ex: statusMap['formation__cats-sts'] = false
+    snap.forEach(d => { statusMap[d.id] = d.data().active; });
+
+    renderVisibiliteTable('formation', VISIBILITE_FORMATIONS, statusMap, 'visibilite-formations-tbody');
+    renderVisibiliteTable('prestation', VISIBILITE_PRESTATIONS, statusMap, 'visibilite-prestations-tbody');
+  } catch(e){
+    console.warn('loadVisibilite:', e.message);
+  }
+}
+
+function renderVisibiliteTable(type, list, statusMap, tbodyId){
+  const tbody = document.getElementById(tbodyId);
+  tbody.innerHTML = '';
+  list.forEach(item => {
+    const docId = type + '__' + item.slug;
+    const isActive = statusMap[docId] !== false; // actif par défaut si aucun document
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="cell-main">${item.label}</td>
+      <td>${isActive
+        ? '<span class="badge badge-active">Visible</span>'
+        : '<span class="badge badge-inactive">Masquée</span>'}</td>
+      <td style="text-align:right;">
+        <label class="toggle" style="display:inline-block;">
+          <input type="checkbox" data-visibilite-toggle="${docId}" data-slug="${item.slug}" data-type="${type}" ${isActive ? 'checked' : ''}>
+          <span class="toggle-slider"></span>
+        </label>
+      </td>`;
+    tbody.appendChild(tr);
+  });
+
+  tbody.querySelectorAll('[data-visibilite-toggle]').forEach(input => {
+    input.addEventListener('change', async () => {
+      const docId = input.dataset.visibiliteToggle;
+      const slug = input.dataset.slug;
+      const type = input.dataset.type;
+      const active = input.checked;
+      try{
+        await setDoc(doc(db, 'pageStatus', docId), { type, slug, active }, { merge: true });
+        showToast(active ? 'Offre réactivée' : 'Offre masquée du site');
+        loadVisibilite();
+      } catch(e){
+        showToast('Erreur : ' + e.message);
+        input.checked = !active;
+      }
+    });
+  });
+}
+
 async function loadOutils(){
   const tbody = document.getElementById('outils-tbody');
   try{
