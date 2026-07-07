@@ -990,7 +990,7 @@ Découvrir nos formations
 </section>
 
 <!-- ═══ ACTUALITÉS ═══ -->
-<section class="section actu-section">
+<section class="section actu-section" id="actualites-section">
   <div class="actu-header reveal">
     <div>
       <span class="actu-label">Actualités</span>
@@ -1274,6 +1274,14 @@ import { getFirestore, collection, getDocs } from "https://www.gstatic.com/fireb
     const snap = await getDocs(collection(db, 'pageStatus'));
     snap.forEach(docSnap => {
       const d = docSnap.data();
+
+      // Cas particulier : la page "Actualités" masque tout le bloc "Dernières nouvelles" de l'accueil
+      if (d.type === 'page' && d.slug === 'actualites' && d.active === false) {
+        const section = document.getElementById('actualites-section');
+        if (section) section.style.display = 'none';
+        return;
+      }
+
       const cards = document.querySelectorAll('.card-img[data-type="' + d.type + '"][data-slug="' + d.slug + '"]');
       cards.forEach(card => {
         if (d.active === false) {
