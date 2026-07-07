@@ -311,6 +311,14 @@ font-weight:700;
   font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
   color:var(--accent);margin-bottom:10px;
 }
+.actu-filter-btn{
+  background:white;border:1.5px solid #dde3ec;color:var(--primary);
+  padding:9px 18px;border-radius:24px;font-size:13px;font-weight:600;
+  cursor:pointer;transition:.2s;font-family:'Inter',sans-serif;
+}
+.actu-filter-btn:hover{border-color:var(--accent);}
+.actu-filter-btn.active{background:var(--primary);border-color:var(--primary);color:white;}
+.actu-card.actu-filtered-out{display:none !important;}
 .actu-track{
   display:flex;
   gap:24px;
@@ -1207,6 +1215,17 @@ document.addEventListener('DOMContentLoaded', function(){
     <span class="actu-label">Actualités</span>
     <h2 class="section-title" style="margin-bottom:0;">Toutes nos actualités</h2>
   </div>
+
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:32px;" id="actu-filter-btns">
+    <button class="actu-filter-btn active" data-cat-filter="all">Tout afficher</button>
+    <button class="actu-filter-btn" data-cat-filter="Réglementation">Réglementation</button>
+    <button class="actu-filter-btn" data-cat-filter="Formation">Formation</button>
+    <button class="actu-filter-btn" data-cat-filter="Mission">Mission</button>
+    <button class="actu-filter-btn" data-cat-filter="Événement">Événement</button>
+    <button class="actu-filter-btn" data-cat-filter="Agriculture">Agriculture</button>
+    <button class="actu-filter-btn" data-cat-filter="Sécurité civile">Sécurité civile</button>
+  </div>
+
   <div id="firebase-mosaic"></div>
 </div>
 
@@ -1314,6 +1333,25 @@ document.addEventListener('keydown', function(e){
 // Bouton téléphone toujours visible
 (function(){ var bt = document.getElementById('back-top'); if(bt) bt.classList.add('visible'); })();
 
+// ── Filtre par thème (boussole) ──
+(function(){
+  var btns = document.querySelectorAll('.actu-filter-btn');
+  btns.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      btns.forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      var cat = btn.getAttribute('data-cat-filter');
+      document.querySelectorAll('#firebase-mosaic .actu-card').forEach(function(card){
+        if(cat === 'all' || card.dataset.cat === cat){
+          card.classList.remove('actu-filtered-out');
+        } else {
+          card.classList.add('actu-filtered-out');
+        }
+      });
+    });
+  });
+})();
+
 // Reveal au scroll
 (function(){
   var els = document.querySelectorAll('.reveal');
@@ -1362,6 +1400,7 @@ try {
 
     snap.forEach(docSnap => {
       const d = docSnap.data();
+      if (d.active === false) return; // article désactivé depuis l'admin
       const taille = d.taille || sizes[i % sizes.length];
       const tagClass = tagClasses[d.cat] || 'actu-tag--bleu';
       const color = tagColors[d.cat] || '#1F5FAF';
