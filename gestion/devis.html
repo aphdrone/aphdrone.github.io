@@ -404,8 +404,11 @@ onAuthStateChanged(auth, user => {
     document.getElementById('app').style.display = 'block';
     document.getElementById('user-email').textContent = user.email;
     initFormulaire();
-    chargerClientsPourDropdown();
-    chargerDevis();
+    (async function(){
+      await chargerClientsPourDropdown();
+      await chargerDevis();
+      verifierParametreEnvoiDirect();
+    })();
   } else if(user){
     refusedBox.style.display = 'block';
     loginBox.style.display = 'none';
@@ -773,6 +776,7 @@ function afficherListeDevis(){
       </div>
       <div class="devis-meta">${formaterMontantDoc(dv.montantTTC)} · émis le ${dv.dateCreation ? new Date(dv.dateCreation).toLocaleDateString('fr-FR') : '—'}</div>
       <div class="devis-actions">
+        ${dv.statut === 'brouillon' ? '<button class="btn-edit" style="background:#dcfce7;color:#16a34a;" onclick="envoyerDepuisListe(\'' + dv.id + '\')">Envoyer au client</button>' : ''}
         <button class="btn-edit" onclick="editerDevis('${dv.id}')">Modifier</button>
         <button class="btn-edit" onclick="dupliquerEnFacture('${dv.id}')">Transformer en facture</button>
         <button class="btn-delete" onclick="supprimerDevis('${dv.id}','${(dv.numero||'').replace(/'/g,"\\'")}')">✕</button>
@@ -815,6 +819,21 @@ window.editerDevis = function(id){
 window.dupliquerEnFacture = function(id){
   alert('Cette action sera disponible une fois le module Factures construit — elle reprendra automatiquement les lignes, le client et les montants de ce devis.');
 };
+
+window.envoyerDepuisListe = function(id){
+  editerDevis(id);
+  previsualiserPDF();
+  envoyerDevisAuClient();
+};
+
+function verifierParametreEnvoiDirect(){
+  const params = new URLSearchParams(window.location.search);
+  const idAEnvoyer = params.get('envoyer');
+  if(idAEnvoyer && allDevis.find(dv => dv.id === idAEnvoyer)){
+    envoyerDepuisListe(idAEnvoyer);
+    history.replaceState(null, '', 'devis.html');
+  }
+}
 
 window.supprimerDevis = async function(id, numero){
   if(!confirm('Supprimer le devis ' + numero + ' ? Cette action est définitive.')) return;

@@ -466,22 +466,28 @@ async function chargerTableauDeBord(){
       `).join('');
     }
 
-    // Devis en attente de réponse
-    const devisAttente = devisList.filter(dv => dv.statut === 'envoye' || dv.statut === 'attente');
+    // Devis en attente de réponse (+ brouillons pas encore envoyés)
+    const devisAttente = devisList.filter(dv => dv.statut === 'envoye' || dv.statut === 'attente' || dv.statut === 'brouillon');
     const devisAttenteList = document.getElementById('devis-attente-list');
     if(devisAttente.length === 0){
       devisAttenteList.innerHTML = '<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="20 6 9 17 4 12"/></svg><p>Aucun devis en attente de réponse.</p></div>';
     } else {
-      devisAttenteList.innerHTML = devisAttente.slice(0, 8).map(dv => `
+      devisAttenteList.innerHTML = devisAttente.slice(0, 8).map(dv => {
+        const estBrouillon = dv.statut === 'brouillon';
+        const bouton = estBrouillon
+          ? '<a href="devis.html?envoyer=' + dv._id + '" class="btn-quick btn-quick--outline" style="padding:7px 12px;font-size:.76rem;flex-shrink:0;background:#dcfce7;color:#16a34a;border-color:#dcfce7;">Envoyer</a>'
+          : '<button class="btn-quick btn-quick--outline" style="padding:7px 12px;font-size:.76rem;flex-shrink:0;" onclick="relancer(\'devis\',\'' + dv._id + '\',\'' + dv.numero + '\',\'' + (dv.clientEmail||'').replace(/'/g,"\\'") + '\',\'' + (dv.clientNom||'').replace(/'/g,"\\'") + '\', ' + (dv.montantTTC || 0) + ')">Relancer</button>';
+        return `
         <div class="alert-item">
-          <div class="alert-icon" style="background:#fef3c7;color:var(--amber);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+          <div class="alert-icon" style="background:${estBrouillon ? '#f1f5f9' : '#fef3c7'};color:${estBrouillon ? '#64748b' : 'var(--amber)'};"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
           <div class="alert-body">
             <div class="alert-title">${dv.numero || '(brouillon)'} — ${dv.clientNom || 'Client'}</div>
-            <div class="alert-meta">${formatMontant(dv.montantTTC)} · envoyé le ${dv.dateCreation ? new Date(dv.dateCreation).toLocaleDateString('fr-FR') : '—'}</div>
+            <div class="alert-meta">${formatMontant(dv.montantTTC)} · ${estBrouillon ? 'brouillon, pas encore envoyé' : 'envoyé le ' + (dv.dateCreation ? new Date(dv.dateCreation).toLocaleDateString('fr-FR') : '—')}</div>
           </div>
-          <button class="btn-quick btn-quick--outline" style="padding:7px 12px;font-size:.76rem;flex-shrink:0;" onclick="relancer('devis','${dv._id}','${dv.numero}','${(dv.clientEmail||'').replace(/'/g,"\\'")}','${(dv.clientNom||'').replace(/'/g,"\\'")}', ${dv.montantTTC || 0})">Relancer</button>
+          ${bouton}
         </div>
-      `).join('');
+      `;
+      }).join('');
     }
 
     // Répartition clients par typologie
@@ -588,23 +594,29 @@ window.ouvrirModalFactures = function(){
 };
 
 window.ouvrirModalDevis = function(){
-  const devisAttente = devisGlobal.filter(dv => dv.statut === 'envoye' || dv.statut === 'attente');
+  const devisAttente = devisGlobal.filter(dv => dv.statut === 'envoye' || dv.statut === 'attente' || dv.statut === 'brouillon');
   document.getElementById('liste-modal-title').textContent = 'Devis en attente (' + devisAttente.length + ')';
 
   const content = document.getElementById('liste-modal-content');
   if(devisAttente.length === 0){
     content.innerHTML = '<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="20 6 9 17 4 12"/></svg><p>Aucun devis en attente de réponse.</p></div>';
   } else {
-    content.innerHTML = devisAttente.map(dv => `
+    content.innerHTML = devisAttente.map(dv => {
+      const estBrouillon = dv.statut === 'brouillon';
+      const bouton = estBrouillon
+        ? '<a href="devis.html?envoyer=' + dv._id + '" class="btn-quick btn-quick--outline" style="padding:7px 12px;font-size:.76rem;flex-shrink:0;background:#dcfce7;color:#16a34a;border-color:#dcfce7;">Envoyer</a>'
+        : '<button class="btn-quick btn-quick--outline" style="padding:7px 12px;font-size:.76rem;flex-shrink:0;" onclick="relancer(\'devis\',\'' + dv._id + '\',\'' + dv.numero + '\',\'' + (dv.clientEmail||'').replace(/'/g,"\\'") + '\',\'' + (dv.clientNom||'').replace(/'/g,"\\'") + '\', ' + (dv.montantTTC || 0) + ')">Relancer</button>';
+      return `
       <div class="alert-item">
-        <div class="alert-icon" style="background:#fef3c7;color:var(--amber);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+        <div class="alert-icon" style="background:${estBrouillon ? '#f1f5f9' : '#fef3c7'};color:${estBrouillon ? '#64748b' : 'var(--amber)'};"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
         <div class="alert-body">
           <div class="alert-title">${dv.numero || '(brouillon)'} — ${dv.clientNom || 'Client'}</div>
-          <div class="alert-meta">${formatMontant(dv.montantTTC)} · envoyé le ${dv.dateCreation ? new Date(dv.dateCreation).toLocaleDateString('fr-FR') : '—'}</div>
+          <div class="alert-meta">${formatMontant(dv.montantTTC)} · ${estBrouillon ? 'brouillon, pas encore envoyé' : 'envoyé le ' + (dv.dateCreation ? new Date(dv.dateCreation).toLocaleDateString('fr-FR') : '—')}</div>
         </div>
-        <button class="btn-quick btn-quick--outline" style="padding:7px 12px;font-size:.76rem;flex-shrink:0;" onclick="relancer('devis','${dv._id}','${dv.numero}','${(dv.clientEmail||'').replace(/'/g,"\\'")}','${(dv.clientNom||'').replace(/'/g,"\\'")}', ${dv.montantTTC || 0})">Relancer</button>
+        ${bouton}
       </div>
-    `).join('');
+    `;
+    }).join('');
   }
 
   document.getElementById('liste-overlay').style.display = 'flex';
