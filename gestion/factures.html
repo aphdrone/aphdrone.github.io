@@ -631,6 +631,35 @@ window.exporterFacturePDF = async function(){
 // Remplace l'URL ci-dessous par celle de ton déploiement Apps Script.
 const APPS_SCRIPT_ENVOI_URL = 'https://script.google.com/macros/s/AKfycbwwX4d-Db12Dd1JAw5I8FvhpfX55sr-MvS9ET0UAg3AVrBrLNboAL6t_xq3B9DBJsOU/exec';
 
+async function envoyerEmailAvecPDF(numero, renvoi){
+  document.getElementById('print-area').innerHTML = construireDocumentHTML(construireObjetDoc());
+  const area = document.getElementById('print-area');
+  const canvas = await html2canvas(area, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF('p', 'mm', 'a4');
+  const ratio = Math.min(210 / canvas.width, 297 / canvas.height);
+  const imgWidth = canvas.width * ratio, imgHeight = canvas.height * ratio;
+  const offsetX = (210 - imgWidth) / 2;
+  pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', offsetX, 0, imgWidth, imgHeight);
+  const pdfBase64 = pdf.output('datauristring').split(',')[1];
+
+  const sujet = (renvoi ? '[Renvoi] ' : '') + 'Votre facture ' + numero + ' — APH Drone';
+  const message = `Bonjour ${clientSelectionne.nomAffichage || ''},\n\nVeuillez trouver ci-joint votre facture ${numero}.\n\nN'hésitez pas à me contacter pour toute question.\n\nCordialement,\nArnaud Moreau\nAPH Drone`;
+
+  const reponse = await fetch(APPS_SCRIPT_ENVOI_URL, {
+    method: 'POST',
+    body: JSON.stringify({
+      destinataire: clientSelectionne.email,
+      sujet,
+      message,
+      nomFichier: numero.toLowerCase() + '.pdf',
+      pdfBase64
+    })
+  });
+  const resultat = await reponse.json();
+  if(!resultat.ok) throw new Error(resultat.error || 'Erreur inconnue lors de l\'envoi.');
+}
+
 window.envoyerFactureAuClient = async function(){
   if(!clientSelectionne){
     alert('Sélectionne un client avant d\'envoyer.');
@@ -646,45 +675,15 @@ window.envoyerFactureAuClient = async function(){
   btn.textContent = 'Envoi en cours…';
 
   try {
-    // 1. On sauvegarde d'abord (ou met à jour) la facture, avec le statut "envoyée"
-    const { numero } = await sauvegarderFactureEtRetournerInfos('envoyee');
+    const statutActuel = document.getElementById('edit-id').value ? allFactures.find(f => f.id === document.getElementById('edit-id').value)?.statut : null;
+    const renvoi = statutActuel === 'envoyee' || statutActuel === 'payee' || statutActuel === 'retard';
+    const { numero } = await sauvegarderFactureEtRetournerInfos(renvoi ? undefined : 'envoyee');
+    await envoyerEmailAvecPDF(numero, renvoi);
 
-    // 2. On regénère le PDF à jour et on le convertit en base64
-    document.getElementById('print-area').innerHTML = construireDocumentHTML(construireObjetDoc());
-    const area = document.getElementById('print-area');
-    const canvas = await html2canvas(area, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF('p', 'mm', 'a4');
-    const ratio = Math.min(210 / canvas.width, 297 / canvas.height);
-    const imgWidth = canvas.width * ratio, imgHeight = canvas.height * ratio;
-    const offsetX = (210 - imgWidth) / 2;
-    pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', offsetX, 0, imgWidth, imgHeight);
-    const pdfBase64 = pdf.output('datauristring').split(',')[1];
-
-    // 3. Envoi via Apps Script
-    const sujet = 'Votre facture ' + numero + ' — APH Drone';
-    const message = `Bonjour ${clientSelectionne.nomAffichage || ''},\n\nVeuillez trouver ci-joint votre facture ${numero}.\n\nN'hésitez pas à me contacter pour toute question.\n\nCordialement,\nArnaud Moreau\nAPH Drone`;
-
-    const reponse = await fetch(APPS_SCRIPT_ENVOI_URL, {
-      method: 'POST',
-      body: JSON.stringify({
-        destinataire: clientSelectionne.email,
-        sujet,
-        message,
-        nomFichier: numero.toLowerCase() + '.pdf',
-        pdfBase64
-      })
-    });
-    const resultat = await reponse.json();
-
-    if(resultat.ok){
-      showStatus('Facture ' + numero + ' envoyée à ' + clientSelectionne.email + ' et marquée comme envoyée.', 'success');
-      fermerPreviewPDF();
-      resetFormFacture();
-      chargerFactures();
-    } else {
-      throw new Error(resultat.error || 'Erreur inconnue lors de l\'envoi.');
-    }
+    showStatus('Facture ' + numero + (renvoi ? ' renvoyée à ' : ' envoyée à ') + clientSelectionne.email + '.', 'success');
+    fermerPreviewPDF();
+    resetFormFacture();
+    chargerFactures();
   } catch(e){
     alert('Erreur lors de l\'envoi : ' + e.message);
   }
@@ -749,8 +748,21 @@ window.enregistrerFacture = async function(){
   btn.textContent = 'Enregistrement…';
 
   try {
+    const statutChoisi = document.getElementById('f-statut').value;
+    const editIdAvant = document.getElementById('edit-id').value;
+    const ancienneFacture = editIdAvant ? allFactures.find(f => f.id === editIdAvant) : null;
+    const etaitDejaEnvoyee = ancienneFacture && ['envoyee', 'payee', 'retard'].includes(ancienneFacture.statut);
+
     const { numero, isNew } = await sauvegarderFactureEtRetournerInfos();
-    showStatus(isNew ? 'Facture ' + numero + ' enregistrée avec succès.' : 'Facture mise à jour avec succès.', 'success');
+
+    if(statutChoisi === 'envoyee' && clientSelectionne && clientSelectionne.email){
+      await envoyerEmailAvecPDF(numero, etaitDejaEnvoyee);
+      showStatus('Facture ' + numero + (etaitDejaEnvoyee ? ' renvoyée' : ' envoyée') + ' à ' + clientSelectionne.email + '.', 'success');
+    } else if(statutChoisi === 'envoyee' && (!clientSelectionne || !clientSelectionne.email)){
+      showStatus('Facture enregistrée, mais aucun email envoyé : ce client n\'a pas d\'adresse email.', 'error');
+    } else {
+      showStatus(isNew ? 'Facture ' + numero + ' enregistrée avec succès.' : 'Facture mise à jour avec succès.', 'success');
+    }
 
     resetFormFacture();
     chargerFactures();
@@ -811,7 +823,7 @@ function afficherListeFactures(){
       </div>
       <div class="facture-meta">${formaterMontantDoc(dv.montantTTC)} · émis le ${dv.dateEmission ? new Date(dv.dateEmission).toLocaleDateString('fr-FR') : '—'}${dv.statut === 'payee' && dv.datePaiement ? ' · payée le ' + new Date(dv.datePaiement).toLocaleDateString('fr-FR') : ''}</div>
       <div class="facture-actions">
-        ${dv.statut === 'brouillon' ? '<button class="btn-edit" style="background:#dcfce7;color:#16a34a;" onclick="envoyerDepuisListe(\'' + dv.id + '\')">Envoyer au client</button>' : ''}
+        <button class="btn-edit" style="background:#dcfce7;color:#16a34a;" onclick="envoyerDepuisListe('${dv.id}')">${dv.statut === 'brouillon' ? 'Envoyer au client' : 'Renvoyer au client'}</button>
         ${(statutAffiche === 'envoyee' || statutAffiche === 'retard') ? '<button class="btn-edit" style="background:#dcfce7;color:#16a34a;" onclick="marquerPayee(\'' + dv.id + '\')">Marquer payée</button>' : ''}
         <button class="btn-edit" onclick="editerFacture('${dv.id}')">Modifier</button>
         <button class="btn-edit" onclick="creerAvoir('${dv.id}')">Créer un avoir</button>

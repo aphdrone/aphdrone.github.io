@@ -604,6 +604,35 @@ window.exporterDevisPDF = async function(){
 // Remplace l'URL ci-dessous par celle de ton déploiement Apps Script.
 const APPS_SCRIPT_ENVOI_URL = 'https://script.google.com/macros/s/AKfycbwwX4d-Db12Dd1JAw5I8FvhpfX55sr-MvS9ET0UAg3AVrBrLNboAL6t_xq3B9DBJsOU/exec';
 
+async function envoyerEmailAvecPDF(numero, renvoi){
+  document.getElementById('print-area').innerHTML = construireDocumentHTML(construireObjetDoc());
+  const area = document.getElementById('print-area');
+  const canvas = await html2canvas(area, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF('p', 'mm', 'a4');
+  const ratio = Math.min(210 / canvas.width, 297 / canvas.height);
+  const imgWidth = canvas.width * ratio, imgHeight = canvas.height * ratio;
+  const offsetX = (210 - imgWidth) / 2;
+  pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', offsetX, 0, imgWidth, imgHeight);
+  const pdfBase64 = pdf.output('datauristring').split(',')[1];
+
+  const sujet = (renvoi ? '[Renvoi] ' : '') + 'Votre devis ' + numero + ' — APH Drone';
+  const message = `Bonjour ${clientSelectionne.nomAffichage || ''},\n\nVeuillez trouver ci-joint votre devis ${numero}.\n\nN'hésitez pas à me contacter pour toute question.\n\nCordialement,\nArnaud Moreau\nAPH Drone`;
+
+  const reponse = await fetch(APPS_SCRIPT_ENVOI_URL, {
+    method: 'POST',
+    body: JSON.stringify({
+      destinataire: clientSelectionne.email,
+      sujet,
+      message,
+      nomFichier: numero.toLowerCase() + '.pdf',
+      pdfBase64
+    })
+  });
+  const resultat = await reponse.json();
+  if(!resultat.ok) throw new Error(resultat.error || 'Erreur inconnue lors de l\'envoi.');
+}
+
 window.envoyerDevisAuClient = async function(){
   if(!clientSelectionne){
     alert('Sélectionne un client avant d\'envoyer.');
@@ -619,45 +648,17 @@ window.envoyerDevisAuClient = async function(){
   btn.textContent = 'Envoi en cours…';
 
   try {
-    // 1. On sauvegarde d'abord (ou met à jour) le devis, avec le statut "envoyé"
-    const { numero } = await sauvegarderDevisEtRetournerInfos('envoye');
+    const editIdAvant = document.getElementById('edit-id').value;
+    const ancien = editIdAvant ? allDevis.find(d => d.id === editIdAvant) : null;
+    const renvoi = ancien && ['envoye', 'attente', 'acceptee', 'refusee'].includes(ancien.statut);
 
-    // 2. On regénère le PDF à jour et on le convertit en base64
-    document.getElementById('print-area').innerHTML = construireDocumentHTML(construireObjetDoc());
-    const area = document.getElementById('print-area');
-    const canvas = await html2canvas(area, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF('p', 'mm', 'a4');
-    const ratio = Math.min(210 / canvas.width, 297 / canvas.height);
-    const imgWidth = canvas.width * ratio, imgHeight = canvas.height * ratio;
-    const offsetX = (210 - imgWidth) / 2;
-    pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', offsetX, 0, imgWidth, imgHeight);
-    const pdfBase64 = pdf.output('datauristring').split(',')[1];
+    const { numero } = await sauvegarderDevisEtRetournerInfos(renvoi ? undefined : 'envoye');
+    await envoyerEmailAvecPDF(numero, renvoi);
 
-    // 3. Envoi via Apps Script
-    const sujet = 'Votre devis ' + numero + ' — APH Drone';
-    const message = `Bonjour ${clientSelectionne.nomAffichage || ''},\n\nVeuillez trouver ci-joint votre devis ${numero}.\n\nN'hésitez pas à me contacter pour toute question.\n\nCordialement,\nArnaud Moreau\nAPH Drone`;
-
-    const reponse = await fetch(APPS_SCRIPT_ENVOI_URL, {
-      method: 'POST',
-      body: JSON.stringify({
-        destinataire: clientSelectionne.email,
-        sujet,
-        message,
-        nomFichier: numero.toLowerCase() + '.pdf',
-        pdfBase64
-      })
-    });
-    const resultat = await reponse.json();
-
-    if(resultat.ok){
-      showStatus('Devis ' + numero + ' envoyé à ' + clientSelectionne.email + ' et marqué comme envoyé.', 'success');
-      fermerPreviewPDF();
-      resetFormDevis();
-      chargerDevis();
-    } else {
-      throw new Error(resultat.error || 'Erreur inconnue lors de l\'envoi.');
-    }
+    showStatus('Devis ' + numero + (renvoi ? ' renvoyé à ' : ' envoyé à ') + clientSelectionne.email + '.', 'success');
+    fermerPreviewPDF();
+    resetFormDevis();
+    chargerDevis();
   } catch(e){
     alert('Erreur lors de l\'envoi : ' + e.message);
   }
@@ -720,8 +721,21 @@ window.enregistrerDevis = async function(){
   btn.textContent = 'Enregistrement…';
 
   try {
+    const statutChoisi = document.getElementById('f-statut').value;
+    const editIdAvant = document.getElementById('edit-id').value;
+    const ancien = editIdAvant ? allDevis.find(d => d.id === editIdAvant) : null;
+    const etaitDejaEnvoye = ancien && ['envoye', 'attente', 'acceptee', 'refusee'].includes(ancien.statut);
+
     const { numero, isNew } = await sauvegarderDevisEtRetournerInfos();
-    showStatus(isNew ? 'Devis ' + numero + ' enregistré avec succès.' : 'Devis mis à jour avec succès.', 'success');
+
+    if(statutChoisi === 'envoye' && clientSelectionne && clientSelectionne.email){
+      await envoyerEmailAvecPDF(numero, etaitDejaEnvoye);
+      showStatus('Devis ' + numero + (etaitDejaEnvoye ? ' renvoyé' : ' envoyé') + ' à ' + clientSelectionne.email + '.', 'success');
+    } else if(statutChoisi === 'envoye' && (!clientSelectionne || !clientSelectionne.email)){
+      showStatus('Devis enregistré, mais aucun email envoyé : ce client n\'a pas d\'adresse email.', 'error');
+    } else {
+      showStatus(isNew ? 'Devis ' + numero + ' enregistré avec succès.' : 'Devis mis à jour avec succès.', 'success');
+    }
 
     resetFormDevis();
     chargerDevis();
@@ -776,7 +790,7 @@ function afficherListeDevis(){
       </div>
       <div class="devis-meta">${formaterMontantDoc(dv.montantTTC)} · émis le ${dv.dateCreation ? new Date(dv.dateCreation).toLocaleDateString('fr-FR') : '—'}</div>
       <div class="devis-actions">
-        ${dv.statut === 'brouillon' ? '<button class="btn-edit" style="background:#dcfce7;color:#16a34a;" onclick="envoyerDepuisListe(\'' + dv.id + '\')">Envoyer au client</button>' : ''}
+        <button class="btn-edit" style="background:#dcfce7;color:#16a34a;" onclick="envoyerDepuisListe('${dv.id}')">${dv.statut === 'brouillon' ? 'Envoyer au client' : 'Renvoyer au client'}</button>
         <button class="btn-edit" onclick="editerDevis('${dv.id}')">Modifier</button>
         <button class="btn-edit" onclick="dupliquerEnFacture('${dv.id}')">Transformer en facture</button>
         <button class="btn-delete" onclick="supprimerDevis('${dv.id}','${(dv.numero||'').replace(/'/g,"\\'")}')">✕</button>
