@@ -100,6 +100,16 @@ body{background:var(--light);color:#222;min-height:100vh;}
 .empty-state svg{width:36px;height:36px;margin-bottom:12px;opacity:.35;}
 .empty-state p{font-size:.85rem;}
 
+.breakdown-row{display:flex;align-items:center;gap:14px;padding:11px 0;border-bottom:1px solid #f0f3f7;}
+.breakdown-row:last-child{border-bottom:none;}
+.breakdown-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.breakdown-label{flex:1;font-size:.85rem;font-weight:600;color:var(--primary);}
+.breakdown-num{font-size:.85rem;color:#7a8fa5;min-width:90px;text-align:right;}
+.breakdown-num strong{color:var(--primary);font-weight:700;}
+.breakdown-total{display:flex;gap:24px;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid #eee;}
+.breakdown-total-item .num{font-size:1.3rem;font-weight:800;color:var(--primary);}
+.breakdown-total-item .lbl{font-size:.72rem;color:#94a3b8;text-transform:uppercase;letter-spacing:.03em;font-weight:600;}
+
 /* Responsive */
 @media(max-width:900px){
   .sidebar{position:fixed;left:0;top:0;bottom:0;z-index:500;transform:translateX(-100%);transition:.25s;}
@@ -263,6 +273,17 @@ body{background:var(--light);color:#222;min-height:100vh;}
           </div>
         </div>
 
+        <!-- Répartition clients -->
+        <div class="panel-box" style="margin-top:20px;">
+          <h3>Clients — répartition par typologie</h3>
+          <div id="clients-breakdown">
+            <div class="empty-state">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+              <p>Chargement…</p>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -415,11 +436,65 @@ async function chargerTableauDeBord(){
       `).join('');
     }
 
+    // Répartition clients par typologie
+    await chargerRepartitionClients();
+
   } catch(e){
     console.warn('chargerTableauDeBord:', e.message);
     document.getElementById('activity-list').innerHTML = '<div class="empty-state"><p>Impossible de charger les données pour le moment.</p></div>';
     document.getElementById('alert-list').innerHTML = '<div class="empty-state"><p>Impossible de charger les données pour le moment.</p></div>';
     ['stat-ca-mois','stat-ca-annee','stat-retard','stat-devis-attente'].forEach(id => document.getElementById(id).textContent = '0');
+  }
+}
+
+const TYPE_LABELS_CLIENTS = { particulier: 'Particuliers', professionnel: 'Professionnels', collectivite: 'Collectivités', association: 'Associations' };
+const TYPE_COLORS_CLIENTS = { particulier: '#1F5FAF', professionnel: '#16a34a', collectivite: '#7c3aed', association: '#ea580c' };
+
+async function chargerRepartitionClients(){
+  const el = document.getElementById('clients-breakdown');
+  try {
+    const snap = await getDocs(collection(db, 'clientsFacturation'));
+    const counts = {};
+    let total = 0, totalActifs = 0;
+    snap.forEach(d => {
+      const c = d.data();
+      const type = c.type || 'particulier';
+      if(!counts[type]) counts[type] = { total: 0, actifs: 0 };
+      counts[type].total++;
+      total++;
+      if(!c.bloque){ counts[type].actifs++; totalActifs++; }
+    });
+
+    if(total === 0){
+      el.innerHTML = '<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><p>Aucun client enregistré pour le moment.</p></div>';
+      return;
+    }
+
+    let html = `
+      <div class="breakdown-total">
+        <div class="breakdown-total-item"><div class="num">${total}</div><div class="lbl">Total clients</div></div>
+        <div class="breakdown-total-item"><div class="num">${totalActifs}</div><div class="lbl">Actifs</div></div>
+        <div class="breakdown-total-item"><div class="num" style="color:${(total - totalActifs) > 0 ? 'var(--red)' : 'var(--primary)'};">${total - totalActifs}</div><div class="lbl">Bloqués</div></div>
+      </div>
+    `;
+
+    ['particulier','professionnel','collectivite','association'].forEach(type => {
+      const c = counts[type] || { total: 0, actifs: 0 };
+      if(c.total === 0) return;
+      html += `
+        <div class="breakdown-row">
+          <span class="breakdown-dot" style="background:${TYPE_COLORS_CLIENTS[type]}"></span>
+          <span class="breakdown-label">${TYPE_LABELS_CLIENTS[type]}</span>
+          <span class="breakdown-num"><strong>${c.total}</strong> total</span>
+          <span class="breakdown-num"><strong>${c.actifs}</strong> actif${c.actifs > 1 ? 's' : ''}</span>
+        </div>
+      `;
+    });
+
+    el.innerHTML = html;
+  } catch(e){
+    el.innerHTML = '<div class="empty-state"><p>Impossible de charger les données clients.</p></div>';
+    console.warn('chargerRepartitionClients:', e.message);
   }
 }
 
