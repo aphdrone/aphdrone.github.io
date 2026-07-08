@@ -239,12 +239,12 @@ body{background:var(--light);color:#222;min-height:100vh;}
             <div class="num" id="stat-ca-annee">—</div>
             <div class="sub" id="stat-ca-annee-sub">Chargement…</div>
           </div>
-          <div class="stat-card alert">
+          <div class="stat-card alert" style="cursor:pointer;" onclick="document.getElementById('anchor-alertes').scrollIntoView({behavior:'smooth',block:'start'})">
             <div class="lbl">Factures en retard</div>
             <div class="num" id="stat-retard">—</div>
             <div class="sub" id="stat-retard-sub">Chargement…</div>
           </div>
-          <div class="stat-card warn">
+          <div class="stat-card warn" style="cursor:pointer;" onclick="document.getElementById('anchor-devis-attente').scrollIntoView({behavior:'smooth',block:'start'})">
             <div class="lbl">Devis en attente</div>
             <div class="num" id="stat-devis-attente">—</div>
             <div class="sub" id="stat-devis-attente-sub">Chargement…</div>
@@ -262,13 +262,23 @@ body{background:var(--light);color:#222;min-height:100vh;}
               </div>
             </div>
           </div>
-          <div class="panel-box">
-            <h3>Alertes</h3>
+          <div class="panel-box" id="anchor-alertes">
+            <h3>Alertes — Factures en retard</h3>
             <div id="alert-list">
               <div class="empty-state">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
                 <p>Chargement des alertes…</p>
               </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-box" id="anchor-devis-attente" style="margin-top:20px;">
+          <h3>Devis en attente de réponse</h3>
+          <div id="devis-attente-list">
+            <div class="empty-state">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              <p>Chargement…</p>
             </div>
           </div>
         </div>
@@ -294,7 +304,7 @@ body{background:var(--light);color:#222;min-height:100vh;}
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, collection, getDocs, query, where, orderBy, limit }
+import { getFirestore, collection, getDocs, doc, updateDoc, query, where, orderBy, limit }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -432,6 +442,25 @@ async function chargerTableauDeBord(){
             <div class="alert-title">${f.numero} — ${f.clientNom || 'Client'}</div>
             <div class="alert-meta">${formatMontant(f.montantTTC)} · échéance ${f.dateEcheance ? new Date(f.dateEcheance).toLocaleDateString('fr-FR') : '—'}</div>
           </div>
+          <button class="btn-quick btn-quick--outline" style="padding:7px 12px;font-size:.76rem;flex-shrink:0;" onclick="relancer('facture','${f._id}','${f.numero}','${(f.clientEmail||'').replace(/'/g,"\\'")}','${(f.clientNom||'').replace(/'/g,"\\'")}', ${f.montantTTC || 0})">Relancer</button>
+        </div>
+      `).join('');
+    }
+
+    // Devis en attente de réponse
+    const devisAttente = devisList.filter(dv => dv.statut === 'envoye' || dv.statut === 'attente');
+    const devisAttenteList = document.getElementById('devis-attente-list');
+    if(devisAttente.length === 0){
+      devisAttenteList.innerHTML = '<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="20 6 9 17 4 12"/></svg><p>Aucun devis en attente de réponse.</p></div>';
+    } else {
+      devisAttenteList.innerHTML = devisAttente.slice(0, 8).map(dv => `
+        <div class="alert-item">
+          <div class="alert-icon" style="background:#fef3c7;color:var(--amber);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+          <div class="alert-body">
+            <div class="alert-title">${dv.numero || '(brouillon)'} — ${dv.clientNom || 'Client'}</div>
+            <div class="alert-meta">${formatMontant(dv.montantTTC)} · envoyé le ${dv.dateCreation ? new Date(dv.dateCreation).toLocaleDateString('fr-FR') : '—'}</div>
+          </div>
+          <button class="btn-quick btn-quick--outline" style="padding:7px 12px;font-size:.76rem;flex-shrink:0;" onclick="relancer('devis','${dv._id}','${dv.numero}','${(dv.clientEmail||'').replace(/'/g,"\\'")}','${(dv.clientNom||'').replace(/'/g,"\\'")}', ${dv.montantTTC || 0})">Relancer</button>
         </div>
       `).join('');
     }
@@ -514,6 +543,28 @@ async function chargerRepartitionClients(){
     console.warn('chargerRepartitionClients:', e.message);
   }
 }
+
+window.relancer = async function(typeDoc, id, numero, email, clientNom, montant){
+  const collectionName = typeDoc === 'facture' ? 'factures' : 'devis';
+  const sujet = typeDoc === 'facture'
+    ? 'Relance — Facture ' + numero
+    : 'Suivi de votre devis ' + numero;
+  const corps = typeDoc === 'facture'
+    ? `Bonjour${clientNom ? ' ' + clientNom : ''},\n\nSauf erreur de notre part, la facture ${numero} d'un montant de ${formatMontant(montant)} reste à ce jour impayée.\n\nPourriez-vous me confirmer la date de règlement prévue ?\n\nJe reste à votre disposition pour toute question.\n\nCordialement,\nAPH Drone`
+    : `Bonjour${clientNom ? ' ' + clientNom : ''},\n\nJe me permets de revenir vers vous concernant le devis ${numero} (${formatMontant(montant)}) que je vous ai transmis.\n\nSouhaitez-vous des précisions complémentaires, ou êtes-vous en mesure de me donner votre retour ?\n\nJe reste à votre disposition.\n\nCordialement,\nAPH Drone`;
+
+  if(!email){
+    alert('Aucune adresse email enregistrée pour ce client — impossible de préparer l\'email automatiquement.');
+  } else {
+    window.location.href = 'mailto:' + email + '?subject=' + encodeURIComponent(sujet) + '&body=' + encodeURIComponent(corps);
+  }
+
+  try {
+    await updateDoc(doc(db, collectionName, id), { derniereRelance: new Date().toISOString() });
+  } catch(e){
+    console.warn('relancer:', e.message);
+  }
+};
 
 window.toggleSidebar = function(open){
   document.getElementById('sidebar').classList.toggle('mobile-open', open);
