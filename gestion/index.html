@@ -1,1 +1,432 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gestion — APH Drone</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--primary:#0B1F3A;--secondary:#1F5FAF;--accent:#4A90E2;--light:#F5F7FA;--green:#16a34a;--red:#dc2626;--amber:#d97706;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
+body{background:var(--light);color:#222;min-height:100vh;}
 
+/* ── Écran de connexion / chargement ── */
+#gate{position:fixed;inset:0;background:linear-gradient(135deg,var(--primary) 0%,#1a3a6b 100%);display:flex;align-items:center;justify-content:center;z-index:9999;}
+.gate-box{background:white;border-radius:20px;padding:40px;width:100%;max-width:360px;text-align:center;}
+.gate-box img{width:64px;height:64px;border-radius:50%;margin-bottom:16px;}
+.gate-box h2{font-size:1.2rem;color:var(--primary);margin-bottom:6px;}
+.gate-box p{font-size:.85rem;color:#7a8fa5;margin-bottom:20px;}
+.gate-spinner{width:28px;height:28px;border:3px solid #e0e8f0;border-top-color:var(--secondary);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.gate-denied{color:var(--red);font-size:.85rem;font-weight:600;margin-top:12px;}
+.gate-link{display:inline-block;margin-top:16px;font-size:.82rem;color:var(--secondary);text-decoration:none;font-weight:600;}
+
+/* ── Layout ── */
+#app{display:none;min-height:100vh;}
+.shell{display:flex;min-height:100vh;}
+
+/* Sidebar */
+.sidebar{width:240px;background:var(--primary);color:white;flex-shrink:0;display:flex;flex-direction:column;padding:24px 0;}
+.brand{display:flex;align-items:center;gap:10px;padding:0 24px 24px;border-bottom:1px solid rgba(255,255,255,.1);margin-bottom:16px;}
+.brand img{width:36px;height:36px;border-radius:50%;}
+.brand-text{font-size:.85rem;font-weight:700;line-height:1.3;}
+.brand-text span{display:block;font-size:.68rem;font-weight:500;color:rgba(255,255,255,.5);}
+.nav{flex:1;display:flex;flex-direction:column;gap:2px;padding:0 12px;}
+.nav-item{display:flex;align-items:center;gap:11px;padding:11px 14px;border-radius:9px;color:rgba(255,255,255,.65);text-decoration:none;font-size:.85rem;font-weight:500;cursor:pointer;border:none;background:none;width:100%;text-align:left;transition:.15s;position:relative;}
+.nav-item:hover{background:rgba(255,255,255,.06);color:white;}
+.nav-item.active{background:var(--secondary);color:white;}
+.nav-item svg{flex-shrink:0;width:17px;height:17px;}
+.nav-alert-dot{position:absolute;top:8px;right:10px;width:8px;height:8px;border-radius:50%;background:var(--red);border:2px solid var(--primary);}
+.nav-sep{height:1px;background:rgba(255,255,255,.08);margin:10px 14px;}
+.foot{padding:16px 24px 0;border-top:1px solid rgba(255,255,255,.1);margin-top:16px;}
+.foot-email{font-size:.72rem;color:rgba(255,255,255,.4);margin-bottom:10px;word-break:break-all;}
+.foot a.back-link{display:block;font-size:.78rem;color:rgba(255,255,255,.5);text-decoration:none;margin-bottom:10px;}
+.foot a.back-link:hover{color:white;}
+.logout-btn{font-size:.78rem;color:rgba(255,255,255,.65);background:none;border:1px solid rgba(255,255,255,.15);border-radius:7px;padding:8px 12px;cursor:pointer;width:100%;transition:.15s;}
+.logout-btn:hover{background:rgba(255,255,255,.08);color:white;}
+
+/* Main */
+.main{flex:1;overflow-y:auto;}
+.topbar{background:white;border-bottom:1px solid #e8edf4;padding:18px 32px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
+.topbar h1{font-size:1.15rem;color:var(--primary);}
+.topbar p{font-size:.78rem;color:#94a3b8;margin-top:2px;}
+.content{padding:28px 32px 60px;}
+
+/* Actions rapides */
+.quick-actions{display:flex;gap:12px;flex-wrap:wrap;}
+.btn-quick{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:9px;font-size:.85rem;font-weight:600;text-decoration:none;cursor:pointer;border:none;transition:.15s;}
+.btn-quick svg{width:16px;height:16px;}
+.btn-quick--primary{background:var(--secondary);color:white;}
+.btn-quick--primary:hover{background:var(--accent);}
+.btn-quick--outline{background:white;color:var(--primary);border:1.5px solid #dde3ec;}
+.btn-quick--outline:hover{border-color:var(--accent);color:var(--accent);}
+
+/* Stat cards */
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:28px 0;}
+.stat-card{background:white;border:1px solid #e8edf4;border-radius:12px;padding:18px 20px;}
+.stat-card .lbl{font-size:.74rem;color:#94a3b8;margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:.03em;}
+.stat-card .num{font-size:1.55rem;font-weight:800;color:var(--primary);}
+.stat-card .sub{font-size:.75rem;color:#94a3b8;margin-top:4px;}
+.stat-card.alert .num{color:var(--red);}
+.stat-card.warn .num{color:var(--amber);}
+
+/* Sections */
+.section-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:20px;align-items:start;}
+.panel-box{background:white;border:1px solid #e8edf4;border-radius:12px;padding:22px;}
+.panel-box h3{font-size:.95rem;color:var(--primary);margin-bottom:16px;font-weight:700;}
+
+.activity-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid #f0f3f7;}
+.activity-row:last-child{border-bottom:none;}
+.activity-main{min-width:0;}
+.activity-title{font-size:.85rem;font-weight:600;color:var(--primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.activity-meta{font-size:.74rem;color:#94a3b8;margin-top:2px;}
+.activity-amount{font-size:.85rem;font-weight:700;color:var(--primary);flex-shrink:0;}
+.badge-status{font-size:10px;font-weight:700;padding:3px 9px;border-radius:10px;letter-spacing:.03em;text-transform:uppercase;flex-shrink:0;}
+.badge-status.envoyee{background:#e0f2fe;color:#0369a1;}
+.badge-status.payee{background:#dcfce7;color:#15803d;}
+.badge-status.retard{background:#fee2e2;color:#dc2626;}
+.badge-status.attente{background:#fef3c7;color:#b45309;}
+.badge-status.brouillon{background:#f1f5f9;color:#64748b;}
+
+.alert-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #f0f3f7;}
+.alert-item:last-child{border-bottom:none;}
+.alert-icon{width:34px;height:34px;border-radius:9px;background:#fee2e2;display:flex;align-items:center;justify-content:center;color:var(--red);flex-shrink:0;}
+.alert-icon svg{width:17px;height:17px;}
+.alert-body{min-width:0;flex:1;}
+.alert-title{font-size:.83rem;font-weight:600;color:var(--primary);}
+.alert-meta{font-size:.73rem;color:#94a3b8;margin-top:2px;}
+
+.empty-state{text-align:center;padding:40px 16px;color:#94a3b8;}
+.empty-state svg{width:36px;height:36px;margin-bottom:12px;opacity:.35;}
+.empty-state p{font-size:.85rem;}
+
+/* Responsive */
+@media(max-width:900px){
+  .sidebar{position:fixed;left:0;top:0;bottom:0;z-index:500;transform:translateX(-100%);transition:.25s;}
+  .sidebar.mobile-open{transform:translateX(0);}
+  #mobile-burger{display:flex;}
+  .stat-row{grid-template-columns:repeat(2,1fr);}
+  .section-grid{grid-template-columns:1fr;}
+  .content{padding:20px 16px 50px;}
+  .topbar{padding:14px 16px;}
+}
+@media(min-width:901px){#mobile-burger{display:none;}}
+#mobile-burger{align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;border:1px solid #e8edf4;background:white;cursor:pointer;}
+#mobile-burger svg{width:18px;height:18px;color:var(--primary);}
+#sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:400;}
+#sidebar-overlay.show{display:block;}
+</style>
+</head>
+<body>
+
+<!-- ═══ Écran de connexion ═══ -->
+<div id="gate">
+  <div class="gate-box">
+    <img src="/assets/logo.jpg" alt="APH Drone" onerror="this.style.display='none'">
+    <h2>Gestion — APH Drone</h2>
+    <p>Devis, factures &amp; suivi comptable</p>
+    <div class="gate-spinner" id="gate-spinner"></div>
+    <div id="gate-login" style="display:none;">
+      <input type="email" id="login-email" placeholder="Email" autocomplete="email"
+        style="width:100%;padding:12px 16px;border:1.5px solid #dde3ec;border-radius:8px;font-size:.9rem;margin-bottom:12px;outline:none;">
+      <input type="password" id="login-password" placeholder="Mot de passe" autocomplete="current-password"
+        onkeydown="if(event.key==='Enter') doLogin()"
+        style="width:100%;padding:12px 16px;border:1.5px solid #dde3ec;border-radius:8px;font-size:.9rem;margin-bottom:12px;outline:none;">
+      <button onclick="doLogin()" style="width:100%;padding:13px;background:var(--secondary);color:white;border:none;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer;">Se connecter</button>
+      <p class="gate-denied" id="gate-error" style="display:none;">Email ou mot de passe incorrect.</p>
+    </div>
+    <div id="gate-refused" style="display:none;">
+      <p class="gate-denied">Accès non autorisé.</p>
+      <a href="/pages/connexion.html" class="gate-link">Retour à la connexion</a>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ Application ═══ -->
+<div id="app">
+  <div id="sidebar-overlay" onclick="toggleSidebar(false)"></div>
+  <div class="shell">
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+      <div class="brand">
+        <img src="/assets/logo.jpg" alt="APH Drone" onerror="this.style.display='none'">
+        <div class="brand-text">Gestion<span>Devis &amp; Facturation</span></div>
+      </div>
+      <div class="nav">
+        <a class="nav-item active" href="index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+          Tableau de bord
+        </a>
+        <a class="nav-item" href="devis.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>
+          Devis
+        </a>
+        <a class="nav-item" href="factures.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="12" y2="17"/></svg>
+          Factures
+          <span class="nav-alert-dot" id="dot-factures" style="display:none;"></span>
+        </a>
+        <a class="nav-item" href="avoirs.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-15-6.7L3 13"/></svg>
+          Avoirs
+        </a>
+        <div class="nav-sep"></div>
+        <a class="nav-item" href="clients.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Clients
+        </a>
+        <a class="nav-item" href="statistiques.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          Statistiques
+        </a>
+        <div class="nav-sep"></div>
+        <a class="nav-item" href="parametres.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Paramètres
+        </a>
+      </div>
+      <div class="foot">
+        <a href="/office/" class="back-link">← Retour à l'admin du site</a>
+        <div class="foot-email" id="user-email"></div>
+        <button class="logout-btn" onclick="doLogout()">Déconnexion</button>
+      </div>
+    </div>
+
+    <!-- Main -->
+    <div class="main">
+      <div class="topbar">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <button id="mobile-burger" onclick="toggleSidebar(true)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+          <div>
+            <h1>Tableau de bord</h1>
+            <p>Vue d'ensemble de ton activité</p>
+          </div>
+        </div>
+        <div class="quick-actions">
+          <a href="devis.html?new=1" class="btn-quick btn-quick--outline">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Nouveau devis
+          </a>
+          <a href="factures.html?new=1" class="btn-quick btn-quick--primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Nouvelle facture
+          </a>
+        </div>
+      </div>
+
+      <div class="content">
+
+        <!-- Stat cards -->
+        <div class="stat-row">
+          <div class="stat-card">
+            <div class="lbl">CA du mois</div>
+            <div class="num" id="stat-ca-mois">—</div>
+            <div class="sub" id="stat-ca-mois-sub">Chargement…</div>
+          </div>
+          <div class="stat-card">
+            <div class="lbl">CA de l'année</div>
+            <div class="num" id="stat-ca-annee">—</div>
+            <div class="sub" id="stat-ca-annee-sub">Chargement…</div>
+          </div>
+          <div class="stat-card alert">
+            <div class="lbl">Factures en retard</div>
+            <div class="num" id="stat-retard">—</div>
+            <div class="sub" id="stat-retard-sub">Chargement…</div>
+          </div>
+          <div class="stat-card warn">
+            <div class="lbl">Devis en attente</div>
+            <div class="num" id="stat-devis-attente">—</div>
+            <div class="sub" id="stat-devis-attente-sub">Chargement…</div>
+          </div>
+        </div>
+
+        <!-- Alertes + Activité -->
+        <div class="section-grid">
+          <div class="panel-box">
+            <h3>Activité récente</h3>
+            <div id="activity-list">
+              <div class="empty-state">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 20H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h10l6 6v8a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                <p>Chargement de l'activité récente…</p>
+              </div>
+            </div>
+          </div>
+          <div class="panel-box">
+            <h3>Alertes</h3>
+            <div id="alert-list">
+              <div class="empty-state">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                <p>Chargement des alertes…</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Firebase -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, collection, getDocs, query, where, orderBy, limit }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAV5NQWfp8n9RkTrHSwqssBJ4R9lNAuYK8",
+  authDomain: "aph-drone.firebaseapp.com",
+  projectId: "aph-drone",
+  storageBucket: "aph-drone.firebasestorage.app",
+  messagingSenderId: "316810168380",
+  appId: "1:316810168380:web:66cb916cec4fdc00b9db39"
+};
+
+const ADMIN_EMAIL = "aph.moreau@gmail.com";
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+window.doLogin = async function(){
+  const email = document.getElementById('login-email').value;
+  const pwd = document.getElementById('login-password').value;
+  try {
+    await signInWithEmailAndPassword(auth, email, pwd);
+  } catch(e){
+    document.getElementById('gate-error').style.display = 'block';
+  }
+};
+window.doLogout = async function(){ await signOut(auth); };
+
+onAuthStateChanged(auth, user => {
+  const spinner = document.getElementById('gate-spinner');
+  const loginBox = document.getElementById('gate-login');
+  const refusedBox = document.getElementById('gate-refused');
+  spinner.style.display = 'none';
+
+  if(user && user.email === ADMIN_EMAIL){
+    document.getElementById('gate').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    document.getElementById('user-email').textContent = user.email;
+    chargerTableauDeBord();
+  } else if(user){
+    refusedBox.style.display = 'block';
+    loginBox.style.display = 'none';
+  } else {
+    loginBox.style.display = 'block';
+    refusedBox.style.display = 'none';
+  }
+});
+
+function formatMontant(n){
+  return (n || 0).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
+}
+
+const STATUS_LABELS = {
+  brouillon: 'Brouillon', envoyee: 'Envoyée', payee: 'Payée',
+  retard: 'En retard', attente: 'En attente', acceptee: 'Acceptée', refusee: 'Refusée'
+};
+
+async function chargerTableauDeBord(){
+  const now = new Date();
+  const debutMois = new Date(now.getFullYear(), now.getMonth(), 1);
+  const debutAnnee = new Date(now.getFullYear(), 0, 1);
+
+  try {
+    const facturesSnap = await getDocs(collection(db, 'factures'));
+    const devisSnap = await getDocs(collection(db, 'devis'));
+
+    let caMois = 0, caAnnee = 0, nbRetard = 0, montantRetard = 0, nbDevisAttente = 0;
+    const factures = [];
+    facturesSnap.forEach(d => {
+      const f = d.data();
+      f._id = d.id;
+      factures.push(f);
+      const dateEmission = f.dateEmission ? new Date(f.dateEmission) : null;
+      if(f.statut === 'payee' && dateEmission){
+        if(dateEmission >= debutAnnee) caAnnee += (f.montantTTC || 0);
+        if(dateEmission >= debutMois) caMois += (f.montantTTC || 0);
+      }
+      if(f.statut === 'retard' || (f.statut === 'envoyee' && f.dateEcheance && new Date(f.dateEcheance) < now)){
+        nbRetard++;
+        montantRetard += (f.montantTTC || 0);
+      }
+    });
+
+    const devisList = [];
+    devisSnap.forEach(d => {
+      const dv = d.data();
+      dv._id = d.id;
+      devisList.push(dv);
+      if(dv.statut === 'envoye' || dv.statut === 'attente') nbDevisAttente++;
+    });
+
+    document.getElementById('stat-ca-mois').textContent = formatMontant(caMois);
+    document.getElementById('stat-ca-mois-sub').textContent = now.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
+    document.getElementById('stat-ca-annee').textContent = formatMontant(caAnnee);
+    document.getElementById('stat-ca-annee-sub').textContent = 'Année ' + now.getFullYear();
+    document.getElementById('stat-retard').textContent = nbRetard;
+    document.getElementById('stat-retard-sub').textContent = nbRetard > 0 ? formatMontant(montantRetard) + ' en attente' : 'Aucune';
+    document.getElementById('stat-devis-attente').textContent = nbDevisAttente;
+    document.getElementById('stat-devis-attente-sub').textContent = nbDevisAttente > 0 ? 'À relancer' : 'Aucun';
+
+    if(nbRetard > 0) document.getElementById('dot-factures').style.display = 'block';
+
+    // Activité récente : fusion factures + devis, triés par date desc
+    const activite = [
+      ...factures.map(f => ({ type: 'facture', numero: f.numero, client: f.clientNom, montant: f.montantTTC, statut: f.statut, date: f.dateEmission })),
+      ...devisList.map(dv => ({ type: 'devis', numero: dv.numero, client: dv.clientNom, montant: dv.montantTTC, statut: dv.statut, date: dv.dateCreation }))
+    ].filter(a => a.date).sort((a,b) => new Date(b.date) - new Date(a.date)).slice(0, 8);
+
+    const activityList = document.getElementById('activity-list');
+    if(activite.length === 0){
+      activityList.innerHTML = '<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 20H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h10l6 6v8a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg><p>Aucune activité pour le moment — crée ton premier devis ou ta première facture.</p></div>';
+    } else {
+      activityList.innerHTML = activite.map(a => `
+        <div class="activity-row">
+          <div class="activity-main">
+            <div class="activity-title">${a.numero || '(brouillon)'} — ${a.client || 'Client non renseigné'}</div>
+            <div class="activity-meta">${a.type === 'facture' ? 'Facture' : 'Devis'} · ${new Date(a.date).toLocaleDateString('fr-FR')}</div>
+          </div>
+          <span class="badge-status ${a.statut || 'brouillon'}">${STATUS_LABELS[a.statut] || a.statut || 'Brouillon'}</span>
+          <div class="activity-amount">${formatMontant(a.montant)}</div>
+        </div>
+      `).join('');
+    }
+
+    // Alertes : factures en retard
+    const enRetard = factures.filter(f => f.statut === 'retard' || (f.statut === 'envoyee' && f.dateEcheance && new Date(f.dateEcheance) < now));
+    const alertList = document.getElementById('alert-list');
+    if(enRetard.length === 0){
+      alertList.innerHTML = '<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="20 6 9 17 4 12"/></svg><p>Aucune facture en retard. Tout est à jour !</p></div>';
+    } else {
+      alertList.innerHTML = enRetard.slice(0, 6).map(f => `
+        <div class="alert-item">
+          <div class="alert-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+          <div class="alert-body">
+            <div class="alert-title">${f.numero} — ${f.clientNom || 'Client'}</div>
+            <div class="alert-meta">${formatMontant(f.montantTTC)} · échéance ${f.dateEcheance ? new Date(f.dateEcheance).toLocaleDateString('fr-FR') : '—'}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+  } catch(e){
+    console.warn('chargerTableauDeBord:', e.message);
+    document.getElementById('activity-list').innerHTML = '<div class="empty-state"><p>Impossible de charger les données pour le moment.</p></div>';
+    document.getElementById('alert-list').innerHTML = '<div class="empty-state"><p>Impossible de charger les données pour le moment.</p></div>';
+    ['stat-ca-mois','stat-ca-annee','stat-retard','stat-devis-attente'].forEach(id => document.getElementById(id).textContent = '0');
+  }
+}
+
+window.toggleSidebar = function(open){
+  document.getElementById('sidebar').classList.toggle('mobile-open', open);
+  document.getElementById('sidebar-overlay').classList.toggle('show', open);
+};
+</script>
+</body>
+</html>
