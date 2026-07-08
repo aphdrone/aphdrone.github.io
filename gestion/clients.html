@@ -341,6 +341,12 @@ body{background:var(--light);color:#222;min-height:100vh;}
             </div>
             <div id="loading-list" style="text-align:center;padding:40px;color:#7a8fa5;font-size:.88rem;">Chargement…</div>
             <div id="client-list"></div>
+
+            <div style="margin-top:28px;padding-top:18px;border-top:1px dashed #f0b4b4;">
+              <div style="font-size:11px;font-weight:700;color:#dc2626;text-transform:uppercase;letter-spacing:.03em;margin-bottom:8px;">Zone de test</div>
+              <p style="font-size:.78rem;color:#94a3b8;margin-bottom:10px;">Supprime définitivement tous les clients enregistrés — pratique pour repartir de zéro après une phase de test.</p>
+              <button class="btn-delete" style="padding:8px 14px;" onclick="viderTousLesClients()">Supprimer tous les clients</button>
+            </div>
           </div>
 
         </div>
@@ -646,6 +652,29 @@ window.supprimerClient = async function(id, nom){
   try {
     await deleteDoc(doc(db, 'clientsFacturation', id));
     chargerClients();
+  } catch(e){
+    alert('Erreur : ' + e.message);
+  }
+};
+
+// ── Zone de test : suppression de tous les clients (double confirmation) ──
+window.viderTousLesClients = async function(){
+  if(allClients.length === 0){
+    alert('Il n\'y a déjà aucun client enregistré.');
+    return;
+  }
+  if(!confirm('Supprimer DÉFINITIVEMENT les ' + allClients.length + ' client(s) enregistré(s) ? Cette action est irréversible.')) return;
+  const saisie = prompt('Pour confirmer, tape le mot SUPPRIMER en majuscules :');
+  if(saisie !== 'SUPPRIMER'){
+    alert('Suppression annulée.');
+    return;
+  }
+  try {
+    for(const c of allClients){
+      await deleteDoc(doc(db, 'clientsFacturation', c.id));
+    }
+    chargerClients();
+    alert('Tous les clients ont été supprimés.');
   } catch(e){
     alert('Erreur : ' + e.message);
   }
