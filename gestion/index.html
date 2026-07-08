@@ -239,12 +239,12 @@ body{background:var(--light);color:#222;min-height:100vh;}
             <div class="num" id="stat-ca-annee">—</div>
             <div class="sub" id="stat-ca-annee-sub">Chargement…</div>
           </div>
-          <div class="stat-card alert" style="cursor:pointer;" onclick="document.getElementById('anchor-alertes').scrollIntoView({behavior:'smooth',block:'start'})">
+          <div class="stat-card alert" style="cursor:pointer;" onclick="ouvrirModalFactures()">
             <div class="lbl">Factures en retard</div>
             <div class="num" id="stat-retard">—</div>
             <div class="sub" id="stat-retard-sub">Chargement…</div>
           </div>
-          <div class="stat-card warn" style="cursor:pointer;" onclick="document.getElementById('anchor-devis-attente').scrollIntoView({behavior:'smooth',block:'start'})">
+          <div class="stat-card warn" style="cursor:pointer;" onclick="ouvrirModalDevis()">
             <div class="lbl">Devis en attente</div>
             <div class="num" id="stat-devis-attente">—</div>
             <div class="sub" id="stat-devis-attente-sub">Chargement…</div>
@@ -295,6 +295,19 @@ body{background:var(--light);color:#222;min-height:100vh;}
         </div>
 
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ Modale : liste factures en retard / devis en attente ═══ -->
+<div id="liste-overlay" style="display:none;position:fixed;inset:0;background:rgba(11,31,58,.55);z-index:2000;align-items:flex-start;justify-content:center;overflow-y:auto;padding:30px 16px;">
+  <div style="background:white;border-radius:14px;max-width:600px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3);">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 24px;border-bottom:1px solid #eee;">
+      <div style="font-size:1rem;font-weight:700;color:#0B1F3A;" id="liste-modal-title">Liste</div>
+      <button onclick="fermerListeModal()" style="padding:9px 16px;background:#f5f7fa;color:#555;border:1px solid #dde3ec;border-radius:8px;font-size:.82rem;cursor:pointer;">Fermer</button>
+    </div>
+    <div style="max-height:75vh;overflow-y:auto;padding:8px 24px 24px;">
+      <div id="liste-modal-content"></div>
     </div>
   </div>
 </div>
@@ -362,6 +375,9 @@ const STATUS_LABELS = {
   retard: 'En retard', attente: 'En attente', acceptee: 'Acceptée', refusee: 'Refusée'
 };
 
+let facturesGlobal = [];
+let devisGlobal = [];
+
 async function chargerTableauDeBord(){
   const now = new Date();
   const debutMois = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -395,6 +411,9 @@ async function chargerTableauDeBord(){
       devisList.push(dv);
       if(dv.statut === 'envoye' || dv.statut === 'attente') nbDevisAttente++;
     });
+
+    facturesGlobal = factures;
+    devisGlobal = devisList;
 
     document.getElementById('stat-ca-mois').textContent = formatMontant(caMois);
     document.getElementById('stat-ca-mois-sub').textContent = now.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
@@ -543,6 +562,57 @@ async function chargerRepartitionClients(){
     console.warn('chargerRepartitionClients:', e.message);
   }
 }
+
+window.ouvrirModalFactures = function(){
+  const now = new Date();
+  const enRetard = facturesGlobal.filter(f => f.statut === 'retard' || (f.statut === 'envoyee' && f.dateEcheance && new Date(f.dateEcheance) < now));
+  document.getElementById('liste-modal-title').textContent = 'Factures en retard (' + enRetard.length + ')';
+
+  const content = document.getElementById('liste-modal-content');
+  if(enRetard.length === 0){
+    content.innerHTML = '<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="20 6 9 17 4 12"/></svg><p>Aucune facture en retard. Tout est à jour !</p></div>';
+  } else {
+    content.innerHTML = enRetard.map(f => `
+      <div class="alert-item">
+        <div class="alert-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+        <div class="alert-body">
+          <div class="alert-title">${f.numero} — ${f.clientNom || 'Client'}</div>
+          <div class="alert-meta">${formatMontant(f.montantTTC)} · échéance ${f.dateEcheance ? new Date(f.dateEcheance).toLocaleDateString('fr-FR') : '—'}</div>
+        </div>
+        <button class="btn-quick btn-quick--outline" style="padding:7px 12px;font-size:.76rem;flex-shrink:0;" onclick="relancer('facture','${f._id}','${f.numero}','${(f.clientEmail||'').replace(/'/g,"\\'")}','${(f.clientNom||'').replace(/'/g,"\\'")}', ${f.montantTTC || 0})">Relancer</button>
+      </div>
+    `).join('');
+  }
+
+  document.getElementById('liste-overlay').style.display = 'flex';
+};
+
+window.ouvrirModalDevis = function(){
+  const devisAttente = devisGlobal.filter(dv => dv.statut === 'envoye' || dv.statut === 'attente');
+  document.getElementById('liste-modal-title').textContent = 'Devis en attente (' + devisAttente.length + ')';
+
+  const content = document.getElementById('liste-modal-content');
+  if(devisAttente.length === 0){
+    content.innerHTML = '<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="20 6 9 17 4 12"/></svg><p>Aucun devis en attente de réponse.</p></div>';
+  } else {
+    content.innerHTML = devisAttente.map(dv => `
+      <div class="alert-item">
+        <div class="alert-icon" style="background:#fef3c7;color:var(--amber);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+        <div class="alert-body">
+          <div class="alert-title">${dv.numero || '(brouillon)'} — ${dv.clientNom || 'Client'}</div>
+          <div class="alert-meta">${formatMontant(dv.montantTTC)} · envoyé le ${dv.dateCreation ? new Date(dv.dateCreation).toLocaleDateString('fr-FR') : '—'}</div>
+        </div>
+        <button class="btn-quick btn-quick--outline" style="padding:7px 12px;font-size:.76rem;flex-shrink:0;" onclick="relancer('devis','${dv._id}','${dv.numero}','${(dv.clientEmail||'').replace(/'/g,"\\'")}','${(dv.clientNom||'').replace(/'/g,"\\'")}', ${dv.montantTTC || 0})">Relancer</button>
+      </div>
+    `).join('');
+  }
+
+  document.getElementById('liste-overlay').style.display = 'flex';
+};
+
+window.fermerListeModal = function(){
+  document.getElementById('liste-overlay').style.display = 'none';
+};
 
 window.relancer = async function(typeDoc, id, numero, email, clientNom, montant){
   const collectionName = typeDoc === 'facture' ? 'factures' : 'devis';
