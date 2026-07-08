@@ -256,7 +256,7 @@ body{background:var(--light);color:#222;min-height:100vh;}
           </div>
         </div>
 
-        <!-- Alertes + Activité -->
+        <!-- Activité + Factures -->
         <div class="section-grid">
           <div class="panel-box">
             <h3>Activité récente</h3>
@@ -268,11 +268,25 @@ body{background:var(--light);color:#222;min-height:100vh;}
             </div>
           </div>
           <div class="panel-box" id="anchor-alertes">
-            <h3>Alertes — Factures en retard</h3>
+            <h3>Factures</h3>
+            <div style="display:flex;justify-content:space-between;align-items:baseline;background:#F5F7FA;border-radius:8px;padding:12px 14px;margin-bottom:16px;">
+              <span style="font-size:.8rem;color:#7a8fa5;font-weight:600;">Montant total dû</span>
+              <span id="montant-total-du" style="font-size:1.15rem;font-weight:800;color:var(--red);">—</span>
+            </div>
+
+            <div style="font-size:.78rem;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:.03em;margin-bottom:8px;">En retard</div>
             <div id="alert-list">
               <div class="empty-state">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
                 <p>Chargement des alertes…</p>
+              </div>
+            </div>
+
+            <div style="font-size:.78rem;font-weight:700;color:#0369a1;text-transform:uppercase;letter-spacing:.03em;margin:18px 0 8px;">Dues (pas encore en retard)</div>
+            <div id="factures-attente-list">
+              <div class="empty-state">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                <p>Chargement…</p>
               </div>
             </div>
           </div>
@@ -288,23 +302,12 @@ body{background:var(--light);color:#222;min-height:100vh;}
           </div>
         </div>
 
-        <div class="section-grid" style="margin-top:20px;">
-          <div class="panel-box">
-            <h3>Factures en attente (à échéance)</h3>
-            <div id="factures-attente-list">
-              <div class="empty-state">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                <p>Chargement…</p>
-              </div>
-            </div>
-          </div>
-          <div class="panel-box">
-            <h3>Avoirs récents</h3>
-            <div id="avoirs-recents-list">
-              <div class="empty-state">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-15-6.7L3 13"/></svg>
-                <p>Chargement…</p>
-              </div>
+        <div class="panel-box" style="margin-top:20px;">
+          <h3>Avoirs récents</h3>
+          <div id="avoirs-recents-list">
+            <div class="empty-state">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-15-6.7L3 13"/></svg>
+              <p>Chargement…</p>
             </div>
           </div>
         </div>
@@ -542,6 +545,10 @@ async function chargerTableauDeBord(){
     // Factures en attente (envoyées, échéance pas encore dépassée)
     const facturesAttente = factures.filter(f => f.statut === 'envoyee' && f.dateEcheance && new Date(f.dateEcheance) >= now);
     facturesAttente.sort((a, b) => new Date(a.dateEcheance) - new Date(b.dateEcheance));
+
+    const montantDues = facturesAttente.reduce((s, f) => s + (f.montantTTC || 0), 0);
+    document.getElementById('montant-total-du').textContent = formatMontant(montantRetard + montantDues);
+
     const facturesAttenteList = document.getElementById('factures-attente-list');
     if(facturesAttente.length === 0){
       facturesAttenteList.innerHTML = '<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="20 6 9 17 4 12"/></svg><p>Aucune facture en attente de paiement pour l\'instant.</p></div>';
