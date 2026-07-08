@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Factures — Gestion APH Drone</title>
+<title>Avoirs — Gestion APH Drone</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{--primary:#0B1F3A;--secondary:#1F5FAF;--accent:#4A90E2;--light:#F5F7FA;--green:#16a34a;--red:#dc2626;--amber:#d97706;}
@@ -52,7 +52,7 @@ body{background:var(--light);color:#222;min-height:100vh;}
 #sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:400;}
 #sidebar-overlay.show{display:block;}
 
-.factures-layout{display:grid;grid-template-columns:1fr 1.1fr;gap:20px;align-items:start;}
+.avoirs-layout{display:grid;grid-template-columns:1fr 1.1fr;gap:20px;align-items:start;}
 .panel-box{background:white;border:1px solid #e8edf4;border-radius:12px;padding:24px;}
 .panel-box h2{font-size:1rem;font-weight:700;color:var(--primary);margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid #eee;}
 
@@ -108,18 +108,15 @@ body{background:var(--light);color:#222;min-height:100vh;}
 .filter-chip{padding:8px 14px;border-radius:18px;border:1.5px solid #dde3ec;background:white;font-size:12px;font-weight:600;cursor:pointer;color:#555;white-space:nowrap;}
 .filter-chip.active{background:var(--primary);border-color:var(--primary);color:white;}
 
-.facture-item{background:white;border:1px solid #eee;border-radius:10px;padding:14px 16px;margin-bottom:10px;transition:.2s;}
-.facture-item:hover{border-color:#dde3ec;box-shadow:0 2px 8px rgba(0,0,0,.05);}
-.facture-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px;}
-.facture-title{font-size:.9rem;font-weight:700;color:var(--primary);}
-.facture-meta{font-size:.78rem;color:#7a8fa5;}
+.avoir-item{background:white;border:1px solid #eee;border-radius:10px;padding:14px 16px;margin-bottom:10px;transition:.2s;}
+.avoir-item:hover{border-color:#dde3ec;box-shadow:0 2px 8px rgba(0,0,0,.05);}
+.avoir-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px;}
+.avoir-title{font-size:.9rem;font-weight:700;color:var(--primary);}
+.avoir-meta{font-size:.78rem;color:#7a8fa5;}
 .badge-status{font-size:9.5px;font-weight:700;padding:3px 9px;border-radius:10px;letter-spacing:.03em;text-transform:uppercase;flex-shrink:0;color:white;}
 .badge-status.brouillon{background:#94a3b8;}
-.badge-status.envoyee{background:#0369a1;}
-.badge-status.payee{background:#16a34a;}
-.badge-status.retard{background:#dc2626;}
-.badge-status.annulee{background:#6b7280;}
-.facture-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
+.badge-status.emis{background:#16a34a;}
+.avoir-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
 .btn-edit{padding:6px 12px;background:#f0f5ff;color:var(--secondary);border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;}
 .btn-edit:hover{background:var(--secondary);color:white;}
 .btn-delete{padding:6px 10px;background:#fee2e2;color:var(--red);border:none;border-radius:6px;font-size:12px;cursor:pointer;}
@@ -133,7 +130,7 @@ body{background:var(--light);color:#222;min-height:100vh;}
   .sidebar{position:fixed;left:0;top:0;bottom:0;z-index:500;transform:translateX(-100%);transition:.25s;}
   .sidebar.mobile-open{transform:translateX(0);}
   #mobile-burger{display:flex;}
-  .factures-layout{grid-template-columns:1fr;}
+  .avoirs-layout{grid-template-columns:1fr;}
   .content{padding:20px 16px 50px;}
   .topbar{padding:14px 16px;}
   .form-row{grid-template-columns:1fr;}
@@ -183,11 +180,11 @@ body{background:var(--light);color:#222;min-height:100vh;}
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>
           Devis
         </a>
-        <a class="nav-item active" href="factures.html">
+        <a class="nav-item" href="factures.html">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="12" y2="17"/></svg>
           Factures
         </a>
-        <a class="nav-item" href="avoirs.html">
+        <a class="nav-item active" href="avoirs.html">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-15-6.7L3 13"/></svg>
           Avoirs
         </a>
@@ -218,20 +215,35 @@ body{background:var(--light);color:#222;min-height:100vh;}
         <div style="display:flex;align-items:center;gap:12px;">
           <button id="mobile-burger" onclick="toggleSidebar(true)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
           <div>
-            <h1>Factures</h1>
-            <p>Création, suivi des paiements et export PDF</p>
+            <h1>Avoirs</h1>
+            <p>Correction ou annulation d'une facture déjà émise</p>
           </div>
         </div>
       </div>
 
       <div class="content">
-        <div class="factures-layout">
+        <div class="avoirs-layout">
 
           <!-- FORMULAIRE -->
           <div class="panel-box">
-            <h2 id="form-title">Nouvelle facture</h2>
+            <h2 id="form-title">Nouvel avoir</h2>
             <input type="hidden" id="edit-id">
             <input type="hidden" id="f-numero">
+
+            <div class="form-group">
+              <label>Facture d'origine (optionnel)</label>
+              <div class="select-dropdown">
+                <button type="button" class="select-dropdown-btn" id="btn-facture-picker" onclick="toggleFactureDropdown()">
+                  <span id="facture-selected-label">Sélectionner la facture concernée…</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="select-dropdown-panel" id="facture-dropdown-panel">
+                  <input type="text" id="facture-search-input" placeholder="Rechercher une facture…" oninput="filtrerFacturesDropdown()">
+                  <div id="facture-options-list"></div>
+                </div>
+              </div>
+              <p style="font-size:11px;color:#94a3b8;margin-top:6px;">La sélectionner remplit automatiquement le client et les lignes — modifiables ensuite si l'avoir n'est que partiel.</p>
+            </div>
 
             <div class="form-group">
               <label>Client *</label>
@@ -254,40 +266,35 @@ body{background:var(--light);color:#222;min-height:100vh;}
                 <input type="date" id="f-date-emission">
               </div>
               <div class="form-group">
-                <label>Échéance</label>
-                <input type="date" id="f-date-echeance">
+                <label>Statut</label>
+                <select id="f-statut">
+                  <option value="brouillon">Brouillon</option>
+                  <option value="emis">Émis</option>
+                </select>
               </div>
             </div>
 
             <div class="form-row">
               <div class="form-group">
-                <label>Statut</label>
-                <select id="f-statut" onchange="toggleDatePaiement()">
-                  <option value="brouillon">Brouillon</option>
-                  <option value="envoyee">Envoyée</option>
-                  <option value="payee">Payée</option>
-                  <option value="annulee">Annulée</option>
+                <label>Motif de l'avoir</label>
+                <select id="f-motif">
+                  <option value="Erreur de facturation">Erreur de facturation</option>
+                  <option value="Remise commerciale">Remise commerciale</option>
+                  <option value="Annulation de prestation">Annulation de prestation</option>
+                  <option value="Autre">Autre</option>
                 </select>
               </div>
               <div class="form-group">
-                <label>Mode de paiement</label>
-                <select id="f-mode-paiement">
-                  <option value="">—</option>
-                  <option value="virement">Virement</option>
-                  <option value="cheque">Chèque</option>
-                  <option value="especes">Espèces</option>
-                  <option value="carte">Carte bancaire</option>
+                <label>Mode de traitement</label>
+                <select id="f-mode-traitement">
+                  <option value="Remboursement">Remboursement</option>
+                  <option value="Déduction sur prochaine facture">Déduction sur prochaine facture</option>
                 </select>
               </div>
             </div>
 
-            <div class="form-group" id="wrap-date-paiement" style="display:none;">
-              <label>Date de paiement</label>
-              <input type="date" id="f-date-paiement">
-            </div>
-
             <div class="form-group">
-              <label>Lignes de la facture</label>
+              <label>Lignes de l'avoir</label>
               <table class="lignes-table">
                 <thead>
                   <tr>
@@ -316,33 +323,31 @@ body{background:var(--light);color:#222;min-height:100vh;}
             </div>
 
             <div class="form-actions">
-              <button class="btn-cancel" onclick="resetFormFacture()">Annuler</button>
+              <button class="btn-cancel" onclick="resetFormAvoir()">Annuler</button>
               <button class="btn-pdf" onclick="previsualiserPDF()">Aperçu PDF</button>
-              <button class="btn-save" id="btn-save" onclick="enregistrerFacture()">Enregistrer la facture</button>
+              <button class="btn-save" id="btn-save" onclick="enregistrerAvoir()">Enregistrer l'avoir</button>
             </div>
             <div id="save-status"></div>
           </div>
 
           <!-- LISTE -->
           <div class="panel-box">
-            <h2>Factures enregistrées <span id="facture-count" style="font-weight:400;color:#7a8fa5;font-size:.9rem;"></span></h2>
+            <h2>Avoirs enregistrés <span id="avoir-count" style="font-weight:400;color:#7a8fa5;font-size:.9rem;"></span></h2>
             <div class="search-bar">
-              <input type="text" id="search-input" placeholder="Rechercher une facture…" oninput="filtrerListeFactures()">
+              <input type="text" id="search-input" placeholder="Rechercher un avoir…" oninput="filtrerListeAvoirs()">
             </div>
             <div class="search-bar" style="margin-bottom:20px;">
-              <button class="filter-chip active" data-filter="all" onclick="setFiltreStatut(this,'all')">Toutes</button>
+              <button class="filter-chip active" data-filter="all" onclick="setFiltreStatut(this,'all')">Tous</button>
               <button class="filter-chip" data-filter="brouillon" onclick="setFiltreStatut(this,'brouillon')">Brouillons</button>
-              <button class="filter-chip" data-filter="envoyee" onclick="setFiltreStatut(this,'envoyee')">Envoyées</button>
-              <button class="filter-chip" data-filter="payee" onclick="setFiltreStatut(this,'payee')">Payées</button>
-              <button class="filter-chip" data-filter="retard" onclick="setFiltreStatut(this,'retard')">En retard</button>
+              <button class="filter-chip" data-filter="emis" onclick="setFiltreStatut(this,'emis')">Émis</button>
             </div>
             <div id="loading-list" style="text-align:center;padding:40px;color:#7a8fa5;font-size:.88rem;">Chargement…</div>
-            <div id="facture-list"></div>
+            <div id="avoir-list"></div>
 
             <div style="margin-top:28px;padding-top:18px;border-top:1px dashed #f0b4b4;">
               <div style="font-size:11px;font-weight:700;color:#dc2626;text-transform:uppercase;letter-spacing:.03em;margin-bottom:8px;">Zone de test</div>
-              <p style="font-size:.78rem;color:#94a3b8;margin-bottom:10px;">Supprime définitivement toutes les factures enregistrées — pratique pour repartir de zéro après une phase de test.</p>
-              <button class="btn-delete" style="padding:8px 14px;" onclick="viderTousLesFactures()">Supprimer toutes les factures</button>
+              <p style="font-size:.78rem;color:#94a3b8;margin-bottom:10px;">Supprime définitivement tous les avoirs enregistrés — pratique pour repartir de zéro après une phase de test.</p>
+              <button class="btn-delete" style="padding:8px 14px;" onclick="viderTousLesAvoirs()">Supprimer tous les avoirs</button>
             </div>
           </div>
 
@@ -356,10 +361,10 @@ body{background:var(--light);color:#222;min-height:100vh;}
 <div id="pdf-overlay" style="display:none;position:fixed;inset:0;background:rgba(11,31,58,.55);z-index:2000;align-items:flex-start;justify-content:center;overflow-y:auto;padding:30px 16px;">
   <div style="background:white;border-radius:14px;max-width:820px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3);">
     <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 24px;border-bottom:1px solid #eee;">
-      <div style="font-size:1rem;font-weight:700;color:#0B1F3A;">Aperçu de la facture</div>
+      <div style="font-size:1rem;font-weight:700;color:#0B1F3A;">Aperçu de l'avoir</div>
       <div style="display:flex;gap:10px;">
-        <button onclick="envoyerFactureAuClient()" id="btn-envoyer-client-facture" style="padding:9px 16px;background:#16a34a;color:white;border:none;border-radius:8px;font-size:.82rem;font-weight:600;cursor:pointer;">Envoyer au client</button>
-        <button onclick="exporterFacturePDF()" style="padding:9px 16px;background:#1F5FAF;color:white;border:none;border-radius:8px;font-size:.82rem;font-weight:600;cursor:pointer;">Exporter en PDF</button>
+        <button onclick="envoyerAvoirAuClient()" id="btn-envoyer-client-avoir" style="padding:9px 16px;background:#16a34a;color:white;border:none;border-radius:8px;font-size:.82rem;font-weight:600;cursor:pointer;">Envoyer au client</button>
+        <button onclick="exporterAvoirPDF()" style="padding:9px 16px;background:#1F5FAF;color:white;border:none;border-radius:8px;font-size:.82rem;font-weight:600;cursor:pointer;">Exporter en PDF</button>
         <button onclick="fermerPreviewPDF()" style="padding:9px 16px;background:#f5f7fa;color:#555;border:1px solid #dde3ec;border-radius:8px;font-size:.82rem;cursor:pointer;">Fermer</button>
       </div>
     </div>
@@ -394,11 +399,13 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-const STATUS_LABELS = { brouillon: 'Brouillon', envoyee: 'Envoyée', payee: 'Payée', retard: 'En retard', annulee: 'Annulée' };
+const STATUS_LABELS = { brouillon: 'Brouillon', emis: 'Émis' };
 
 let tousLesClients = [];
 let clientSelectionne = null;
-let allFactures = [];
+let toutesLesFactures = [];
+let factureSelectionnee = null;
+let allAvoirs = [];
 let filtreStatutActif = 'all';
 let compteurLignes = 0;
 
@@ -423,7 +430,8 @@ onAuthStateChanged(auth, user => {
     initFormulaire();
     (async function(){
       await chargerClientsPourDropdown();
-      await chargerFactures();
+      await chargerFacturesPourDropdown();
+      await chargerAvoirs();
       verifierParametreEnvoiDirect();
     })();
   } else if(user){
@@ -437,21 +445,9 @@ onAuthStateChanged(auth, user => {
 
 function initFormulaire(){
   const today = new Date();
-  const dans30j = new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000);
   document.getElementById('f-date-emission').value = today.toISOString().slice(0, 10);
-  document.getElementById('f-date-echeance').value = dans30j.toISOString().slice(0, 10);
   ajouterLigne();
-  toggleDatePaiement();
 }
-
-window.toggleDatePaiement = function(){
-  const estPayee = document.getElementById('f-statut').value === 'payee';
-  const wrap = document.getElementById('wrap-date-paiement');
-  wrap.style.display = estPayee ? 'block' : 'none';
-  if(estPayee && !document.getElementById('f-date-paiement').value){
-    document.getElementById('f-date-paiement').value = new Date().toISOString().slice(0, 10);
-  }
-};
 
 // ── Sélection du client ──
 async function chargerClientsPourDropdown(){
@@ -520,7 +516,64 @@ window.selectionnerClient = function(id){
   `;
 };
 
-// ── Lignes de la facture ──
+// ── Sélection de la facture d'origine ──
+async function chargerFacturesPourDropdown(){
+  try {
+    const snap = await getDocs(collection(db, 'factures'));
+    toutesLesFactures = [];
+    snap.forEach(d => toutesLesFactures.push({ id: d.id, ...d.data() }));
+    rendreOptionsFactures(toutesLesFactures);
+  } catch(e){
+    console.warn('chargerFacturesPourDropdown:', e.message);
+  }
+}
+
+function rendreOptionsFactures(liste){
+  const container = document.getElementById('facture-options-list');
+  if(liste.length === 0){
+    container.innerHTML = '<div style="padding:10px;font-size:.8rem;color:#94a3b8;">Aucune facture trouvée.</div>';
+    return;
+  }
+  container.innerHTML = liste.map(f => `
+    <div class="select-option" onclick="selectionnerFacture('${f.id}')">
+      <span>${f.numero} — ${f.clientNom || 'Client'}</span>
+      <span class="badge-mini" style="background:#0B1F3A;">${formaterMontantDoc(f.montantTTC)}</span>
+    </div>
+  `).join('');
+}
+
+window.filtrerFacturesDropdown = function(){
+  const q = document.getElementById('facture-search-input').value.toLowerCase();
+  const filtres = toutesLesFactures.filter(f => ((f.numero || '') + ' ' + (f.clientNom || '')).toLowerCase().includes(q));
+  rendreOptionsFactures(filtres);
+};
+
+window.toggleFactureDropdown = function(){
+  const panel = document.getElementById('facture-dropdown-panel');
+  const btn = document.getElementById('btn-facture-picker');
+  panel.classList.toggle('open');
+  btn.classList.toggle('open');
+};
+
+window.selectionnerFacture = function(id){
+  const f = toutesLesFactures.find(x => x.id === id);
+  if(!f) return;
+  factureSelectionnee = f;
+  document.getElementById('facture-selected-label').textContent = f.numero + ' — ' + (f.clientNom || '');
+  document.getElementById('facture-dropdown-panel').classList.remove('open');
+  document.getElementById('btn-facture-picker').classList.remove('open');
+
+  // Pré-remplit le client et les lignes automatiquement (modifiables ensuite pour un avoir partiel)
+  const c = tousLesClients.find(x => x.id === f.clientId);
+  if(c) selectionnerClient(c.id);
+
+  document.getElementById('lignes-tbody').innerHTML = '';
+  (f.lignes || []).forEach(l => ajouterLigne(l.designation, l.quantite, l.prixUnitaireHT, l.tvaTaux));
+  if((f.lignes || []).length === 0) ajouterLigne();
+  recalculerTotaux();
+};
+
+// ── Lignes de l'avoir ──
 window.ajouterLigne = function(designation, quantite, prixUnitaireHT, tvaTaux){
   compteurLignes++;
   const id = 'ligne-' + compteurLignes;
@@ -572,29 +625,31 @@ window.recalculerTotaux = function(){
 };
 
 // ── Numérotation séquentielle (compteur Firestore) ──
-async function genererNumeroFacture(){
+async function genererNumeroAvoir(){
   const anneeCode = String(new Date().getFullYear()).slice(-3);
-  const compteurRef = doc(db, 'compteurs', 'factures');
+  const compteurRef = doc(db, 'compteurs', 'avoirs');
   const nouveauNumero = await runTransaction(db, async (transaction) => {
     const snap = await transaction.get(compteurRef);
-    const dernier = snap.exists() ? snap.data().dernier : 55345;
+    const dernier = snap.exists() ? snap.data().dernier : 18393;
     const suivant = dernier + 1;
     transaction.set(compteurRef, { dernier: suivant }, { merge: true });
     return suivant;
   });
-  return 'F-' + anneeCode + String(nouveauNumero).padStart(5, '0');
+  return 'AVO-' + anneeCode + String(nouveauNumero).padStart(5, '0');
 }
 
 // ── Construction de l'objet doc pour le template ──
 function construireObjetDoc(){
   return {
-    typeDoc: 'facture',
+    typeDoc: 'avoir',
     numero: document.getElementById('f-numero').value || '(à générer à l\'enregistrement)',
     dateEmission: document.getElementById('f-date-emission').value,
-    dateEcheance: document.getElementById('f-date-echeance').value,
+    factureOrigineNumero: factureSelectionnee ? factureSelectionnee.numero : '',
     client: clientSelectionne,
     lignes: lireLignes(),
-    notes: document.getElementById('f-notes').value.trim()
+    notes: (document.getElementById('f-motif').value ? 'Motif : ' + document.getElementById('f-motif').value + '. ' : '') +
+           (document.getElementById('f-mode-traitement').value ? 'Traitement : ' + document.getElementById('f-mode-traitement').value + '. ' : '') +
+           document.getElementById('f-notes').value.trim()
   };
 }
 
@@ -609,7 +664,7 @@ window.previsualiserPDF = function(){
 window.fermerPreviewPDF = function(){
   document.getElementById('pdf-overlay').style.display = 'none';
 };
-window.exporterFacturePDF = async function(){
+window.exporterAvoirPDF = async function(){
   const area = document.getElementById('print-area');
   try {
     const canvas = await html2canvas(area, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
@@ -627,7 +682,7 @@ window.exporterFacturePDF = async function(){
   }
 };
 
-// ── Envoyer la facture au client par email (PDF en pièce jointe) ──
+// ── Envoyer l'avoir au client par email (PDF en pièce jointe) ──
 // Remplace l'URL ci-dessous par celle de ton déploiement Apps Script.
 const APPS_SCRIPT_ENVOI_URL = 'https://script.google.com/macros/s/AKfycbwwX4d-Db12Dd1JAw5I8FvhpfX55sr-MvS9ET0UAg3AVrBrLNboAL6t_xq3B9DBJsOU/exec';
 
@@ -643,8 +698,8 @@ async function envoyerEmailAvecPDF(numero, renvoi){
   pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', offsetX, 0, imgWidth, imgHeight);
   const pdfBase64 = pdf.output('datauristring').split(',')[1];
 
-  const sujet = (renvoi ? '[Renvoi] ' : '') + 'Votre facture ' + numero + ' — APH Drone';
-  const message = `Bonjour ${clientSelectionne.nomAffichage || ''},\n\nVeuillez trouver ci-joint votre facture ${numero}.\n\nN'hésitez pas à me contacter pour toute question.\n\nCordialement,\nArnaud Moreau\nAPH Drone`;
+  const sujet = (renvoi ? '[Renvoi] ' : '') + 'Votre avoir ' + numero + ' — APH Drone';
+  const message = `Bonjour ${clientSelectionne.nomAffichage || ''},\n\nVeuillez trouver ci-joint votre avoir ${numero}.\n\nN'hésitez pas à me contacter pour toute question.\n\nCordialement,\nArnaud Moreau\nAPH Drone`;
 
   const reponse = await fetch(APPS_SCRIPT_ENVOI_URL, {
     method: 'POST',
@@ -660,7 +715,7 @@ async function envoyerEmailAvecPDF(numero, renvoi){
   if(!resultat.ok) throw new Error(resultat.error || 'Erreur inconnue lors de l\'envoi.');
 }
 
-window.envoyerFactureAuClient = async function(){
+window.envoyerAvoirAuClient = async function(){
   if(!clientSelectionne){
     alert('Sélectionne un client avant d\'envoyer.');
     return;
@@ -670,20 +725,20 @@ window.envoyerFactureAuClient = async function(){
     return;
   }
 
-  const btn = document.getElementById('btn-envoyer-client-facture');
+  const btn = document.getElementById('btn-envoyer-client-avoir');
   btn.disabled = true;
   btn.textContent = 'Envoi en cours…';
 
   try {
-    const statutActuel = document.getElementById('edit-id').value ? allFactures.find(f => f.id === document.getElementById('edit-id').value)?.statut : null;
-    const renvoi = statutActuel === 'envoyee' || statutActuel === 'payee' || statutActuel === 'retard';
-    const { numero } = await sauvegarderFactureEtRetournerInfos(renvoi ? undefined : 'envoyee');
+    const statutActuel = document.getElementById('edit-id').value ? allAvoirs.find(f => f.id === document.getElementById('edit-id').value)?.statut : null;
+    const renvoi = statutActuel === 'emis';
+    const { numero } = await sauvegarderAvoirEtRetournerInfos(renvoi ? undefined : 'emis');
     await envoyerEmailAvecPDF(numero, renvoi);
 
-    showStatus('Facture ' + numero + (renvoi ? ' renvoyée à ' : ' envoyée à ') + clientSelectionne.email + '.', 'success');
+    showStatus('Avoir ' + numero + (renvoi ? ' renvoyé à ' : ' envoyé à ') + clientSelectionne.email + '.', 'success');
     fermerPreviewPDF();
-    resetFormFacture();
-    chargerFactures();
+    resetFormAvoir();
+    chargerAvoirs();
   } catch(e){
     alert('Erreur lors de l\'envoi : ' + e.message);
   }
@@ -693,7 +748,7 @@ window.envoyerFactureAuClient = async function(){
 };
 
 // ── Enregistrer ──
-async function sauvegarderFactureEtRetournerInfos(statutForce){
+async function sauvegarderAvoirEtRetournerInfos(statutForce){
   if(!clientSelectionne){
     throw new Error('Merci de sélectionner un client.');
   }
@@ -707,7 +762,7 @@ async function sauvegarderFactureEtRetournerInfos(statutForce){
 
   let numero = document.getElementById('f-numero').value;
   if(!numero){
-    numero = await genererNumeroFacture();
+    numero = await genererNumeroAvoir();
     document.getElementById('f-numero').value = numero;
   }
 
@@ -717,10 +772,11 @@ async function sauvegarderFactureEtRetournerInfos(statutForce){
     clientNom: clientSelectionne.nomAffichage,
     clientEmail: clientSelectionne.email || '',
     dateEmission: document.getElementById('f-date-emission').value,
-    dateEcheance: document.getElementById('f-date-echeance').value,
+    factureOrigineId: factureSelectionnee ? factureSelectionnee.id : '',
+    factureOrigineNumero: factureSelectionnee ? factureSelectionnee.numero : '',
     statut: statutForce || document.getElementById('f-statut').value,
-    modePaiement: document.getElementById('f-mode-paiement').value,
-    datePaiement: document.getElementById('f-date-paiement').value,
+    motif: document.getElementById('f-motif').value,
+    modeTraitement: document.getElementById('f-mode-traitement').value,
     lignes,
     notes: document.getElementById('f-notes').value.trim(),
     montantHT: totaux.totalHT,
@@ -731,9 +787,9 @@ async function sauvegarderFactureEtRetournerInfos(statutForce){
 
   let idFinal = editId;
   if(editId){
-    await updateDoc(doc(db, 'factures', editId), data);
+    await updateDoc(doc(db, 'avoirs', editId), data);
   } else {
-    const ref = await addDoc(collection(db, 'factures'), data);
+    const ref = await addDoc(collection(db, 'avoirs'), data);
     idFinal = ref.id;
     document.getElementById('edit-id').value = idFinal;
   }
@@ -742,7 +798,7 @@ async function sauvegarderFactureEtRetournerInfos(statutForce){
   return { id: idFinal, numero, isNew: !editId };
 }
 
-window.enregistrerFacture = async function(){
+window.enregistrerAvoir = async function(){
   const btn = document.getElementById('btn-save');
   btn.disabled = true;
   btn.textContent = 'Enregistrement…';
@@ -750,110 +806,108 @@ window.enregistrerFacture = async function(){
   try {
     const statutChoisi = document.getElementById('f-statut').value;
     const editIdAvant = document.getElementById('edit-id').value;
-    const ancienneFacture = editIdAvant ? allFactures.find(f => f.id === editIdAvant) : null;
-    const etaitDejaEnvoyee = ancienneFacture && ['envoyee', 'payee', 'retard'].includes(ancienneFacture.statut);
+    const ancien = editIdAvant ? allAvoirs.find(f => f.id === editIdAvant) : null;
+    const etaitDejaEmis = ancien && ancien.statut === 'emis';
 
-    const { numero, isNew } = await sauvegarderFactureEtRetournerInfos();
+    const { numero, isNew } = await sauvegarderAvoirEtRetournerInfos();
 
-    if(statutChoisi === 'envoyee' && clientSelectionne && clientSelectionne.email){
-      await envoyerEmailAvecPDF(numero, etaitDejaEnvoyee);
-      showStatus('Facture ' + numero + (etaitDejaEnvoyee ? ' renvoyée' : ' envoyée') + ' à ' + clientSelectionne.email + '.', 'success');
-    } else if(statutChoisi === 'envoyee' && (!clientSelectionne || !clientSelectionne.email)){
-      showStatus('Facture enregistrée, mais aucun email envoyé : ce client n\'a pas d\'adresse email.', 'error');
+    if(statutChoisi === 'emis' && clientSelectionne && clientSelectionne.email){
+      await envoyerEmailAvecPDF(numero, etaitDejaEmis);
+      showStatus('Avoir ' + numero + (etaitDejaEmis ? ' renvoyé' : ' envoyé') + ' à ' + clientSelectionne.email + '.', 'success');
+    } else if(statutChoisi === 'emis' && (!clientSelectionne || !clientSelectionne.email)){
+      showStatus('Avoir enregistré, mais aucun email envoyé : ce client n\'a pas d\'adresse email.', 'error');
     } else {
-      showStatus(isNew ? 'Facture ' + numero + ' enregistrée avec succès.' : 'Facture mise à jour avec succès.', 'success');
+      showStatus(isNew ? 'Avoir ' + numero + ' enregistré avec succès.' : 'Avoir mis à jour avec succès.', 'success');
     }
 
-    resetFormFacture();
-    chargerFactures();
+    resetFormAvoir();
+    chargerAvoirs();
   } catch(e){
     showStatus('Erreur : ' + e.message, 'error');
   }
 
   btn.disabled = false;
-  btn.textContent = document.getElementById('edit-id').value ? 'Mettre à jour' : 'Enregistrer la facture';
+  btn.textContent = document.getElementById('edit-id').value ? 'Mettre à jour' : 'Enregistrer l\'avoir';
 };
 
 // ── Charger la liste ──
-async function chargerFactures(){
+async function chargerAvoirs(){
   document.getElementById('loading-list').style.display = 'block';
-  document.getElementById('facture-list').innerHTML = '';
+  document.getElementById('avoir-list').innerHTML = '';
   try {
-    const q = query(collection(db, 'factures'), orderBy('ordre', 'desc'));
+    const q = query(collection(db, 'avoirs'), orderBy('ordre', 'desc'));
     const snap = await getDocs(q);
     document.getElementById('loading-list').style.display = 'none';
-    document.getElementById('facture-count').textContent = '(' + snap.size + ')';
-    allFactures = [];
-    snap.forEach(d => allFactures.push({ id: d.id, ...d.data() }));
-    afficherListeFactures();
+    document.getElementById('avoir-count').textContent = '(' + snap.size + ')';
+    allAvoirs = [];
+    snap.forEach(d => allAvoirs.push({ id: d.id, ...d.data() }));
+    afficherListeAvoirs();
   } catch(e){
     document.getElementById('loading-list').textContent = 'Erreur de chargement : ' + e.message;
   }
 }
 
-function calculerStatutAffiche(dv){
-  if(dv.statut === 'envoyee' && dv.dateEcheance && new Date(dv.dateEcheance) < new Date()) return 'retard';
-  return dv.statut;
-}
-
-function afficherListeFactures(){
-  const listEl = document.getElementById('facture-list');
+function afficherListeAvoirs(){
+  const listEl = document.getElementById('avoir-list');
   const recherche = (document.getElementById('search-input').value || '').toLowerCase();
 
-  const filtres = allFactures.filter(dv => {
-    const statutAffiche = calculerStatutAffiche(dv);
-    if(filtreStatutActif !== 'all' && statutAffiche !== filtreStatutActif) return false;
+  const filtres = allAvoirs.filter(dv => {
+    if(filtreStatutActif !== 'all' && dv.statut !== filtreStatutActif) return false;
     if(recherche){
-      const champ = ((dv.numero || '') + ' ' + (dv.clientNom || '')).toLowerCase();
+      const champ = ((dv.numero || '') + ' ' + (dv.clientNom || '') + ' ' + (dv.factureOrigineNumero || '')).toLowerCase();
       if(!champ.includes(recherche)) return false;
     }
     return true;
   });
 
   if(filtres.length === 0){
-    listEl.innerHTML = '<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><p>Aucune facture trouvée.</p></div>';
+    listEl.innerHTML = '<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-15-6.7L3 13"/></svg><p>Aucun avoir trouvé.</p></div>';
     return;
   }
 
-  listEl.innerHTML = filtres.map(dv => { const statutAffiche = calculerStatutAffiche(dv); return `
-    <div class="facture-item">
-      <div class="facture-top">
-        <div class="facture-title">${dv.numero} — ${dv.clientNom || 'Client'}</div>
-        <span class="badge-status ${statutAffiche}">${STATUS_LABELS[statutAffiche] || statutAffiche}</span>
+  listEl.innerHTML = filtres.map(dv => `
+    <div class="avoir-item">
+      <div class="avoir-top">
+        <div class="avoir-title">${dv.numero} — ${dv.clientNom || 'Client'}</div>
+        <span class="badge-status ${dv.statut}">${STATUS_LABELS[dv.statut] || dv.statut}</span>
       </div>
-      <div class="facture-meta">${formaterMontantDoc(dv.montantTTC)} · émis le ${dv.dateEmission ? new Date(dv.dateEmission).toLocaleDateString('fr-FR') : '—'}${dv.statut === 'payee' && dv.datePaiement ? ' · payée le ' + new Date(dv.datePaiement).toLocaleDateString('fr-FR') : ''}</div>
-      <div class="facture-actions">
+      <div class="avoir-meta">${formaterMontantDoc(dv.montantTTC)} · émis le ${dv.dateEmission ? new Date(dv.dateEmission).toLocaleDateString('fr-FR') : '—'}${dv.factureOrigineNumero ? ' · facture concernée : ' + dv.factureOrigineNumero : ''}</div>
+      <div class="avoir-actions">
         <button class="btn-edit" style="background:#dcfce7;color:#16a34a;" onclick="envoyerDepuisListe('${dv.id}')">${dv.statut === 'brouillon' ? 'Envoyer au client' : 'Renvoyer au client'}</button>
-        ${(statutAffiche === 'envoyee' || statutAffiche === 'retard') ? '<button class="btn-edit" style="background:#dcfce7;color:#16a34a;" onclick="marquerPayee(\'' + dv.id + '\')">Marquer payée</button>' : ''}
-        <button class="btn-edit" onclick="editerFacture('${dv.id}')">Modifier</button>
-        <button class="btn-edit" onclick="creerAvoir('${dv.id}')">Créer un avoir</button>
-        <button class="btn-delete" onclick="supprimerFacture('${dv.id}','${(dv.numero||'').replace(/'/g,"\\'")}')">✕</button>
+        <button class="btn-edit" onclick="editerAvoir('${dv.id}')">Modifier</button>
+        <button class="btn-delete" onclick="supprimerAvoir('${dv.id}','${(dv.numero||'').replace(/'/g,"\\'")}')">✕</button>
       </div>
     </div>
-  `; }).join('');
+  `).join('');
 }
 
-window.filtrerListeFactures = afficherListeFactures;
+window.filtrerListeAvoirs = afficherListeAvoirs;
 window.setFiltreStatut = function(btn, statut){
   document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   filtreStatutActif = statut;
-  afficherListeFactures();
+  afficherListeAvoirs();
 };
 
-window.editerFacture = function(id){
-  const dv = allFactures.find(x => x.id === id);
+window.editerAvoir = function(id){
+  const dv = allAvoirs.find(x => x.id === id);
   if(!dv) return;
-  resetFormFacture(false);
+  resetFormAvoir(false);
   document.getElementById('edit-id').value = id;
   document.getElementById('f-numero').value = dv.numero;
   document.getElementById('f-date-emission').value = dv.dateEmission || '';
-  document.getElementById('f-date-echeance').value = dv.dateEcheance || '';
   document.getElementById('f-statut').value = dv.statut || 'brouillon';
-  document.getElementById('f-mode-paiement').value = dv.modePaiement || '';
-  document.getElementById('f-date-paiement').value = dv.datePaiement || '';
-  toggleDatePaiement();
+  document.getElementById('f-motif').value = dv.motif || 'Erreur de facturation';
+  document.getElementById('f-mode-traitement').value = dv.modeTraitement || 'Remboursement';
   document.getElementById('f-notes').value = dv.notes || '';
+
+  if(dv.factureOrigineId){
+    const f = toutesLesFactures.find(x => x.id === dv.factureOrigineId);
+    if(f) selectionnerFacture(f.id);
+  } else {
+    factureSelectionnee = null;
+    document.getElementById('facture-selected-label').textContent = 'Sélectionner la facture concernée…';
+  }
 
   const c = tousLesClients.find(x => x.id === dv.clientId);
   if(c) selectionnerClient(c.id);
@@ -862,75 +916,65 @@ window.editerFacture = function(id){
   (dv.lignes || []).forEach(l => ajouterLigne(l.designation, l.quantite, l.prixUnitaireHT, l.tvaTaux));
   if((dv.lignes || []).length === 0) ajouterLigne();
 
-  document.getElementById('form-title').textContent = 'Modifier la facture ' + dv.numero;
+  document.getElementById('form-title').textContent = 'Modifier l\'avoir ' + dv.numero;
   document.getElementById('btn-save').textContent = 'Mettre à jour';
   document.querySelector('.panel-box').scrollIntoView({ behavior: 'smooth', block: 'start' });
 };
 
-window.marquerPayee = async function(id){
-  try {
-    await updateDoc(doc(db, 'factures', id), {
-      statut: 'payee',
-      datePaiement: new Date().toISOString().slice(0, 10)
-    });
-    chargerFactures();
-  } catch(e){
-    alert('Erreur : ' + e.message);
-  }
-};
-
-window.creerAvoir = function(id){
-  window.location.href = 'avoirs.html?depuisFacture=' + id;
-};
-
 window.envoyerDepuisListe = function(id){
-  editerFacture(id);
+  editerAvoir(id);
   previsualiserPDF();
-  envoyerFactureAuClient();
+  envoyerAvoirAuClient();
 };
 
 function verifierParametreEnvoiDirect(){
   const params = new URLSearchParams(window.location.search);
   const idAEnvoyer = params.get('envoyer');
-  if(idAEnvoyer && allFactures.find(dv => dv.id === idAEnvoyer)){
+  const idDepuisFacture = params.get('depuisFacture');
+
+  if(idAEnvoyer && allAvoirs.find(dv => dv.id === idAEnvoyer)){
     envoyerDepuisListe(idAEnvoyer);
-    history.replaceState(null, '', 'factures.html');
+    history.replaceState(null, '', 'avoirs.html');
+  } else if(idDepuisFacture && toutesLesFactures.find(f => f.id === idDepuisFacture)){
+    selectionnerFacture(idDepuisFacture);
+    document.querySelector('.panel-box').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    history.replaceState(null, '', 'avoirs.html');
   }
 }
 
-window.supprimerFacture = async function(id, numero){
-  if(!confirm('Supprimer la facture ' + numero + ' ? Cette action est définitive.')) return;
+window.supprimerAvoir = async function(id, numero){
+  if(!confirm('Supprimer l\'avoir ' + numero + ' ? Cette action est définitive.')) return;
   try {
-    await deleteDoc(doc(db, 'factures', id));
-    chargerFactures();
+    await deleteDoc(doc(db, 'avoirs', id));
+    chargerAvoirs();
   } catch(e){
     alert('Erreur : ' + e.message);
   }
 };
 
-window.viderTousLesFactures = async function(){
-  if(allFactures.length === 0){
-    alert('Il n\'y a déjà aucune facture enregistrée.');
+window.viderTousLesAvoirs = async function(){
+  if(allAvoirs.length === 0){
+    alert('Il n\'y a déjà aucun avoir enregistré.');
     return;
   }
-  if(!confirm('Supprimer DÉFINITIVEMENT les ' + allFactures.length + ' facture(s) enregistrée(s) ? Cette action est irréversible.')) return;
+  if(!confirm('Supprimer DÉFINITIVEMENT les ' + allAvoirs.length + ' avoir(s) enregistré(s) ? Cette action est irréversible.')) return;
   const saisie = prompt('Pour confirmer, tape le mot SUPPRIMER en majuscules :');
   if(saisie !== 'SUPPRIMER'){
     alert('Suppression annulée.');
     return;
   }
   try {
-    for(const dv of allFactures){
-      await deleteDoc(doc(db, 'factures', dv.id));
+    for(const dv of allAvoirs){
+      await deleteDoc(doc(db, 'avoirs', dv.id));
     }
-    chargerFactures();
-    alert('Toutes les factures ont été supprimées.');
+    chargerAvoirs();
+    alert('Tous les avoirs ont été supprimés.');
   } catch(e){
     alert('Erreur : ' + e.message);
   }
 };
 
-window.resetFormFacture = function(clearStatus){
+window.resetFormAvoir = function(clearStatus){
   document.getElementById('edit-id').value = '';
   document.getElementById('f-numero').value = '';
   clientSelectionne = null;
@@ -938,14 +982,18 @@ window.resetFormFacture = function(clearStatus){
   document.getElementById('client-selected-card').style.display = 'none';
   document.getElementById('client-search-input').value = '';
   rendreOptionsClients(tousLesClients);
+  factureSelectionnee = null;
+  document.getElementById('facture-selected-label').textContent = 'Sélectionner la facture concernée…';
+  document.getElementById('facture-search-input').value = '';
+  if(typeof toutesLesFactures !== 'undefined') rendreOptionsFactures(toutesLesFactures);
   document.getElementById('f-statut').value = 'brouillon';
-  document.getElementById('f-mode-paiement').value = '';
-  document.getElementById('f-date-paiement').value = '';
+  document.getElementById('f-motif').value = 'Erreur de facturation';
+  document.getElementById('f-mode-traitement').value = 'Remboursement';
   document.getElementById('f-notes').value = '';
   document.getElementById('lignes-tbody').innerHTML = '';
   initFormulaire();
-  document.getElementById('form-title').textContent = 'Nouvelle facture';
-  document.getElementById('btn-save').textContent = 'Enregistrer la facture';
+  document.getElementById('form-title').textContent = 'Nouvel avoir';
+  document.getElementById('btn-save').textContent = 'Enregistrer l\'avoir';
   document.getElementById('btn-save').disabled = false;
   if(clearStatus !== false) document.getElementById('save-status').style.display = 'none';
 };
