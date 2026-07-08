@@ -62,7 +62,7 @@ body{background:var(--light);color:#222;min-height:100vh;}
 .btn-quick--outline:hover{border-color:var(--accent);color:var(--accent);}
 
 /* Stat cards */
-.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:28px 0;}
+.stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin:28px 0;}
 .stat-card{background:white;border:1px solid #e8edf4;border-radius:12px;padding:18px 20px;}
 .stat-card .lbl{font-size:.74rem;color:#94a3b8;margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:.03em;}
 .stat-card .num{font-size:1.55rem;font-weight:800;color:var(--primary);}
@@ -115,7 +115,7 @@ body{background:var(--light);color:#222;min-height:100vh;}
   .sidebar{position:fixed;left:0;top:0;bottom:0;z-index:500;transform:translateX(-100%);transition:.25s;}
   .sidebar.mobile-open{transform:translateX(0);}
   #mobile-burger{display:flex;}
-  .stat-row{grid-template-columns:repeat(2,1fr);}
+  .stat-row{grid-template-columns:repeat(2,1fr) !important;}
   .section-grid{grid-template-columns:1fr;}
   .content{padding:20px 16px 50px;}
   .topbar{padding:14px 16px;}
@@ -249,6 +249,11 @@ body{background:var(--light);color:#222;min-height:100vh;}
             <div class="num" id="stat-devis-attente">—</div>
             <div class="sub" id="stat-devis-attente-sub">Chargement…</div>
           </div>
+          <div class="stat-card" style="cursor:pointer;" onclick="window.location.href='avoirs.html'">
+            <div class="lbl">Avoirs émis (mois)</div>
+            <div class="num" id="stat-avoirs-mois">—</div>
+            <div class="sub" id="stat-avoirs-mois-sub">Chargement…</div>
+          </div>
         </div>
 
         <!-- Alertes + Activité -->
@@ -279,6 +284,27 @@ body{background:var(--light);color:#222;min-height:100vh;}
             <div class="empty-state">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
               <p>Chargement…</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-grid" style="margin-top:20px;">
+          <div class="panel-box">
+            <h3>Factures en attente (à échéance)</h3>
+            <div id="factures-attente-list">
+              <div class="empty-state">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                <p>Chargement…</p>
+              </div>
+            </div>
+          </div>
+          <div class="panel-box">
+            <h3>Avoirs récents</h3>
+            <div id="avoirs-recents-list">
+              <div class="empty-state">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-15-6.7L3 13"/></svg>
+                <p>Chargement…</p>
+              </div>
             </div>
           </div>
         </div>
@@ -377,6 +403,7 @@ const STATUS_LABELS = {
 
 let facturesGlobal = [];
 let devisGlobal = [];
+let avoirsGlobal = [];
 
 async function chargerTableauDeBord(){
   const now = new Date();
@@ -386,6 +413,7 @@ async function chargerTableauDeBord(){
   try {
     const facturesSnap = await getDocs(collection(db, 'factures'));
     const devisSnap = await getDocs(collection(db, 'devis'));
+    const avoirsSnap = await getDocs(collection(db, 'avoirs'));
 
     let caMois = 0, caAnnee = 0, nbRetard = 0, montantRetard = 0, nbDevisAttente = 0;
     const factures = [];
@@ -412,8 +440,27 @@ async function chargerTableauDeBord(){
       if(dv.statut === 'envoye' || dv.statut === 'attente') nbDevisAttente++;
     });
 
+    // Les avoirs émis viennent en déduction du CA (correction/annulation partielle ou totale d'une facture)
+    const avoirsList = [];
+    let nbAvoirsMois = 0, montantAvoirsMois = 0;
+    avoirsSnap.forEach(d => {
+      const a = d.data();
+      a._id = d.id;
+      avoirsList.push(a);
+      const dateEmission = a.dateEmission ? new Date(a.dateEmission) : null;
+      if(a.statut === 'emis' && dateEmission){
+        if(dateEmission >= debutAnnee) caAnnee -= (a.montantTTC || 0);
+        if(dateEmission >= debutMois){
+          caMois -= (a.montantTTC || 0);
+          nbAvoirsMois++;
+          montantAvoirsMois += (a.montantTTC || 0);
+        }
+      }
+    });
+
     facturesGlobal = factures;
     devisGlobal = devisList;
+    avoirsGlobal = avoirsList;
 
     document.getElementById('stat-ca-mois').textContent = formatMontant(caMois);
     document.getElementById('stat-ca-mois-sub').textContent = now.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
@@ -423,6 +470,8 @@ async function chargerTableauDeBord(){
     document.getElementById('stat-retard-sub').textContent = nbRetard > 0 ? formatMontant(montantRetard) + ' en attente' : 'Aucune';
     document.getElementById('stat-devis-attente').textContent = nbDevisAttente;
     document.getElementById('stat-devis-attente-sub').textContent = nbDevisAttente > 0 ? 'À relancer' : 'Aucun';
+    document.getElementById('stat-avoirs-mois').textContent = nbAvoirsMois;
+    document.getElementById('stat-avoirs-mois-sub').textContent = nbAvoirsMois > 0 ? '-' + formatMontant(montantAvoirsMois) : 'Aucun ce mois';
 
     if(nbRetard > 0) document.getElementById('dot-factures').style.display = 'block';
 
@@ -490,6 +539,43 @@ async function chargerTableauDeBord(){
       }).join('');
     }
 
+    // Factures en attente (envoyées, échéance pas encore dépassée)
+    const facturesAttente = factures.filter(f => f.statut === 'envoyee' && f.dateEcheance && new Date(f.dateEcheance) >= now);
+    facturesAttente.sort((a, b) => new Date(a.dateEcheance) - new Date(b.dateEcheance));
+    const facturesAttenteList = document.getElementById('factures-attente-list');
+    if(facturesAttente.length === 0){
+      facturesAttenteList.innerHTML = '<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="20 6 9 17 4 12"/></svg><p>Aucune facture en attente de paiement pour l\'instant.</p></div>';
+    } else {
+      facturesAttenteList.innerHTML = facturesAttente.slice(0, 8).map(f => `
+        <div class="alert-item">
+          <div class="alert-icon" style="background:#e0f2fe;color:#0369a1;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+          <div class="alert-body">
+            <div class="alert-title">${f.numero} — ${f.clientNom || 'Client'}</div>
+            <div class="alert-meta">${formatMontant(f.montantTTC)} · échéance le ${new Date(f.dateEcheance).toLocaleDateString('fr-FR')}</div>
+          </div>
+          <button class="btn-quick btn-quick--outline" style="padding:7px 12px;font-size:.76rem;flex-shrink:0;" onclick="relancer('facture','${f._id}','${f.numero}','${(f.clientEmail||'').replace(/'/g,"\\'")}','${(f.clientNom||'').replace(/'/g,"\\'")}', ${f.montantTTC || 0})">Relancer</button>
+        </div>
+      `).join('');
+    }
+
+    // Avoirs récents (brouillons + émis)
+    const avoirsRecents = [...avoirsList].sort((a, b) => (b.ordre || 0) - (a.ordre || 0)).slice(0, 8);
+    const avoirsRecentsList = document.getElementById('avoirs-recents-list');
+    if(avoirsRecents.length === 0){
+      avoirsRecentsList.innerHTML = '<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-15-6.7L3 13"/></svg><p>Aucun avoir enregistré pour l\'instant.</p></div>';
+    } else {
+      avoirsRecentsList.innerHTML = avoirsRecents.map(a => `
+        <div class="alert-item">
+          <div class="alert-icon" style="background:${a.statut === 'emis' ? '#f3e8ff' : '#f1f5f9'};color:${a.statut === 'emis' ? '#7c3aed' : '#64748b'};"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-15-6.7L3 13"/></svg></div>
+          <div class="alert-body">
+            <div class="alert-title">${a.numero} — ${a.clientNom || 'Client'}</div>
+            <div class="alert-meta">${formatMontant(a.montantTTC)} · ${a.statut === 'emis' ? 'émis' : 'brouillon'}${a.factureOrigineNumero ? ' · facture ' + a.factureOrigineNumero : ''}</div>
+          </div>
+          <a href="avoirs.html" class="btn-quick btn-quick--outline" style="padding:7px 12px;font-size:.76rem;flex-shrink:0;">Voir</a>
+        </div>
+      `).join('');
+    }
+
     // Répartition clients par typologie
     await chargerRepartitionClients();
 
@@ -497,7 +583,7 @@ async function chargerTableauDeBord(){
     console.warn('chargerTableauDeBord:', e.message);
     document.getElementById('activity-list').innerHTML = '<div class="empty-state"><p>Impossible de charger les données pour le moment.</p></div>';
     document.getElementById('alert-list').innerHTML = '<div class="empty-state"><p>Impossible de charger les données pour le moment.</p></div>';
-    ['stat-ca-mois','stat-ca-annee','stat-retard','stat-devis-attente'].forEach(id => document.getElementById(id).textContent = '0');
+    ['stat-ca-mois','stat-ca-annee','stat-retard','stat-devis-attente','stat-avoirs-mois'].forEach(id => document.getElementById(id).textContent = '0');
   }
 }
 
