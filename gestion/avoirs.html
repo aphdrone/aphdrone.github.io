@@ -243,6 +243,7 @@ body{background:var(--light);color:#222;min-height:100vh;}
                 </div>
               </div>
               <p style="font-size:11px;color:#94a3b8;margin-top:6px;">La sélectionner remplit automatiquement le client et les lignes — modifiables ensuite si l'avoir n'est que partiel.</p>
+              <div id="facture-existants-info" style="display:none;margin-top:8px;padding:9px 12px;background:#fef3c7;border-radius:8px;font-size:11.5px;color:#92400e;"></div>
             </div>
 
             <div class="form-group">
@@ -571,7 +572,24 @@ window.selectionnerFacture = function(id){
   (f.lignes || []).forEach(l => ajouterLigne(l.designation, l.quantite, l.prixUnitaireHT, l.tvaTaux));
   if((f.lignes || []).length === 0) ajouterLigne();
   recalculerTotaux();
+
+  afficherAvoirsExistantsPourFacture(f.id);
 };
+
+function afficherAvoirsExistantsPourFacture(factureId){
+  const editId = document.getElementById('edit-id').value;
+  const existants = allAvoirs.filter(a => a.factureOrigineId === factureId && a.id !== editId);
+  const box = document.getElementById('facture-existants-info');
+  if(existants.length === 0){
+    box.style.display = 'none';
+    return;
+  }
+  const total = existants.reduce((s, a) => s + (a.montantTTC || 0), 0);
+  box.style.display = 'block';
+  box.innerHTML = '⚠ ' + existants.length + ' avoir(s) déjà créé(s) pour cette facture, totalisant ' + formaterMontantDoc(total) +
+    ' : ' + existants.map(a => a.numero + ' (' + formaterMontantDoc(a.montantTTC) + ')').join(', ') +
+    '. Vérifie que ce nouvel avoir ne fait pas doublon.';
+}
 
 // ── Lignes de l'avoir ──
 window.ajouterLigne = function(designation, quantite, prixUnitaireHT, tvaTaux){
@@ -759,6 +777,17 @@ async function sauvegarderAvoirEtRetournerInfos(statutForce){
 
   const editId = document.getElementById('edit-id').value;
   const totaux = calculerTotauxDoc(lignes);
+
+  if(factureSelectionnee){
+    const doublon = allAvoirs.find(a =>
+      a.id !== editId &&
+      a.factureOrigineId === factureSelectionnee.id &&
+      Math.abs((a.montantTTC || 0) - totaux.totalTTC) < 0.01
+    );
+    if(doublon){
+      throw new Error('Un avoir identique (' + doublon.numero + ', ' + formaterMontantDoc(doublon.montantTTC) + ') existe déjà pour la facture ' + factureSelectionnee.numero + '. Modifie le montant/les lignes ou édite l\'avoir existant plutôt que d\'en créer un nouveau.');
+    }
+  }
 
   let numero = document.getElementById('f-numero').value;
   if(!numero){
@@ -985,6 +1014,7 @@ window.resetFormAvoir = function(clearStatus){
   factureSelectionnee = null;
   document.getElementById('facture-selected-label').textContent = 'Sélectionner la facture concernée…';
   document.getElementById('facture-search-input').value = '';
+  document.getElementById('facture-existants-info').style.display = 'none';
   if(typeof toutesLesFactures !== 'undefined') rendreOptionsFactures(toutesLesFactures);
   document.getElementById('f-statut').value = 'brouillon';
   document.getElementById('f-motif').value = 'Erreur de facturation';
