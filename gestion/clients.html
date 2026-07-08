@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clients — Gestion APH Drone</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--primary:#0B1F3A;--secondary:#1F5FAF;--accent:#4A90E2;--light:#F5F7FA;--green:#16a34a;--red:#dc2626;--amber:#d97706;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
+body{background:var(--light);color:#222;min-height:100vh;}
+
+#gate{position:fixed;inset:0;background:linear-gradient(135deg,var(--primary) 0%,#1a3a6b 100%);display:flex;align-items:center;justify-content:center;z-index:9999;}
+.gate-box{background:white;border-radius:20px;padding:40px;width:100%;max-width:360px;text-align:center;}
+.gate-box img{width:64px;height:64px;border-radius:50%;margin-bottom:16px;}
+.gate-box h2{font-size:1.2rem;color:var(--primary);margin-bottom:6px;}
+.gate-box p{font-size:.85rem;color:#7a8fa5;margin-bottom:20px;}
+.gate-spinner{width:28px;height:28px;border:3px solid #e0e8f0;border-top-color:var(--secondary);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.gate-denied{color:var(--red);font-size:.85rem;font-weight:600;margin-top:12px;}
+.gate-link{display:inline-block;margin-top:16px;font-size:.82rem;color:var(--secondary);text-decoration:none;font-weight:600;}
+
+#app{display:none;min-height:100vh;}
+.shell{display:flex;min-height:100vh;}
+
+.sidebar{width:240px;background:var(--primary);color:white;flex-shrink:0;display:flex;flex-direction:column;padding:24px 0;}
+.brand{display:flex;align-items:center;gap:10px;padding:0 24px 24px;border-bottom:1px solid rgba(255,255,255,.1);margin-bottom:16px;}
+.brand img{width:36px;height:36px;border-radius:50%;}
+.brand-text{font-size:.85rem;font-weight:700;line-height:1.3;}
+.brand-text span{display:block;font-size:.68rem;font-weight:500;color:rgba(255,255,255,.5);}
+.nav{flex:1;display:flex;flex-direction:column;gap:2px;padding:0 12px;}
+.nav-item{display:flex;align-items:center;gap:11px;padding:11px 14px;border-radius:9px;color:rgba(255,255,255,.65);text-decoration:none;font-size:.85rem;font-weight:500;cursor:pointer;border:none;background:none;width:100%;text-align:left;transition:.15s;position:relative;}
+.nav-item:hover{background:rgba(255,255,255,.06);color:white;}
+.nav-item.active{background:var(--secondary);color:white;}
+.nav-item svg{flex-shrink:0;width:17px;height:17px;}
+.nav-sep{height:1px;background:rgba(255,255,255,.08);margin:10px 14px;}
+.foot{padding:16px 24px 0;border-top:1px solid rgba(255,255,255,.1);margin-top:16px;}
+.foot-email{font-size:.72rem;color:rgba(255,255,255,.4);margin-bottom:10px;word-break:break-all;}
+.foot a.back-link{display:block;font-size:.78rem;color:rgba(255,255,255,.5);text-decoration:none;margin-bottom:10px;}
+.foot a.back-link:hover{color:white;}
+.logout-btn{font-size:.78rem;color:rgba(255,255,255,.65);background:none;border:1px solid rgba(255,255,255,.15);border-radius:7px;padding:8px 12px;cursor:pointer;width:100%;transition:.15s;}
+.logout-btn:hover{background:rgba(255,255,255,.08);color:white;}
+
+.main{flex:1;overflow-y:auto;}
+.topbar{background:white;border-bottom:1px solid #e8edf4;padding:18px 32px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
+.topbar h1{font-size:1.15rem;color:var(--primary);}
+.topbar p{font-size:.78rem;color:#94a3b8;margin-top:2px;}
+.content{padding:28px 32px 60px;}
+
+#mobile-burger{align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;border:1px solid #e8edf4;background:white;cursor:pointer;}
+#mobile-burger svg{width:18px;height:18px;color:var(--primary);}
+#sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:400;}
+#sidebar-overlay.show{display:block;}
+
+/* Layout deux colonnes */
+.clients-layout{display:grid;grid-template-columns:1fr 1.15fr;gap:20px;align-items:start;}
+.panel-box{background:white;border:1px solid #e8edf4;border-radius:12px;padding:24px;}
+.panel-box h2{font-size:1rem;font-weight:700;color:var(--primary);margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid #eee;}
+
+/* Formulaire */
+.form-group{margin-bottom:18px;}
+.form-group label{display:block;font-size:11px;font-weight:600;color:#555;letter-spacing:.03em;text-transform:uppercase;margin-bottom:6px;}
+.form-group input,.form-group select,.form-group textarea{
+  width:100%;padding:10px 13px;border:1.5px solid #dde3ec;border-radius:8px;
+  font-size:.86rem;outline:none;transition:.2s;font-family:'Inter',sans-serif;color:#222;
+}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--accent);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.form-row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+
+/* Type selector */
+.type-select{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
+.type-btn{padding:9px 16px;border-radius:20px;border:1.5px solid #dde3ec;background:white;font-size:12.5px;font-weight:600;cursor:pointer;transition:.2s;color:#555;}
+.type-btn:hover{border-color:var(--accent);color:var(--accent);}
+.type-btn.active{color:white;border-color:transparent;}
+.type-btn[data-type="particulier"].active{background:#1F5FAF;}
+.type-btn[data-type="professionnel"].active{background:#16a34a;}
+.type-btn[data-type="collectivite"].active{background:#7c3aed;}
+.type-btn[data-type="association"].active{background:#ea580c;}
+
+.type-fields{display:none;}
+.type-fields.active{display:block;}
+
+/* Contacts */
+.contact-row{display:grid;grid-template-columns:1fr 1fr 1fr 1fr auto;gap:8px;margin-bottom:8px;align-items:center;}
+.contact-row input{padding:8px 10px;border:1.5px solid #dde3ec;border-radius:6px;font-size:.8rem;outline:none;}
+.contact-row input:focus{border-color:var(--accent);}
+.btn-remove-contact{width:30px;height:30px;border-radius:6px;background:#fee2e2;color:var(--red);border:none;cursor:pointer;font-size:16px;flex-shrink:0;}
+.btn-add-contact{padding:8px 14px;background:#f0f5ff;color:var(--secondary);border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;margin-top:4px;}
+.btn-add-contact:hover{background:var(--secondary);color:white;}
+
+/* Actions */
+.form-actions{display:flex;gap:12px;margin-top:24px;padding-top:18px;border-top:1px solid #eee;}
+.btn-save{flex:1;padding:12px;background:var(--secondary);color:white;border:none;border-radius:8px;font-size:.88rem;font-weight:600;cursor:pointer;transition:.2s;}
+.btn-save:hover{background:var(--accent);}
+.btn-save:disabled{background:#9ca3af;cursor:not-allowed;}
+.btn-cancel{padding:12px 18px;background:#f5f7fa;color:#555;border:1px solid #dde3ec;border-radius:8px;font-size:.88rem;cursor:pointer;}
+.btn-cancel:hover{background:#eee;}
+#save-status{margin-top:10px;padding:9px 13px;border-radius:8px;font-size:.82rem;font-weight:500;display:none;}
+#save-status.success{background:#dcfce7;color:#16a34a;}
+#save-status.error{background:#fee2e2;color:#dc2626;}
+
+/* Liste + recherche */
+.search-bar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
+.search-bar input{flex:1;min-width:160px;padding:9px 14px;border:1.5px solid #dde3ec;border-radius:8px;font-size:.85rem;outline:none;}
+.search-bar input:focus{border-color:var(--accent);}
+.filter-chip{padding:8px 14px;border-radius:18px;border:1.5px solid #dde3ec;background:white;font-size:12px;font-weight:600;cursor:pointer;color:#555;white-space:nowrap;}
+.filter-chip.active{background:var(--primary);border-color:var(--primary);color:white;}
+
+.client-item{background:white;border:1px solid #eee;border-radius:10px;padding:14px 16px;margin-bottom:10px;transition:.2s;}
+.client-item:hover{border-color:#dde3ec;box-shadow:0 2px 8px rgba(0,0,0,.05);}
+.client-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px;}
+.client-name{font-size:.9rem;font-weight:700;color:var(--primary);}
+.client-type-badge{font-size:9.5px;font-weight:700;padding:3px 9px;border-radius:10px;color:white;letter-spacing:.03em;text-transform:uppercase;flex-shrink:0;}
+.client-meta{font-size:.78rem;color:#7a8fa5;}
+.client-actions{display:flex;gap:8px;margin-top:10px;}
+.btn-edit{padding:6px 12px;background:#f0f5ff;color:var(--secondary);border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;}
+.btn-edit:hover{background:var(--secondary);color:white;}
+.btn-delete{padding:6px 10px;background:#fee2e2;color:var(--red);border:none;border-radius:6px;font-size:12px;cursor:pointer;}
+.btn-delete:hover{background:var(--red);color:white;}
+
+.empty-state{text-align:center;padding:50px 16px;color:#94a3b8;}
+.empty-state svg{width:40px;height:40px;margin-bottom:12px;opacity:.35;}
+.empty-state p{font-size:.85rem;}
+
+@media(max-width:900px){
+  .sidebar{position:fixed;left:0;top:0;bottom:0;z-index:500;transform:translateX(-100%);transition:.25s;}
+  .sidebar.mobile-open{transform:translateX(0);}
+  #mobile-burger{display:flex;}
+  .clients-layout{grid-template-columns:1fr;}
+  .content{padding:20px 16px 50px;}
+  .topbar{padding:14px 16px;}
+  .form-row,.form-row3{grid-template-columns:1fr;}
+  .contact-row{grid-template-columns:1fr 1fr;}
+}
+@media(min-width:901px){#mobile-burger{display:none;}}
+</style>
+</head>
+<body>
+
+<div id="gate">
+  <div class="gate-box">
+    <img src="/assets/logo.jpg" alt="APH Drone" onerror="this.style.display='none'">
+    <h2>Gestion — APH Drone</h2>
+    <p>Devis, factures &amp; suivi comptable</p>
+    <div class="gate-spinner" id="gate-spinner"></div>
+    <div id="gate-login" style="display:none;">
+      <input type="email" id="login-email" placeholder="Email" autocomplete="email"
+        style="width:100%;padding:12px 16px;border:1.5px solid #dde3ec;border-radius:8px;font-size:.9rem;margin-bottom:12px;outline:none;">
+      <input type="password" id="login-password" placeholder="Mot de passe" autocomplete="current-password"
+        onkeydown="if(event.key==='Enter') doLogin()"
+        style="width:100%;padding:12px 16px;border:1.5px solid #dde3ec;border-radius:8px;font-size:.9rem;margin-bottom:12px;outline:none;">
+      <button onclick="doLogin()" style="width:100%;padding:13px;background:var(--secondary);color:white;border:none;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer;">Se connecter</button>
+      <p class="gate-denied" id="gate-error" style="display:none;">Email ou mot de passe incorrect.</p>
+    </div>
+    <div id="gate-refused" style="display:none;">
+      <p class="gate-denied">Accès non autorisé.</p>
+      <a href="/pages/connexion.html" class="gate-link">Retour à la connexion</a>
+    </div>
+  </div>
+</div>
+
+<div id="app">
+  <div id="sidebar-overlay" onclick="toggleSidebar(false)"></div>
+  <div class="shell">
+
+    <div class="sidebar" id="sidebar">
+      <div class="brand">
+        <img src="/assets/logo.jpg" alt="APH Drone" onerror="this.style.display='none'">
+        <div class="brand-text">Gestion<span>Devis &amp; Facturation</span></div>
+      </div>
+      <div class="nav">
+        <a class="nav-item" href="index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+          Tableau de bord
+        </a>
+        <a class="nav-item" href="devis.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>
+          Devis
+        </a>
+        <a class="nav-item" href="factures.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="12" y2="17"/></svg>
+          Factures
+        </a>
+        <a class="nav-item" href="avoirs.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-15-6.7L3 13"/></svg>
+          Avoirs
+        </a>
+        <div class="nav-sep"></div>
+        <a class="nav-item active" href="clients.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Clients
+        </a>
+        <a class="nav-item" href="statistiques.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          Statistiques
+        </a>
+        <div class="nav-sep"></div>
+        <a class="nav-item" href="parametres.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Paramètres
+        </a>
+      </div>
+      <div class="foot">
+        <a href="/office/" class="back-link">← Retour à l'admin du site</a>
+        <div class="foot-email" id="user-email"></div>
+        <button class="logout-btn" onclick="doLogout()">Déconnexion</button>
+      </div>
+    </div>
+
+    <div class="main">
+      <div class="topbar">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <button id="mobile-burger" onclick="toggleSidebar(true)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+          <div>
+            <h1>Clients</h1>
+            <p>Base clients pour devis &amp; facturation</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="clients-layout">
+
+          <!-- FORMULAIRE -->
+          <div class="panel-box">
+            <h2 id="form-title">Nouveau client</h2>
+            <input type="hidden" id="edit-id">
+
+            <div class="type-select" id="type-select">
+              <button type="button" class="type-btn active" data-type="particulier" onclick="selectType('particulier')">Particulier</button>
+              <button type="button" class="type-btn" data-type="professionnel" onclick="selectType('professionnel')">Professionnel</button>
+              <button type="button" class="type-btn" data-type="collectivite" onclick="selectType('collectivite')">Collectivité</button>
+              <button type="button" class="type-btn" data-type="association" onclick="selectType('association')">Association</button>
+            </div>
+
+            <!-- Champs Particulier -->
+            <div class="type-fields active" data-type-fields="particulier">
+              <div class="form-row">
+                <div class="form-group"><label>Prénom</label><input type="text" id="f-prenom" placeholder="Prénom"></div>
+                <div class="form-group"><label>Nom</label><input type="text" id="f-nom" placeholder="Nom"></div>
+              </div>
+            </div>
+
+            <!-- Champs Professionnel -->
+            <div class="type-fields" data-type-fields="professionnel">
+              <div class="form-group"><label>Raison sociale</label><input type="text" id="f-raisonsociale" placeholder="Ex : SCEA du Verger"></div>
+              <div class="form-row">
+                <div class="form-group"><label>Forme juridique</label><input type="text" id="f-formejuridique" placeholder="SASU, SARL, EI…"></div>
+                <div class="form-group"><label>SIRET</label><input type="text" id="f-siret-pro" placeholder="14 chiffres"></div>
+              </div>
+              <div class="form-row">
+                <div class="form-group"><label>N° TVA intracommunautaire</label><input type="text" id="f-tva" placeholder="FRXX XXXXXXXXX"></div>
+                <div class="form-group"><label>Contact référent</label><input type="text" id="f-contact-pro" placeholder="Nom du contact"></div>
+              </div>
+            </div>
+
+            <!-- Champs Collectivité -->
+            <div class="type-fields" data-type-fields="collectivite">
+              <div class="form-group"><label>Nom de la collectivité</label><input type="text" id="f-nomcollectivite" placeholder="Ex : Mairie de Luxeuil-les-Bains"></div>
+              <div class="form-row">
+                <div class="form-group"><label>SIRET</label><input type="text" id="f-siret-collectivite" placeholder="14 chiffres"></div>
+                <div class="form-group"><label>Service / Direction</label><input type="text" id="f-service" placeholder="Ex : Service technique"></div>
+              </div>
+              <div class="form-row">
+                <div class="form-group"><label>Contact référent</label><input type="text" id="f-contact-collectivite" placeholder="Nom du contact"></div>
+                <div class="form-group"><label>N° bon de commande</label><input type="text" id="f-boncommande" placeholder="Si connu à l'avance"></div>
+              </div>
+              <div class="form-group"><label>Délai de paiement (jours)</label><input type="number" id="f-delai-collectivite" value="30"></div>
+            </div>
+
+            <!-- Champs Association -->
+            <div class="type-fields" data-type-fields="association">
+              <div class="form-group"><label>Nom de l'association</label><input type="text" id="f-nomasso" placeholder="Nom de l'association"></div>
+              <div class="form-row">
+                <div class="form-group"><label>N° SIRET / RNA</label><input type="text" id="f-siret-asso" placeholder="Si applicable"></div>
+                <div class="form-group"><label>Contact référent</label><input type="text" id="f-contact-asso" placeholder="Nom du contact"></div>
+              </div>
+            </div>
+
+            <!-- Champs communs -->
+            <div class="form-group"><label>Adresse</label><input type="text" id="f-adresse" placeholder="Numéro et rue"></div>
+            <div class="form-row3">
+              <div class="form-group"><label>Code postal</label><input type="text" id="f-cp" placeholder="70300"></div>
+              <div class="form-group" style="grid-column:span 2;"><label>Ville</label><input type="text" id="f-ville" placeholder="Luxeuil-les-Bains"></div>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label>Email principal</label><input type="email" id="f-email" placeholder="contact@exemple.fr"></div>
+              <div class="form-group"><label>Téléphone principal</label><input type="tel" id="f-telephone" placeholder="06 XX XX XX XX"></div>
+            </div>
+
+            <!-- Contacts multiples -->
+            <div class="form-group">
+              <label>Contacts (service, personne à joindre)</label>
+              <div id="contacts-list"></div>
+              <button type="button" class="btn-add-contact" onclick="ajouterLigneContact()">+ Ajouter un contact</button>
+            </div>
+
+            <div class="form-group">
+              <label>Notes internes</label>
+              <textarea id="f-notes" rows="2" placeholder="Remarques, préférences, historique…"></textarea>
+            </div>
+
+            <div class="form-actions">
+              <button class="btn-cancel" onclick="resetForm()">Annuler</button>
+              <button class="btn-save" id="btn-save" onclick="enregistrerClient()">Enregistrer le client</button>
+            </div>
+            <div id="save-status"></div>
+          </div>
+
+          <!-- LISTE -->
+          <div class="panel-box">
+            <h2>Clients enregistrés <span id="client-count" style="font-weight:400;color:#7a8fa5;font-size:.9rem;"></span></h2>
+            <div class="search-bar">
+              <input type="text" id="search-input" placeholder="Rechercher un client…" oninput="filtrerListe()">
+            </div>
+            <div class="search-bar" style="margin-bottom:20px;">
+              <button class="filter-chip active" data-filter="all" onclick="setFiltreType(this,'all')">Tous</button>
+              <button class="filter-chip" data-filter="particulier" onclick="setFiltreType(this,'particulier')">Particuliers</button>
+              <button class="filter-chip" data-filter="professionnel" onclick="setFiltreType(this,'professionnel')">Professionnels</button>
+              <button class="filter-chip" data-filter="collectivite" onclick="setFiltreType(this,'collectivite')">Collectivités</button>
+              <button class="filter-chip" data-filter="association" onclick="setFiltreType(this,'association')">Associations</button>
+            </div>
+            <div id="loading-list" style="text-align:center;padding:40px;color:#7a8fa5;font-size:.88rem;">Chargement…</div>
+            <div id="client-list"></div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, updateDoc, orderBy, query }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAV5NQWfp8n9RkTrHSwqssBJ4R9lNAuYK8",
+  authDomain: "aph-drone.firebaseapp.com",
+  projectId: "aph-drone",
+  storageBucket: "aph-drone.firebasestorage.app",
+  messagingSenderId: "316810168380",
+  appId: "1:316810168380:web:66cb916cec4fdc00b9db39"
+};
+
+const ADMIN_EMAIL = "aph.moreau@gmail.com";
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const TYPE_LABELS = { particulier: 'Particulier', professionnel: 'Professionnel', collectivite: 'Collectivité', association: 'Association' };
+const TYPE_COLORS = { particulier: '#1F5FAF', professionnel: '#16a34a', collectivite: '#7c3aed', association: '#ea580c' };
+
+let currentType = 'particulier';
+let allClients = [];
+let filtreTypeActif = 'all';
+
+window.doLogin = async function(){
+  const email = document.getElementById('login-email').value;
+  const pwd = document.getElementById('login-password').value;
+  try { await signInWithEmailAndPassword(auth, email, pwd); }
+  catch(e){ document.getElementById('gate-error').style.display = 'block'; }
+};
+window.doLogout = async function(){ await signOut(auth); };
+
+onAuthStateChanged(auth, user => {
+  const spinner = document.getElementById('gate-spinner');
+  const loginBox = document.getElementById('gate-login');
+  const refusedBox = document.getElementById('gate-refused');
+  spinner.style.display = 'none';
+
+  if(user && user.email === ADMIN_EMAIL){
+    document.getElementById('gate').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    document.getElementById('user-email').textContent = user.email;
+    ajouterLigneContact();
+    chargerClients();
+  } else if(user){
+    refusedBox.style.display = 'block';
+    loginBox.style.display = 'none';
+  } else {
+    loginBox.style.display = 'block';
+    refusedBox.style.display = 'none';
+  }
+});
+
+window.selectType = function(type){
+  currentType = type;
+  document.querySelectorAll('.type-btn').forEach(b => b.classList.toggle('active', b.dataset.type === type));
+  document.querySelectorAll('.type-fields').forEach(f => f.classList.toggle('active', f.dataset.typeFields === type));
+};
+
+window.ajouterLigneContact = function(service, nom, email, tel){
+  const wrap = document.getElementById('contacts-list');
+  const row = document.createElement('div');
+  row.className = 'contact-row';
+  row.innerHTML = `
+    <input type="text" placeholder="Service / fonction" class="c-service" value="${service || ''}">
+    <input type="text" placeholder="Nom" class="c-nom" value="${nom || ''}">
+    <input type="email" placeholder="Email" class="c-email" value="${email || ''}">
+    <input type="tel" placeholder="Téléphone" class="c-tel" value="${tel || ''}">
+    <button type="button" class="btn-remove-contact" onclick="this.closest('.contact-row').remove()">✕</button>
+  `;
+  wrap.appendChild(row);
+};
+
+function getNomAffichage(){
+  switch(currentType){
+    case 'particulier': {
+      const p = document.getElementById('f-prenom').value.trim();
+      const n = document.getElementById('f-nom').value.trim();
+      return (p + ' ' + n).trim();
+    }
+    case 'professionnel': return document.getElementById('f-raisonsociale').value.trim();
+    case 'collectivite': return document.getElementById('f-nomcollectivite').value.trim();
+    case 'association': return document.getElementById('f-nomasso').value.trim();
+  }
+  return '';
+}
+
+function collecterContacts(){
+  const contacts = [];
+  document.querySelectorAll('#contacts-list .contact-row').forEach(row => {
+    const service = row.querySelector('.c-service').value.trim();
+    const nom = row.querySelector('.c-nom').value.trim();
+    const email = row.querySelector('.c-email').value.trim();
+    const tel = row.querySelector('.c-tel').value.trim();
+    if(service || nom || email || tel) contacts.push({ service, nom, email, telephone: tel });
+  });
+  return contacts;
+}
+
+window.enregistrerClient = async function(){
+  const nomAffichage = getNomAffichage();
+  if(!nomAffichage){
+    showStatus('Merci de renseigner au moins le nom du client.', 'error');
+    return;
+  }
+
+  const btn = document.getElementById('btn-save');
+  btn.disabled = true;
+  btn.textContent = 'Enregistrement…';
+
+  const data = {
+    type: currentType,
+    nomAffichage,
+    adresseRue: document.getElementById('f-adresse').value.trim(),
+    adresseCP: document.getElementById('f-cp').value.trim(),
+    adresseVille: document.getElementById('f-ville').value.trim(),
+    email: document.getElementById('f-email').value.trim(),
+    telephone: document.getElementById('f-telephone').value.trim(),
+    notes: document.getElementById('f-notes').value.trim(),
+    contacts: collecterContacts(),
+    ordre: Date.now()
+  };
+
+  if(currentType === 'particulier'){
+    data.prenom = document.getElementById('f-prenom').value.trim();
+    data.nom = document.getElementById('f-nom').value.trim();
+  } else if(currentType === 'professionnel'){
+    data.raisonSociale = document.getElementById('f-raisonsociale').value.trim();
+    data.formeJuridique = document.getElementById('f-formejuridique').value.trim();
+    data.siret = document.getElementById('f-siret-pro').value.trim();
+    data.tvaIntra = document.getElementById('f-tva').value.trim();
+    data.contactReferent = document.getElementById('f-contact-pro').value.trim();
+  } else if(currentType === 'collectivite'){
+    data.nomCollectivite = document.getElementById('f-nomcollectivite').value.trim();
+    data.siret = document.getElementById('f-siret-collectivite').value.trim();
+    data.service = document.getElementById('f-service').value.trim();
+    data.contactReferent = document.getElementById('f-contact-collectivite').value.trim();
+    data.numeroBonCommande = document.getElementById('f-boncommande').value.trim();
+    data.delaiPaiementJours = parseInt(document.getElementById('f-delai-collectivite').value, 10) || 30;
+  } else if(currentType === 'association'){
+    data.nomAssociation = document.getElementById('f-nomasso').value.trim();
+    data.siretRna = document.getElementById('f-siret-asso').value.trim();
+    data.contactReferent = document.getElementById('f-contact-asso').value.trim();
+  }
+
+  const editId = document.getElementById('edit-id').value;
+
+  try {
+    if(editId){
+      await updateDoc(doc(db, 'clientsFacturation', editId), data);
+      showStatus('Client mis à jour avec succès.', 'success');
+    } else {
+      await addDoc(collection(db, 'clientsFacturation'), data);
+      showStatus('Client enregistré avec succès.', 'success');
+    }
+    resetForm();
+    chargerClients();
+  } catch(e){
+    showStatus('Erreur : ' + e.message, 'error');
+  }
+
+  btn.disabled = false;
+  btn.textContent = editId ? 'Mettre à jour' : 'Enregistrer le client';
+};
+
+async function chargerClients(){
+  document.getElementById('loading-list').style.display = 'block';
+  document.getElementById('client-list').innerHTML = '';
+  try {
+    const q = query(collection(db, 'clientsFacturation'), orderBy('ordre', 'desc'));
+    const snap = await getDocs(q);
+    document.getElementById('loading-list').style.display = 'none';
+    document.getElementById('client-count').textContent = '(' + snap.size + ')';
+
+    allClients = [];
+    snap.forEach(d => allClients.push({ id: d.id, ...d.data() }));
+
+    afficherListe();
+  } catch(e){
+    document.getElementById('loading-list').textContent = 'Erreur de chargement : ' + e.message;
+  }
+}
+
+function afficherListe(){
+  const listEl = document.getElementById('client-list');
+  const recherche = (document.getElementById('search-input').value || '').toLowerCase();
+
+  const filtres = allClients.filter(c => {
+    if(filtreTypeActif !== 'all' && c.type !== filtreTypeActif) return false;
+    if(recherche){
+      const champ = (c.nomAffichage + ' ' + (c.email||'') + ' ' + (c.telephone||'') + ' ' + (c.adresseVille||'')).toLowerCase();
+      if(!champ.includes(recherche)) return false;
+    }
+    return true;
+  });
+
+  if(filtres.length === 0){
+    listEl.innerHTML = '<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><p>Aucun client trouvé.</p></div>';
+    return;
+  }
+
+  listEl.innerHTML = filtres.map(c => `
+    <div class="client-item">
+      <div class="client-top">
+        <div class="client-name">${c.nomAffichage || '(sans nom)'}</div>
+        <span class="client-type-badge" style="background:${TYPE_COLORS[c.type] || '#94a3b8'}">${TYPE_LABELS[c.type] || c.type}</span>
+      </div>
+      <div class="client-meta">${[c.email, c.telephone, c.adresseVille].filter(Boolean).join(' · ') || 'Aucune coordonnée renseignée'}</div>
+      <div class="client-actions">
+        <button class="btn-edit" onclick="editerClient('${c.id}')">Modifier</button>
+        <button class="btn-delete" onclick="supprimerClient('${c.id}','${(c.nomAffichage||'').replace(/'/g,"\\'")}')">✕</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+window.filtrerListe = afficherListe;
+window.setFiltreType = function(btn, type){
+  document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  filtreTypeActif = type;
+  afficherListe();
+};
+
+window.editerClient = function(id){
+  const c = allClients.find(x => x.id === id);
+  if(!c) return;
+  resetForm(false);
+  document.getElementById('edit-id').value = id;
+  selectType(c.type || 'particulier');
+
+  if(c.type === 'particulier'){
+    document.getElementById('f-prenom').value = c.prenom || '';
+    document.getElementById('f-nom').value = c.nom || '';
+  } else if(c.type === 'professionnel'){
+    document.getElementById('f-raisonsociale').value = c.raisonSociale || '';
+    document.getElementById('f-formejuridique').value = c.formeJuridique || '';
+    document.getElementById('f-siret-pro').value = c.siret || '';
+    document.getElementById('f-tva').value = c.tvaIntra || '';
+    document.getElementById('f-contact-pro').value = c.contactReferent || '';
+  } else if(c.type === 'collectivite'){
+    document.getElementById('f-nomcollectivite').value = c.nomCollectivite || '';
+    document.getElementById('f-siret-collectivite').value = c.siret || '';
+    document.getElementById('f-service').value = c.service || '';
+    document.getElementById('f-contact-collectivite').value = c.contactReferent || '';
+    document.getElementById('f-boncommande').value = c.numeroBonCommande || '';
+    document.getElementById('f-delai-collectivite').value = c.delaiPaiementJours || 30;
+  } else if(c.type === 'association'){
+    document.getElementById('f-nomasso').value = c.nomAssociation || '';
+    document.getElementById('f-siret-asso').value = c.siretRna || '';
+    document.getElementById('f-contact-asso').value = c.contactReferent || '';
+  }
+
+  document.getElementById('f-adresse').value = c.adresseRue || '';
+  document.getElementById('f-cp').value = c.adresseCP || '';
+  document.getElementById('f-ville').value = c.adresseVille || '';
+  document.getElementById('f-email').value = c.email || '';
+  document.getElementById('f-telephone').value = c.telephone || '';
+  document.getElementById('f-notes').value = c.notes || '';
+
+  document.getElementById('contacts-list').innerHTML = '';
+  if(c.contacts && c.contacts.length){
+    c.contacts.forEach(ct => ajouterLigneContact(ct.service, ct.nom, ct.email, ct.telephone));
+  } else {
+    ajouterLigneContact();
+  }
+
+  document.getElementById('form-title').textContent = 'Modifier le client';
+  document.getElementById('btn-save').textContent = 'Mettre à jour';
+  document.querySelector('.panel-box').scrollIntoView({ behavior: 'smooth', block: 'start' });
+};
+
+window.supprimerClient = async function(id, nom){
+  if(!confirm('Supprimer "' + nom + '" ? Cette action est définitive.')) return;
+  try {
+    await deleteDoc(doc(db, 'clientsFacturation', id));
+    chargerClients();
+  } catch(e){
+    alert('Erreur : ' + e.message);
+  }
+};
+
+window.resetForm = function(clearStatus){
+  document.getElementById('edit-id').value = '';
+  selectType('particulier');
+  ['f-prenom','f-nom','f-raisonsociale','f-formejuridique','f-siret-pro','f-tva','f-contact-pro',
+   'f-nomcollectivite','f-siret-collectivite','f-service','f-contact-collectivite','f-boncommande',
+   'f-nomasso','f-siret-asso','f-contact-asso','f-adresse','f-cp','f-ville','f-email','f-telephone','f-notes']
+   .forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+  document.getElementById('f-delai-collectivite').value = 30;
+  document.getElementById('contacts-list').innerHTML = '';
+  ajouterLigneContact();
+  document.getElementById('form-title').textContent = 'Nouveau client';
+  document.getElementById('btn-save').textContent = 'Enregistrer le client';
+  document.getElementById('btn-save').disabled = false;
+  if(clearStatus !== false) document.getElementById('save-status').style.display = 'none';
+};
+
+function showStatus(msg, type){
+  const el = document.getElementById('save-status');
+  el.textContent = msg;
+  el.className = type;
+  el.style.display = 'block';
+  setTimeout(() => el.style.display = 'none', 4000);
+}
+
+window.toggleSidebar = function(open){
+  document.getElementById('sidebar').classList.toggle('mobile-open', open);
+  document.getElementById('sidebar-overlay').classList.toggle('show', open);
+};
+</script>
+</body>
+</html>
