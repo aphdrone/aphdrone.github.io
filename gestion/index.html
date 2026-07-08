@@ -453,16 +453,33 @@ const TYPE_COLORS_CLIENTS = { particulier: '#1F5FAF', professionnel: '#16a34a', 
 async function chargerRepartitionClients(){
   const el = document.getElementById('clients-breakdown');
   try {
-    const snap = await getDocs(collection(db, 'clientsFacturation'));
+    const [clientsSnap, devisSnap, facturesSnap] = await Promise.all([
+      getDocs(collection(db, 'clientsFacturation')),
+      getDocs(collection(db, 'devis')),
+      getDocs(collection(db, 'factures'))
+    ]);
+
+    // Un client est "actif" s'il a un devis en attente/envoyé, ou une facture non soldée (envoyée/retard)
+    const clientsActifsIds = new Set();
+    devisSnap.forEach(d => {
+      const dv = d.data();
+      if(dv.clientId && (dv.statut === 'attente' || dv.statut === 'envoye')) clientsActifsIds.add(dv.clientId);
+    });
+    facturesSnap.forEach(d => {
+      const f = d.data();
+      if(f.clientId && (f.statut === 'envoyee' || f.statut === 'retard')) clientsActifsIds.add(f.clientId);
+    });
+
     const counts = {};
-    let total = 0, totalActifs = 0;
-    snap.forEach(d => {
-      const c = d.data();
+    let total = 0, totalActifs = 0, totalBloques = 0;
+    clientsSnap.forEach(docSnap => {
+      const c = docSnap.data();
       const type = c.type || 'particulier';
       if(!counts[type]) counts[type] = { total: 0, actifs: 0 };
       counts[type].total++;
       total++;
-      if(!c.bloque){ counts[type].actifs++; totalActifs++; }
+      if(c.bloque) totalBloques++;
+      if(clientsActifsIds.has(docSnap.id)){ counts[type].actifs++; totalActifs++; }
     });
 
     if(total === 0){
@@ -473,8 +490,8 @@ async function chargerRepartitionClients(){
     let html = `
       <div class="breakdown-total">
         <div class="breakdown-total-item"><div class="num">${total}</div><div class="lbl">Total clients</div></div>
-        <div class="breakdown-total-item"><div class="num">${totalActifs}</div><div class="lbl">Actifs</div></div>
-        <div class="breakdown-total-item"><div class="num" style="color:${(total - totalActifs) > 0 ? 'var(--red)' : 'var(--primary)'};">${total - totalActifs}</div><div class="lbl">Bloqués</div></div>
+        <div class="breakdown-total-item"><div class="num">${totalActifs}</div><div class="lbl">Actifs (devis/facture en cours)</div></div>
+        <div class="breakdown-total-item"><div class="num" style="color:${totalBloques > 0 ? 'var(--red)' : 'var(--primary)'};">${totalBloques}</div><div class="lbl">Bloqués</div></div>
       </div>
     `;
 

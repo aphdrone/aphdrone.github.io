@@ -107,10 +107,16 @@ body{background:var(--light);color:#222;min-height:100vh;}
 .filter-chip{padding:8px 14px;border-radius:18px;border:1.5px solid #dde3ec;background:white;font-size:12px;font-weight:600;cursor:pointer;color:#555;white-space:nowrap;}
 .filter-chip.active{background:var(--primary);border-color:var(--primary);color:white;}
 
-.offer-chips{display:flex;flex-wrap:wrap;gap:7px;}
-.offer-chip{padding:6px 13px;border-radius:16px;border:1.5px solid #dde3ec;background:white;font-size:11.5px;font-weight:600;cursor:pointer;color:#555;transition:.15s;}
-.offer-chip:hover{border-color:var(--accent);}
-.offer-chip.selected{background:var(--secondary);border-color:var(--secondary);color:white;}
+.select-dropdown{position:relative;}
+.select-dropdown-btn{width:100%;display:flex;align-items:center;justify-content:space-between;padding:10px 13px;border:1.5px solid #dde3ec;border-radius:8px;background:white;font-size:.85rem;color:#222;cursor:pointer;font-family:'Inter',sans-serif;transition:.15s;}
+.select-dropdown-btn:hover{border-color:var(--accent);}
+.select-dropdown-btn svg{width:16px;height:16px;color:#94a3b8;flex-shrink:0;transition:.2s;}
+.select-dropdown-btn.open svg{transform:rotate(180deg);}
+.select-dropdown-panel{position:absolute;top:calc(100% + 4px);left:0;right:0;background:white;border:1.5px solid #dde3ec;border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.12);z-index:50;max-height:240px;overflow-y:auto;padding:6px;display:none;}
+.select-dropdown-panel.open{display:block;}
+.select-option{display:flex;align-items:center;gap:9px;padding:8px 9px;border-radius:6px;cursor:pointer;font-size:.82rem;color:#333;transition:.1s;}
+.select-option:hover{background:#f5f7fa;}
+.select-option input{width:15px;height:15px;flex-shrink:0;cursor:pointer;accent-color:var(--secondary);}
 
 .client-item{background:white;border:1px solid #eee;border-radius:10px;padding:14px 16px;margin-bottom:10px;transition:.2s;}
 .client-item:hover{border-color:#dde3ec;box-shadow:0 2px 8px rgba(0,0,0,.05);}
@@ -306,12 +312,24 @@ body{background:var(--light);color:#222;min-height:100vh;}
 
             <div class="form-group">
               <label>Prestations demandées / choisies</label>
-              <div class="offer-chips" id="chips-prestations"></div>
+              <div class="select-dropdown">
+                <button type="button" class="select-dropdown-btn" id="btn-dd-prestations" onclick="toggleDropdown('prestations')">
+                  <span id="summary-prestations">Aucune sélection</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="select-dropdown-panel" id="panel-prestations"></div>
+              </div>
             </div>
 
             <div class="form-group">
               <label>Formations demandées / choisies</label>
-              <div class="offer-chips" id="chips-formations"></div>
+              <div class="select-dropdown">
+                <button type="button" class="select-dropdown-btn" id="btn-dd-formations" onclick="toggleDropdown('formations')">
+                  <span id="summary-formations">Aucune sélection</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="select-dropdown-panel" id="panel-formations"></div>
+              </div>
             </div>
 
             <div class="form-group">
@@ -449,19 +467,56 @@ let selectionPrestations = [];
 let selectionFormations = [];
 
 function rendreChips(){
-  document.getElementById('chips-prestations').innerHTML = PRESTATIONS.map(p => `
-    <button type="button" class="offer-chip ${selectionPrestations.includes(p.slug) ? 'selected' : ''}" onclick="toggleOffre('prestation','${p.slug}')">${p.label}</button>
+  document.getElementById('panel-prestations').innerHTML = PRESTATIONS.map(p => `
+    <label class="select-option">
+      <input type="checkbox" ${selectionPrestations.includes(p.slug) ? 'checked' : ''} onchange="toggleOffre('prestation','${p.slug}')">
+      ${p.label}
+    </label>
   `).join('');
-  document.getElementById('chips-formations').innerHTML = FORMATIONS.map(f => `
-    <button type="button" class="offer-chip ${selectionFormations.includes(f.slug) ? 'selected' : ''}" onclick="toggleOffre('formation','${f.slug}')">${f.label}</button>
+  document.getElementById('panel-formations').innerHTML = FORMATIONS.map(f => `
+    <label class="select-option">
+      <input type="checkbox" ${selectionFormations.includes(f.slug) ? 'checked' : ''} onchange="toggleOffre('formation','${f.slug}')">
+      ${f.label}
+    </label>
   `).join('');
+  majResume();
 }
+
+function majResume(){
+  const sp = document.getElementById('summary-prestations');
+  const sf = document.getElementById('summary-formations');
+  sp.textContent = selectionPrestations.length === 0 ? 'Aucune sélection'
+    : selectionPrestations.length === 1
+      ? (PRESTATIONS.find(p => p.slug === selectionPrestations[0]) || {}).label
+      : selectionPrestations.length + ' prestations sélectionnées';
+  sf.textContent = selectionFormations.length === 0 ? 'Aucune sélection'
+    : selectionFormations.length === 1
+      ? (FORMATIONS.find(f => f.slug === selectionFormations[0]) || {}).label
+      : selectionFormations.length + ' formations sélectionnées';
+}
+
+window.toggleDropdown = function(kind){
+  const panel = document.getElementById('panel-' + kind);
+  const btn = document.getElementById('btn-dd-' + kind);
+  const autre = kind === 'prestations' ? 'formations' : 'prestations';
+  document.getElementById('panel-' + autre).classList.remove('open');
+  document.getElementById('btn-dd-' + autre).classList.remove('open');
+  panel.classList.toggle('open');
+  btn.classList.toggle('open');
+};
+
+document.addEventListener('click', function(e){
+  if(!e.target.closest('.select-dropdown')){
+    document.querySelectorAll('.select-dropdown-panel').forEach(p => p.classList.remove('open'));
+    document.querySelectorAll('.select-dropdown-btn').forEach(b => b.classList.remove('open'));
+  }
+});
 
 window.toggleOffre = function(kind, slug){
   const arr = kind === 'prestation' ? selectionPrestations : selectionFormations;
   const idx = arr.indexOf(slug);
   if(idx === -1) arr.push(slug); else arr.splice(idx, 1);
-  rendreChips();
+  majResume();
 };
 
 // ── Fiche client (détail + export PDF) ──
