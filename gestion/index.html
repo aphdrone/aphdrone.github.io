@@ -71,6 +71,7 @@ body{background:var(--light);color:#222;min-height:100vh;}
 
 /* Sections */
 .section-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:20px;align-items:start;}
+.quicklinks-grid{grid-template-columns:repeat(3,1fr);}
 .panel-box{background:white;border:1px solid #e8edf4;border-radius:12px;padding:22px;}
 .panel-box h3{font-size:.95rem;color:var(--primary);margin-bottom:16px;font-weight:700;}
 
@@ -242,98 +243,28 @@ body{background:var(--light);color:#222;min-height:100vh;}
           </div>
         </div>
 
-        <!-- Accès rapide -->
-        <div class="panel-box" style="margin-bottom:20px;">
-          <h3>Accès rapide</h3>
-          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:24px;">
-            <div>
-              <div class="quicklink-label">Créer</div>
-              <a class="quicklink" href="devis.html?new=1">+ Nouveau devis</a>
-              <a class="quicklink" href="factures.html?new=1">+ Nouvelle facture</a>
-              <a class="quicklink" href="avoirs.html?new=1">+ Nouvel avoir</a>
-              <a class="quicklink" href="clients.html?new=1">+ Nouveau client</a>
-            </div>
-            <div>
-              <div class="quicklink-label">Consulter</div>
-              <a class="quicklink" href="devis.html">Tous les devis</a>
-              <a class="quicklink" href="factures.html">Toutes les factures</a>
-              <a class="quicklink" href="avoirs.html">Tous les avoirs</a>
-              <a class="quicklink" href="clients.html">Tous les clients</a>
-            </div>
-            <div>
-              <div class="quicklink-label">Suivi</div>
-              <a class="quicklink" href="#" onclick="ouvrirModalFactures();return false;">Factures en retard</a>
-              <a class="quicklink" href="#" onclick="ouvrirModalDevis();return false;">Devis en attente</a>
-              <a class="quicklink" href="statistiques.html">Statistiques</a>
-              <a class="quicklink" href="parametres.html">Paramètres</a>
-            </div>
-          </div>
-        </div>
-
-        <!-- Activité + Factures -->
-        <div class="section-grid">
+        <!-- Accès rapide : 3 blocs distincts -->
+        <div class="section-grid quicklinks-grid">
           <div class="panel-box">
-            <h3>Activité récente</h3>
-            <div id="activity-list">
-              <div class="empty-state">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 20H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h10l6 6v8a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-                <p>Chargement de l'activité récente…</p>
-              </div>
-            </div>
+            <h3>Créer</h3>
+            <a class="quicklink" href="devis.html?new=1">+ Nouveau devis</a>
+            <a class="quicklink" href="factures.html?new=1">+ Nouvelle facture</a>
+            <a class="quicklink" href="avoirs.html?new=1">+ Nouvel avoir</a>
+            <a class="quicklink" href="clients.html?new=1">+ Nouveau client</a>
           </div>
-          <div class="panel-box" id="anchor-alertes">
-            <h3>Factures</h3>
-            <div style="display:flex;justify-content:space-between;align-items:baseline;background:#F5F7FA;border-radius:8px;padding:12px 14px;margin-bottom:16px;">
-              <span style="font-size:.8rem;color:#7a8fa5;font-weight:600;">Montant total dû</span>
-              <span id="montant-total-du" style="font-size:1.15rem;font-weight:800;color:var(--red);">—</span>
-            </div>
-
-            <div style="font-size:.78rem;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:.03em;margin-bottom:8px;">En retard</div>
-            <div id="alert-list">
-              <div class="empty-state">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                <p>Chargement des alertes…</p>
-              </div>
-            </div>
-
-            <div style="font-size:.78rem;font-weight:700;color:#0369a1;text-transform:uppercase;letter-spacing:.03em;margin:18px 0 8px;">Dues (pas encore en retard)</div>
-            <div id="factures-attente-list">
-              <div class="empty-state">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                <p>Chargement…</p>
-              </div>
-            </div>
+          <div class="panel-box">
+            <h3>Consulter</h3>
+            <a class="quicklink" href="devis.html">Tous les devis</a>
+            <a class="quicklink" href="factures.html">Toutes les factures</a>
+            <a class="quicklink" href="avoirs.html">Tous les avoirs</a>
+            <a class="quicklink" href="clients.html">Tous les clients</a>
           </div>
-        </div>
-
-        <div class="panel-box" id="anchor-devis-attente" style="margin-top:20px;">
-          <h3>Devis en attente de réponse</h3>
-          <div id="devis-attente-list">
-            <div class="empty-state">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-              <p>Chargement…</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="panel-box" style="margin-top:20px;">
-          <h3>Avoirs récents</h3>
-          <div id="avoirs-recents-list">
-            <div class="empty-state">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-15-6.7L3 13"/></svg>
-              <p>Chargement…</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Répartition clients -->
-        <div class="panel-box" style="margin-top:20px;">
-          <h3>Clients — répartition par typologie</h3>
-          <div id="clients-breakdown">
-            <div class="empty-state">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-              <p>Chargement…</p>
-            </div>
+          <div class="panel-box">
+            <h3>Suivi</h3>
+            <a class="quicklink" href="#" onclick="ouvrirModalFactures();return false;">Factures en retard</a>
+            <a class="quicklink" href="#" onclick="ouvrirModalDevis();return false;">Devis en attente</a>
+            <a class="quicklink" href="statistiques.html">Statistiques</a>
+            <a class="quicklink" href="parametres.html">Paramètres</a>
           </div>
         </div>
 
@@ -492,187 +423,9 @@ async function chargerTableauDeBord(){
 
     if(nbRetard > 0) document.getElementById('dot-factures').style.display = 'block';
 
-    // Activité récente : fusion factures + devis, triés par date desc
-    const activite = [
-      ...factures.map(f => ({ type: 'facture', numero: f.numero, client: f.clientNom, montant: f.montantTTC, statut: f.statut, date: f.dateEmission })),
-      ...devisList.map(dv => ({ type: 'devis', numero: dv.numero, client: dv.clientNom, montant: dv.montantTTC, statut: dv.statut, date: dv.dateCreation }))
-    ].filter(a => a.date).sort((a,b) => new Date(b.date) - new Date(a.date)).slice(0, 8);
-
-    const activityList = document.getElementById('activity-list');
-    if(activite.length === 0){
-      activityList.innerHTML = '<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 20H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h10l6 6v8a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg><p>Aucune activité pour le moment — crée ton premier devis ou ta première facture.</p></div>';
-    } else {
-      activityList.innerHTML = activite.map(a => `
-        <div class="activity-row">
-          <div class="activity-main">
-            <div class="activity-title">${a.numero || '(brouillon)'} — ${a.client || 'Client non renseigné'}</div>
-            <div class="activity-meta">${a.type === 'facture' ? 'Facture' : 'Devis'} · ${new Date(a.date).toLocaleDateString('fr-FR')}</div>
-          </div>
-          <span class="badge-status ${a.statut || 'brouillon'}">${STATUS_LABELS[a.statut] || a.statut || 'Brouillon'}</span>
-          <div class="activity-amount">${formatMontant(a.montant)}</div>
-        </div>
-      `).join('');
-    }
-
-    // Alertes : factures en retard
-    const enRetard = factures.filter(f => f.statut === 'retard' || (f.statut === 'envoyee' && f.dateEcheance && new Date(f.dateEcheance) < now));
-    const alertList = document.getElementById('alert-list');
-    if(enRetard.length === 0){
-      alertList.innerHTML = '<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="20 6 9 17 4 12"/></svg><p>Aucune facture en retard. Tout est à jour !</p></div>';
-    } else {
-      alertList.innerHTML = enRetard.slice(0, 6).map(f => `
-        <div class="alert-item">
-          <div class="alert-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
-          <div class="alert-body">
-            <div class="alert-title">${f.numero} — ${f.clientNom || 'Client'}</div>
-            <div class="alert-meta">${formatMontant(f.montantTTC)} · échéance ${f.dateEcheance ? new Date(f.dateEcheance).toLocaleDateString('fr-FR') : '—'}</div>
-          </div>
-          <button class="btn-quick btn-quick--outline" style="padding:7px 12px;font-size:.76rem;flex-shrink:0;" onclick="relancer('facture','${f._id}','${f.numero}','${(f.clientEmail||'').replace(/'/g,"\\'")}','${(f.clientNom||'').replace(/'/g,"\\'")}', ${f.montantTTC || 0})">Relancer</button>
-        </div>
-      `).join('');
-    }
-
-    // Devis en attente de réponse (+ brouillons pas encore envoyés)
-    const devisAttente = devisList.filter(dv => dv.statut === 'envoye' || dv.statut === 'attente' || dv.statut === 'brouillon');
-    const devisAttenteList = document.getElementById('devis-attente-list');
-    if(devisAttente.length === 0){
-      devisAttenteList.innerHTML = '<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="20 6 9 17 4 12"/></svg><p>Aucun devis en attente de réponse.</p></div>';
-    } else {
-      devisAttenteList.innerHTML = devisAttente.slice(0, 8).map(dv => {
-        const estBrouillon = dv.statut === 'brouillon';
-        const bouton = estBrouillon
-          ? '<a href="devis.html?envoyer=' + dv._id + '" class="btn-quick btn-quick--outline" style="padding:7px 12px;font-size:.76rem;flex-shrink:0;background:#dcfce7;color:#16a34a;border-color:#dcfce7;">Envoyer</a>'
-          : '<button class="btn-quick btn-quick--outline" style="padding:7px 12px;font-size:.76rem;flex-shrink:0;" onclick="relancer(\'devis\',\'' + dv._id + '\',\'' + dv.numero + '\',\'' + (dv.clientEmail||'').replace(/'/g,"\\'") + '\',\'' + (dv.clientNom||'').replace(/'/g,"\\'") + '\', ' + (dv.montantTTC || 0) + ')">Relancer</button>';
-        return `
-        <div class="alert-item">
-          <div class="alert-icon" style="background:${estBrouillon ? '#f1f5f9' : '#fef3c7'};color:${estBrouillon ? '#64748b' : 'var(--amber)'};"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
-          <div class="alert-body">
-            <div class="alert-title">${dv.numero || '(brouillon)'} — ${dv.clientNom || 'Client'}</div>
-            <div class="alert-meta">${formatMontant(dv.montantTTC)} · ${estBrouillon ? 'brouillon, pas encore envoyé' : 'envoyé le ' + (dv.dateCreation ? new Date(dv.dateCreation).toLocaleDateString('fr-FR') : '—')}</div>
-          </div>
-          ${bouton}
-        </div>
-      `;
-      }).join('');
-    }
-
-    // Factures en attente (envoyées, échéance pas encore dépassée)
-    const facturesAttente = factures.filter(f => f.statut === 'envoyee' && f.dateEcheance && new Date(f.dateEcheance) >= now);
-    facturesAttente.sort((a, b) => new Date(a.dateEcheance) - new Date(b.dateEcheance));
-
-    const montantDues = facturesAttente.reduce((s, f) => s + (f.montantTTC || 0), 0);
-    document.getElementById('montant-total-du').textContent = formatMontant(montantRetard + montantDues);
-
-    const facturesAttenteList = document.getElementById('factures-attente-list');
-    if(facturesAttente.length === 0){
-      facturesAttenteList.innerHTML = '<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="20 6 9 17 4 12"/></svg><p>Aucune facture en attente de paiement pour l\'instant.</p></div>';
-    } else {
-      facturesAttenteList.innerHTML = facturesAttente.slice(0, 8).map(f => `
-        <div class="alert-item">
-          <div class="alert-icon" style="background:#e0f2fe;color:#0369a1;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
-          <div class="alert-body">
-            <div class="alert-title">${f.numero} — ${f.clientNom || 'Client'}</div>
-            <div class="alert-meta">${formatMontant(f.montantTTC)} · échéance le ${new Date(f.dateEcheance).toLocaleDateString('fr-FR')}</div>
-          </div>
-          <button class="btn-quick btn-quick--outline" style="padding:7px 12px;font-size:.76rem;flex-shrink:0;" onclick="relancer('facture','${f._id}','${f.numero}','${(f.clientEmail||'').replace(/'/g,"\\'")}','${(f.clientNom||'').replace(/'/g,"\\'")}', ${f.montantTTC || 0})">Relancer</button>
-        </div>
-      `).join('');
-    }
-
-    // Avoirs récents (brouillons + émis)
-    const avoirsRecents = [...avoirsList].sort((a, b) => (b.ordre || 0) - (a.ordre || 0)).slice(0, 8);
-    const avoirsRecentsList = document.getElementById('avoirs-recents-list');
-    if(avoirsRecents.length === 0){
-      avoirsRecentsList.innerHTML = '<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-15-6.7L3 13"/></svg><p>Aucun avoir enregistré pour l\'instant.</p></div>';
-    } else {
-      avoirsRecentsList.innerHTML = avoirsRecents.map(a => `
-        <div class="alert-item">
-          <div class="alert-icon" style="background:${a.statut === 'emis' ? '#f3e8ff' : '#f1f5f9'};color:${a.statut === 'emis' ? '#7c3aed' : '#64748b'};"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-15-6.7L3 13"/></svg></div>
-          <div class="alert-body">
-            <div class="alert-title">${a.numero} — ${a.clientNom || 'Client'}</div>
-            <div class="alert-meta">${formatMontant(a.montantTTC)} · ${a.statut === 'emis' ? 'émis' : 'brouillon'}${a.factureOrigineNumero ? ' · facture ' + a.factureOrigineNumero : ''}</div>
-          </div>
-          <a href="avoirs.html" class="btn-quick btn-quick--outline" style="padding:7px 12px;font-size:.76rem;flex-shrink:0;">Voir</a>
-        </div>
-      `).join('');
-    }
-
-    // Répartition clients par typologie
-    await chargerRepartitionClients();
-
   } catch(e){
     console.warn('chargerTableauDeBord:', e.message);
-    document.getElementById('activity-list').innerHTML = '<div class="empty-state"><p>Impossible de charger les données pour le moment.</p></div>';
-    document.getElementById('alert-list').innerHTML = '<div class="empty-state"><p>Impossible de charger les données pour le moment.</p></div>';
     ['stat-ca-mois','stat-ca-annee','stat-retard','stat-devis-attente','stat-avoirs-mois'].forEach(id => document.getElementById(id).textContent = '0');
-  }
-}
-
-const TYPE_LABELS_CLIENTS = { particulier: 'Particuliers', professionnel: 'Professionnels', collectivite: 'Collectivités', association: 'Associations' };
-const TYPE_COLORS_CLIENTS = { particulier: '#1F5FAF', professionnel: '#16a34a', collectivite: '#7c3aed', association: '#ea580c' };
-
-async function chargerRepartitionClients(){
-  const el = document.getElementById('clients-breakdown');
-  try {
-    const [clientsSnap, devisSnap, facturesSnap] = await Promise.all([
-      getDocs(collection(db, 'clientsFacturation')),
-      getDocs(collection(db, 'devis')),
-      getDocs(collection(db, 'factures'))
-    ]);
-
-    // Un client est "actif" s'il a un devis en attente/envoyé, ou une facture non soldée (envoyée/retard)
-    const clientsActifsIds = new Set();
-    devisSnap.forEach(d => {
-      const dv = d.data();
-      if(dv.clientId && (dv.statut === 'attente' || dv.statut === 'envoye')) clientsActifsIds.add(dv.clientId);
-    });
-    facturesSnap.forEach(d => {
-      const f = d.data();
-      if(f.clientId && (f.statut === 'envoyee' || f.statut === 'retard')) clientsActifsIds.add(f.clientId);
-    });
-
-    const counts = {};
-    let total = 0, totalActifs = 0, totalBloques = 0;
-    clientsSnap.forEach(docSnap => {
-      const c = docSnap.data();
-      const type = c.type || 'particulier';
-      if(!counts[type]) counts[type] = { total: 0, actifs: 0 };
-      counts[type].total++;
-      total++;
-      if(c.bloque) totalBloques++;
-      if(clientsActifsIds.has(docSnap.id)){ counts[type].actifs++; totalActifs++; }
-    });
-
-    if(total === 0){
-      el.innerHTML = '<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><p>Aucun client enregistré pour le moment.</p></div>';
-      return;
-    }
-
-    let html = `
-      <div class="breakdown-total">
-        <div class="breakdown-total-item"><div class="num">${total}</div><div class="lbl">Total clients</div></div>
-        <div class="breakdown-total-item"><div class="num">${totalActifs}</div><div class="lbl">Actifs (devis/facture en cours)</div></div>
-        <div class="breakdown-total-item"><div class="num" style="color:${totalBloques > 0 ? 'var(--red)' : 'var(--primary)'};">${totalBloques}</div><div class="lbl">Bloqués</div></div>
-      </div>
-    `;
-
-    ['particulier','professionnel','collectivite','association'].forEach(type => {
-      const c = counts[type] || { total: 0, actifs: 0 };
-      if(c.total === 0) return;
-      html += `
-        <div class="breakdown-row">
-          <span class="breakdown-dot" style="background:${TYPE_COLORS_CLIENTS[type]}"></span>
-          <span class="breakdown-label">${TYPE_LABELS_CLIENTS[type]}</span>
-          <span class="breakdown-num"><strong>${c.total}</strong> total</span>
-          <span class="breakdown-num"><strong>${c.actifs}</strong> actif${c.actifs > 1 ? 's' : ''}</span>
-        </div>
-      `;
-    });
-
-    el.innerHTML = html;
-  } catch(e){
-    el.innerHTML = '<div class="empty-state"><p>Impossible de charger les données clients.</p></div>';
-    console.warn('chargerRepartitionClients:', e.message);
   }
 }
 
