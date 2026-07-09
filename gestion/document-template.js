@@ -35,7 +35,17 @@ const APH_ENTREPRISE = {
   siret: '[SIRET à compléter]',
   tva: '[N° TVA à compléter]',
   telephone: '06 95 39 07 76',
-  email: 'contact@aphdrone.fr'
+  email: 'contact@aphdrone.fr',
+  iban: '',
+  bic: ''
+};
+
+// Permet à Paramètres de mettre à jour ces informations une fois chargées depuis Firestore,
+// sans avoir à modifier ce fichier à chaque changement (SIRET, IBAN, etc.).
+window.definirEntrepriseInfo = function(infos){
+  Object.keys(infos).forEach(k => {
+    if(infos[k] !== undefined && infos[k] !== null && infos[k] !== '') APH_ENTREPRISE[k] = infos[k];
+  });
 };
 
 const DOC_LABELS = {
@@ -132,6 +142,7 @@ function construireDocumentHTML(doc){
 
   const piedLegal = doc.typeDoc === 'facture'
     ? `<div style="font-size:9px;color:#7a8fa5;line-height:1.6;">
+        ${APH_ENTREPRISE.iban ? '<div style="margin-bottom:6px;font-size:10px;color:#0B1F3A;font-weight:600;">Règlement par virement — IBAN : ' + APH_ENTREPRISE.iban + (APH_ENTREPRISE.bic ? ' · BIC : ' + APH_ENTREPRISE.bic : '') + '</div>' : ''}
         En cas de retard de paiement, une indemnité forfaitaire de 40 € pour frais de recouvrement est due (art. L441-10 du Code de commerce), ainsi que des pénalités de retard calculées au taux d'intérêt de la BCE majoré de 10 points. Pas d'escompte pour paiement anticipé.
       </div>`
     : doc.typeDoc === 'devis'
@@ -157,6 +168,7 @@ function construireDocumentHTML(doc){
             <div style="font-size:10px;color:#555;margin-top:2px;">${APH_ENTREPRISE.formeJuridique} — ${APH_ENTREPRISE.dirigeant}</div>
             <div style="font-size:10px;color:#555;">${APH_ENTREPRISE.adresse}, ${APH_ENTREPRISE.cp} ${APH_ENTREPRISE.ville}</div>
             <div style="font-size:10px;color:#555;">SIRET : ${APH_ENTREPRISE.siret}</div>
+            ${APH_ENTREPRISE.tva && APH_ENTREPRISE.tva !== '[N° TVA à compléter]' ? '<div style="font-size:10px;color:#555;">TVA intracom. : ' + APH_ENTREPRISE.tva + '</div>' : ''}
             <div style="font-size:10px;color:#555;">${APH_ENTREPRISE.telephone} · ${APH_ENTREPRISE.email}</div>
           </div>
         </div>

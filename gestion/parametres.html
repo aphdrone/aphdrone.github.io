@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paramètres — Gestion APH Drone</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--primary:#0B1F3A;--secondary:#1F5FAF;--accent:#4A90E2;--light:#F5F7FA;--green:#16a34a;--red:#dc2626;--amber:#d97706;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
+body{background:var(--light);color:#222;min-height:100vh;}
+
+#gate{position:fixed;inset:0;background:linear-gradient(135deg,var(--primary) 0%,#1a3a6b 100%);display:flex;align-items:center;justify-content:center;z-index:9999;}
+.gate-box{background:white;border-radius:20px;padding:40px;width:100%;max-width:360px;text-align:center;}
+.gate-box img{width:64px;height:64px;border-radius:50%;margin-bottom:16px;}
+.gate-box h2{font-size:1.2rem;color:var(--primary);margin-bottom:6px;}
+.gate-box p{font-size:.85rem;color:#7a8fa5;margin-bottom:20px;}
+.gate-spinner{width:28px;height:28px;border:3px solid #e0e8f0;border-top-color:var(--secondary);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.gate-denied{color:var(--red);font-size:.85rem;font-weight:600;margin-top:12px;}
+.gate-link{display:inline-block;margin-top:16px;font-size:.82rem;color:var(--secondary);text-decoration:none;font-weight:600;}
+
+#app{display:none;min-height:100vh;}
+.shell{display:flex;min-height:100vh;}
+
+.sidebar{width:240px;background:var(--primary);color:white;flex-shrink:0;display:flex;flex-direction:column;padding:24px 0;overflow-y:auto;}
+.brand{display:flex;align-items:center;gap:10px;padding:0 24px 24px;border-bottom:1px solid rgba(255,255,255,.1);margin-bottom:8px;}
+.brand img{width:36px;height:36px;border-radius:50%;}
+.brand-text{font-size:.85rem;font-weight:700;line-height:1.3;}
+.brand-text span{display:block;font-size:.68rem;font-weight:500;color:rgba(255,255,255,.5);}
+.nav{flex:1;display:flex;flex-direction:column;padding:8px 0;}
+.menu-section-label{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.38);font-weight:700;padding:0 24px;margin:16px 0 6px;}
+.menu-link{display:block;padding:7px 24px;font-size:.86rem;color:rgba(255,255,255,.78);text-decoration:none;border-left:3px solid transparent;transition:.15s;position:relative;}
+.menu-link:hover{color:white;background:rgba(255,255,255,.05);}
+.menu-link.active{color:white;font-weight:600;border-left-color:var(--accent);background:rgba(255,255,255,.06);}
+.foot{padding:16px 24px 0;border-top:1px solid rgba(255,255,255,.1);margin-top:16px;}
+.foot-email{font-size:.72rem;color:rgba(255,255,255,.4);margin-bottom:10px;word-break:break-all;}
+.foot a.back-link{display:block;font-size:.78rem;color:rgba(255,255,255,.5);text-decoration:none;margin-bottom:10px;}
+.foot a.back-link:hover{color:white;}
+.logout-btn{font-size:.78rem;color:rgba(255,255,255,.65);background:none;border:1px solid rgba(255,255,255,.15);border-radius:7px;padding:8px 12px;cursor:pointer;width:100%;transition:.15s;}
+.logout-btn:hover{background:rgba(255,255,255,.08);color:white;}
+
+.main{flex:1;overflow-y:auto;}
+.topbar{background:white;border-bottom:1px solid #e8edf4;padding:18px 32px;}
+.topbar h1{font-size:1.15rem;color:var(--primary);}
+.topbar p{font-size:.78rem;color:#94a3b8;margin-top:2px;}
+.content{padding:28px 32px 60px;max-width:820px;}
+
+#mobile-burger{display:none;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;border:1px solid #e8edf4;background:white;cursor:pointer;}
+#sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:400;}
+#sidebar-overlay.show{display:block;}
+
+.panel-box{background:white;border:1px solid #e8edf4;border-radius:12px;padding:24px;margin-bottom:20px;}
+.panel-box h2{font-size:1rem;font-weight:700;color:var(--primary);margin-bottom:6px;}
+.panel-box .desc{font-size:.8rem;color:#94a3b8;margin-bottom:18px;}
+
+.form-group{margin-bottom:16px;}
+.form-group label{display:block;font-size:11px;font-weight:600;color:#555;letter-spacing:.03em;text-transform:uppercase;margin-bottom:6px;}
+.form-group input,.form-group select{
+  width:100%;padding:10px 13px;border:1.5px solid #dde3ec;border-radius:8px;
+  font-size:.86rem;outline:none;transition:.2s;font-family:'Inter',sans-serif;color:#222;
+}
+.form-group input:focus,.form-group select:focus{border-color:var(--accent);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.form-row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+
+.numero-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #f0f3f7;font-size:.85rem;}
+.numero-row:last-child{border-bottom:none;}
+.numero-row .label{color:#7a8fa5;}
+.numero-row .val{font-weight:700;color:var(--primary);font-family:monospace;}
+
+.btn-save{padding:12px 22px;background:var(--secondary);color:white;border:none;border-radius:8px;font-size:.86rem;font-weight:600;cursor:pointer;transition:.2s;}
+.btn-save:hover{background:var(--accent);}
+.btn-save:disabled{background:#9ca3af;cursor:not-allowed;}
+#save-status{margin-top:14px;padding:10px 14px;border-radius:8px;font-size:.83rem;font-weight:500;display:none;}
+#save-status.success{background:#dcfce7;color:#16a34a;}
+#save-status.error{background:#fee2e2;color:#dc2626;}
+
+@media(max-width:900px){
+  .sidebar{position:fixed;left:0;top:0;bottom:0;z-index:500;transform:translateX(-100%);transition:.25s;}
+  .sidebar.mobile-open{transform:translateX(0);}
+  #mobile-burger{display:flex;}
+  .content{padding:20px 16px 50px;}
+  .topbar{padding:14px 16px;}
+  .form-row,.form-row3{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div id="gate">
+  <div class="gate-box">
+    <img src="/assets/logo.jpg" alt="APH Drone" onerror="this.style.display='none'">
+    <h2>Gestion — APH Drone</h2>
+    <p>Devis, factures &amp; suivi comptable</p>
+    <div class="gate-spinner" id="gate-spinner"></div>
+    <div id="gate-login" style="display:none;">
+      <input type="email" id="login-email" placeholder="Email" autocomplete="email"
+        style="width:100%;padding:12px 16px;border:1.5px solid #dde3ec;border-radius:8px;font-size:.9rem;margin-bottom:12px;outline:none;">
+      <input type="password" id="login-password" placeholder="Mot de passe" autocomplete="current-password"
+        onkeydown="if(event.key==='Enter') doLogin()"
+        style="width:100%;padding:12px 16px;border:1.5px solid #dde3ec;border-radius:8px;font-size:.9rem;margin-bottom:12px;outline:none;">
+      <button onclick="doLogin()" style="width:100%;padding:13px;background:var(--secondary);color:white;border:none;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer;">Se connecter</button>
+      <p class="gate-denied" id="gate-error" style="display:none;">Email ou mot de passe incorrect.</p>
+    </div>
+    <div id="gate-refused" style="display:none;">
+      <p class="gate-denied">Accès non autorisé.</p>
+      <a href="/pages/connexion.html" class="gate-link">Retour à la connexion</a>
+    </div>
+  </div>
+</div>
+
+<div id="app">
+  <div id="sidebar-overlay" onclick="toggleSidebar(false)"></div>
+  <div class="shell">
+
+    <div class="sidebar" id="sidebar">
+      <div class="brand">
+        <img src="/assets/logo.jpg" alt="APH Drone" onerror="this.style.display='none'">
+        <div class="brand-text">Gestion<span>Devis &amp; Facturation</span></div>
+      </div>
+      <div class="nav">
+        <div class="menu-section-label">Pilotage</div>
+        <a class="menu-link" href="index.html">Tableau de bord</a>
+        <a class="menu-link" href="statistiques.html">Statistiques</a>
+
+        <div class="menu-section-label">Facturation</div>
+        <a class="menu-link" href="devis.html">Devis</a>
+        <a class="menu-link" href="factures.html">Factures</a>
+        <a class="menu-link" href="avoirs.html">Avoirs</a>
+
+        <div class="menu-section-label">Clients</div>
+        <a class="menu-link" href="clients.html">Liste des clients</a>
+
+        <div class="menu-section-label">Configuration</div>
+        <a class="menu-link active" href="parametres.html">Paramètres</a>
+      </div>
+      <div class="foot">
+        <a href="/office/" class="back-link">← Retour à l'admin du site</a>
+        <div class="foot-email" id="user-email"></div>
+        <button class="logout-btn" onclick="doLogout()">Déconnexion</button>
+      </div>
+    </div>
+
+    <div class="main">
+      <div class="topbar">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <button id="mobile-burger" onclick="toggleSidebar(true)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+          <div>
+            <h1>Paramètres</h1>
+            <p>Informations utilisées sur tes devis, factures et avoirs</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+
+        <div class="panel-box">
+          <h2>Société</h2>
+          <p class="desc">Ces informations apparaissent dans l'en-tête et le pied de page de tous tes documents.</p>
+
+          <div class="form-row">
+            <div class="form-group"><label>Nom commercial</label><input type="text" id="p-nom" placeholder="APH Drone"></div>
+            <div class="form-group"><label>Forme juridique</label><input type="text" id="p-forme" placeholder="SASU"></div>
+          </div>
+          <div class="form-group"><label>Dirigeant</label><input type="text" id="p-dirigeant" placeholder="Arnaud MOREAU"></div>
+          <div class="form-row">
+            <div class="form-group"><label>SIRET</label><input type="text" id="p-siret" placeholder="14 chiffres"></div>
+            <div class="form-group"><label>N° TVA intracommunautaire</label><input type="text" id="p-tva-numero" placeholder="FRXX XXXXXXXXX (laisser vide si franchise en base)"></div>
+          </div>
+          <div class="form-group"><label>Adresse</label><input type="text" id="p-adresse" placeholder="Numéro et rue"></div>
+          <div class="form-row3">
+            <div class="form-group"><label>Code postal</label><input type="text" id="p-cp" placeholder="70300"></div>
+            <div class="form-group" style="grid-column:span 2;"><label>Ville</label><input type="text" id="p-ville" placeholder="Luxeuil-les-Bains"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Téléphone</label><input type="tel" id="p-telephone" placeholder="06 95 39 07 76"></div>
+            <div class="form-group"><label>Email</label><input type="email" id="p-email" placeholder="contact@aphdrone.fr"></div>
+          </div>
+        </div>
+
+        <div class="panel-box">
+          <h2>Coordonnées bancaires</h2>
+          <p class="desc">Optionnel — si renseigné, apparaîtra sur tes factures pour faciliter le règlement par virement.</p>
+          <div class="form-row">
+            <div class="form-group"><label>IBAN</label><input type="text" id="p-iban" placeholder="FR76 XXXX XXXX XXXX XXXX XXXX XXX"></div>
+            <div class="form-group"><label>BIC</label><input type="text" id="p-bic" placeholder="XXXXXXXX"></div>
+          </div>
+          <div class="form-group"><label>Banque</label><input type="text" id="p-banque" placeholder="Ex : Crédit Agricole"></div>
+        </div>
+
+        <div class="panel-box">
+          <h2>TVA</h2>
+          <p class="desc">Utilisé comme taux par défaut lors de la création d'une nouvelle ligne de devis/facture.</p>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Régime</label>
+              <select id="p-regime-tva">
+                <option value="assujetti">Assujetti à la TVA</option>
+                <option value="franchise">Franchise en base (pas de TVA)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Taux par défaut</label>
+              <select id="p-taux-defaut">
+                <option value="20">20%</option>
+                <option value="10">10%</option>
+                <option value="5.5">5,5%</option>
+                <option value="0">0%</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-box">
+          <h2>Numérotation</h2>
+          <p class="desc">Dernier numéro utilisé pour chaque type de document (lecture seule — la suite est automatique et continue).</p>
+          <div class="numero-row"><span class="label">Devis (DEV-026XXXXX)</span><span class="val" id="numero-devis">—</span></div>
+          <div class="numero-row"><span class="label">Factures (F-026XXXXX)</span><span class="val" id="numero-factures">—</span></div>
+          <div class="numero-row"><span class="label">Avoirs (AVO-026XXXXX)</span><span class="val" id="numero-avoirs">—</span></div>
+        </div>
+
+        <div class="panel-box">
+          <button class="btn-save" id="btn-save" onclick="enregistrerParametres()">Enregistrer les paramètres</button>
+          <div id="save-status"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAV5NQWfp8n9RkTrHSwqssBJ4R9lNAuYK8",
+  authDomain: "aph-drone.firebaseapp.com",
+  projectId: "aph-drone",
+  storageBucket: "aph-drone.firebasestorage.app",
+  messagingSenderId: "316810168380",
+  appId: "1:316810168380:web:66cb916cec4fdc00b9db39"
+};
+
+const ADMIN_EMAIL = "aph.moreau@gmail.com";
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+window.doLogin = async function(){
+  const email = document.getElementById('login-email').value;
+  const pwd = document.getElementById('login-password').value;
+  try { await signInWithEmailAndPassword(auth, email, pwd); }
+  catch(e){ document.getElementById('gate-error').style.display = 'block'; }
+};
+window.doLogout = async function(){ await signOut(auth); };
+
+onAuthStateChanged(auth, user => {
+  const spinner = document.getElementById('gate-spinner');
+  const loginBox = document.getElementById('gate-login');
+  const refusedBox = document.getElementById('gate-refused');
+  spinner.style.display = 'none';
+
+  if(user && user.email === ADMIN_EMAIL){
+    document.getElementById('gate').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    document.getElementById('user-email').textContent = user.email;
+    chargerParametres();
+    chargerNumeros();
+  } else if(user){
+    refusedBox.style.display = 'block';
+    loginBox.style.display = 'none';
+  } else {
+    loginBox.style.display = 'block';
+    refusedBox.style.display = 'none';
+  }
+});
+
+async function chargerParametres(){
+  try {
+    const snap = await getDoc(doc(db, 'parametres', 'societe'));
+    if(snap.exists()){
+      const p = snap.data();
+      document.getElementById('p-nom').value = p.nom || 'APH Drone';
+      document.getElementById('p-forme').value = p.formeJuridique || 'SASU';
+      document.getElementById('p-dirigeant').value = p.dirigeant || 'Arnaud MOREAU';
+      document.getElementById('p-siret').value = p.siret || '';
+      document.getElementById('p-tva-numero').value = p.tvaNumero || '';
+      document.getElementById('p-adresse').value = p.adresse || '44, rue Georges Moulimard';
+      document.getElementById('p-cp').value = p.cp || '70300';
+      document.getElementById('p-ville').value = p.ville || 'Luxeuil-les-Bains';
+      document.getElementById('p-telephone').value = p.telephone || '06 95 39 07 76';
+      document.getElementById('p-email').value = p.email || 'contact@aphdrone.fr';
+      document.getElementById('p-iban').value = p.iban || '';
+      document.getElementById('p-bic').value = p.bic || '';
+      document.getElementById('p-banque').value = p.banque || '';
+      document.getElementById('p-regime-tva').value = p.regimeTva || 'assujetti';
+      document.getElementById('p-taux-defaut').value = p.tauxDefaut != null ? p.tauxDefaut : 20;
+    } else {
+      // Valeurs de départ si aucun paramètre encore enregistré
+      document.getElementById('p-nom').value = 'APH Drone';
+      document.getElementById('p-forme').value = 'SASU';
+      document.getElementById('p-dirigeant').value = 'Arnaud MOREAU';
+      document.getElementById('p-adresse').value = '44, rue Georges Moulimard';
+      document.getElementById('p-cp').value = '70300';
+      document.getElementById('p-ville').value = 'Luxeuil-les-Bains';
+      document.getElementById('p-telephone').value = '06 95 39 07 76';
+      document.getElementById('p-email').value = 'contact@aphdrone.fr';
+    }
+  } catch(e){
+    console.warn('chargerParametres:', e.message);
+  }
+}
+
+async function chargerNumeros(){
+  try {
+    const [devisSnap, facturesSnap, avoirsSnap] = await Promise.all([
+      getDoc(doc(db, 'compteurs', 'devis')),
+      getDoc(doc(db, 'compteurs', 'factures')),
+      getDoc(doc(db, 'compteurs', 'avoirs'))
+    ]);
+    document.getElementById('numero-devis').textContent = devisSnap.exists() ? ('DEV-' + String(new Date().getFullYear()).slice(-3) + String(devisSnap.data().dernier).padStart(5,'0')) : 'Aucun devis créé';
+    document.getElementById('numero-factures').textContent = facturesSnap.exists() ? ('F-' + String(new Date().getFullYear()).slice(-3) + String(facturesSnap.data().dernier).padStart(5,'0')) : 'Aucune facture créée';
+    document.getElementById('numero-avoirs').textContent = avoirsSnap.exists() ? ('AVO-' + String(new Date().getFullYear()).slice(-3) + String(avoirsSnap.data().dernier).padStart(5,'0')) : 'Aucun avoir créé';
+  } catch(e){
+    console.warn('chargerNumeros:', e.message);
+  }
+}
+
+window.enregistrerParametres = async function(){
+  const btn = document.getElementById('btn-save');
+  btn.disabled = true;
+  btn.textContent = 'Enregistrement…';
+
+  const data = {
+    nom: document.getElementById('p-nom').value.trim(),
+    formeJuridique: document.getElementById('p-forme').value.trim(),
+    dirigeant: document.getElementById('p-dirigeant').value.trim(),
+    siret: document.getElementById('p-siret').value.trim() || '[SIRET à compléter]',
+    tvaNumero: document.getElementById('p-tva-numero').value.trim(),
+    adresse: document.getElementById('p-adresse').value.trim(),
+    cp: document.getElementById('p-cp').value.trim(),
+    ville: document.getElementById('p-ville').value.trim(),
+    telephone: document.getElementById('p-telephone').value.trim(),
+    email: document.getElementById('p-email').value.trim(),
+    iban: document.getElementById('p-iban').value.trim(),
+    bic: document.getElementById('p-bic').value.trim(),
+    banque: document.getElementById('p-banque').value.trim(),
+    regimeTva: document.getElementById('p-regime-tva').value,
+    tauxDefaut: parseFloat(document.getElementById('p-taux-defaut').value)
+  };
+
+  try {
+    await setDoc(doc(db, 'parametres', 'societe'), data, { merge: true });
+    showStatus('Paramètres enregistrés avec succès.', 'success');
+  } catch(e){
+    showStatus('Erreur : ' + e.message, 'error');
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Enregistrer les paramètres';
+};
+
+function showStatus(msg, type){
+  const el = document.getElementById('save-status');
+  el.textContent = msg;
+  el.className = type;
+  el.style.display = 'block';
+  setTimeout(() => el.style.display = 'none', 4000);
+}
+
+window.toggleSidebar = function(open){
+  document.getElementById('sidebar').classList.toggle('mobile-open', open);
+  document.getElementById('sidebar-overlay').classList.toggle('show', open);
+};
+</script>
+</body>
+</html>

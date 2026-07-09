@@ -394,6 +394,25 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+// ── Paramètres entreprise (SIRET, IBAN, TVA...) utilisés sur les PDF ──
+async function chargerParametresEntreprise(){
+  try {
+    const snap = await getDoc(doc(db, 'parametres', 'societe'));
+    if(snap.exists()){
+      const p = snap.data();
+      window.definirEntrepriseInfo({
+        nom: p.nom, formeJuridique: p.formeJuridique, dirigeant: p.dirigeant,
+        adresse: p.adresse, cp: p.cp, ville: p.ville,
+        siret: p.siret, tva: p.tvaNumero,
+        telephone: p.telephone, email: p.email,
+        iban: p.iban, bic: p.bic
+      });
+    }
+  } catch(e){
+    console.warn('chargerParametresEntreprise:', e.message);
+  }
+}
+
 const STATUS_LABELS = { brouillon: 'Brouillon', envoyee: 'Envoyée', payee: 'Payée', retard: 'En retard', annulee: 'Annulée' };
 
 let tousLesClients = [];
@@ -422,6 +441,7 @@ onAuthStateChanged(auth, user => {
     document.getElementById('user-email').textContent = user.email;
     initFormulaire();
     (async function(){
+      await chargerParametresEntreprise();
       await chargerClientsPourDropdown();
       await chargerFactures();
       verifierParametreEnvoiDirect();
