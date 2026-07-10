@@ -190,6 +190,7 @@ body{background:var(--light);color:#222;min-height:100vh;}
           <h2 style="font-size:1rem;font-weight:700;color:var(--primary);">Articles du catalogue <span id="item-count" style="font-weight:400;color:#7a8fa5;font-size:.9rem;"></span></h2>
           <div style="display:flex;gap:10px;flex-wrap:wrap;">
             <button class="btn-cancel" onclick="importerBPU()" id="btn-import-bpu">Importer le BPU APH Drone (215 articles)</button>
+            <button class="btn-cancel" onclick="importerFormationsSite()" id="btn-import-formations">Importer les formations du site (16)</button>
             <button class="btn-save" style="flex:none;padding:11px 20px;" onclick="ouvrirNouvelItem()">+ Nouvel article</button>
           </div>
         </div>
@@ -213,6 +214,12 @@ body{background:var(--light);color:#222;min-height:100vh;}
               </div>
 
               <div class="form-group"><label>Désignation *</label><input type="text" id="f-designation" placeholder="Ex : Cartographie parcellaire par drone"></div>
+              <div class="form-row">
+                <div class="form-group"><label>Thème (optionnel)</label><input type="text" id="f-theme" placeholder="Ex : Agriculture & Agronomie" list="themes-existants"></div>
+                <div class="form-group"><label>Sous-thème (optionnel)</label><input type="text" id="f-soustheme" placeholder="Ex : Analyses multispectrales" list="soustheme-existants"></div>
+              </div>
+              <datalist id="themes-existants"></datalist>
+              <datalist id="soustheme-existants"></datalist>
               <div class="form-group"><label>Description courte (optionnel)</label><textarea id="f-description" rows="2" placeholder="Précisions visibles uniquement dans ton catalogue, pas sur les devis/factures"></textarea></div>
 
               <div class="form-row3">
@@ -256,6 +263,14 @@ body{background:var(--light);color:#222;min-height:100vh;}
             <button class="filter-chip" data-filter="Produit" onclick="setFiltreCat(this,'Produit')">Produits</button>
             <button class="filter-chip" data-filter="Autre" onclick="setFiltreCat(this,'Autre')">Autres</button>
           </div>
+          <div class="search-bar" style="margin-bottom:20px;">
+            <select id="filtre-theme" onchange="onChangeTheme()" style="padding:9px 14px;border:1.5px solid #dde3ec;border-radius:8px;font-size:.84rem;min-width:220px;">
+              <option value="all">Tous les thèmes</option>
+            </select>
+            <select id="filtre-soustheme" onchange="filtrerListeItems()" style="padding:9px 14px;border:1.5px solid #dde3ec;border-radius:8px;font-size:.84rem;min-width:220px;">
+              <option value="all">Tous les sous-thèmes</option>
+            </select>
+          </div>
           <div id="loading-list" style="text-align:center;padding:40px;color:#7a8fa5;font-size:.88rem;">Chargement…</div>
           <div id="item-list"></div>
 
@@ -272,9 +287,190 @@ body{background:var(--light);color:#222;min-height:100vh;}
 </div>
 
 <script>
+const FORMATIONS_SITE = [
+  {
+    "categorie": "Formation",
+    "theme": "Formations du site (aphdrone.fr)",
+    "sousTheme": "Catalogue officiel formations",
+    "designation": "Initiation A1/A3",
+    "unite": "forfait",
+    "prixHT": 290.0,
+    "tvaTaux": 20,
+    "description": "1 jour (7h) — 4 à 6 pers.",
+    "actif": true
+  },
+  {
+    "categorie": "Formation",
+    "theme": "Formations du site (aphdrone.fr)",
+    "sousTheme": "Catalogue officiel formations",
+    "designation": "BAPD — Catégorie A2",
+    "unite": "forfait",
+    "prixHT": 690.0,
+    "tvaTaux": 20,
+    "description": "3 jours (21h) — 4 à 6 pers.",
+    "actif": true
+  },
+  {
+    "categorie": "Formation",
+    "theme": "Formations du site (aphdrone.fr)",
+    "sousTheme": "Catalogue officiel formations",
+    "designation": "Préparation CATS STS",
+    "unite": "forfait",
+    "prixHT": 2200.0,
+    "tvaTaux": 20,
+    "description": "10 jours (70h) — 2 à 6 pers.",
+    "actif": true
+  },
+  {
+    "categorie": "Formation",
+    "theme": "Formations du site (aphdrone.fr)",
+    "sousTheme": "Catalogue officiel formations",
+    "designation": "Vol de nuit",
+    "unite": "forfait",
+    "prixHT": 1790.0,
+    "tvaTaux": 20,
+    "description": "3 jours (21h) — 2 à 4 pers.",
+    "actif": true
+  },
+  {
+    "categorie": "Formation",
+    "theme": "Formations du site (aphdrone.fr)",
+    "sousTheme": "Catalogue officiel formations",
+    "designation": "Mise à niveau réglementaire",
+    "unite": "forfait",
+    "prixHT": 690.0,
+    "tvaTaux": 20,
+    "description": "2 jours (14h) — 2 à 6 pers.",
+    "actif": true
+  },
+  {
+    "categorie": "Formation",
+    "theme": "Formations du site (aphdrone.fr)",
+    "sousTheme": "Catalogue officiel formations",
+    "designation": "SORA, PDRA & MANEX",
+    "unite": "forfait",
+    "prixHT": 1990.0,
+    "tvaTaux": 20,
+    "description": "4 jours (28h) — 2 à 6 pers. — Prérequis CATS",
+    "actif": true
+  },
+  {
+    "categorie": "Formation",
+    "theme": "Formations du site (aphdrone.fr)",
+    "sousTheme": "Catalogue officiel formations",
+    "designation": "Thermographie infrarouge",
+    "unite": "forfait",
+    "prixHT": 1790.0,
+    "tvaTaux": 20,
+    "description": "3 jours (21h) — 2 à 6 pers.",
+    "actif": true
+  },
+  {
+    "categorie": "Formation",
+    "theme": "Formations du site (aphdrone.fr)",
+    "sousTheme": "Catalogue officiel formations",
+    "designation": "Cartographie & Modélisation 3D",
+    "unite": "forfait",
+    "prixHT": 1790.0,
+    "tvaTaux": 20,
+    "description": "3 jours (21h) — 2 à 6 pers.",
+    "actif": true
+  },
+  {
+    "categorie": "Formation",
+    "theme": "Formations du site (aphdrone.fr)",
+    "sousTheme": "Catalogue officiel formations",
+    "designation": "Inspection technique",
+    "unite": "forfait",
+    "prixHT": 1390.0,
+    "tvaTaux": 20,
+    "description": "3 jours (21h) — 2 à 6 pers.",
+    "actif": true
+  },
+  {
+    "categorie": "Formation",
+    "theme": "Formations du site (aphdrone.fr)",
+    "sousTheme": "Catalogue officiel formations",
+    "designation": "Agriculture de précision & arboriculture",
+    "unite": "forfait",
+    "prixHT": 2400.0,
+    "tvaTaux": 20,
+    "description": "4 jours (28h) — 2 à 6 pers.",
+    "actif": true
+  },
+  {
+    "categorie": "Formation",
+    "theme": "Formations du site (aphdrone.fr)",
+    "sousTheme": "Catalogue officiel formations",
+    "designation": "Nettoyage & Désinsectisation",
+    "unite": "forfait",
+    "prixHT": 2400.0,
+    "tvaTaux": 20,
+    "description": "4 jours (28h) — 2 à 4 pers.",
+    "actif": true
+  },
+  {
+    "categorie": "Formation",
+    "theme": "Formations du site (aphdrone.fr)",
+    "sousTheme": "Catalogue officiel formations",
+    "designation": "Surveillance, Sécurité & Secours",
+    "unite": "forfait",
+    "prixHT": 1890.0,
+    "tvaTaux": 20,
+    "description": "4 jours (28h) — 2 à 6 pers.",
+    "actif": true
+  },
+  {
+    "categorie": "Formation",
+    "theme": "Formations du site (aphdrone.fr)",
+    "sousTheme": "Catalogue officiel formations",
+    "designation": "Sylviculture, faune & biodiversité",
+    "unite": "forfait",
+    "prixHT": 1990.0,
+    "tvaTaux": 20,
+    "description": "5 jours (35h) — 2 à 6 pers.",
+    "actif": true
+  },
+  {
+    "categorie": "Formation",
+    "theme": "Formations du site (aphdrone.fr)",
+    "sousTheme": "Catalogue officiel formations",
+    "designation": "Production de données exploitables",
+    "unite": "forfait",
+    "prixHT": 1890.0,
+    "tvaTaux": 20,
+    "description": "3 jours (21h) — 2 à 6 pers.",
+    "actif": true
+  },
+  {
+    "categorie": "Formation",
+    "theme": "Formations du site (aphdrone.fr)",
+    "sousTheme": "Catalogue officiel formations",
+    "designation": "Maîtrise opérationnelle & perfectionnement",
+    "unite": "forfait",
+    "prixHT": 990.0,
+    "tvaTaux": 20,
+    "description": "3 jours (21h) — 2 à 6 pers.",
+    "actif": true
+  },
+  {
+    "categorie": "Formation",
+    "theme": "Formations du site (aphdrone.fr)",
+    "sousTheme": "Catalogue officiel formations",
+    "designation": "Reconversion professionnelle",
+    "unite": "forfait",
+    "prixHT": 3950.0,
+    "tvaTaux": 20,
+    "description": "3 semaines (105h) — Aucun prérequis — /pers.",
+    "actif": true
+  }
+];
+
 const BPU_APH_DRONE = [
   {
     "categorie": "Prestation",
+    "theme": "Agriculture & Agronomie",
+    "sousTheme": "Pulvérisation & traitement phytosanitaire (T100)",
     "designation": "A1.1 Pulvérisation phytosanitaire standard",
     "unite": "ha",
     "prixHT": 380.0,
@@ -284,6 +480,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Agriculture & Agronomie",
+    "sousTheme": "Pulvérisation & traitement phytosanitaire (T100)",
     "designation": "A1.2 Pulvérisation biocontrôle / produits biologiques",
     "unite": "ha",
     "prixHT": 350.0,
@@ -293,6 +491,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Agriculture & Agronomie",
+    "sousTheme": "Pulvérisation & traitement phytosanitaire (T100)",
     "designation": "A1.3 Pulvérisation zone difficile d'accès",
     "unite": "ha",
     "prixHT": 395.0,
@@ -302,6 +502,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Agriculture & Agronomie",
+    "sousTheme": "Pulvérisation & traitement phytosanitaire (T100)",
     "designation": "A1.4 Forfait journée pulvérisation T100",
     "unite": "jour",
     "prixHT": 4000.0,
@@ -311,6 +513,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Agriculture & Agronomie",
+    "sousTheme": "Pulvérisation & traitement phytosanitaire (T100)",
     "designation": "A1.5 Rapport de pulvérisation conforme",
     "unite": "rapport",
     "prixHT": 90.0,
@@ -320,6 +524,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Agriculture & Agronomie",
+    "sousTheme": "Pulvérisation & traitement phytosanitaire (T100)",
     "designation": "A1.6 Majoration SORA / coordination DGAC",
     "unite": "forfait",
     "prixHT": 350.0,
@@ -329,6 +535,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Agriculture & Agronomie",
+    "sousTheme": "Pulvérisation & traitement phytosanitaire (T100)",
     "designation": "A1.7 Attente météo / logistique sur site",
     "unite": "heure",
     "prixHT": 120.0,
@@ -338,6 +546,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Agriculture & Agronomie",
+    "sousTheme": "Épandage (DJI AGRAS T100)",
     "designation": "A2.1 Épandage engrais liquide / soluble",
     "unite": "ha",
     "prixHT": 350.0,
@@ -347,6 +557,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Agriculture & Agronomie",
+    "sousTheme": "Épandage (DJI AGRAS T100)",
     "designation": "A2.2 Épandage semences",
     "unite": "ha",
     "prixHT": 245.0,
@@ -356,6 +568,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Agriculture & Agronomie",
+    "sousTheme": "Épandage (DJI AGRAS T100)",
     "designation": "A2.3 Épandage micro-granulés",
     "unite": "ha",
     "prixHT": 245.0,
@@ -365,6 +579,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Agriculture & Agronomie",
+    "sousTheme": "Épandage (DJI AGRAS T100)",
     "designation": "A2.4 Forfait journée épandage multi-parcelles T100",
     "unite": "jour",
     "prixHT": 4000.0,
@@ -374,6 +590,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Agriculture & Agronomie",
+    "sousTheme": "Épandage (DJI AGRAS T100)",
     "designation": "A2.5 Cartographie de modulation",
     "unite": "ha",
     "prixHT": 12.0,
@@ -383,6 +601,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Agriculture & Agronomie",
+    "sousTheme": "Épandage (DJI AGRAS T100)",
     "designation": "A2.6 Rapport d'épandage certifié",
     "unite": "rapport",
     "prixHT": 120.0,
@@ -392,6 +612,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Agriculture & Agronomie",
+    "sousTheme": "Analyses multispectrales (cultures, vergers, vignes)",
     "designation": "A3.1 Analyse multispectrale parcelle agricole",
     "unite": "ha",
     "prixHT": 12.0,
@@ -401,6 +623,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Agriculture & Agronomie",
+    "sousTheme": "Analyses multispectrales (cultures, vergers, vignes)",
     "designation": "A3.2 Analyse multispectrale verger",
     "unite": "ha",
     "prixHT": 18.0,
@@ -410,6 +634,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Agriculture & Agronomie",
+    "sousTheme": "Analyses multispectrales (cultures, vergers, vignes)",
     "designation": "A3.3 Analyse vigne multispectrale",
     "unite": "ha",
     "prixHT": 160.0,
@@ -419,6 +645,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Agriculture & Agronomie",
+    "sousTheme": "Analyses multispectrales (cultures, vergers, vignes)",
     "designation": "A3.4 Cartographie de prescription variable",
     "unite": "ha",
     "prixHT": 12.0,
@@ -428,6 +656,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Agriculture & Agronomie",
+    "sousTheme": "Analyses multispectrales (cultures, vergers, vignes)",
     "designation": "A3.5 Comptage plants / arbres fruitiers",
     "unite": "ha",
     "prixHT": 24.0,
@@ -437,6 +667,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Agriculture & Agronomie",
+    "sousTheme": "Analyses multispectrales (cultures, vergers, vignes)",
     "designation": "A3.6 Suivi phénologique culture",
     "unite": "saison",
     "prixHT": 650.0,
@@ -446,6 +678,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Agriculture & Agronomie",
+    "sousTheme": "Analyses multispectrales (cultures, vergers, vignes)",
     "designation": "A3.7 Estimation rendement prévisionnel",
     "unite": "rapport",
     "prixHT": 220.0,
@@ -455,6 +689,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Agriculture & Agronomie",
+    "sousTheme": "Analyses multispectrales (cultures, vergers, vignes)",
     "designation": "A3.8 Rapport agronomique illustré",
     "unite": "rapport",
     "prixHT": 200.0,
@@ -464,6 +700,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Agriculture & Agronomie",
+    "sousTheme": "Analyses multispectrales (cultures, vergers, vignes)",
     "designation": "A3.9 Pack diagnostic complet parcelle",
     "unite": "jour",
     "prixHT": 980.0,
@@ -473,6 +711,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Agriculture & Agronomie",
+    "sousTheme": "Recherche de faune avant fauchage",
     "designation": "A4.1 Recherche de faune avant fauchage",
     "unite": "ha",
     "prixHT": 12.0,
@@ -482,6 +722,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Agriculture & Agronomie",
+    "sousTheme": "Recherche de faune avant fauchage",
     "designation": "A4.2 Forfait demi-journée fauchage (aube)",
     "unite": "demi-j",
     "prixHT": 380.0,
@@ -491,6 +733,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Agriculture & Agronomie",
+    "sousTheme": "Recherche de faune avant fauchage",
     "designation": "A4.3 Forfait journée multi-parcelles fauchage",
     "unite": "jour",
     "prixHT": 650.0,
@@ -500,6 +744,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Agriculture & Agronomie",
+    "sousTheme": "Recherche de faune avant fauchage",
     "designation": "A4.4 Abonnement saison fauche",
     "unite": "mois",
     "prixHT": 1200.0,
@@ -509,6 +755,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Agriculture & Agronomie",
+    "sousTheme": "Apiculture & surveillance de ruchers",
     "designation": "A5.1 Inspection thermique ruchers",
     "unite": "rucher",
     "prixHT": 180.0,
@@ -518,6 +766,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Agriculture & Agronomie",
+    "sousTheme": "Apiculture & surveillance de ruchers",
     "designation": "A5.2 Cartographie zones de butinage",
     "unite": "mission",
     "prixHT": 420.0,
@@ -527,6 +777,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Agriculture & Agronomie",
+    "sousTheme": "Apiculture & surveillance de ruchers",
     "designation": "A5.3 Surveillance rucher isolé / transhumance",
     "unite": "passage",
     "prixHT": 150.0,
@@ -536,6 +788,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Agriculture & Agronomie",
+    "sousTheme": "Apiculture & surveillance de ruchers",
     "designation": "A5.4 Détection frelons asiatiques près ruchers",
     "unite": "mission",
     "prixHT": 250.0,
@@ -545,6 +799,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Forêt, Nature & Biodiversité",
+    "sousTheme": "Cartographie forestière & inventaire",
     "designation": "B1.1 Cartographie forestière (demi-journée)",
     "unite": "demi-j",
     "prixHT": 420.0,
@@ -554,6 +810,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Forêt, Nature & Biodiversité",
+    "sousTheme": "Cartographie forestière & inventaire",
     "designation": "B1.2 Cartographie forestière (journée)",
     "unite": "jour",
     "prixHT": 750.0,
@@ -563,6 +821,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Forêt, Nature & Biodiversité",
+    "sousTheme": "Cartographie forestière & inventaire",
     "designation": "B1.3 Inventaire faunistique aérien",
     "unite": "jour",
     "prixHT": 850.0,
@@ -572,6 +832,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Forêt, Nature & Biodiversité",
+    "sousTheme": "Cartographie forestière & inventaire",
     "designation": "B1.4 Surveillance coupes / suivi travaux ONF",
     "unite": "mission",
     "prixHT": 350.0,
@@ -581,6 +843,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Forêt, Nature & Biodiversité",
+    "sousTheme": "Comptage gibier & faune sauvage",
     "designation": "B2.1 Comptage grand gibier diurne",
     "unite": "jour",
     "prixHT": 850.0,
@@ -590,6 +854,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Forêt, Nature & Biodiversité",
+    "sousTheme": "Comptage gibier & faune sauvage",
     "designation": "B2.2 Comptage grand gibier nocturne",
     "unite": "nuit",
     "prixHT": 1100.0,
@@ -599,6 +865,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Forêt, Nature & Biodiversité",
+    "sousTheme": "Comptage gibier & faune sauvage",
     "designation": "B2.3 Comptage petit gibier",
     "unite": "nuit",
     "prixHT": 950.0,
@@ -608,6 +876,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Forêt, Nature & Biodiversité",
+    "sousTheme": "Comptage gibier & faune sauvage",
     "designation": "B2.4 Suivi de population",
     "unite": "mission",
     "prixHT": 680.0,
@@ -617,6 +887,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Forêt, Nature & Biodiversité",
+    "sousTheme": "Comptage gibier & faune sauvage",
     "designation": "B2.5 Cartographie zones de présence / couloirs gibier",
     "unite": "rapport",
     "prixHT": 320.0,
@@ -626,6 +898,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Forêt, Nature & Biodiversité",
+    "sousTheme": "Comptage gibier & faune sauvage",
     "designation": "B2.6 Comptage oiseaux d'eau / limicoles",
     "unite": "mission",
     "prixHT": 580.0,
@@ -635,6 +909,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Forêt, Nature & Biodiversité",
+    "sousTheme": "Comptage gibier & faune sauvage",
     "designation": "B2.7 Abonnement suivi annuel gibier",
     "unite": "an",
     "prixHT": 3200.0,
@@ -644,6 +920,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Forêt, Nature & Biodiversité",
+    "sousTheme": "Scolytes, dépérissement & santé des forêts",
     "designation": "B3.1 Détection / cartographie foyers de scolytes",
     "unite": "ha",
     "prixHT": 18.0,
@@ -653,6 +931,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Forêt, Nature & Biodiversité",
+    "sousTheme": "Scolytes, dépérissement & santé des forêts",
     "designation": "B3.2 Cartographie dépérissement forestier",
     "unite": "ha",
     "prixHT": 16.0,
@@ -662,6 +942,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Forêt, Nature & Biodiversité",
+    "sousTheme": "Scolytes, dépérissement & santé des forêts",
     "designation": "B3.3 Orthophotographie HR parcelle forestière",
     "unite": "ha",
     "prixHT": 14.0,
@@ -671,6 +953,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Forêt, Nature & Biodiversité",
+    "sousTheme": "Scolytes, dépérissement & santé des forêts",
     "designation": "B3.4 Suivi temporel propagation scolytes",
     "unite": "passage",
     "prixHT": 520.0,
@@ -680,6 +964,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Forêt, Nature & Biodiversité",
+    "sousTheme": "Scolytes, dépérissement & santé des forêts",
     "designation": "B3.5 Rapport phytosanitaire forestier",
     "unite": "rapport",
     "prixHT": 280.0,
@@ -689,6 +975,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Forêt, Nature & Biodiversité",
+    "sousTheme": "Scolytes, dépérissement & santé des forêts",
     "designation": "B3.6 Pack complet diagnostic scolytes",
     "unite": "jour",
     "prixHT": 1100.0,
@@ -698,6 +986,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Forêt, Nature & Biodiversité",
+    "sousTheme": "Haies, bocage & trame verte et bleue",
     "designation": "B4.1 Cartographie et linéaire de haies",
     "unite": "ha",
     "prixHT": 16.0,
@@ -707,6 +997,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Forêt, Nature & Biodiversité",
+    "sousTheme": "Haies, bocage & trame verte et bleue",
     "designation": "B4.2 Diagnostic bocager complet",
     "unite": "mission",
     "prixHT": 650.0,
@@ -716,6 +1008,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Forêt, Nature & Biodiversité",
+    "sousTheme": "Haies, bocage & trame verte et bleue",
     "designation": "B4.3 Cartographie Trame Verte et Bleue (TVB)",
     "unite": "ha",
     "prixHT": 16.0,
@@ -725,6 +1019,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Forêt, Nature & Biodiversité",
+    "sousTheme": "Haies, bocage & trame verte et bleue",
     "designation": "B4.4 Suivi annuel bocage / recolonisation",
     "unite": "passage",
     "prixHT": 480.0,
@@ -734,6 +1030,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Forêt, Nature & Biodiversité",
+    "sousTheme": "Haies, bocage & trame verte et bleue",
     "designation": "B4.5 Rapport diagnostic bocager (dossier subvention)",
     "unite": "rapport",
     "prixHT": 280.0,
@@ -743,6 +1041,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Forêt, Nature & Biodiversité",
+    "sousTheme": "Récolement forestier après tempête & chablis",
     "designation": "B5.1 Cartographie des chablis",
     "unite": "ha",
     "prixHT": 18.0,
@@ -752,6 +1052,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Forêt, Nature & Biodiversité",
+    "sousTheme": "Récolement forestier après tempête & chablis",
     "designation": "B5.2 Estimation volume chablis",
     "unite": "ha",
     "prixHT": 22.0,
@@ -761,6 +1063,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Forêt, Nature & Biodiversité",
+    "sousTheme": "Récolement forestier après tempête & chablis",
     "designation": "B5.3 Cartographie multispectre après tempête",
     "unite": "ha",
     "prixHT": 18.0,
@@ -770,6 +1074,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Forêt, Nature & Biodiversité",
+    "sousTheme": "Récolement forestier après tempête & chablis",
     "designation": "B5.4 Rapport de récolement forestier",
     "unite": "rapport",
     "prixHT": 280.0,
@@ -779,6 +1085,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Forêt, Nature & Biodiversité",
+    "sousTheme": "Récolement forestier après tempête & chablis",
     "designation": "B5.5 Pack récolement complet",
     "unite": "jour",
     "prixHT": 1100.0,
@@ -788,6 +1096,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Environnement & Eau",
+    "sousTheme": "Milieux aquatiques",
     "designation": "C1.1 Cartographie multispectrale cours d'eau",
     "unite": "km",
     "prixHT": 18.0,
@@ -797,6 +1107,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Environnement & Eau",
+    "sousTheme": "Milieux aquatiques",
     "designation": "C1.2 Cartographie multispectrale zone humide / marais",
     "unite": "ha",
     "prixHT": 25.0,
@@ -806,6 +1118,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Environnement & Eau",
+    "sousTheme": "Milieux aquatiques",
     "designation": "C1.3 Cartographie multispectrale retenue / lac",
     "unite": "ha",
     "prixHT": 22.0,
@@ -815,6 +1129,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Environnement & Eau",
+    "sousTheme": "Milieux aquatiques",
     "designation": "C1.4 Suivi thermique cours d'eau",
     "unite": "km",
     "prixHT": 28.0,
@@ -824,6 +1140,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Environnement & Eau",
+    "sousTheme": "Milieux aquatiques",
     "designation": "C1.5 Orthophotographie HR milieu aquatique",
     "unite": "ha",
     "prixHT": 18.0,
@@ -833,6 +1151,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Environnement & Eau",
+    "sousTheme": "Milieux aquatiques",
     "designation": "C1.6 Détection espèces invasives aquatiques",
     "unite": "mission",
     "prixHT": 280.0,
@@ -842,6 +1162,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Environnement & Eau",
+    "sousTheme": "Milieux aquatiques",
     "designation": "C1.7 Inspection ouvrage hydraulique",
     "unite": "mission",
     "prixHT": 420.0,
@@ -851,6 +1173,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Environnement & Eau",
+    "sousTheme": "Milieux aquatiques",
     "designation": "C1.8 Rapport environnemental complet",
     "unite": "rapport",
     "prixHT": 280.0,
@@ -860,6 +1184,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Environnement & Eau",
+    "sousTheme": "Milieux aquatiques",
     "designation": "C1.9 Pack complet milieu aquatique",
     "unite": "jour",
     "prixHT": 950.0,
@@ -869,6 +1195,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Environnement & Eau",
+    "sousTheme": "Milieux aquatiques",
     "designation": "C1.10 Abonnement suivi périodique milieu aquatique",
     "unite": "an",
     "prixHT": 3200.0,
@@ -878,6 +1206,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Environnement & Eau",
+    "sousTheme": "Sécheresse & stress hydrique",
     "designation": "C2.1 Cartographie stress hydrique agricole",
     "unite": "ha",
     "prixHT": 28.0,
@@ -887,6 +1217,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Environnement & Eau",
+    "sousTheme": "Sécheresse & stress hydrique",
     "designation": "C2.2 Cartographie stress hydrique forestier",
     "unite": "ha",
     "prixHT": 22.0,
@@ -896,6 +1228,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Environnement & Eau",
+    "sousTheme": "Sécheresse & stress hydrique",
     "designation": "C2.3 Suivi thermique sol / cultures",
     "unite": "ha",
     "prixHT": 26.0,
@@ -905,6 +1239,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Environnement & Eau",
+    "sousTheme": "Sécheresse & stress hydrique",
     "designation": "C2.4 Cartographie fissures de retrait argileux (RGA)",
     "unite": "ha",
     "prixHT": 22.0,
@@ -914,6 +1250,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Environnement & Eau",
+    "sousTheme": "Sécheresse & stress hydrique",
     "designation": "C2.5 Surveillance retenue / réserve d'eau",
     "unite": "mission",
     "prixHT": 380.0,
@@ -923,6 +1261,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Environnement & Eau",
+    "sousTheme": "Sécheresse & stress hydrique",
     "designation": "C2.6 Suivi saisonnier sécheresse",
     "unite": "saison",
     "prixHT": 1800.0,
@@ -932,6 +1272,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Environnement & Eau",
+    "sousTheme": "Sécheresse & stress hydrique",
     "designation": "C2.7 Pack diagnostic sécheresse complet",
     "unite": "jour",
     "prixHT": 1100.0,
@@ -941,6 +1283,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Environnement & Eau",
+    "sousTheme": "Surveillance environnementale & dépôts illégaux",
     "designation": "C3.1 Surveillance décharges sauvages / dépôts illégaux",
     "unite": "mission",
     "prixHT": 280.0,
@@ -950,6 +1294,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Environnement & Eau",
+    "sousTheme": "Surveillance environnementale & dépôts illégaux",
     "designation": "C3.2 Constat aérien travaux illégaux",
     "unite": "mission",
     "prixHT": 350.0,
@@ -959,6 +1305,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Environnement & Eau",
+    "sousTheme": "Surveillance environnementale & dépôts illégaux",
     "designation": "C3.3 Surveillance captages AEP",
     "unite": "mission",
     "prixHT": 380.0,
@@ -968,6 +1316,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Environnement & Eau",
+    "sousTheme": "Surveillance environnementale & dépôts illégaux",
     "designation": "C3.4 Suivi chantier environnemental",
     "unite": "passage",
     "prixHT": 320.0,
@@ -977,6 +1327,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Cartographie, Topographie & 3D",
+    "sousTheme": "Orthophotographie & modélisation",
     "designation": "D1.1 Orthophotographie standard",
     "unite": "ha",
     "prixHT": 12.0,
@@ -986,6 +1338,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Cartographie, Topographie & 3D",
+    "sousTheme": "Orthophotographie & modélisation",
     "designation": "D1.2 Orthophotographie haute résolution",
     "unite": "ha",
     "prixHT": 18.0,
@@ -995,6 +1349,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Cartographie, Topographie & 3D",
+    "sousTheme": "Orthophotographie & modélisation",
     "designation": "D1.3 Modèle numérique de surface / terrain (MNS/MNT)",
     "unite": "ha",
     "prixHT": 14.0,
@@ -1004,6 +1360,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Cartographie, Topographie & 3D",
+    "sousTheme": "Orthophotographie & modélisation",
     "designation": "D1.4 Modèle 3D texturé complet",
     "unite": "mission",
     "prixHT": 650.0,
@@ -1013,6 +1371,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Cartographie, Topographie & 3D",
+    "sousTheme": "Orthophotographie & modélisation",
     "designation": "D1.5 Plan topographique coté",
     "unite": "ha",
     "prixHT": 16.0,
@@ -1022,6 +1382,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Cartographie, Topographie & 3D",
+    "sousTheme": "Inventaire carrière & calcul de volumes",
     "designation": "D2.1 Levé topographique de carrière / gravière",
     "unite": "ha",
     "prixHT": 24.0,
@@ -1031,6 +1393,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Cartographie, Topographie & 3D",
+    "sousTheme": "Inventaire carrière & calcul de volumes",
     "designation": "D2.2 Calcul de volume de stock",
     "unite": "rapport",
     "prixHT": 350.0,
@@ -1040,6 +1404,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Cartographie, Topographie & 3D",
+    "sousTheme": "Inventaire carrière & calcul de volumes",
     "designation": "D2.3 Suivi périodique de carrière",
     "unite": "passage",
     "prixHT": 480.0,
@@ -1049,6 +1415,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Cartographie, Topographie & 3D",
+    "sousTheme": "Inventaire carrière & calcul de volumes",
     "designation": "D2.4 Inspection sécurité fronts de taille / talus",
     "unite": "mission",
     "prixHT": 420.0,
@@ -1058,6 +1426,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Cartographie, Topographie & 3D",
+    "sousTheme": "Inventaire carrière & calcul de volumes",
     "designation": "D2.5 Modèle 3D de carrière",
     "unite": "mission",
     "prixHT": 750.0,
@@ -1067,6 +1437,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Cartographie, Topographie & 3D",
+    "sousTheme": "Suivi de chantier",
     "designation": "D3.1 Visite de suivi de chantier",
     "unite": "passage",
     "prixHT": 280.0,
@@ -1076,6 +1448,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Cartographie, Topographie & 3D",
+    "sousTheme": "Suivi de chantier",
     "designation": "D3.2 Abonnement suivi mensuel chantier",
     "unite": "mois",
     "prixHT": 900.0,
@@ -1085,6 +1459,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Cartographie, Topographie & 3D",
+    "sousTheme": "Suivi de chantier",
     "designation": "D3.3 Modèle 3D de chantier",
     "unite": "levé",
     "prixHT": 550.0,
@@ -1094,6 +1470,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Cartographie, Topographie & 3D",
+    "sousTheme": "Suivi de chantier",
     "designation": "D3.4 Calcul de volumes terrassement / remblais / déblais",
     "unite": "rapport",
     "prixHT": 220.0,
@@ -1103,6 +1481,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Cartographie, Topographie & 3D",
+    "sousTheme": "Suivi de chantier",
     "designation": "D3.5 Vidéo de synthèse avancement chantier",
     "unite": "vidéo",
     "prixHT": 180.0,
@@ -1112,6 +1492,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Inspection technique & Infrastructure",
+    "sousTheme": "Bâtiments, toitures & ouvrages",
     "designation": "E1.1 Inspection visuelle bâtiment / toiture (pro)",
     "unite": "mission",
     "prixHT": 320.0,
@@ -1121,6 +1503,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Inspection technique & Infrastructure",
+    "sousTheme": "Bâtiments, toitures & ouvrages",
     "designation": "E1.2 Inspection thermographique bâtiment / toiture (pro)",
     "unite": "mission",
     "prixHT": 650.0,
@@ -1130,6 +1514,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Inspection technique & Infrastructure",
+    "sousTheme": "Bâtiments, toitures & ouvrages",
     "designation": "E1.3 Pack inspection complète (visuel+thermique, pro)",
     "unite": "mission",
     "prixHT": 950.0,
@@ -1139,6 +1525,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Inspection technique & Infrastructure",
+    "sousTheme": "Nettoyage toitures & bâtiments par drone",
     "designation": "E1B.1 Nettoyage haute pression toiture par drone",
     "unite": "m²",
     "prixHT": 8.0,
@@ -1148,6 +1536,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Inspection technique & Infrastructure",
+    "sousTheme": "Nettoyage toitures & bâtiments par drone",
     "designation": "E1B.2 Nettoyage basse pression / biocide toiture",
     "unite": "m²",
     "prixHT": 10.0,
@@ -1157,6 +1547,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Inspection technique & Infrastructure",
+    "sousTheme": "Nettoyage toitures & bâtiments par drone",
     "designation": "E1B.3 Nettoyage façade bâtiment HP",
     "unite": "m²",
     "prixHT": 10.0,
@@ -1166,6 +1558,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Inspection technique & Infrastructure",
+    "sousTheme": "Nettoyage toitures & bâtiments par drone",
     "designation": "E1B.4 Nettoyage basse pression façade",
     "unite": "m²",
     "prixHT": 12.0,
@@ -1175,6 +1569,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Inspection technique & Infrastructure",
+    "sousTheme": "Nettoyage toitures & bâtiments par drone",
     "designation": "E1B.5 Traitement préventif biocide toiture+façade",
     "unite": "m²",
     "prixHT": 5.0,
@@ -1184,6 +1580,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Inspection technique & Infrastructure",
+    "sousTheme": "Nettoyage toitures & bâtiments par drone",
     "designation": "E1B.6 Forfait demi-journée nettoyage (≤300m²)",
     "unite": "demi-j",
     "prixHT": 750.0,
@@ -1193,6 +1591,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Inspection technique & Infrastructure",
+    "sousTheme": "Nettoyage toitures & bâtiments par drone",
     "designation": "E1B.7 Forfait journée nettoyage (≤600m²)",
     "unite": "jour",
     "prixHT": 1300.0,
@@ -1202,6 +1602,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Inspection technique & Infrastructure",
+    "sousTheme": "Nettoyage toitures & bâtiments par drone",
     "designation": "E1B.8 Rapport avant/après nettoyage",
     "unite": "mission",
     "prixHT": 80.0,
@@ -1211,6 +1613,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Inspection technique & Infrastructure",
+    "sousTheme": "Nettoyage toitures & bâtiments par drone",
     "designation": "E1B.9 Inspection préalable diagnostic nettoyage",
     "unite": "mission",
     "prixHT": 120.0,
@@ -1220,6 +1624,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Inspection technique & Infrastructure",
+    "sousTheme": "Infrastructures linéaires & ouvrages d'art",
     "designation": "E2.1 Inspection infrastructure linéaire",
     "unite": "km",
     "prixHT": 160.0,
@@ -1229,6 +1635,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Inspection technique & Infrastructure",
+    "sousTheme": "Infrastructures linéaires & ouvrages d'art",
     "designation": "E2.2 Inspection pylônes / antennes / mâts",
     "unite": "ouvrage",
     "prixHT": 380.0,
@@ -1238,6 +1646,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Inspection technique & Infrastructure",
+    "sousTheme": "Infrastructures linéaires & ouvrages d'art",
     "designation": "E2.3 Inspection éoliennes",
     "unite": "éolienne",
     "prixHT": 650.0,
@@ -1247,6 +1657,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Inspection technique & Infrastructure",
+    "sousTheme": "Infrastructures linéaires & ouvrages d'art",
     "designation": "E2.4 Inspection pont / ouvrage d'art",
     "unite": "ouvrage",
     "prixHT": 520.0,
@@ -1256,6 +1668,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Inspection technique & Infrastructure",
+    "sousTheme": "Infrastructures linéaires & ouvrages d'art",
     "designation": "E2.5 Inspection réseau d'irrigation / canal",
     "unite": "km",
     "prixHT": 130.0,
@@ -1265,6 +1679,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Inspection technique & Infrastructure",
+    "sousTheme": "Infrastructures linéaires & ouvrages d'art",
     "designation": "E2.6 Inspection thermique infrastructure",
     "unite": "mission",
     "prixHT": 580.0,
@@ -1274,6 +1690,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Sécurité publique, Risques & Sinistres",
+    "sousTheme": "Sécurité publique & collectivités",
     "designation": "F1.1 Appui opérationnel sécurité (demi-journée)",
     "unite": "demi-j",
     "prixHT": 600.0,
@@ -1283,6 +1701,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Sécurité publique, Risques & Sinistres",
+    "sousTheme": "Sécurité publique & collectivités",
     "designation": "F1.2 Appui opérationnel sécurité (journée)",
     "unite": "jour",
     "prixHT": 1000.0,
@@ -1292,6 +1712,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Sécurité publique, Risques & Sinistres",
+    "sousTheme": "Sécurité publique & collectivités",
     "designation": "F1.3 Mission recherche & secours (SAR)",
     "unite": "jour",
     "prixHT": 1100.0,
@@ -1301,6 +1723,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Sécurité publique, Risques & Sinistres",
+    "sousTheme": "Sécurité publique & collectivités",
     "designation": "F1.4 Surveillance des feux de forêt",
     "unite": "heure",
     "prixHT": 420.0,
@@ -1310,6 +1734,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Sécurité publique, Risques & Sinistres",
+    "sousTheme": "Sécurité publique & collectivités",
     "designation": "F1.5 Heure de veille / permanence opérateur",
     "unite": "heure",
     "prixHT": 150.0,
@@ -1319,6 +1745,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Sécurité publique, Risques & Sinistres",
+    "sousTheme": "Risques naturels & post-catastrophe",
     "designation": "F2.1 Cartographie zones avalancheuses",
     "unite": "mission",
     "prixHT": 450.0,
@@ -1328,6 +1756,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Sécurité publique, Risques & Sinistres",
+    "sousTheme": "Risques naturels & post-catastrophe",
     "designation": "F2.2 Surveillance glissements de terrain",
     "unite": "mission",
     "prixHT": 480.0,
@@ -1337,6 +1767,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Sécurité publique, Risques & Sinistres",
+    "sousTheme": "Risques naturels & post-catastrophe",
     "designation": "F2.3 Inspection post-crue",
     "unite": "mission",
     "prixHT": 520.0,
@@ -1346,6 +1778,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Sécurité publique, Risques & Sinistres",
+    "sousTheme": "Risques naturels & post-catastrophe",
     "designation": "F2.4 Inspection post-tempête / post-feu",
     "unite": "ha",
     "prixHT": 18.0,
@@ -1355,6 +1789,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Sécurité publique, Risques & Sinistres",
+    "sousTheme": "Risques naturels & post-catastrophe",
     "designation": "F2.5 Modèle numérique de terrain post-catastrophe",
     "unite": "mission",
     "prixHT": 780.0,
@@ -1364,6 +1800,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Sécurité publique, Risques & Sinistres",
+    "sousTheme": "Risques naturels & post-catastrophe",
     "designation": "F2.6 Rapport CAT-NAT",
     "unite": "rapport",
     "prixHT": 320.0,
@@ -1373,6 +1811,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Sécurité publique, Risques & Sinistres",
+    "sousTheme": "Dégâts de culture — constat & expertise",
     "designation": "F3.1 Constat aérien dégâts de culture",
     "unite": "mission",
     "prixHT": 320.0,
@@ -1382,6 +1822,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Sécurité publique, Risques & Sinistres",
+    "sousTheme": "Dégâts de culture — constat & expertise",
     "designation": "F3.2 Estimation surface endommagée",
     "unite": "ha",
     "prixHT": 18.0,
@@ -1391,6 +1833,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Sécurité publique, Risques & Sinistres",
+    "sousTheme": "Dégâts de culture — constat & expertise",
     "designation": "F3.3 Constat dégâts sangliers / cervidés",
     "unite": "mission",
     "prixHT": 380.0,
@@ -1400,6 +1844,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Sécurité publique, Risques & Sinistres",
+    "sousTheme": "Dégâts de culture — constat & expertise",
     "designation": "F3.4 Cartographie multispectrale dégâts de culture",
     "unite": "ha",
     "prixHT": 18.0,
@@ -1409,6 +1855,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Sécurité publique, Risques & Sinistres",
+    "sousTheme": "Dégâts de culture — constat & expertise",
     "designation": "F3.5 Rapport d'expertise (dossier indemnisation)",
     "unite": "rapport",
     "prixHT": 220.0,
@@ -1418,6 +1866,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Sécurité publique, Risques & Sinistres",
+    "sousTheme": "Dégâts de culture — constat & expertise",
     "designation": "F3.6 Pack constat complet dégâts culture",
     "unite": "mission",
     "prixHT": 750.0,
@@ -1427,6 +1877,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Sécurité publique, Risques & Sinistres",
+    "sousTheme": "Dégâts de culture — constat & expertise",
     "designation": "F3.7 Suivi post-sinistre culture",
     "unite": "passage",
     "prixHT": 280.0,
@@ -1436,6 +1888,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Photo, Vidéo & Communication",
+    "sousTheme": "Photo & vidéo aérienne (pro)",
     "designation": "G1.1 Prise de vue photo aérienne HD (demi-journée)",
     "unite": "demi-j",
     "prixHT": 450.0,
@@ -1445,6 +1899,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Photo, Vidéo & Communication",
+    "sousTheme": "Photo & vidéo aérienne (pro)",
     "designation": "G1.2 Prise de vue photo aérienne HD (journée)",
     "unite": "jour",
     "prixHT": 1000.0,
@@ -1454,6 +1910,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Photo, Vidéo & Communication",
+    "sousTheme": "Photo & vidéo aérienne (pro)",
     "designation": "G1.3 Vidéo aérienne (demi-journée)",
     "unite": "demi-j",
     "prixHT": 600.0,
@@ -1463,6 +1921,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Photo, Vidéo & Communication",
+    "sousTheme": "Photo & vidéo aérienne (pro)",
     "designation": "G1.4 Vidéo aérienne (journée)",
     "unite": "jour",
     "prixHT": 1150.0,
@@ -1472,6 +1932,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Photo, Vidéo & Communication",
+    "sousTheme": "Photo & vidéo aérienne (pro)",
     "designation": "G1.5 Pack photo+vidéo (demi-journée)",
     "unite": "demi-j",
     "prixHT": 750.0,
@@ -1481,6 +1943,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Photo, Vidéo & Communication",
+    "sousTheme": "Photo & vidéo aérienne (pro)",
     "designation": "G1.6 Pack photo+vidéo (journée)",
     "unite": "jour",
     "prixHT": 1300.0,
@@ -1490,6 +1954,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Photo, Vidéo & Communication",
+    "sousTheme": "Photo & vidéo aérienne (pro)",
     "designation": "G1.7 Immobilier professionnel / promotion",
     "unite": "bien",
     "prixHT": 420.0,
@@ -1499,6 +1965,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Photo, Vidéo & Communication",
+    "sousTheme": "Photo & vidéo aérienne (pro)",
     "designation": "G1.8 Majoration livraison express (24h)",
     "unite": "forfait",
     "prixHT": 150.0,
@@ -1508,6 +1976,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Photo, Vidéo & Communication",
+    "sousTheme": "Photo & vidéo aérienne (pro)",
     "designation": "G1.9 Droits d'exploitation étendus",
     "unite": "forfait",
     "prixHT": 300.0,
@@ -1517,6 +1987,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Désinsectisation & Hygiène",
+    "sousTheme": "Traitement de nids & désinsectisation",
     "designation": "H1.1 Repérage aérien nids (frelons, guêpes)",
     "unite": "mission",
     "prixHT": 180.0,
@@ -1526,6 +1998,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Désinsectisation & Hygiène",
+    "sousTheme": "Traitement de nids & désinsectisation",
     "designation": "H1.2 Traitement insecticide ciblé nid",
     "unite": "nid",
     "prixHT": 220.0,
@@ -1535,6 +2009,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Désinsectisation & Hygiène",
+    "sousTheme": "Traitement de nids & désinsectisation",
     "designation": "H1.3 Traitement chenilles processionnaires",
     "unite": "arbre",
     "prixHT": 22.0,
@@ -1544,6 +2020,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Désinsectisation & Hygiène",
+    "sousTheme": "Traitement de nids & désinsectisation",
     "designation": "H1.4 Forfait journée désinsectisation multi-sites",
     "unite": "jour",
     "prixHT": 950.0,
@@ -1553,6 +2031,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Désinsectisation & Hygiène",
+    "sousTheme": "Traitement de nids & désinsectisation",
     "designation": "H1.5 Rapport d'intervention désinsectisation",
     "unite": "rapport",
     "prixHT": 60.0,
@@ -1562,6 +2042,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Patrimoine, Archéologie & Relevé 3D",
+    "sousTheme": "Relevé photogrammétrique & archéologie",
     "designation": "I1.1 Relevé photogrammétrique monument historique",
     "unite": "mission",
     "prixHT": 480.0,
@@ -1571,6 +2053,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Patrimoine, Archéologie & Relevé 3D",
+    "sousTheme": "Relevé photogrammétrique & archéologie",
     "designation": "I1.2 Prospection archéologique aérienne",
     "unite": "ha",
     "prixHT": 22.0,
@@ -1580,6 +2064,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Patrimoine, Archéologie & Relevé 3D",
+    "sousTheme": "Relevé photogrammétrique & archéologie",
     "designation": "I1.3 Relevé 3D de site archéologique",
     "unite": "mission",
     "prixHT": 650.0,
@@ -1589,6 +2075,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Patrimoine, Archéologie & Relevé 3D",
+    "sousTheme": "Relevé photogrammétrique & archéologie",
     "designation": "I1.4 Inspection état de conservation monument",
     "unite": "mission",
     "prixHT": 380.0,
@@ -1598,6 +2086,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "B-to-B : Sous-traitance & Formation",
+    "sousTheme": "Mise à disposition observateur & drone",
     "designation": "L1.1 Observateur sécurité sans matériel (demi-journée)",
     "unite": "demi-j",
     "prixHT": 280.0,
@@ -1607,6 +2097,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "B-to-B : Sous-traitance & Formation",
+    "sousTheme": "Mise à disposition observateur & drone",
     "designation": "L1.2 Observateur sécurité sans matériel (journée)",
     "unite": "jour",
     "prixHT": 480.0,
@@ -1616,6 +2108,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "B-to-B : Sous-traitance & Formation",
+    "sousTheme": "Mise à disposition observateur & drone",
     "designation": "L1.3 Observateur sécurité avec drone (demi-journée)",
     "unite": "demi-j",
     "prixHT": 550.0,
@@ -1625,6 +2119,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "B-to-B : Sous-traitance & Formation",
+    "sousTheme": "Mise à disposition observateur & drone",
     "designation": "L1.4 Observateur sécurité avec drone (journée)",
     "unite": "jour",
     "prixHT": 950.0,
@@ -1634,6 +2130,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "B-to-B : Sous-traitance & Formation",
+    "sousTheme": "Mise à disposition observateur & drone",
     "designation": "L1.5 Mise à disposition drone seul (demi-journée)",
     "unite": "demi-j",
     "prixHT": 320.0,
@@ -1643,6 +2141,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "B-to-B : Sous-traitance & Formation",
+    "sousTheme": "Mise à disposition observateur & drone",
     "designation": "L1.6 Mise à disposition drone seul (journée)",
     "unite": "jour",
     "prixHT": 550.0,
@@ -1652,6 +2152,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "B-to-B : Sous-traitance & Formation",
+    "sousTheme": "Télépilote sous-traitant",
     "designation": "L2.1 Mise à disposition télépilote (régie horaire)",
     "unite": "heure",
     "prixHT": 95.0,
@@ -1661,6 +2163,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "B-to-B : Sous-traitance & Formation",
+    "sousTheme": "Télépilote sous-traitant",
     "designation": "L2.2 Mise à disposition télépilote (demi-journée)",
     "unite": "demi-j",
     "prixHT": 360.0,
@@ -1670,6 +2174,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "B-to-B : Sous-traitance & Formation",
+    "sousTheme": "Télépilote sous-traitant",
     "designation": "L2.3 Mise à disposition télépilote (journée)",
     "unite": "jour",
     "prixHT": 680.0,
@@ -1679,6 +2185,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "B-to-B : Sous-traitance & Formation",
+    "sousTheme": "Télépilote sous-traitant",
     "designation": "L2.4 Télépilote + drone (demi-journée)",
     "unite": "demi-j",
     "prixHT": 680.0,
@@ -1688,6 +2196,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "B-to-B : Sous-traitance & Formation",
+    "sousTheme": "Télépilote sous-traitant",
     "designation": "L2.5 Télépilote + drone (journée)",
     "unite": "jour",
     "prixHT": 1100.0,
@@ -1697,6 +2207,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "B-to-B : Sous-traitance & Formation",
+    "sousTheme": "Télépilote sous-traitant",
     "designation": "L2.6 Télépilote + T100 (journée, catégorie Specific)",
     "unite": "jour",
     "prixHT": 1800.0,
@@ -1706,6 +2218,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "B-to-B : Sous-traitance & Formation",
+    "sousTheme": "Télépilote sous-traitant",
     "designation": "L2.7 Astreinte / disponibilité télépilote (semaine)",
     "unite": "semaine",
     "prixHT": 420.0,
@@ -1715,6 +2229,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "B-to-B : Sous-traitance & Formation",
+    "sousTheme": "Télépilote sous-traitant",
     "designation": "L2.8 Rédaction/relecture dossier SORA v2.5 (tiers)",
     "unite": "dossier",
     "prixHT": 850.0,
@@ -1724,6 +2240,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Formation",
+    "theme": "B-to-B : Sous-traitance & Formation",
+    "sousTheme": "Formation drone (BPU pro)",
     "designation": "L3.1 Formation théorique réglementation drone (demi-j)",
     "unite": "demi-j",
     "prixHT": 350.0,
@@ -1733,6 +2251,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Formation",
+    "theme": "B-to-B : Sous-traitance & Formation",
+    "sousTheme": "Formation drone (BPU pro)",
     "designation": "L3.2 Formation théorique complète (journée)",
     "unite": "jour",
     "prixHT": 600.0,
@@ -1742,6 +2262,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Formation",
+    "theme": "B-to-B : Sous-traitance & Formation",
+    "sousTheme": "Formation drone (BPU pro)",
     "designation": "L3.3 Formation pratique terrain (demi-journée)",
     "unite": "demi-j",
     "prixHT": 420.0,
@@ -1751,6 +2273,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Formation",
+    "theme": "B-to-B : Sous-traitance & Formation",
+    "sousTheme": "Formation drone (BPU pro)",
     "designation": "L3.4 Formation pratique terrain (journée)",
     "unite": "jour",
     "prixHT": 750.0,
@@ -1760,6 +2284,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Formation",
+    "theme": "B-to-B : Sous-traitance & Formation",
+    "sousTheme": "Formation drone (BPU pro)",
     "designation": "L3.5 Formation spécialisée agriculture",
     "unite": "jour",
     "prixHT": 850.0,
@@ -1769,6 +2295,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Formation",
+    "theme": "B-to-B : Sous-traitance & Formation",
+    "sousTheme": "Formation drone (BPU pro)",
     "designation": "L3.6 Formation spécialisée imagerie multispectrale",
     "unite": "jour",
     "prixHT": 800.0,
@@ -1778,6 +2306,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Formation",
+    "theme": "B-to-B : Sous-traitance & Formation",
+    "sousTheme": "Formation drone (BPU pro)",
     "designation": "L3.7 Formation initiation SORA v2.5",
     "unite": "jour",
     "prixHT": 900.0,
@@ -1787,6 +2317,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Formation",
+    "theme": "B-to-B : Sous-traitance & Formation",
+    "sousTheme": "Formation drone (BPU pro)",
     "designation": "L3.8 Accompagnement individuel certification DGAC",
     "unite": "heure",
     "prixHT": 80.0,
@@ -1796,6 +2328,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Formation",
+    "theme": "B-to-B : Sous-traitance & Formation",
+    "sousTheme": "Formation drone (BPU pro)",
     "designation": "L3.9 Conception support de formation sur mesure",
     "unite": "forfait",
     "prixHT": 650.0,
@@ -1805,6 +2339,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Formation",
+    "theme": "B-to-B : Sous-traitance & Formation",
+    "sousTheme": "Formation drone (BPU pro)",
     "designation": "L3.10 Déplacement formateur sur site client (>30km)",
     "unite": "demi-j",
     "prixHT": 120.0,
@@ -1814,6 +2350,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Prestations Particuliers",
+    "sousTheme": "Immobilier & Estimation",
     "designation": "P1.1 Photos aériennes bien immobilier",
     "unite": "bien",
     "prixHT": 220.0,
@@ -1823,6 +2361,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Prestations Particuliers",
+    "sousTheme": "Immobilier & Estimation",
     "designation": "P1.2 Pack immobilier complet",
     "unite": "bien",
     "prixHT": 390.0,
@@ -1832,6 +2372,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Prestations Particuliers",
+    "sousTheme": "Immobilier & Estimation",
     "designation": "P1.3 Visite virtuelle aérienne",
     "unite": "bien",
     "prixHT": 360.0,
@@ -1841,6 +2383,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Prestations Particuliers",
+    "sousTheme": "Immobilier & Estimation",
     "designation": "P1.4 Estimation superficie terrain / parcelle",
     "unite": "mission",
     "prixHT": 220.0,
@@ -1850,6 +2394,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Prestations Particuliers",
+    "sousTheme": "Immobilier & Estimation",
     "designation": "P1.5 Vidéo promotionnelle gîte / chambre d'hôtes / camping",
     "unite": "bien",
     "prixHT": 390.0,
@@ -1859,6 +2405,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Prestations Particuliers",
+    "sousTheme": "Immobilier & Estimation",
     "designation": "P1.6 Portrait aérien de propriété / domaine",
     "unite": "bien",
     "prixHT": 250.0,
@@ -1868,6 +2416,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Prestations Particuliers",
+    "sousTheme": "Mariage & Événements privés",
     "designation": "P2.1 Prise de vue mariage (1h de vol)",
     "unite": "heure",
     "prixHT": 290.0,
@@ -1877,6 +2427,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Prestations Particuliers",
+    "sousTheme": "Mariage & Événements privés",
     "designation": "P2.2 Pack mariage (demi-journée)",
     "unite": "demi-j",
     "prixHT": 480.0,
@@ -1886,6 +2438,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Prestations Particuliers",
+    "sousTheme": "Mariage & Événements privés",
     "designation": "P2.3 Événement privé (demi-journée)",
     "unite": "demi-j",
     "prixHT": 380.0,
@@ -1895,6 +2449,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Prestations Particuliers",
+    "sousTheme": "Mariage & Événements privés",
     "designation": "P2.4 Vidéo souvenir événement privé",
     "unite": "mission",
     "prixHT": 320.0,
@@ -1904,6 +2460,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Prestations Particuliers",
+    "sousTheme": "Mariage & Événements privés",
     "designation": "P2.5 Majoration livraison express (particulier)",
     "unite": "forfait",
     "prixHT": 100.0,
@@ -1913,6 +2471,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Prestations Particuliers",
+    "sousTheme": "Inspection toiture & sinistre",
     "designation": "P3A.1 Inspection toiture maison individuelle",
     "unite": "bien",
     "prixHT": 360.0,
@@ -1922,6 +2482,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Prestations Particuliers",
+    "sousTheme": "Inspection toiture & sinistre",
     "designation": "P3A.2 Inspection thermique toiture (particulier)",
     "unite": "bien",
     "prixHT": 380.0,
@@ -1931,6 +2493,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Prestations Particuliers",
+    "sousTheme": "Inspection toiture & sinistre",
     "designation": "P3A.3 Pack inspection complète (particulier)",
     "unite": "bien",
     "prixHT": 580.0,
@@ -1940,6 +2504,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Prestations Particuliers",
+    "sousTheme": "Inspection toiture & sinistre",
     "designation": "P3A.4 Constat aérien sinistre (particulier)",
     "unite": "bien",
     "prixHT": 320.0,
@@ -1949,6 +2515,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Prestations Particuliers",
+    "sousTheme": "Nettoyage toiture & façade",
     "designation": "P3B.1 Nettoyage HP toiture maison",
     "unite": "m²",
     "prixHT": 8.0,
@@ -1958,6 +2526,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Prestations Particuliers",
+    "sousTheme": "Nettoyage toiture & façade",
     "designation": "P3B.2 Nettoyage BP toiture (particulier)",
     "unite": "m²",
     "prixHT": 10.0,
@@ -1967,6 +2537,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Prestations Particuliers",
+    "sousTheme": "Nettoyage toiture & façade",
     "designation": "P3B.3 Nettoyage HP façade maison",
     "unite": "m²",
     "prixHT": 10.0,
@@ -1976,6 +2548,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Prestations Particuliers",
+    "sousTheme": "Nettoyage toiture & façade",
     "designation": "P3B.4 Nettoyage BP façade (particulier)",
     "unite": "m²",
     "prixHT": 10.0,
@@ -1985,6 +2559,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Prestations Particuliers",
+    "sousTheme": "Nettoyage toiture & façade",
     "designation": "P3B.5 Traitement biocide préventif toiture/façade",
     "unite": "m²",
     "prixHT": 5.0,
@@ -1994,6 +2570,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Prestations Particuliers",
+    "sousTheme": "Nettoyage toiture & façade",
     "designation": "P3B.6 Pack nettoyage complet (particulier)",
     "unite": "m²",
     "prixHT": 12.0,
@@ -2003,6 +2581,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Prestations Particuliers",
+    "sousTheme": "Nettoyage toiture & façade",
     "designation": "P3B.7 Inspection préalable avant devis nettoyage",
     "unite": "mission",
     "prixHT": 80.0,
@@ -2012,6 +2592,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Prestations Particuliers",
+    "sousTheme": "Agriculteurs indépendants",
     "designation": "P4.1 Analyse multispectrale parcelle individuelle",
     "unite": "ha",
     "prixHT": 22.0,
@@ -2021,6 +2603,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Prestations Particuliers",
+    "sousTheme": "Agriculteurs indépendants",
     "designation": "P4.2 Recherche de faune avant fauchage (particulier)",
     "unite": "ha",
     "prixHT": 14.0,
@@ -2030,6 +2614,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Prestations Particuliers",
+    "sousTheme": "Agriculteurs indépendants",
     "designation": "P4.3 Constat dégâts gibier/intempéries (particulier)",
     "unite": "mission",
     "prixHT": 380.0,
@@ -2039,6 +2625,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Prestations Particuliers",
+    "sousTheme": "Agriculteurs indépendants",
     "designation": "P4.4 Photos / vidéo exploitation agricole",
     "unite": "demi-j",
     "prixHT": 360.0,
@@ -2048,6 +2636,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Prestations Particuliers",
+    "sousTheme": "Chasse & sociétés de chasse",
     "designation": "P5.1 Comptage gibier (nuit, chasse)",
     "unite": "nuit",
     "prixHT": 1100.0,
@@ -2057,6 +2647,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Prestations Particuliers",
+    "sousTheme": "Chasse & sociétés de chasse",
     "designation": "P5.2 Cartographie territoire de chasse",
     "unite": "mission",
     "prixHT": 750.0,
@@ -2066,6 +2658,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Prestations Particuliers",
+    "sousTheme": "Chasse & sociétés de chasse",
     "designation": "P5.3 Recherche animal blessé / suivi de piste",
     "unite": "heure",
     "prixHT": 180.0,
@@ -2075,6 +2669,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Prestations Particuliers",
+    "sousTheme": "Chasse & sociétés de chasse",
     "designation": "P5.4 Vidéo / photos de battue ou chasse",
     "unite": "demi-j",
     "prixHT": 380.0,
@@ -2084,6 +2680,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Prestations Particuliers",
+    "sousTheme": "Divers & loisirs",
     "designation": "P6.1 Cartographie terrain / jardin / propriété",
     "unite": "mission",
     "prixHT": 220.0,
@@ -2093,6 +2691,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Prestations Particuliers",
+    "sousTheme": "Divers & loisirs",
     "designation": "P6.2 Recherche d'objet / animal perdu",
     "unite": "heure",
     "prixHT": 180.0,
@@ -2102,6 +2702,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Prestations Particuliers",
+    "sousTheme": "Divers & loisirs",
     "designation": "P6.3 Heure supplémentaire (particulier)",
     "unite": "heure",
     "prixHT": 95.0,
@@ -2111,6 +2713,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Régie horaire & Frais",
+    "sousTheme": "Régie horaire",
     "designation": "J1.1 Régie pilote drone qualifiée (heure de vol)",
     "unite": "heure",
     "prixHT": 95.0,
@@ -2120,6 +2724,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Régie horaire & Frais",
+    "sousTheme": "Régie horaire",
     "designation": "J1.2 Traitement de données post-mission",
     "unite": "heure",
     "prixHT": 75.0,
@@ -2129,6 +2735,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Régie horaire & Frais",
+    "sousTheme": "Régie horaire",
     "designation": "J1.3 Heure supplémentaire opérateur (pro)",
     "unite": "heure",
     "prixHT": 95.0,
@@ -2138,6 +2746,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Régie horaire & Frais",
+    "sousTheme": "Préparation administrative & réglementaire",
     "designation": "J2.1 Préparation administrative de mission",
     "unite": "mission",
     "prixHT": 150.0,
@@ -2147,6 +2757,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Régie horaire & Frais",
+    "sousTheme": "Préparation administrative & réglementaire",
     "designation": "J2.2 Rédaction notice de sécurité / dossier DGAC spécifique",
     "unite": "dossier",
     "prixHT": 250.0,
@@ -2156,6 +2768,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Régie horaire & Frais",
+    "sousTheme": "Préparation administrative & réglementaire",
     "designation": "J2.3 Coordination gestionnaire espace aérien",
     "unite": "forfait",
     "prixHT": 180.0,
@@ -2165,6 +2779,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Régie horaire & Frais",
+    "sousTheme": "Préparation administrative & réglementaire",
     "designation": "J2.4 Majoration SORA / coordination DGAC (zone spécifique)",
     "unite": "forfait",
     "prixHT": 350.0,
@@ -2174,6 +2790,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Régie horaire & Frais",
+    "sousTheme": "Déplacements & frais",
     "designation": "J3.1 Frais kilométriques (au-delà de 30km)",
     "unite": "km",
     "prixHT": 0.65,
@@ -2183,6 +2801,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Régie horaire & Frais",
+    "sousTheme": "Déplacements & frais",
     "designation": "J3.2 Forfait déplacement (>30km, tranche 50km)",
     "unite": "forfait",
     "prixHT": 80.0,
@@ -2192,6 +2812,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Régie horaire & Frais",
+    "sousTheme": "Déplacements & frais",
     "designation": "J3.3 Nuitée opérateur",
     "unite": "nuit",
     "prixHT": 150.0,
@@ -2201,6 +2823,8 @@ const BPU_APH_DRONE = [
   },
   {
     "categorie": "Prestation",
+    "theme": "Régie horaire & Frais",
+    "sousTheme": "Déplacements & frais",
     "designation": "J3.4 Attente météo / logistique sur site",
     "unite": "heure",
     "prixHT": 90.0,
@@ -2288,6 +2912,8 @@ window.enregistrerItem = async function(){
 
   const data = {
     categorie: currentCat,
+    theme: document.getElementById('f-theme').value.trim() || 'Autre / Non classé',
+    sousTheme: document.getElementById('f-soustheme').value.trim() || 'Autre',
     designation,
     description: document.getElementById('f-description').value.trim(),
     prixHT: parseFloat(document.getElementById('f-prix').value) || 0,
@@ -2327,18 +2953,57 @@ async function chargerItems(){
     document.getElementById('item-count').textContent = '(' + snap.size + ')';
     allItems = [];
     snap.forEach(d => allItems.push({ id: d.id, ...d.data() }));
+    peuplerFiltresThemes();
     afficherListeItems();
   } catch(e){
     document.getElementById('loading-list').textContent = 'Erreur de chargement : ' + e.message;
   }
 }
 
+function peuplerFiltresThemes(){
+  const themes = [...new Set(allItems.map(it => it.theme || 'Autre / Non classé'))].sort((a,b) => a.localeCompare(b, 'fr'));
+  const selectTheme = document.getElementById('filtre-theme');
+  const valeurActuelle = selectTheme.value;
+  selectTheme.innerHTML = '<option value="all">Tous les thèmes</option>' +
+    themes.map(t => '<option value="' + t.replace(/"/g,'&quot;') + '">' + t + '</option>').join('');
+  if(themes.includes(valeurActuelle)) selectTheme.value = valeurActuelle;
+
+  // Datalist du formulaire pour suggestion à la saisie
+  document.getElementById('themes-existants').innerHTML = themes.map(t => '<option value="' + t.replace(/"/g,'&quot;') + '">').join('');
+
+  majFiltreSousTheme();
+}
+
+function majFiltreSousTheme(){
+  const themeActif = document.getElementById('filtre-theme').value;
+  const source = themeActif === 'all' ? allItems : allItems.filter(it => (it.theme || 'Autre / Non classé') === themeActif);
+  const sousThemes = [...new Set(source.map(it => it.sousTheme || 'Autre'))].sort((a,b) => a.localeCompare(b, 'fr'));
+  const selectSousTheme = document.getElementById('filtre-soustheme');
+  const valeurActuelle = selectSousTheme.value;
+  selectSousTheme.innerHTML = '<option value="all">Tous les sous-thèmes</option>' +
+    sousThemes.map(s => '<option value="' + s.replace(/"/g,'&quot;') + '">' + s + '</option>').join('');
+  if(sousThemes.includes(valeurActuelle)) selectSousTheme.value = valeurActuelle;
+
+  document.getElementById('soustheme-existants').innerHTML =
+    [...new Set(allItems.map(it => it.sousTheme || 'Autre'))].sort((a,b) => a.localeCompare(b, 'fr'))
+    .map(s => '<option value="' + s.replace(/"/g,'&quot;') + '">').join('');
+}
+
+window.onChangeTheme = function(){
+  majFiltreSousTheme();
+  afficherListeItems();
+};
+
 function afficherListeItems(){
   const listEl = document.getElementById('item-list');
   const recherche = (document.getElementById('search-input').value || '').toLowerCase();
+  const themeActif = document.getElementById('filtre-theme').value;
+  const sousThemeActif = document.getElementById('filtre-soustheme').value;
 
   const filtres = allItems.filter(it => {
     if(filtreCatActif !== 'all' && it.categorie !== filtreCatActif) return false;
+    if(themeActif !== 'all' && (it.theme || 'Autre / Non classé') !== themeActif) return false;
+    if(sousThemeActif !== 'all' && (it.sousTheme || 'Autre') !== sousThemeActif) return false;
     if(recherche && !(it.designation || '').toLowerCase().includes(recherche)) return false;
     return true;
   });
@@ -2348,23 +3013,43 @@ function afficherListeItems(){
     return;
   }
 
-  listEl.innerHTML = filtres.map(it => `
-    <div class="item-card">
-      <div class="item-top">
-        <div style="display:flex;align-items:center;gap:8px;">
-          <span class="item-badge" style="background:${CAT_COLORS[it.categorie] || '#94a3b8'}">${it.categorie}</span>
-          <span class="item-name">${it.designation}</span>
-          ${it.actif === false ? '<span class="item-badge" style="background:#94a3b8;">Masqué</span>' : ''}
-        </div>
-        <div class="item-price">${formaterMontant(it.prixHT)}${it.unite ? ' / ' + it.unite : ''} HT<span style="font-size:.7rem;color:#94a3b8;font-weight:500;"> · TVA ${it.tvaTaux}%</span></div>
-      </div>
-      ${it.description ? '<div class="item-desc">' + it.description + '</div>' : ''}
-      <div class="item-actions">
-        <button class="btn-edit" onclick="editerItem('${it.id}')">Modifier</button>
-        <button class="btn-delete" onclick="supprimerItem('${it.id}','${(it.designation||'').replace(/'/g,"\\'")}')">✕</button>
-      </div>
-    </div>
-  `).join('');
+  // Regroupement par thème > sous-thème pour une lecture fidèle au BPU
+  const groupes = {};
+  filtres.forEach(it => {
+    const t = it.theme || 'Autre / Non classé';
+    const st = it.sousTheme || 'Autre';
+    groupes[t] = groupes[t] || {};
+    groupes[t][st] = groupes[t][st] || [];
+    groupes[t][st].push(it);
+  });
+
+  let html = '';
+  Object.keys(groupes).sort((a,b) => a.localeCompare(b, 'fr')).forEach(theme => {
+    html += '<div style="font-size:.95rem;font-weight:800;color:var(--primary);margin:22px 0 10px;padding-bottom:8px;border-bottom:2px solid #0B1F3A;">' + theme + '</div>';
+    Object.keys(groupes[theme]).sort((a,b) => a.localeCompare(b, 'fr')).forEach(sousTheme => {
+      html += '<div style="font-size:.78rem;font-weight:700;color:var(--secondary);text-transform:uppercase;letter-spacing:.03em;margin:14px 0 8px;">' + sousTheme + '</div>';
+      groupes[theme][sousTheme].forEach(it => {
+        html += `
+          <div class="item-card">
+            <div class="item-top">
+              <div style="display:flex;align-items:center;gap:8px;">
+                <span class="item-badge" style="background:${CAT_COLORS[it.categorie] || '#94a3b8'}">${it.categorie}</span>
+                <span class="item-name">${it.designation}</span>
+                ${it.actif === false ? '<span class="item-badge" style="background:#94a3b8;">Masqué</span>' : ''}
+              </div>
+              <div class="item-price">${formaterMontant(it.prixHT)}${it.unite ? ' / ' + it.unite : ''} HT<span style="font-size:.7rem;color:#94a3b8;font-weight:500;"> · TVA ${it.tvaTaux}%</span></div>
+            </div>
+            ${it.description ? '<div class="item-desc">' + it.description + '</div>' : ''}
+            <div class="item-actions">
+              <button class="btn-edit" onclick="editerItem('${it.id}')">Modifier</button>
+              <button class="btn-delete" onclick="supprimerItem('${it.id}','${(it.designation||'').replace(/'/g,"\\'")}')">✕</button>
+            </div>
+          </div>
+        `;
+      });
+    });
+  });
+  listEl.innerHTML = html;
 }
 
 window.filtrerListeItems = afficherListeItems;
@@ -2382,6 +3067,8 @@ window.editerItem = function(id){
   selectCategorie(it.categorie || 'Prestation');
   document.getElementById('f-designation').value = it.designation || '';
   document.getElementById('f-description').value = it.description || '';
+  document.getElementById('f-theme').value = it.theme || '';
+  document.getElementById('f-soustheme').value = it.sousTheme || '';
   document.getElementById('f-prix').value = it.prixHT != null ? it.prixHT : '';
   document.getElementById('f-unite').value = it.unite || '';
   document.getElementById('f-tva').value = it.tvaTaux != null ? it.tvaTaux : 20;
@@ -2451,6 +3138,39 @@ window.importerBPU = async function(){
   }
 
   statusEl.textContent = compteur + ' article(s) importé(s) avec succès.';
+  btn.disabled = false;
+  chargerItems();
+  setTimeout(() => { statusEl.style.display = 'none'; }, 5000);
+};
+
+window.importerFormationsSite = async function(){
+  const dejaPresentes = new Set(allItems.map(it => it.designation));
+  const aImporter = FORMATIONS_SITE.filter(it => !dejaPresentes.has(it.designation));
+
+  if(aImporter.length === 0){
+    alert('Toutes les formations du site sont déjà présentes dans ton catalogue.');
+    return;
+  }
+
+  if(!confirm('Importer ' + aImporter.length + ' formation(s) du site aphdrone.fr dans ton catalogue ?' + (aImporter.length < FORMATIONS_SITE.length ? ' (' + (FORMATIONS_SITE.length - aImporter.length) + ' déjà présentes seront ignorées.)' : ''))) return;
+
+  const btn = document.getElementById('btn-import-formations');
+  const statusEl = document.getElementById('import-status');
+  btn.disabled = true;
+  statusEl.style.display = 'block';
+
+  let compteur = 0;
+  for(const it of aImporter){
+    try {
+      await addDoc(collection(db, 'catalogue'), { ...it, ordre: Date.now() + compteur });
+      compteur++;
+      statusEl.textContent = 'Import en cours… ' + compteur + ' / ' + aImporter.length;
+    } catch(e){
+      console.warn('Erreur import formation', it.designation, e.message);
+    }
+  }
+
+  statusEl.textContent = compteur + ' formation(s) importée(s) avec succès.';
   btn.disabled = false;
   chargerItems();
   setTimeout(() => { statusEl.style.display = 'none'; }, 5000);
