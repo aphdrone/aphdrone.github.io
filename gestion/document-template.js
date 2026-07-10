@@ -65,15 +65,20 @@ function formaterDateDoc(iso){
 
 function calculerTotauxDoc(lignes){
   let totalHT = 0;
+  let totalRemises = 0;
   const tvaParTaux = {};
   (lignes || []).forEach(l => {
-    const montantLigneHT = (l.quantite || 0) * (l.prixUnitaireHT || 0);
+    const montantBrut = (l.quantite || 0) * (l.prixUnitaireHT || 0);
+    const remisePct = l.remisePct || 0;
+    const montantRemise = montantBrut * (remisePct / 100);
+    const montantLigneHT = montantBrut - montantRemise;
     totalHT += montantLigneHT;
+    totalRemises += montantRemise;
     const taux = l.tvaTaux != null ? l.tvaTaux : 20;
     tvaParTaux[taux] = (tvaParTaux[taux] || 0) + montantLigneHT * (taux / 100);
   });
   const totalTVA = Object.values(tvaParTaux).reduce((a, b) => a + b, 0);
-  return { totalHT, tvaParTaux, totalTVA, totalTTC: totalHT + totalTVA };
+  return { totalHT, totalRemises, tvaParTaux, totalTVA, totalTTC: totalHT + totalTVA };
 }
 
 function construireBlocClient(client){
@@ -109,14 +114,19 @@ function construireDocumentHTML(doc){
   const totaux = calculerTotauxDoc(doc.lignes);
 
   const lignesHTML = (doc.lignes || []).map(l => {
-    const montantHT = (l.quantite || 0) * (l.prixUnitaireHT || 0);
+    const montantBrut = (l.quantite || 0) * (l.prixUnitaireHT || 0);
+    const remisePct = l.remisePct || 0;
+    const montantNet = montantBrut - montantBrut * (remisePct / 100);
     return `
       <tr>
-        <td style="padding:8px 6px;border-bottom:1px solid #eee;font-size:11px;color:#222;">${l.designation || ''}</td>
+        <td style="padding:8px 6px;border-bottom:1px solid #eee;font-size:11px;color:#222;">
+          ${l.designation || ''}
+          ${remisePct > 0 ? '<div style="font-size:9.5px;color:#16a34a;margin-top:2px;">Remise ' + remisePct + '%' + (l.motifRemise ? ' — ' + l.motifRemise : '') + '</div>' : ''}
+        </td>
         <td style="padding:8px 6px;border-bottom:1px solid #eee;font-size:11px;color:#222;text-align:center;">${l.quantite || 0}</td>
         <td style="padding:8px 6px;border-bottom:1px solid #eee;font-size:11px;color:#222;text-align:right;">${formaterMontantDoc(l.prixUnitaireHT)}</td>
         <td style="padding:8px 6px;border-bottom:1px solid #eee;font-size:11px;color:#222;text-align:right;">${l.tvaTaux != null ? l.tvaTaux : 20}%</td>
-        <td style="padding:8px 6px;border-bottom:1px solid #eee;font-size:11px;color:#0B1F3A;font-weight:700;text-align:right;">${formaterMontantDoc(montantHT)}</td>
+        <td style="padding:8px 6px;border-bottom:1px solid #eee;font-size:11px;color:#0B1F3A;font-weight:700;text-align:right;">${formaterMontantDoc(montantNet)}</td>
       </tr>
     `;
   }).join('');
@@ -202,6 +212,7 @@ function construireDocumentHTML(doc){
 
       <div style="display:flex;justify-content:flex-end;margin-bottom:22px;">
         <div style="width:240px;">
+          ${totaux.totalRemises > 0 ? '<div style="display:flex;justify-content:space-between;font-size:10.5px;color:#16a34a;padding:3px 0;"><span>Dont remises accordées</span><span>-' + formaterMontantDoc(totaux.totalRemises) + '</span></div>' : ''}
           <div style="display:flex;justify-content:space-between;font-size:11.5px;color:#0B1F3A;padding:5px 0;border-bottom:1px solid #eee;">
             <span>Total HT</span><span>${formaterMontantDoc(totaux.totalHT)}</span>
           </div>
