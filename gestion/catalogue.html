@@ -188,8 +188,12 @@ body{background:var(--light);color:#222;min-height:100vh;}
 
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px;">
           <h2 style="font-size:1rem;font-weight:700;color:var(--primary);">Articles du catalogue <span id="item-count" style="font-weight:400;color:#7a8fa5;font-size:.9rem;"></span></h2>
-          <button class="btn-save" style="flex:none;padding:11px 20px;" onclick="ouvrirNouvelItem()">+ Nouvel article</button>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="btn-cancel" onclick="importerBPU()" id="btn-import-bpu">Importer le BPU APH Drone (215 articles)</button>
+            <button class="btn-save" style="flex:none;padding:11px 20px;" onclick="ouvrirNouvelItem()">+ Nouvel article</button>
+          </div>
         </div>
+        <div id="import-status" style="display:none;margin-bottom:16px;padding:12px 16px;background:#eef4fd;border-radius:8px;font-size:.85rem;color:#1F5FAF;"></div>
 
         <!-- ═══ Modale : Formulaire article ═══ -->
         <div id="item-form-overlay" style="display:none;position:fixed;inset:0;background:rgba(11,31,58,.55);z-index:2000;align-items:flex-start;justify-content:center;overflow-y:auto;padding:30px 16px;">
@@ -211,10 +215,11 @@ body{background:var(--light);color:#222;min-height:100vh;}
               <div class="form-group"><label>Désignation *</label><input type="text" id="f-designation" placeholder="Ex : Cartographie parcellaire par drone"></div>
               <div class="form-group"><label>Description courte (optionnel)</label><textarea id="f-description" rows="2" placeholder="Précisions visibles uniquement dans ton catalogue, pas sur les devis/factures"></textarea></div>
 
-              <div class="form-row">
+              <div class="form-row3">
                 <div class="form-group"><label>Prix HT par défaut</label><input type="number" id="f-prix" min="0" step="0.01" placeholder="0.00"></div>
+                <div class="form-group"><label>Unité</label><input type="text" id="f-unite" placeholder="ha, jour, heure, m², mission…"></div>
                 <div class="form-group">
-                  <label>TVA par défaut</label>
+                  <label>TVA</label>
                   <select id="f-tva">
                     <option value="20">20%</option>
                     <option value="10">10%</option>
@@ -265,6 +270,1946 @@ body{background:var(--light);color:#222;min-height:100vh;}
     </div>
   </div>
 </div>
+
+<script>
+const BPU_APH_DRONE = [
+  {
+    "categorie": "Prestation",
+    "designation": "A1.1 Pulvérisation phytosanitaire standard",
+    "unite": "ha",
+    "prixHT": 380.0,
+    "tvaTaux": 20,
+    "description": "Produits homologués, pente ≤15%. Inclut plan de vol, MSDS, rapport conforme. Selon culture et topographie.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "A1.2 Pulvérisation biocontrôle / produits biologiques",
+    "unite": "ha",
+    "prixHT": 350.0,
+    "tvaTaux": 20,
+    "description": "Bacillus thuringiensis, huiles essentielles, extraits naturels. Produit fourni par le client.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "A1.3 Pulvérisation zone difficile d'accès",
+    "unite": "ha",
+    "prixHT": 395.0,
+    "tvaTaux": 20,
+    "description": "Pente >15%, vigne en terrasse, zone humide, berge. Devis préalable obligatoire.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "A1.4 Forfait journée pulvérisation T100",
+    "unite": "jour",
+    "prixHT": 4000.0,
+    "tvaTaux": 20,
+    "description": "30-50 ha/jour selon produit, vent et distance inter-parcelles. Déplacements <30km inclus.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "A1.5 Rapport de pulvérisation conforme",
+    "unite": "rapport",
+    "prixHT": 90.0,
+    "tvaTaux": 20,
+    "description": "Parcelles GPS, produits, doses, météo, track vol. Inclus dans forfait journée A1.4.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "A1.6 Majoration SORA / coordination DGAC",
+    "unite": "forfait",
+    "prixHT": 350.0,
+    "tvaTaux": 20,
+    "description": "Espace contrôlé, proximité agglomération, zone CTR. Par dossier de dérogation.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "A1.7 Attente météo / logistique sur site",
+    "unite": "heure",
+    "prixHT": 120.0,
+    "tvaTaux": 20,
+    "description": "Vent > seuil, pluie imprévue. Facturable après 30 min.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "A2.1 Épandage engrais liquide / soluble",
+    "unite": "ha",
+    "prixHT": 350.0,
+    "tvaTaux": 20,
+    "description": "Produit homologué fourni par le client.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "A2.2 Épandage semences",
+    "unite": "ha",
+    "prixHT": 245.0,
+    "tvaTaux": 20,
+    "description": "Sur-semis prairie, couvert hivernal. Semences fournies par le client.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "A2.3 Épandage micro-granulés",
+    "unite": "ha",
+    "prixHT": 245.0,
+    "tvaTaux": 20,
+    "description": "Anti-limaces, insecticides granulés homologués UAV. Produit fourni par le client.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "A2.4 Forfait journée épandage multi-parcelles T100",
+    "unite": "jour",
+    "prixHT": 4000.0,
+    "tvaTaux": 20,
+    "description": "30-50 ha/jour. Min. facturable 2500€/j — déplacements <30km inclus.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "A2.5 Cartographie de modulation",
+    "unite": "ha",
+    "prixHT": 12.0,
+    "tvaTaux": 20,
+    "description": "Carte de préconisation d'épandage variable. Min. facturation 150€.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "A2.6 Rapport d'épandage certifié",
+    "unite": "rapport",
+    "prixHT": 120.0,
+    "tvaTaux": 20,
+    "description": "Parcelles GPS, doses, météo, traçabilité complète. Inclus dans forfait A2.4.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "A3.1 Analyse multispectrale parcelle agricole",
+    "unite": "ha",
+    "prixHT": 12.0,
+    "tvaTaux": 20,
+    "description": "NDVI, NDRE, GNDVI — vigueur, stress, hétérogénéité. Min. facturation 200€.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "A3.2 Analyse multispectrale verger",
+    "unite": "ha",
+    "prixHT": 18.0,
+    "tvaTaux": 20,
+    "description": "Pommier, poirier, cerisier, noyer. Min. facturation 300€.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "A3.3 Analyse vigne multispectrale",
+    "unite": "ha",
+    "prixHT": 160.0,
+    "tvaTaux": 20,
+    "description": "Détection mildiou / oïdium / black-rot. Min. facturation 300€.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "A3.4 Cartographie de prescription variable",
+    "unite": "ha",
+    "prixHT": 12.0,
+    "tvaTaux": 20,
+    "description": "Zones d'application différenciée. En complément de A3.1 à A3.3.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "A3.5 Comptage plants / arbres fruitiers",
+    "unite": "ha",
+    "prixHT": 24.0,
+    "tvaTaux": 20,
+    "description": "Dénombrement IA sur orthophoto HR. Min. facturation 250€.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "A3.6 Suivi phénologique culture",
+    "unite": "saison",
+    "prixHT": 650.0,
+    "tvaTaux": 20,
+    "description": "Levée, floraison, maturité — 3 passages + rapport comparatif.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "A3.7 Estimation rendement prévisionnel",
+    "unite": "rapport",
+    "prixHT": 220.0,
+    "tvaTaux": 20,
+    "description": "Modélisation biomasse/stade cultural. En complément de A3.1 ou A3.6.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "A3.8 Rapport agronomique illustré",
+    "unite": "rapport",
+    "prixHT": 200.0,
+    "tvaTaux": 20,
+    "description": "Synthèse indices, cartographie, recommandations.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "A3.9 Pack diagnostic complet parcelle",
+    "unite": "jour",
+    "prixHT": 980.0,
+    "tvaTaux": 20,
+    "description": "Ortho HR + multispectre + carte prescription + rapport.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "A4.1 Recherche de faune avant fauchage",
+    "unite": "ha",
+    "prixHT": 12.0,
+    "tvaTaux": 20,
+    "description": "Vol thermique nocturne/aube, rapport avant fauchage. Min. facturation 200€.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "A4.2 Forfait demi-journée fauchage (aube)",
+    "unite": "demi-j",
+    "prixHT": 380.0,
+    "tvaTaux": 20,
+    "description": "Intervention avant 8h.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "A4.3 Forfait journée multi-parcelles fauchage",
+    "unite": "jour",
+    "prixHT": 650.0,
+    "tvaTaux": 20,
+    "description": "",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "A4.4 Abonnement saison fauche",
+    "unite": "mois",
+    "prixHT": 1200.0,
+    "tvaTaux": 20,
+    "description": "Mai-juillet, interventions illimitées. CUMA / coopérative.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "A5.1 Inspection thermique ruchers",
+    "unite": "rucher",
+    "prixHT": 180.0,
+    "tvaTaux": 20,
+    "description": "Stress thermique colonies, mortalité hivernale, essaims perdus.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "A5.2 Cartographie zones de butinage",
+    "unite": "mission",
+    "prixHT": 420.0,
+    "tvaTaux": 20,
+    "description": "Multispectre floraison, ressources mellifères. Rapport + carte inclus.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "A5.3 Surveillance rucher isolé / transhumance",
+    "unite": "passage",
+    "prixHT": 150.0,
+    "tvaTaux": 20,
+    "description": "Inspection visuelle HD, rapport état général.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "A5.4 Détection frelons asiatiques près ruchers",
+    "unite": "mission",
+    "prixHT": 250.0,
+    "tvaTaux": 20,
+    "description": "Repérage nids dans rayon défini, cartographie GPS.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "B1.1 Cartographie forestière (demi-journée)",
+    "unite": "demi-j",
+    "prixHT": 420.0,
+    "tvaTaux": 20,
+    "description": "Orthophoto + MNH, terrain + livraison + rapport.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "B1.2 Cartographie forestière (journée)",
+    "unite": "jour",
+    "prixHT": 750.0,
+    "tvaTaux": 20,
+    "description": "Journée complète + livraison données traitées.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "B1.3 Inventaire faunistique aérien",
+    "unite": "jour",
+    "prixHT": 850.0,
+    "tvaTaux": 20,
+    "description": "Comptage, détection thermique nocturne. Rapport + cartographie inclus.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "B1.4 Surveillance coupes / suivi travaux ONF",
+    "unite": "mission",
+    "prixHT": 350.0,
+    "tvaTaux": 20,
+    "description": "Acquisition images + rapport d'état.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "B2.1 Comptage grand gibier diurne",
+    "unite": "jour",
+    "prixHT": 850.0,
+    "tvaTaux": 20,
+    "description": "Cerf, chevreuil, sanglier, chamois. Photos HD géolocalisées + rapport.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "B2.2 Comptage grand gibier nocturne",
+    "unite": "nuit",
+    "prixHT": 1100.0,
+    "tvaTaux": 20,
+    "description": "Caméra thermique, identification individus. Résultats J+1.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "B2.3 Comptage petit gibier",
+    "unite": "nuit",
+    "prixHT": 950.0,
+    "tvaTaux": 20,
+    "description": "Lièvre, perdrix, faisan, lapin. Thermique nocturne/crépusculaire.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "B2.4 Suivi de population",
+    "unite": "mission",
+    "prixHT": 680.0,
+    "tvaTaux": 20,
+    "description": "Protocole IKA / battue d'inventaire aérienne. Rapport OFB/FDC.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "B2.5 Cartographie zones de présence / couloirs gibier",
+    "unite": "rapport",
+    "prixHT": 320.0,
+    "tvaTaux": 20,
+    "description": "En complément de B2.1 ou B2.2.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "B2.6 Comptage oiseaux d'eau / limicoles",
+    "unite": "mission",
+    "prixHT": 580.0,
+    "tvaTaux": 20,
+    "description": "Zones humides.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "B2.7 Abonnement suivi annuel gibier",
+    "unite": "an",
+    "prixHT": 3200.0,
+    "tvaTaux": 20,
+    "description": "4 comptages saisonniers + rapport comparatif. Remise 10% dès 2e année.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "B3.1 Détection / cartographie foyers de scolytes",
+    "unite": "ha",
+    "prixHT": 18.0,
+    "tvaTaux": 20,
+    "description": "Ips typographus — imagerie multispectrale, indices de dépérissement. Min. facturation 400€.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "B3.2 Cartographie dépérissement forestier",
+    "unite": "ha",
+    "prixHT": 16.0,
+    "tvaTaux": 20,
+    "description": "Chalara, encre du chêne, mortalité climatique. Min. facturation 350€.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "B3.3 Orthophotographie HR parcelle forestière",
+    "unite": "ha",
+    "prixHT": 14.0,
+    "tvaTaux": 20,
+    "description": "≤2cm/pixel — individus dépérissants, trouées, chablis. Min. facturation 300€.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "B3.4 Suivi temporel propagation scolytes",
+    "unite": "passage",
+    "prixHT": 520.0,
+    "tvaTaux": 20,
+    "description": "Comparaison multi-dates, cartographie d'évolution.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "B3.5 Rapport phytosanitaire forestier",
+    "unite": "rapport",
+    "prixHT": 280.0,
+    "tvaTaux": 20,
+    "description": "Synthèse cartographique, surfaces atteintes, préconisations.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "B3.6 Pack complet diagnostic scolytes",
+    "unite": "jour",
+    "prixHT": 1100.0,
+    "tvaTaux": 20,
+    "description": "Multispectre + ortho HR + rapport + données SIG.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "B4.1 Cartographie et linéaire de haies",
+    "unite": "ha",
+    "prixHT": 16.0,
+    "tvaTaux": 20,
+    "description": "Orthophoto HR, délimitation SIG, calcul linéaire/surface. Min. facturation 250€.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "B4.2 Diagnostic bocager complet",
+    "unite": "mission",
+    "prixHT": 650.0,
+    "tvaTaux": 20,
+    "description": "État haies, typologies, connexions TVB. Conforme DDT / PAC / BCAE8.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "B4.3 Cartographie Trame Verte et Bleue (TVB)",
+    "unite": "ha",
+    "prixHT": 16.0,
+    "tvaTaux": 20,
+    "description": "Continuités écologiques, réservoirs biodiversité. Min. facturation 300€.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "B4.4 Suivi annuel bocage / recolonisation",
+    "unite": "passage",
+    "prixHT": 480.0,
+    "tvaTaux": 20,
+    "description": "Comparaison multi-dates, rapport d'évolution.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "B4.5 Rapport diagnostic bocager (dossier subvention)",
+    "unite": "rapport",
+    "prixHT": 280.0,
+    "tvaTaux": 20,
+    "description": "",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "B5.1 Cartographie des chablis",
+    "unite": "ha",
+    "prixHT": 18.0,
+    "tvaTaux": 20,
+    "description": "Orthophoto HR, délimitation zones affectées. Min. facturation 400€.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "B5.2 Estimation volume chablis",
+    "unite": "ha",
+    "prixHT": 22.0,
+    "tvaTaux": 20,
+    "description": "Modèle de hauteur de canopée (MNH). Min. facturation 500€.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "B5.3 Cartographie multispectre après tempête",
+    "unite": "ha",
+    "prixHT": 18.0,
+    "tvaTaux": 20,
+    "description": "Arbres dépérissants, mortalité différée. Min. facturation 400€.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "B5.4 Rapport de récolement forestier",
+    "unite": "rapport",
+    "prixHT": 280.0,
+    "tvaTaux": 20,
+    "description": "Synthèse cartographique, volumes estimés, préconisations.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "B5.5 Pack récolement complet",
+    "unite": "jour",
+    "prixHT": 1100.0,
+    "tvaTaux": 20,
+    "description": "Ortho HR + MNH + multispectre + rapport. Livraison OBJ/LAS.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "C1.1 Cartographie multispectrale cours d'eau",
+    "unite": "km",
+    "prixHT": 18.0,
+    "tvaTaux": 20,
+    "description": "NDWI, turbidité, végétation rivulaire. Min. facturation 350€.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "C1.2 Cartographie multispectrale zone humide / marais",
+    "unite": "ha",
+    "prixHT": 25.0,
+    "tvaTaux": 20,
+    "description": "NDWI, NDVI, taux humidité sol. Min. facturation 500€.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "C1.3 Cartographie multispectrale retenue / lac",
+    "unite": "ha",
+    "prixHT": 22.0,
+    "tvaTaux": 20,
+    "description": "Détection algues, cyanobactéries. Min. facturation 420€.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "C1.4 Suivi thermique cours d'eau",
+    "unite": "km",
+    "prixHT": 28.0,
+    "tvaTaux": 20,
+    "description": "Rejets thermiques, zones de frayères. Min. facturation 500€.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "C1.5 Orthophotographie HR milieu aquatique",
+    "unite": "ha",
+    "prixHT": 18.0,
+    "tvaTaux": 20,
+    "description": "≤2cm/pixel — espèces invasives, embâcles. Min. facturation 350€.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "C1.6 Détection espèces invasives aquatiques",
+    "unite": "mission",
+    "prixHT": 280.0,
+    "tvaTaux": 20,
+    "description": "Jussie, renouée, myriophylle. Rapport de localisation inclus.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "C1.7 Inspection ouvrage hydraulique",
+    "unite": "mission",
+    "prixHT": 420.0,
+    "tvaTaux": 20,
+    "description": "Barrage, seuil, digue, buse. Livraison sous 48h.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "C1.8 Rapport environnemental complet",
+    "unite": "rapport",
+    "prixHT": 280.0,
+    "tvaTaux": 20,
+    "description": "En complément de tout levé.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "C1.9 Pack complet milieu aquatique",
+    "unite": "jour",
+    "prixHT": 950.0,
+    "tvaTaux": 20,
+    "description": "Orthophoto + multispectral + rapport + données brutes.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "C1.10 Abonnement suivi périodique milieu aquatique",
+    "unite": "an",
+    "prixHT": 3200.0,
+    "tvaTaux": 20,
+    "description": "4 passages/an. Remise 10% dès 2e année.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "C2.1 Cartographie stress hydrique agricole",
+    "unite": "ha",
+    "prixHT": 28.0,
+    "tvaTaux": 20,
+    "description": "NDWI, NDRE, CWSI. Min. facturation 650€.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "C2.2 Cartographie stress hydrique forestier",
+    "unite": "ha",
+    "prixHT": 22.0,
+    "tvaTaux": 20,
+    "description": "Dépérissement, mortalité arborée. Min. facturation 400€.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "C2.3 Suivi thermique sol / cultures",
+    "unite": "ha",
+    "prixHT": 26.0,
+    "tvaTaux": 20,
+    "description": "Températures de surface, zones sèches critiques. Min. facturation 450€.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "C2.4 Cartographie fissures de retrait argileux (RGA)",
+    "unite": "ha",
+    "prixHT": 22.0,
+    "tvaTaux": 20,
+    "description": "Zones bâties, talus, berges. Min. facturation 400€.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "C2.5 Surveillance retenue / réserve d'eau",
+    "unite": "mission",
+    "prixHT": 380.0,
+    "tvaTaux": 20,
+    "description": "Suivi niveau, surfaces, évaporation estimée.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "C2.6 Suivi saisonnier sécheresse",
+    "unite": "saison",
+    "prixHT": 1800.0,
+    "tvaTaux": 20,
+    "description": "3 passages : début/pic/sortie. Rapport comparatif final inclus.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "C2.7 Pack diagnostic sécheresse complet",
+    "unite": "jour",
+    "prixHT": 1100.0,
+    "tvaTaux": 20,
+    "description": "Multispectre + thermique + rapport + recommandations.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "C3.1 Surveillance décharges sauvages / dépôts illégaux",
+    "unite": "mission",
+    "prixHT": 280.0,
+    "tvaTaux": 20,
+    "description": "Repérage aérien, cartographie GPS, rapport pour commune.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "C3.2 Constat aérien travaux illégaux",
+    "unite": "mission",
+    "prixHT": 350.0,
+    "tvaTaux": 20,
+    "description": "Défrichement, remblaiement, construction. Géolocalisé, daté.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "C3.3 Surveillance captages AEP",
+    "unite": "mission",
+    "prixHT": 380.0,
+    "tvaTaux": 20,
+    "description": "Détection activités incompatibles.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "C3.4 Suivi chantier environnemental",
+    "unite": "passage",
+    "prixHT": 320.0,
+    "tvaTaux": 20,
+    "description": "Restauration cours d'eau, plantation, renaturation.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "D1.1 Orthophotographie standard",
+    "unite": "ha",
+    "prixHT": 12.0,
+    "tvaTaux": 20,
+    "description": "≤3cm/pixel, livraison GeoTIFF + rapport de vol. Min. facturation 250€.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "D1.2 Orthophotographie haute résolution",
+    "unite": "ha",
+    "prixHT": 18.0,
+    "tvaTaux": 20,
+    "description": "≤1cm/pixel — bâtiment, site patrimonial. Min. facturation 400€.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "D1.3 Modèle numérique de surface / terrain (MNS/MNT)",
+    "unite": "ha",
+    "prixHT": 14.0,
+    "tvaTaux": 20,
+    "description": "Grille altimétrique GeoTIFF/ASC. Min. facturation 300€.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "D1.4 Modèle 3D texturé complet",
+    "unite": "mission",
+    "prixHT": 650.0,
+    "tvaTaux": 20,
+    "description": "Photogrammétrie. Devis selon emprise.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "D1.5 Plan topographique coté",
+    "unite": "ha",
+    "prixHT": 16.0,
+    "tvaTaux": 20,
+    "description": "Courbes de niveau, points cotés. Min. facturation 350€.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "D2.1 Levé topographique de carrière / gravière",
+    "unite": "ha",
+    "prixHT": 24.0,
+    "tvaTaux": 20,
+    "description": "Orthophoto + MNT + calcul de volume.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "D2.2 Calcul de volume de stock",
+    "unite": "rapport",
+    "prixHT": 350.0,
+    "tvaTaux": 20,
+    "description": "Tas, fronts de taille, excavations. En complément de D2.1.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "D2.3 Suivi périodique de carrière",
+    "unite": "passage",
+    "prixHT": 480.0,
+    "tvaTaux": 20,
+    "description": "Mensuel ou trimestriel. Remise 10% dès 6 passages.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "D2.4 Inspection sécurité fronts de taille / talus",
+    "unite": "mission",
+    "prixHT": 420.0,
+    "tvaTaux": 20,
+    "description": "Fissures, éboulements potentiels. Sous 48h.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "D2.5 Modèle 3D de carrière",
+    "unite": "mission",
+    "prixHT": 750.0,
+    "tvaTaux": 20,
+    "description": "Nuage de points dense LAS/LAZ.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "D3.1 Visite de suivi de chantier",
+    "unite": "passage",
+    "prixHT": 280.0,
+    "tvaTaux": 20,
+    "description": "Images HD, orthophoto partielle, rapport d'avancement.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "D3.2 Abonnement suivi mensuel chantier",
+    "unite": "mois",
+    "prixHT": 900.0,
+    "tvaTaux": 20,
+    "description": "4 passages/mois. Engagement min. 3 mois.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "D3.3 Modèle 3D de chantier",
+    "unite": "levé",
+    "prixHT": 550.0,
+    "tvaTaux": 20,
+    "description": "Nuage de points, maillage texturé. Livraison OBJ/LAS.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "D3.4 Calcul de volumes terrassement / remblais / déblais",
+    "unite": "rapport",
+    "prixHT": 220.0,
+    "tvaTaux": 20,
+    "description": "En complément de D3.3.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "D3.5 Vidéo de synthèse avancement chantier",
+    "unite": "vidéo",
+    "prixHT": 180.0,
+    "tvaTaux": 20,
+    "description": "Montage HD, timelapse. Livraison MP4 4K.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "E1.1 Inspection visuelle bâtiment / toiture (pro)",
+    "unite": "mission",
+    "prixHT": 320.0,
+    "tvaTaux": 20,
+    "description": "Surface <500m². Au-delà : devis.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "E1.2 Inspection thermographique bâtiment / toiture (pro)",
+    "unite": "mission",
+    "prixHT": 650.0,
+    "tvaTaux": 20,
+    "description": "Déperditions, humidité, infiltrations. Δ°C >5°.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "E1.3 Pack inspection complète (visuel+thermique, pro)",
+    "unite": "mission",
+    "prixHT": 950.0,
+    "tvaTaux": 20,
+    "description": "Livraison sous 48h.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "E1B.1 Nettoyage haute pression toiture par drone",
+    "unite": "m²",
+    "prixHT": 8.0,
+    "tvaTaux": 20,
+    "description": "Système HTD. Surface min. 150m². Devis sur site obligatoire.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "E1B.2 Nettoyage basse pression / biocide toiture",
+    "unite": "m²",
+    "prixHT": 10.0,
+    "tvaTaux": 20,
+    "description": "Anti-mousse/lichen homologué. Produit fourni par APH Drone.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "E1B.3 Nettoyage façade bâtiment HP",
+    "unite": "m²",
+    "prixHT": 10.0,
+    "tvaTaux": 20,
+    "description": "Parpaing, enduit, bardage. Zones >8m.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "E1B.4 Nettoyage basse pression façade",
+    "unite": "m²",
+    "prixHT": 12.0,
+    "tvaTaux": 20,
+    "description": "Démoussage, enduit, hydrofuge. Produit fourni par APH Drone.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "E1B.5 Traitement préventif biocide toiture+façade",
+    "unite": "m²",
+    "prixHT": 5.0,
+    "tvaTaux": 20,
+    "description": "Couverture annuelle garantie. En complément E1B.1 à E1B.4.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "E1B.6 Forfait demi-journée nettoyage (≤300m²)",
+    "unite": "demi-j",
+    "prixHT": 750.0,
+    "tvaTaux": 20,
+    "description": "Toiture ou façade. Déplacement <30km inclus.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "E1B.7 Forfait journée nettoyage (≤600m²)",
+    "unite": "jour",
+    "prixHT": 1300.0,
+    "tvaTaux": 20,
+    "description": "Toiture+façade combinées. Min. 600m² ou 1 journée.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "E1B.8 Rapport avant/après nettoyage",
+    "unite": "mission",
+    "prixHT": 80.0,
+    "tvaTaux": 20,
+    "description": "Photos HD géolocalisées. Inclus dans forfaits >600€.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "E1B.9 Inspection préalable diagnostic nettoyage",
+    "unite": "mission",
+    "prixHT": 120.0,
+    "tvaTaux": 20,
+    "description": "Déduit du forfait si mission confirmée.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "E2.1 Inspection infrastructure linéaire",
+    "unite": "km",
+    "prixHT": 160.0,
+    "tvaTaux": 20,
+    "description": "Ligne électrique, canalisation, route.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "E2.2 Inspection pylônes / antennes / mâts",
+    "unite": "ouvrage",
+    "prixHT": 380.0,
+    "tvaTaux": 20,
+    "description": "Sans accès en hauteur.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "E2.3 Inspection éoliennes",
+    "unite": "éolienne",
+    "prixHT": 650.0,
+    "tvaTaux": 20,
+    "description": "Pâle, nacelle, mât. Détection fissures/défauts.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "E2.4 Inspection pont / ouvrage d'art",
+    "unite": "ouvrage",
+    "prixHT": 520.0,
+    "tvaTaux": 20,
+    "description": "Intrados, piles, culées, tablier.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "E2.5 Inspection réseau d'irrigation / canal",
+    "unite": "km",
+    "prixHT": 130.0,
+    "tvaTaux": 20,
+    "description": "Fuites, végétation envahissante. Min. facturation 350€.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "E2.6 Inspection thermique infrastructure",
+    "unite": "mission",
+    "prixHT": 580.0,
+    "tvaTaux": 20,
+    "description": "Points chauds, défauts isolation.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "F1.1 Appui opérationnel sécurité (demi-journée)",
+    "unite": "demi-j",
+    "prixHT": 600.0,
+    "tvaTaux": 20,
+    "description": "Opérateur qualifié STS-01.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "F1.2 Appui opérationnel sécurité (journée)",
+    "unite": "jour",
+    "prixHT": 1000.0,
+    "tvaTaux": 20,
+    "description": "",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "F1.3 Mission recherche & secours (SAR)",
+    "unite": "jour",
+    "prixHT": 1100.0,
+    "tvaTaux": 20,
+    "description": "Appui aérien thermique, compte-rendu opérationnel.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "F1.4 Surveillance des feux de forêt",
+    "unite": "heure",
+    "prixHT": 420.0,
+    "tvaTaux": 20,
+    "description": "Reconnaissance thermique, transmission temps réel.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "F1.5 Heure de veille / permanence opérateur",
+    "unite": "heure",
+    "prixHT": 150.0,
+    "tvaTaux": 20,
+    "description": "Au-delà forfait journée.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "F2.1 Cartographie zones avalancheuses",
+    "unite": "mission",
+    "prixHT": 450.0,
+    "tvaTaux": 20,
+    "description": "Couloirs, dépôts, zones d'exposition. Pour commune/PPRN.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "F2.2 Surveillance glissements de terrain",
+    "unite": "mission",
+    "prixHT": 480.0,
+    "tvaTaux": 20,
+    "description": "Fissures, cartographie déplacements.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "F2.3 Inspection post-crue",
+    "unite": "mission",
+    "prixHT": 520.0,
+    "tvaTaux": 20,
+    "description": "Dégâts, zones inondées, embâcles, érosions.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "F2.4 Inspection post-tempête / post-feu",
+    "unite": "ha",
+    "prixHT": 18.0,
+    "tvaTaux": 20,
+    "description": "Chablis, zones brûlées. Min. facturation 350€.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "F2.5 Modèle numérique de terrain post-catastrophe",
+    "unite": "mission",
+    "prixHT": 780.0,
+    "tvaTaux": 20,
+    "description": "Comparaison avant/après, volumes déplacés.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "F2.6 Rapport CAT-NAT",
+    "unite": "rapport",
+    "prixHT": 320.0,
+    "tvaTaux": 20,
+    "description": "Constat illustré. Conforme préfecture/assureur.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "F3.1 Constat aérien dégâts de culture",
+    "unite": "mission",
+    "prixHT": 320.0,
+    "tvaTaux": 20,
+    "description": "Gibier, grêle, inondation, gel. Rapport sous 24h.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "F3.2 Estimation surface endommagée",
+    "unite": "ha",
+    "prixHT": 18.0,
+    "tvaTaux": 20,
+    "description": "Délimitation GPS. Min. facturation 250€.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "F3.3 Constat dégâts sangliers / cervidés",
+    "unite": "mission",
+    "prixHT": 380.0,
+    "tvaTaux": 20,
+    "description": "Cartographie boutis, frottis. Rapport FDC/MSA.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "F3.4 Cartographie multispectrale dégâts de culture",
+    "unite": "ha",
+    "prixHT": 18.0,
+    "tvaTaux": 20,
+    "description": "Indices NDVI avant/après. Min. facturation 300€.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "F3.5 Rapport d'expertise (dossier indemnisation)",
+    "unite": "rapport",
+    "prixHT": 220.0,
+    "tvaTaux": 20,
+    "description": "Conforme FDC/MSA/assurance.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "F3.6 Pack constat complet dégâts culture",
+    "unite": "mission",
+    "prixHT": 750.0,
+    "tvaTaux": 20,
+    "description": "Orthophoto + multispectral + rapport expertise.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "F3.7 Suivi post-sinistre culture",
+    "unite": "passage",
+    "prixHT": 280.0,
+    "tvaTaux": 20,
+    "description": "Évaluation reprise des cultures.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "G1.1 Prise de vue photo aérienne HD (demi-journée)",
+    "unite": "demi-j",
+    "prixHT": 450.0,
+    "tvaTaux": 20,
+    "description": "Livraison JPEG retouchés.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "G1.2 Prise de vue photo aérienne HD (journée)",
+    "unite": "jour",
+    "prixHT": 1000.0,
+    "tvaTaux": 20,
+    "description": "Livraison JPEG retouchés + RAW.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "G1.3 Vidéo aérienne (demi-journée)",
+    "unite": "demi-j",
+    "prixHT": 600.0,
+    "tvaTaux": 20,
+    "description": "Montage, musique libre de droits. MP4 4K 2-4min.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "G1.4 Vidéo aérienne (journée)",
+    "unite": "jour",
+    "prixHT": 1150.0,
+    "tvaTaux": 20,
+    "description": "Montage enrichi. MP4 4K 4-8min.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "G1.5 Pack photo+vidéo (demi-journée)",
+    "unite": "demi-j",
+    "prixHT": 750.0,
+    "tvaTaux": 20,
+    "description": "",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "G1.6 Pack photo+vidéo (journée)",
+    "unite": "jour",
+    "prixHT": 1300.0,
+    "tvaTaux": 20,
+    "description": "",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "G1.7 Immobilier professionnel / promotion",
+    "unite": "bien",
+    "prixHT": 420.0,
+    "tvaTaux": 20,
+    "description": "Photos HD + vidéo 2min + vue 360°.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "G1.8 Majoration livraison express (24h)",
+    "unite": "forfait",
+    "prixHT": 150.0,
+    "tvaTaux": 20,
+    "description": "Applicable sur tout forfait photo/vidéo.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "G1.9 Droits d'exploitation étendus",
+    "unite": "forfait",
+    "prixHT": 300.0,
+    "tvaTaux": 20,
+    "description": "TV, presse nationale, publicité. Par support/an.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "H1.1 Repérage aérien nids (frelons, guêpes)",
+    "unite": "mission",
+    "prixHT": 180.0,
+    "tvaTaux": 20,
+    "description": "Zone ≤5ha, jusqu'à 2h de vol.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "H1.2 Traitement insecticide ciblé nid",
+    "unite": "nid",
+    "prixHT": 220.0,
+    "tvaTaux": 20,
+    "description": "Produit homologué. Hauteur ≤15m.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "H1.3 Traitement chenilles processionnaires",
+    "unite": "arbre",
+    "prixHT": 22.0,
+    "tvaTaux": 20,
+    "description": "Bacillus thuringiensis. Min. facturation 200€.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "H1.4 Forfait journée désinsectisation multi-sites",
+    "unite": "jour",
+    "prixHT": 950.0,
+    "tvaTaux": 20,
+    "description": "Collectivité, parc arboré, voirie.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "H1.5 Rapport d'intervention désinsectisation",
+    "unite": "rapport",
+    "prixHT": 60.0,
+    "tvaTaux": 20,
+    "description": "Inclus dans forfait H1.4.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "I1.1 Relevé photogrammétrique monument historique",
+    "unite": "mission",
+    "prixHT": 480.0,
+    "tvaTaux": 20,
+    "description": "Modèle 3D texturé, orthophoto façades.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "I1.2 Prospection archéologique aérienne",
+    "unite": "ha",
+    "prixHT": 22.0,
+    "tvaTaux": 20,
+    "description": "Détection anomalies végétation/sol. Min. facturation 420€.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "I1.3 Relevé 3D de site archéologique",
+    "unite": "mission",
+    "prixHT": 650.0,
+    "tvaTaux": 20,
+    "description": "Restitution numérique, plan coté, SIG.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "I1.4 Inspection état de conservation monument",
+    "unite": "mission",
+    "prixHT": 380.0,
+    "tvaTaux": 20,
+    "description": "Fissures, efflorescence, végétation.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "L1.1 Observateur sécurité sans matériel (demi-journée)",
+    "unite": "demi-j",
+    "prixHT": 280.0,
+    "tvaTaux": 20,
+    "description": "Qualifié STS-01/STS-02/Open A2.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "L1.2 Observateur sécurité sans matériel (journée)",
+    "unite": "jour",
+    "prixHT": 480.0,
+    "tvaTaux": 20,
+    "description": "",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "L1.3 Observateur sécurité avec drone (demi-journée)",
+    "unite": "demi-j",
+    "prixHT": 550.0,
+    "tvaTaux": 20,
+    "description": "Drone selon besoin mission.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "L1.4 Observateur sécurité avec drone (journée)",
+    "unite": "jour",
+    "prixHT": 950.0,
+    "tvaTaux": 20,
+    "description": "Drone selon besoin mission.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "L1.5 Mise à disposition drone seul (demi-journée)",
+    "unite": "demi-j",
+    "prixHT": 320.0,
+    "tvaTaux": 20,
+    "description": "Sous convention de prêt signée.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "L1.6 Mise à disposition drone seul (journée)",
+    "unite": "jour",
+    "prixHT": 550.0,
+    "tvaTaux": 20,
+    "description": "Sous convention de prêt signée.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "L2.1 Mise à disposition télépilote (régie horaire)",
+    "unite": "heure",
+    "prixHT": 95.0,
+    "tvaTaux": 20,
+    "description": "Sans drone. Min. 4h facturées.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "L2.2 Mise à disposition télépilote (demi-journée)",
+    "unite": "demi-j",
+    "prixHT": 360.0,
+    "tvaTaux": 20,
+    "description": "Sans drone.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "L2.3 Mise à disposition télépilote (journée)",
+    "unite": "jour",
+    "prixHT": 680.0,
+    "tvaTaux": 20,
+    "description": "Sans drone.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "L2.4 Télépilote + drone (demi-journée)",
+    "unite": "demi-j",
+    "prixHT": 680.0,
+    "tvaTaux": 20,
+    "description": "",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "L2.5 Télépilote + drone (journée)",
+    "unite": "jour",
+    "prixHT": 1100.0,
+    "tvaTaux": 20,
+    "description": "",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "L2.6 Télépilote + T100 (journée, catégorie Specific)",
+    "unite": "jour",
+    "prixHT": 1800.0,
+    "tvaTaux": 20,
+    "description": "SORA client requise.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "L2.7 Astreinte / disponibilité télépilote (semaine)",
+    "unite": "semaine",
+    "prixHT": 420.0,
+    "tvaTaux": 20,
+    "description": "Hors déplacements.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "L2.8 Rédaction/relecture dossier SORA v2.5 (tiers)",
+    "unite": "dossier",
+    "prixHT": 850.0,
+    "tvaTaux": 20,
+    "description": "Délai selon complexité.",
+    "actif": true
+  },
+  {
+    "categorie": "Formation",
+    "designation": "L3.1 Formation théorique réglementation drone (demi-j)",
+    "unite": "demi-j",
+    "prixHT": 350.0,
+    "tvaTaux": 20,
+    "description": "EU 2019/947, Open/Specific, DGAC, assurance. Supports fournis.",
+    "actif": true
+  },
+  {
+    "categorie": "Formation",
+    "designation": "L3.2 Formation théorique complète (journée)",
+    "unite": "jour",
+    "prixHT": 600.0,
+    "tvaTaux": 20,
+    "description": "Réglementation + risques + espace aérien + procédures. Attestation fournie.",
+    "actif": true
+  },
+  {
+    "categorie": "Formation",
+    "designation": "L3.3 Formation pratique terrain (demi-journée)",
+    "unite": "demi-j",
+    "prixHT": 420.0,
+    "tvaTaux": 20,
+    "description": "Prise en main, manœuvres sécurité, urgences.",
+    "actif": true
+  },
+  {
+    "categorie": "Formation",
+    "designation": "L3.4 Formation pratique terrain (journée)",
+    "unite": "jour",
+    "prixHT": 750.0,
+    "tvaTaux": 20,
+    "description": "Avec évaluation finale. Attestation de compétence.",
+    "actif": true
+  },
+  {
+    "categorie": "Formation",
+    "designation": "L3.5 Formation spécialisée agriculture",
+    "unite": "jour",
+    "prixHT": 850.0,
+    "tvaTaux": 20,
+    "description": "Pulvérisation/épandage drone, phyto UAV, SORA. Max 4 stagiaires.",
+    "actif": true
+  },
+  {
+    "categorie": "Formation",
+    "designation": "L3.6 Formation spécialisée imagerie multispectrale",
+    "unite": "jour",
+    "prixHT": 800.0,
+    "tvaTaux": 20,
+    "description": "NDVI/NDWI/NDRE, traitement et interprétation. Max 4 stagiaires.",
+    "actif": true
+  },
+  {
+    "categorie": "Formation",
+    "designation": "L3.7 Formation initiation SORA v2.5",
+    "unite": "jour",
+    "prixHT": 900.0,
+    "tvaTaux": 20,
+    "description": "Méthodologie, évaluation des risques, dossier opérationnel. Max 4 stagiaires.",
+    "actif": true
+  },
+  {
+    "categorie": "Formation",
+    "designation": "L3.8 Accompagnement individuel certification DGAC",
+    "unite": "heure",
+    "prixHT": 80.0,
+    "tvaTaux": 20,
+    "description": "Coaching personnalisé. Min. 4h.",
+    "actif": true
+  },
+  {
+    "categorie": "Formation",
+    "designation": "L3.9 Conception support de formation sur mesure",
+    "unite": "forfait",
+    "prixHT": 650.0,
+    "tvaTaux": 20,
+    "description": "Manuel, slides, QCM. Droits d'utilisation inclus.",
+    "actif": true
+  },
+  {
+    "categorie": "Formation",
+    "designation": "L3.10 Déplacement formateur sur site client (>30km)",
+    "unite": "demi-j",
+    "prixHT": 120.0,
+    "tvaTaux": 20,
+    "description": "+0,65€/km AR.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "P1.1 Photos aériennes bien immobilier",
+    "unite": "bien",
+    "prixHT": 220.0,
+    "tvaTaux": 20,
+    "description": "Maison, ferme, terrain.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "P1.2 Pack immobilier complet",
+    "unite": "bien",
+    "prixHT": 390.0,
+    "tvaTaux": 20,
+    "description": "Photos HD + vidéo 2min + plan de masse aérien.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "P1.3 Visite virtuelle aérienne",
+    "unite": "bien",
+    "prixHT": 360.0,
+    "tvaTaux": 20,
+    "description": "Survol commenté. Vidéo 3-4min. Musique libre de droits.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "P1.4 Estimation superficie terrain / parcelle",
+    "unite": "mission",
+    "prixHT": 220.0,
+    "tvaTaux": 20,
+    "description": "Mesure par orthophoto géoréférencée. Rapport PDF.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "P1.5 Vidéo promotionnelle gîte / chambre d'hôtes / camping",
+    "unite": "bien",
+    "prixHT": 390.0,
+    "tvaTaux": 20,
+    "description": "Survol + montage 2min.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "P1.6 Portrait aérien de propriété / domaine",
+    "unite": "bien",
+    "prixHT": 250.0,
+    "tvaTaux": 20,
+    "description": "Photos HD extérieures.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "P2.1 Prise de vue mariage (1h de vol)",
+    "unite": "heure",
+    "prixHT": 290.0,
+    "tvaTaux": 20,
+    "description": "Cérémonie, cocktail ou groupe. Sous réserve autorisation site.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "P2.2 Pack mariage (demi-journée)",
+    "unite": "demi-j",
+    "prixHT": 480.0,
+    "tvaTaux": 20,
+    "description": "Photos + vidéo montée 3min.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "P2.3 Événement privé (demi-journée)",
+    "unite": "demi-j",
+    "prixHT": 380.0,
+    "tvaTaux": 20,
+    "description": "Fête, anniversaire, baptême, inauguration.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "P2.4 Vidéo souvenir événement privé",
+    "unite": "mission",
+    "prixHT": 320.0,
+    "tvaTaux": 20,
+    "description": "Tournage + montage 2-3min.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "P2.5 Majoration livraison express (particulier)",
+    "unite": "forfait",
+    "prixHT": 100.0,
+    "tvaTaux": 20,
+    "description": "Sous 24h ouvrées.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "P3A.1 Inspection toiture maison individuelle",
+    "unite": "bien",
+    "prixHT": 360.0,
+    "tvaTaux": 20,
+    "description": "Surface <300m². Au-delà : voir E1.1 pro.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "P3A.2 Inspection thermique toiture (particulier)",
+    "unite": "bien",
+    "prixHT": 380.0,
+    "tvaTaux": 20,
+    "description": "Infiltrations, humidité, déperditions. Delta T>5°C.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "P3A.3 Pack inspection complète (particulier)",
+    "unite": "bien",
+    "prixHT": 580.0,
+    "tvaTaux": 20,
+    "description": "Visuel + thermique + rapport pour devis couvreur/assurance.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "P3A.4 Constat aérien sinistre (particulier)",
+    "unite": "bien",
+    "prixHT": 320.0,
+    "tvaTaux": 20,
+    "description": "Tempête, grêle, dégât des eaux. Pour dossier assurance.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "P3B.1 Nettoyage HP toiture maison",
+    "unite": "m²",
+    "prixHT": 8.0,
+    "tvaTaux": 20,
+    "description": "Drone HTD. Min. 80m². Devis sur site.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "P3B.2 Nettoyage BP toiture (particulier)",
+    "unite": "m²",
+    "prixHT": 10.0,
+    "tvaTaux": 20,
+    "description": "Anti-mousse/démoussant homologué. Min. 80m².",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "P3B.3 Nettoyage HP façade maison",
+    "unite": "m²",
+    "prixHT": 10.0,
+    "tvaTaux": 20,
+    "description": "Zones inaccessibles ou hauteur >5m.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "P3B.4 Nettoyage BP façade (particulier)",
+    "unite": "m²",
+    "prixHT": 10.0,
+    "tvaTaux": 20,
+    "description": "Démoussage, nettoyage enduit.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "P3B.5 Traitement biocide préventif toiture/façade",
+    "unite": "m²",
+    "prixHT": 5.0,
+    "tvaTaux": 20,
+    "description": "Protection anti-repousse 3-5 ans.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "P3B.6 Pack nettoyage complet (particulier)",
+    "unite": "m²",
+    "prixHT": 12.0,
+    "tvaTaux": 20,
+    "description": "HP + biocide + rapport photos avant/après. Min. 80m².",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "P3B.7 Inspection préalable avant devis nettoyage",
+    "unite": "mission",
+    "prixHT": 80.0,
+    "tvaTaux": 20,
+    "description": "Déduit du forfait si nettoyage confirmé.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "P4.1 Analyse multispectrale parcelle individuelle",
+    "unite": "ha",
+    "prixHT": 22.0,
+    "tvaTaux": 20,
+    "description": "Carte NDVI + rapport de vigueur simplifié.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "P4.2 Recherche de faune avant fauchage (particulier)",
+    "unite": "ha",
+    "prixHT": 14.0,
+    "tvaTaux": 20,
+    "description": "Intervention thermique aube. Min. facturation 200€.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "P4.3 Constat dégâts gibier/intempéries (particulier)",
+    "unite": "mission",
+    "prixHT": 380.0,
+    "tvaTaux": 20,
+    "description": "Rapport illustré FDC/assurance.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "P4.4 Photos / vidéo exploitation agricole",
+    "unite": "demi-j",
+    "prixHT": 360.0,
+    "tvaTaux": 20,
+    "description": "Communication, site web, réseaux sociaux.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "P5.1 Comptage gibier (nuit, chasse)",
+    "unite": "nuit",
+    "prixHT": 1100.0,
+    "tvaTaux": 20,
+    "description": "Vol thermique nocturne/crépusculaire.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "P5.2 Cartographie territoire de chasse",
+    "unite": "mission",
+    "prixHT": 750.0,
+    "tvaTaux": 20,
+    "description": "Orthophoto + délimitation parcelles, points d'eau, couloirs.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "P5.3 Recherche animal blessé / suivi de piste",
+    "unite": "heure",
+    "prixHT": 180.0,
+    "tvaTaux": 20,
+    "description": "Thermique basse altitude après battue. Min. 1h.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "P5.4 Vidéo / photos de battue ou chasse",
+    "unite": "demi-j",
+    "prixHT": 380.0,
+    "tvaTaux": 20,
+    "description": "Sous réserve réglementation vol.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "P6.1 Cartographie terrain / jardin / propriété",
+    "unite": "mission",
+    "prixHT": 220.0,
+    "tvaTaux": 20,
+    "description": "Plan aérien précis avec surfaces. PDF + DXF.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "P6.2 Recherche d'objet / animal perdu",
+    "unite": "heure",
+    "prixHT": 180.0,
+    "tvaTaux": 20,
+    "description": "Vol thermique sur zone définie. Min. 1h.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "P6.3 Heure supplémentaire (particulier)",
+    "unite": "heure",
+    "prixHT": 95.0,
+    "tvaTaux": 20,
+    "description": "Au-delà du forfait inclus.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "J1.1 Régie pilote drone qualifiée (heure de vol)",
+    "unite": "heure",
+    "prixHT": 95.0,
+    "tvaTaux": 20,
+    "description": "Toutes catégories. Min. facturation 190€.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "J1.2 Traitement de données post-mission",
+    "unite": "heure",
+    "prixHT": 75.0,
+    "tvaTaux": 20,
+    "description": "Photogrammétrie, nuage de points, export SIG. Min. facturation 150€.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "J1.3 Heure supplémentaire opérateur (pro)",
+    "unite": "heure",
+    "prixHT": 95.0,
+    "tvaTaux": 20,
+    "description": "Au-delà du forfait inclus.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "J2.1 Préparation administrative de mission",
+    "unite": "mission",
+    "prixHT": 150.0,
+    "tvaTaux": 20,
+    "description": "Déclaration DGAC, vérification espaces aériens. Inclus dans forfaits >500€.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "J2.2 Rédaction notice de sécurité / dossier DGAC spécifique",
+    "unite": "dossier",
+    "prixHT": 250.0,
+    "tvaTaux": 20,
+    "description": "Zone CTR, SORA allégé.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "J2.3 Coordination gestionnaire espace aérien",
+    "unite": "forfait",
+    "prixHT": 180.0,
+    "tvaTaux": 20,
+    "description": "SNA, DSAC, aérodrome. Par démarche/espace.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "J2.4 Majoration SORA / coordination DGAC (zone spécifique)",
+    "unite": "forfait",
+    "prixHT": 350.0,
+    "tvaTaux": 20,
+    "description": "Espace contrôlé, CTR, agglomération. Par dossier de dérogation.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "J3.1 Frais kilométriques (au-delà de 30km)",
+    "unite": "km",
+    "prixHT": 0.65,
+    "tvaTaux": 20,
+    "description": "Barème fiscal en vigueur.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "J3.2 Forfait déplacement (>30km, tranche 50km)",
+    "unite": "forfait",
+    "prixHT": 80.0,
+    "tvaTaux": 20,
+    "description": "Cumulable avec J3.1 si >80km.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "J3.3 Nuitée opérateur",
+    "unite": "nuit",
+    "prixHT": 150.0,
+    "tvaTaux": 20,
+    "description": "Mission >80km, départ avant 7h ou retour après 21h.",
+    "actif": true
+  },
+  {
+    "categorie": "Prestation",
+    "designation": "J3.4 Attente météo / logistique sur site",
+    "unite": "heure",
+    "prixHT": 90.0,
+    "tvaTaux": 20,
+    "description": "Facturable après 30 min d'attente.",
+    "actif": true
+  }
+];
+</script>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -346,6 +2291,7 @@ window.enregistrerItem = async function(){
     designation,
     description: document.getElementById('f-description').value.trim(),
     prixHT: parseFloat(document.getElementById('f-prix').value) || 0,
+    unite: document.getElementById('f-unite').value.trim(),
     tvaTaux: parseFloat(document.getElementById('f-tva').value),
     actif: document.getElementById('f-actif').checked,
     ordre: Date.now()
@@ -410,7 +2356,7 @@ function afficherListeItems(){
           <span class="item-name">${it.designation}</span>
           ${it.actif === false ? '<span class="item-badge" style="background:#94a3b8;">Masqué</span>' : ''}
         </div>
-        <div class="item-price">${formaterMontant(it.prixHT)} HT<span style="font-size:.7rem;color:#94a3b8;font-weight:500;"> · TVA ${it.tvaTaux}%</span></div>
+        <div class="item-price">${formaterMontant(it.prixHT)}${it.unite ? ' / ' + it.unite : ''} HT<span style="font-size:.7rem;color:#94a3b8;font-weight:500;"> · TVA ${it.tvaTaux}%</span></div>
       </div>
       ${it.description ? '<div class="item-desc">' + it.description + '</div>' : ''}
       <div class="item-actions">
@@ -437,6 +2383,7 @@ window.editerItem = function(id){
   document.getElementById('f-designation').value = it.designation || '';
   document.getElementById('f-description').value = it.description || '';
   document.getElementById('f-prix').value = it.prixHT != null ? it.prixHT : '';
+  document.getElementById('f-unite').value = it.unite || '';
   document.getElementById('f-tva').value = it.tvaTaux != null ? it.tvaTaux : 20;
   document.getElementById('f-actif').checked = it.actif !== false;
   document.getElementById('form-title').textContent = 'Modifier l\\'article';
@@ -476,6 +2423,39 @@ window.viderTousLesItems = async function(){
   }
 };
 
+window.importerBPU = async function(){
+  const dejaPresentes = new Set(allItems.map(it => it.designation));
+  const aImporter = BPU_APH_DRONE.filter(it => !dejaPresentes.has(it.designation));
+
+  if(aImporter.length === 0){
+    alert('Tous les articles du BPU sont déjà présents dans ton catalogue.');
+    return;
+  }
+
+  if(!confirm('Importer ' + aImporter.length + ' article(s) du BPU APH Drone dans ton catalogue ?' + (aImporter.length < BPU_APH_DRONE.length ? ' (' + (BPU_APH_DRONE.length - aImporter.length) + ' déjà présents seront ignorés.)' : ''))) return;
+
+  const btn = document.getElementById('btn-import-bpu');
+  const statusEl = document.getElementById('import-status');
+  btn.disabled = true;
+  statusEl.style.display = 'block';
+
+  let compteur = 0;
+  for(const it of aImporter){
+    try {
+      await addDoc(collection(db, 'catalogue'), { ...it, ordre: Date.now() + compteur });
+      compteur++;
+      statusEl.textContent = 'Import en cours… ' + compteur + ' / ' + aImporter.length;
+    } catch(e){
+      console.warn('Erreur import article', it.designation, e.message);
+    }
+  }
+
+  statusEl.textContent = compteur + ' article(s) importé(s) avec succès.';
+  btn.disabled = false;
+  chargerItems();
+  setTimeout(() => { statusEl.style.display = 'none'; }, 5000);
+};
+
 window.ouvrirNouvelItem = function(){
   resetFormItem();
   document.getElementById('item-form-overlay').style.display = 'flex';
@@ -492,6 +2472,7 @@ function resetFormItem(){
   document.getElementById('f-designation').value = '';
   document.getElementById('f-description').value = '';
   document.getElementById('f-prix').value = '';
+  document.getElementById('f-unite').value = '';
   document.getElementById('f-tva').value = 20;
   document.getElementById('f-actif').checked = true;
   document.getElementById('form-title').textContent = 'Nouvel article';
