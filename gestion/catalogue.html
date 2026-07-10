@@ -2314,7 +2314,7 @@ window.enregistrerItem = async function(){
   }
 
   btn.disabled = false;
-  btn.textContent = editId ? 'Mettre à jour' : 'Enregistrer l\\'article';
+  btn.textContent = editId ? 'Mettre à jour' : 'Enregistrer l\'article';
 };
 
 async function chargerItems(){
@@ -2386,7 +2386,7 @@ window.editerItem = function(id){
   document.getElementById('f-unite').value = it.unite || '';
   document.getElementById('f-tva').value = it.tvaTaux != null ? it.tvaTaux : 20;
   document.getElementById('f-actif').checked = it.actif !== false;
-  document.getElementById('form-title').textContent = 'Modifier l\\'article';
+  document.getElementById('form-title').textContent = 'Modifier l\'article';
   document.getElementById('btn-save').textContent = 'Mettre à jour';
   document.getElementById('item-form-overlay').style.display = 'flex';
 };
@@ -2403,7 +2403,7 @@ window.supprimerItem = async function(id, designation){
 
 window.viderTousLesItems = async function(){
   if(allItems.length === 0){
-    alert('Il n\\'y a déjà aucun article enregistré.');
+    alert('Il n\'y a déjà aucun article enregistré.');
     return;
   }
   if(!confirm('Supprimer DÉFINITIVEMENT les ' + allItems.length + ' article(s) du catalogue ? Cette action est irréversible.')) return;
@@ -2476,7 +2476,7 @@ function resetFormItem(){
   document.getElementById('f-tva').value = 20;
   document.getElementById('f-actif').checked = true;
   document.getElementById('form-title').textContent = 'Nouvel article';
-  document.getElementById('btn-save').textContent = 'Enregistrer l\\'article';
+  document.getElementById('btn-save').textContent = 'Enregistrer l\'article';
   document.getElementById('btn-save').disabled = false;
   document.getElementById('save-status').style.display = 'none';
 }
