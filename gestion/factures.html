@@ -212,11 +212,21 @@ body{background:var(--light);color:#222;min-height:100vh;}
       </div>
 
       <div class="content">
-        <div class="factures-layout">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px;">
+          <div>
+            <h2 style="font-size:1rem;font-weight:700;color:var(--primary);">Factures enregistrées <span id="facture-count" style="font-weight:400;color:#7a8fa5;font-size:.9rem;"></span></h2>
+          </div>
+          <button class="btn-save" style="flex:none;padding:11px 20px;" onclick="ouvrirNouvelleFacture()">+ Nouvelle facture</button>
+        </div>
 
-          <!-- FORMULAIRE -->
-          <div class="panel-box">
-            <h2 id="form-title">Nouvelle facture</h2>
+        <!-- ═══ Modale : Formulaire facture ═══ -->
+        <div id="facture-form-overlay" style="display:none;position:fixed;inset:0;background:rgba(11,31,58,.55);z-index:2000;align-items:flex-start;justify-content:center;overflow-y:auto;padding:30px 16px;">
+          <div style="background:white;border-radius:14px;max-width:720px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3);">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 24px;border-bottom:1px solid #eee;">
+              <div style="font-size:1rem;font-weight:700;color:#0B1F3A;" id="form-title">Nouvelle facture</div>
+              <button onclick="fermerFormFacture()" style="padding:9px 16px;background:#f5f7fa;color:#555;border:1px solid #dde3ec;border-radius:8px;font-size:.82rem;cursor:pointer;">Fermer</button>
+            </div>
+            <div style="max-height:80vh;overflow-y:auto;padding:24px;">
             <input type="hidden" id="edit-id">
             <input type="hidden" id="f-numero">
 
@@ -307,16 +317,16 @@ body{background:var(--light);color:#222;min-height:100vh;}
             </div>
 
             <div class="form-actions">
-              <button class="btn-cancel" onclick="resetFormFacture()">Annuler</button>
+              <button class="btn-cancel" onclick="fermerFormFacture()">Annuler</button>
               <button class="btn-pdf" onclick="previsualiserPDF()">Aperçu PDF</button>
               <button class="btn-save" id="btn-save" onclick="enregistrerFacture()">Enregistrer la facture</button>
             </div>
             <div id="save-status"></div>
+            </div>
           </div>
+        </div>
 
-          <!-- LISTE -->
-          <div class="panel-box">
-            <h2>Factures enregistrées <span id="facture-count" style="font-weight:400;color:#7a8fa5;font-size:.9rem;"></span></h2>
+        <div class="panel-box">
             <div class="search-bar">
               <input type="text" id="search-input" placeholder="Rechercher une facture…" oninput="filtrerListeFactures()">
             </div>
@@ -337,7 +347,6 @@ body{background:var(--light);color:#222;min-height:100vh;}
             </div>
           </div>
 
-        </div>
       </div>
     </div>
   </div>
@@ -790,7 +799,7 @@ window.envoyerFactureAuClient = async function(){
 
     showStatus('Facture ' + numero + (renvoi ? ' renvoyée à ' : ' envoyée à ') + clientSelectionne.email + '.', 'success');
     fermerPreviewPDF();
-    resetFormFacture();
+    fermerFormFacture();
     chargerFactures();
   } catch(e){
     alert('Erreur lors de l\'envoi : ' + e.message);
@@ -872,8 +881,8 @@ window.enregistrerFacture = async function(){
       showStatus(isNew ? 'Facture ' + numero + ' enregistrée avec succès.' : 'Facture mise à jour avec succès.', 'success');
     }
 
-    resetFormFacture();
     chargerFactures();
+    setTimeout(() => { fermerFormFacture(); }, 900);
   } catch(e){
     showStatus('Erreur : ' + e.message, 'error');
   }
@@ -972,7 +981,7 @@ window.editerFacture = function(id){
 
   document.getElementById('form-title').textContent = 'Modifier la facture ' + dv.numero;
   document.getElementById('btn-save').textContent = 'Mettre à jour';
-  document.querySelector('.panel-box').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.getElementById('facture-form-overlay').style.display = 'flex';
 };
 
 window.marquerPayee = async function(id){
@@ -1056,6 +1065,16 @@ window.resetFormFacture = function(clearStatus){
   document.getElementById('btn-save').textContent = 'Enregistrer la facture';
   document.getElementById('btn-save').disabled = false;
   if(clearStatus !== false) document.getElementById('save-status').style.display = 'none';
+};
+
+window.ouvrirNouvelleFacture = function(){
+  resetFormFacture();
+  document.getElementById('facture-form-overlay').style.display = 'flex';
+};
+
+window.fermerFormFacture = function(){
+  document.getElementById('facture-form-overlay').style.display = 'none';
+  resetFormFacture();
 };
 
 function showStatus(msg, type){
