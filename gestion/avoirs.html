@@ -47,6 +47,12 @@ body{background:var(--light);color:#222;min-height:100vh;}
 .topbar p{font-size:.78rem;color:#94a3b8;margin-top:2px;}
 .content{padding:28px 32px 60px;}
 
+/* Onglets Facturation */
+.subtabs{display:flex;gap:4px;background:white;border-bottom:1px solid #e8edf4;padding:0 32px;overflow-x:auto;}
+.subtab-link{padding:14px 16px;font-size:.85rem;font-weight:600;color:#7a8fa5;text-decoration:none;border-bottom:2.5px solid transparent;white-space:nowrap;transition:.15s;display:inline-block;}
+.subtab-link:hover{color:var(--primary);}
+.subtab-link.active{color:var(--secondary);border-bottom-color:var(--secondary);}
+
 #mobile-burger{align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;border:1px solid #e8edf4;background:white;cursor:pointer;}
 #mobile-burger svg{width:18px;height:18px;color:var(--primary);}
 #sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:400;}
@@ -214,6 +220,12 @@ body{background:var(--light);color:#222;min-height:100vh;}
             <p>Correction ou annulation d'une facture déjà émise</p>
           </div>
         </div>
+      </div>
+
+      <div class="subtabs">
+        <a class="subtab-link" href="devis.html">Devis</a>
+        <a class="subtab-link" href="factures.html">Factures</a>
+        <a class="subtab-link active" href="avoirs.html">Avoirs</a>
       </div>
 
       <div class="content">
