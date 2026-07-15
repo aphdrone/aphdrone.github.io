@@ -165,8 +165,16 @@ body{background:var(--light);color:#222;min-height:100vh;}
             <p>Chiffre d'affaires, marge, clients et prestations</p>
           </div>
         </div>
-        <select id="filtre-annee" class="year-select" onchange="rechargerStats()">
-        </select>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <select id="filtre-client" class="year-select" onchange="rechargerStats()" style="min-width:170px;">
+            <option value="">Tous les clients</option>
+          </select>
+          <select id="filtre-prestation" class="year-select" onchange="rechargerStats()" style="min-width:170px;">
+            <option value="">Toutes les prestations</option>
+          </select>
+          <select id="filtre-annee" class="year-select" onchange="rechargerStats()">
+          </select>
+        </div>
       </div>
 
       <div class="content">
@@ -209,12 +217,14 @@ body{background:var(--light);color:#222;min-height:100vh;}
         <div class="section-grid">
           <div class="panel-box">
             <h3>Top clients (par CA payé)</h3>
+            <input type="text" id="recherche-clients" placeholder="Rechercher un client…" oninput="rechargerStats()" style="width:100%;padding:9px 12px;border:1.5px solid #dde3ec;border-radius:8px;font-size:.83rem;margin-bottom:14px;outline:none;">
             <div id="top-clients">
               <div class="empty-state">Chargement…</div>
             </div>
           </div>
           <div class="panel-box">
             <h3>Top prestations (par CA facturé)</h3>
+            <input type="text" id="recherche-prestations" placeholder="Rechercher une prestation…" oninput="rechargerStats()" style="width:100%;padding:9px 12px;border:1.5px solid #dde3ec;border-radius:8px;font-size:.83rem;margin-bottom:14px;outline:none;">
             <div id="top-prestations">
               <div class="empty-state">Chargement…</div>
             </div>
@@ -304,6 +314,16 @@ async function initStatistiques(){
     const select = document.getElementById('filtre-annee');
     select.innerHTML = anneesTriees.map(a => '<option value="' + a + '">' + a + '</option>').join('');
 
+    // Client : liste des clients distincts ayant au moins une facture
+    const clients = [...new Set(toutesLesFactures.map(f => f.clientNom).filter(Boolean))].sort((a,b) => a.localeCompare(b));
+    document.getElementById('filtre-client').innerHTML = '<option value="">Tous les clients</option>' + clients.map(c => `<option value="${c}">${c}</option>`).join('');
+
+    // Prestation : liste des désignations distinctes utilisées dans les lignes de factures
+    const prestations = new Set();
+    toutesLesFactures.forEach(f => (f.lignes || []).forEach(l => { if(l.designation) prestations.add(l.designation); }));
+    const prestationsTriees = [...prestations].sort((a,b) => a.localeCompare(b));
+    document.getElementById('filtre-prestation').innerHTML = '<option value="">Toutes les prestations</option>' + prestationsTriees.map(p => `<option value="${p}">${p}</option>`).join('');
+
     rechargerStats();
   } catch(e){
     console.warn('initStatistiques:', e.message);
@@ -312,10 +332,26 @@ async function initStatistiques(){
 
 window.rechargerStats = function(){
   const annee = parseInt(document.getElementById('filtre-annee').value, 10);
+  const clientFiltre = document.getElementById('filtre-client').value;
+  const prestationFiltre = document.getElementById('filtre-prestation').value;
+  const rechercheClients = document.getElementById('recherche-clients').value.trim().toLowerCase();
+  const recherchePrestations = document.getElementById('recherche-prestations').value.trim().toLowerCase();
 
-  const facturesAnnee = toutesLesFactures.filter(f => f.dateEmission && new Date(f.dateEmission).getFullYear() === annee);
-  const devisAnnee = tousLesDevis.filter(dv => dv.dateCreation && new Date(dv.dateCreation).getFullYear() === annee);
-  const avoirsAnnee = tousLesAvoirs.filter(a => a.dateEmission && new Date(a.dateEmission).getFullYear() === annee && a.statut === 'emis');
+  let facturesAnnee = toutesLesFactures.filter(f => f.dateEmission && new Date(f.dateEmission).getFullYear() === annee);
+  let devisAnnee = tousLesDevis.filter(dv => dv.dateCreation && new Date(dv.dateCreation).getFullYear() === annee);
+  let avoirsAnnee = tousLesAvoirs.filter(a => a.dateEmission && new Date(a.dateEmission).getFullYear() === annee && a.statut === 'emis');
+
+  if(clientFiltre){
+    facturesAnnee = facturesAnnee.filter(f => f.clientNom === clientFiltre);
+    devisAnnee = devisAnnee.filter(dv => dv.clientNom === clientFiltre);
+    avoirsAnnee = avoirsAnnee.filter(a => a.clientNom === clientFiltre);
+  }
+  if(prestationFiltre){
+    // Ne garde que les factures/devis contenant au moins une ligne de cette prestation
+    const contientPrestation = doc => (doc.lignes || []).some(l => l.designation === prestationFiltre);
+    facturesAnnee = facturesAnnee.filter(contientPrestation);
+    devisAnnee = devisAnnee.filter(contientPrestation);
+  }
 
   const facturesPayees = facturesAnnee.filter(f => f.statut === 'payee');
   const facturesEnvoyees = facturesAnnee.filter(f => f.statut === 'envoyee' || f.statut === 'retard');
@@ -353,17 +389,31 @@ window.rechargerStats = function(){
     </div>
   `).join('');
 
+  // ── Top clients : si une prestation est filtrée, on ne compte que le montant des lignes correspondantes ──
   const parClient = {};
   facturesPayees.forEach(f => {
     const nom = f.clientNom || 'Client inconnu';
-    parClient[nom] = (parClient[nom] || 0) + (f.montantTTC || 0);
+    if(prestationFiltre){
+      (f.lignes || []).forEach(l => {
+        if(l.designation === prestationFiltre){
+          parClient[nom] = (parClient[nom] || 0) + (l.quantite || 0) * (l.prixUnitaireHT || 0) * (1 - (l.remisePct || 0) / 100);
+        }
+      });
+    } else {
+      parClient[nom] = (parClient[nom] || 0) + (f.montantTTC || 0);
+    }
   });
-  const topClients = Object.entries(parClient).sort((a,b) => b[1] - a[1]).slice(0, 8);
-  const elClients = document.getElementById('top-clients');
-  if(topClients.length === 0){
-    elClients.innerHTML = '<div class="empty-state">Aucune facture payée sur cette année.</div>';
+  let entriesClients = Object.entries(parClient).sort((a,b) => b[1] - a[1]);
+  if(rechercheClients){
+    entriesClients = entriesClients.filter(c => c[0].toLowerCase().includes(rechercheClients));
   } else {
-    elClients.innerHTML = topClients.map((c, i) => `
+    entriesClients = entriesClients.slice(0, 8);
+  }
+  const elClients = document.getElementById('top-clients');
+  if(entriesClients.length === 0){
+    elClients.innerHTML = '<div class="empty-state">' + (rechercheClients ? 'Aucun client ne correspond à la recherche.' : 'Aucune facture payée sur cette année.') + '</div>';
+  } else {
+    elClients.innerHTML = entriesClients.map((c, i) => `
       <div class="top-row">
         <div class="top-rank">${i + 1}</div>
         <div class="top-name">${c[0]}</div>
@@ -372,19 +422,26 @@ window.rechargerStats = function(){
     `).join('');
   }
 
+  // ── Top prestations : si un client est filtré, on ne compte que ses lignes (déjà fait via facturesAnnee) ──
   const parPrestation = {};
   facturesAnnee.forEach(f => {
     (f.lignes || []).forEach(l => {
+      if(prestationFiltre && l.designation !== prestationFiltre) return;
       const montant = (l.quantite || 0) * (l.prixUnitaireHT || 0) * (1 - (l.remisePct || 0) / 100);
       parPrestation[l.designation] = (parPrestation[l.designation] || 0) + montant;
     });
   });
-  const topPrestations = Object.entries(parPrestation).sort((a,b) => b[1] - a[1]).slice(0, 8);
-  const elPrestations = document.getElementById('top-prestations');
-  if(topPrestations.length === 0){
-    elPrestations.innerHTML = '<div class="empty-state">Aucune ligne facturée sur cette année.</div>';
+  let entriesPrestations = Object.entries(parPrestation).sort((a,b) => b[1] - a[1]);
+  if(recherchePrestations){
+    entriesPrestations = entriesPrestations.filter(p => p[0].toLowerCase().includes(recherchePrestations));
   } else {
-    elPrestations.innerHTML = topPrestations.map((p, i) => `
+    entriesPrestations = entriesPrestations.slice(0, 8);
+  }
+  const elPrestations = document.getElementById('top-prestations');
+  if(entriesPrestations.length === 0){
+    elPrestations.innerHTML = '<div class="empty-state">' + (recherchePrestations ? 'Aucune prestation ne correspond à la recherche.' : 'Aucune ligne facturée sur cette année.') + '</div>';
+  } else {
+    elPrestations.innerHTML = entriesPrestations.map((p, i) => `
       <div class="top-row">
         <div class="top-rank">${i + 1}</div>
         <div class="top-name">${p[0]}</div>
