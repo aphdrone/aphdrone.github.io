@@ -191,6 +191,7 @@ table.tbl tfoot td{padding:12px 10px;border-top:2px solid #e8edf4;font-weight:70
         <a class="menu-link sub-nav-link" data-tab="ecritures" href="comptabilite.html#ecritures">Écritures</a>
         <a class="menu-link sub-nav-link" data-tab="grand-livre" href="comptabilite.html#grand-livre">Grand livre</a>
         <a class="menu-link sub-nav-link" data-tab="balance" href="comptabilite.html#balance">Balance</a>
+        <a class="menu-link sub-nav-link" data-tab="rapprochement" href="comptabilite.html#rapprochement">Rapprochement bancaire</a>
         <a class="menu-link sub-nav-link" data-tab="immo" href="comptabilite.html#immo">Immobilisations</a>
         <a class="menu-link sub-nav-link" data-tab="tva" href="comptabilite.html#tva">Déclaration TVA</a>
         <a class="menu-link sub-nav-link" data-tab="fec" href="comptabilite.html#fec">Export FEC</a>
@@ -229,6 +230,7 @@ table.tbl tfoot td{padding:12px 10px;border-top:2px solid #e8edf4;font-weight:70
         <button class="subtab" data-tab="ecritures" onclick="setTab('ecritures')">Écritures</button>
         <button class="subtab" data-tab="grand-livre" onclick="setTab('grand-livre')">Grand livre</button>
         <button class="subtab" data-tab="balance" onclick="setTab('balance')">Balance</button>
+        <button class="subtab" data-tab="rapprochement" onclick="setTab('rapprochement')">Rapprochement bancaire</button>
         <button class="subtab" data-tab="immo" onclick="setTab('immo')">Immobilisations</button>
         <button class="subtab" data-tab="tva" onclick="setTab('tva')">Déclaration TVA</button>
         <button class="subtab" data-tab="fec" onclick="setTab('fec')">Export FEC</button>
@@ -361,6 +363,48 @@ table.tbl tfoot td{padding:12px 10px;border-top:2px solid #e8edf4;font-weight:70
                   <td class="num" id="bal-total-solde-debiteur">0,00 €</td>
                   <td class="num" id="bal-total-solde-crediteur">0,00 €</td>
                 </tr></tfoot>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══ RAPPROCHEMENT BANCAIRE ═══ -->
+        <div class="tab-pane" id="pane-rapprochement">
+          <div class="panel-box" style="max-width:760px;">
+            <h3>Rapprochement bancaire</h3>
+            <div class="desc">Coche chaque mouvement au fur et à mesure que tu le retrouves sur ton relevé de banque, pour vérifier que ta compta et ton compte réel concordent.</div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Date du relevé</label>
+                <input type="date" id="rappr-date-releve" onchange="rafraichirRapprochement()">
+              </div>
+              <div class="form-group">
+                <label>Solde indiqué sur le relevé (€)</label>
+                <input type="number" step="0.01" id="rappr-solde-releve" placeholder="0.00" oninput="rafraichirRapprochement()">
+              </div>
+            </div>
+            <div style="display:flex;gap:24px;flex-wrap:wrap;margin-top:6px;padding:14px 16px;background:#f5f7fa;border-radius:10px;">
+              <div><div style="font-size:10px;color:#94a3b8;text-transform:uppercase;font-weight:700;">Solde comptable (tous mouvements)</div><div style="font-size:1.1rem;font-weight:800;color:var(--primary);" id="rappr-solde-comptable">0,00 €</div></div>
+              <div><div style="font-size:10px;color:#94a3b8;text-transform:uppercase;font-weight:700;">Solde pointé</div><div style="font-size:1.1rem;font-weight:800;color:var(--primary);" id="rappr-solde-pointe">0,00 €</div></div>
+              <div><div style="font-size:10px;color:#94a3b8;text-transform:uppercase;font-weight:700;">Écart avec le relevé</div><div id="rappr-ecart"></div></div>
+            </div>
+          </div>
+
+          <div class="panel-box">
+            <div class="toolbar">
+              <div>
+                <h3 style="margin-bottom:2px;">Mouvements du compte 512000 — Banque</h3>
+                <div class="desc" style="margin-bottom:0;">Coche au fur et à mesure de ton pointage. Jusqu'à la date du relevé choisie ci-dessus.</div>
+              </div>
+            </div>
+            <div class="table-scroll">
+              <table class="tbl">
+                <thead><tr>
+                  <th style="width:40px;"></th><th style="width:95px;">Date</th><th style="width:70px;">Journal</th>
+                  <th style="width:100px;">Pièce</th><th>Libellé</th>
+                  <th class="num" style="width:110px;">Débit</th><th class="num" style="width:110px;">Crédit</th>
+                </tr></thead>
+                <tbody id="tbl-rapprochement"></tbody>
               </table>
             </div>
           </div>
@@ -733,6 +777,7 @@ let avoirsGlobal = [];
 let ecrituresManuellesGlobal = [];
 let immobilisationsGlobal = [];
 let dotationsGlobal = [];
+let pointagesGlobal = {};
 let mouvementsCache = []; // toutes les lignes (auto + manuelles), calculées
 let parametresEntreprise = {};
 
@@ -740,7 +785,7 @@ const IMMO_VERS_AMORTISSEMENT = { '218300':'281830', '218200':'281820', '218400'
 
 /* ═══════════════════════════════ Initialisation ═══════════════════════════════ */
 async function initComptabilite(){
-  await Promise.all([chargerParametres(), chargerPlanComptable(), chargerFactures(), chargerAvoirs(), chargerEcrituresManuelles(), chargerImmobilisations(), chargerDotations()]);
+  await Promise.all([chargerParametres(), chargerPlanComptable(), chargerFactures(), chargerAvoirs(), chargerEcrituresManuelles(), chargerImmobilisations(), chargerDotations(), chargerPointages()]);
   genererMouvements();
   remplirFiltresAnnee();
   remplirSelectsComptes();
@@ -751,12 +796,14 @@ async function initComptabilite(){
   afficherImmobilisations();
   afficherDotations();
   remplirAnneeDotation();
+  document.getElementById('rappr-date-releve').value = new Date().toISOString().slice(0,10);
+  rafraichirRapprochement();
   setDefautDatesFEC();
   setDefautDatesTva();
 
   // Activer l'onglet depuis le hash de l'URL, ou "plan" par défaut
   const hash = (window.location.hash || '#plan').replace('#','');
-  setTab(['plan','ecritures','grand-livre','balance','immo','tva','fec'].includes(hash) ? hash : 'plan');
+  setTab(['plan','ecritures','grand-livre','balance','rapprochement','immo','tva','fec'].includes(hash) ? hash : 'plan');
 }
 
 async function chargerParametres(){
@@ -826,6 +873,15 @@ async function chargerDotations(){
     snap.forEach(d => { const dt = d.data(); dt._id = d.id; dotationsGlobal.push(dt); });
   } catch(e){ console.warn('chargerDotations:', e.message); dotationsGlobal = []; }
 }
+async function chargerPointages(){
+  try {
+    const snap = await getDoc(doc(db, 'comptabilite', 'pointages'));
+    pointagesGlobal = (snap.exists() && snap.data().pointes) ? snap.data().pointes : {};
+  } catch(e){ console.warn('chargerPointages:', e.message); pointagesGlobal = {}; }
+}
+async function sauvegarderPointages(){
+  await setDoc(doc(db, 'comptabilite', 'pointages'), { pointes: pointagesGlobal });
+}
 
 function libelleCompte(numero){
   const c = planComptable.find(c => c.numero === numero);
@@ -849,18 +905,18 @@ function genererMouvements(){
     const ttc = f.montantTTC || 0, ht = f.montantHT || 0, tva = f.montantTVA || 0;
 
     // Écriture de vente (au 411 / 706 / 44571) à la date d'émission
-    lignes.push({ ecritureNum:num, date:f.dateEmission, journal:'VE', piece:f.numero, compte:'411000', libelle:libelleBase, debit:ttc, credit:0 });
-    lignes.push({ ecritureNum:num, date:f.dateEmission, journal:'VE', piece:f.numero, compte:'706000', libelle:libelleBase, debit:0, credit:ht });
+    lignes.push({ ecritureNum:num, date:f.dateEmission, journal:'VE', piece:f.numero, compte:'411000', libelle:libelleBase, debit:ttc, credit:0, stableId:'fv:'+f._id+':411000' });
+    lignes.push({ ecritureNum:num, date:f.dateEmission, journal:'VE', piece:f.numero, compte:'706000', libelle:libelleBase, debit:0, credit:ht, stableId:'fv:'+f._id+':706000' });
     if(regimeTva === 'assujetti' && tva > 0){
-      lignes.push({ ecritureNum:num, date:f.dateEmission, journal:'VE', piece:f.numero, compte:'445710', libelle:libelleBase, debit:0, credit:tva });
+      lignes.push({ ecritureNum:num, date:f.dateEmission, journal:'VE', piece:f.numero, compte:'445710', libelle:libelleBase, debit:0, credit:tva, stableId:'fv:'+f._id+':445710' });
     }
 
     // Écriture de règlement (au 512 / 411) si la facture est payée
     if(f.statut === 'payee' && f.datePaiement){
       const numReg = 'EC-' + String(compteur++).padStart(5,'0');
       const libReg = 'Règlement facture ' + (f.numero || '') + (f.clientNom ? ' — ' + f.clientNom : '');
-      lignes.push({ ecritureNum:numReg, date:f.datePaiement, journal:'BQ', piece:f.numero, compte:'512000', libelle:libReg, debit:ttc, credit:0 });
-      lignes.push({ ecritureNum:numReg, date:f.datePaiement, journal:'BQ', piece:f.numero, compte:'411000', libelle:libReg, debit:0, credit:ttc });
+      lignes.push({ ecritureNum:numReg, date:f.datePaiement, journal:'BQ', piece:f.numero, compte:'512000', libelle:libReg, debit:ttc, credit:0, stableId:'fr:'+f._id+':512000' });
+      lignes.push({ ecritureNum:numReg, date:f.datePaiement, journal:'BQ', piece:f.numero, compte:'411000', libelle:libReg, debit:0, credit:ttc, stableId:'fr:'+f._id+':411000' });
     }
   });
 
@@ -872,11 +928,11 @@ function genererMouvements(){
     const libelleBase = 'Avoir ' + (a.numero || '') + (a.clientNom ? ' — ' + a.clientNom : '');
     const ttc = a.montantTTC || 0, ht = a.montantHT || 0, tva = a.montantTVA || 0;
 
-    lignes.push({ ecritureNum:num, date:a.dateEmission, journal:'AV', piece:a.numero, compte:'706000', libelle:libelleBase, debit:ht, credit:0 });
+    lignes.push({ ecritureNum:num, date:a.dateEmission, journal:'AV', piece:a.numero, compte:'706000', libelle:libelleBase, debit:ht, credit:0, stableId:'av:'+a._id+':706000' });
     if(regimeTva === 'assujetti' && tva > 0){
-      lignes.push({ ecritureNum:num, date:a.dateEmission, journal:'AV', piece:a.numero, compte:'445710', libelle:libelleBase, debit:tva, credit:0 });
+      lignes.push({ ecritureNum:num, date:a.dateEmission, journal:'AV', piece:a.numero, compte:'445710', libelle:libelleBase, debit:tva, credit:0, stableId:'av:'+a._id+':445710' });
     }
-    lignes.push({ ecritureNum:num, date:a.dateEmission, journal:'AV', piece:a.numero, compte:'411000', libelle:libelleBase, debit:0, credit:ttc });
+    lignes.push({ ecritureNum:num, date:a.dateEmission, journal:'AV', piece:a.numero, compte:'411000', libelle:libelleBase, debit:0, credit:ttc, stableId:'av:'+a._id+':411000' });
   });
 
   // Écritures manuelles
@@ -885,28 +941,28 @@ function genererMouvements(){
 
     if(m.type === 'achat_tva'){
       // 3 lignes : charge (HT) + TVA déductible (445660) au débit / compte tiers (TTC) au crédit
-      lignes.push({ ecritureNum:num, date:m.date, journal:m.journal||'OD', piece:m.piece||'', compte:m.compteCharge, libelle:m.libelle||'', debit:m.montantHT||0, credit:0, _manuelId:m._id });
+      lignes.push({ ecritureNum:num, date:m.date, journal:m.journal||'OD', piece:m.piece||'', compte:m.compteCharge, libelle:m.libelle||'', debit:m.montantHT||0, credit:0, _manuelId:m._id, stableId:'mt:'+m._id+':'+m.compteCharge });
       if((m.montantTva||0) > 0){
-        lignes.push({ ecritureNum:num, date:m.date, journal:m.journal||'OD', piece:m.piece||'', compte:'445660', libelle:m.libelle||'', debit:m.montantTva||0, credit:0, _manuelId:m._id });
+        lignes.push({ ecritureNum:num, date:m.date, journal:m.journal||'OD', piece:m.piece||'', compte:'445660', libelle:m.libelle||'', debit:m.montantTva||0, credit:0, _manuelId:m._id, stableId:'mt:'+m._id+':445660' });
       }
-      lignes.push({ ecritureNum:num, date:m.date, journal:m.journal||'OD', piece:m.piece||'', compte:m.compteTiers, libelle:m.libelle||'', debit:0, credit:m.montantTTC||0, _manuelId:m._id });
+      lignes.push({ ecritureNum:num, date:m.date, journal:m.journal||'OD', piece:m.piece||'', compte:m.compteTiers, libelle:m.libelle||'', debit:0, credit:m.montantTTC||0, _manuelId:m._id, stableId:'mt:'+m._id+':'+m.compteTiers });
     } else if(m.type === 'liquidation_tva'){
       // Liquidation périodique : 445710 (collectée) débit, 445660 (déductible) crédit, solde vers 445510
       const lib = m.libelle || ('Liquidation TVA ' + (m.periodeDebut||'') + ' → ' + (m.periodeFin||''));
-      if((m.collectee||0) > 0) lignes.push({ ecritureNum:num, date:m.date, journal:'OD', piece:m.piece||'', compte:'445710', libelle:lib, debit:m.collectee||0, credit:0, _manuelId:m._id });
-      if((m.deductible||0) > 0) lignes.push({ ecritureNum:num, date:m.date, journal:'OD', piece:m.piece||'', compte:'445660', libelle:lib, debit:0, credit:m.deductible||0, _manuelId:m._id });
+      if((m.collectee||0) > 0) lignes.push({ ecritureNum:num, date:m.date, journal:'OD', piece:m.piece||'', compte:'445710', libelle:lib, debit:m.collectee||0, credit:0, _manuelId:m._id, stableId:'ml:'+m._id+':445710' });
+      if((m.deductible||0) > 0) lignes.push({ ecritureNum:num, date:m.date, journal:'OD', piece:m.piece||'', compte:'445660', libelle:lib, debit:0, credit:m.deductible||0, _manuelId:m._id, stableId:'ml:'+m._id+':445660' });
       const solde = (m.collectee||0) - (m.deductible||0);
       if(solde > 0){
         // TVA à décaisser : on doit à l'État
-        lignes.push({ ecritureNum:num, date:m.date, journal:'OD', piece:m.piece||'', compte:'445510', libelle:lib, debit:0, credit:solde, _manuelId:m._id });
+        lignes.push({ ecritureNum:num, date:m.date, journal:'OD', piece:m.piece||'', compte:'445510', libelle:lib, debit:0, credit:solde, _manuelId:m._id, stableId:'ml:'+m._id+':445510' });
       } else if(solde < 0){
         // Crédit de TVA : l'État nous doit
-        lignes.push({ ecritureNum:num, date:m.date, journal:'OD', piece:m.piece||'', compte:'445510', libelle:lib, debit:-solde, credit:0, _manuelId:m._id });
+        lignes.push({ ecritureNum:num, date:m.date, journal:'OD', piece:m.piece||'', compte:'445510', libelle:lib, debit:-solde, credit:0, _manuelId:m._id, stableId:'ml:'+m._id+':445510' });
       }
     } else {
       // Mode simple : une paire débit/crédit
-      lignes.push({ ecritureNum:num, date:m.date, journal:m.journal||'OD', piece:m.piece||'', compte:m.compteDebit, libelle:m.libelle||'', debit:m.montant||0, credit:0, _manuelId:m._id });
-      lignes.push({ ecritureNum:num, date:m.date, journal:m.journal||'OD', piece:m.piece||'', compte:m.compteCredit, libelle:m.libelle||'', debit:0, credit:m.montant||0, _manuelId:m._id });
+      lignes.push({ ecritureNum:num, date:m.date, journal:m.journal||'OD', piece:m.piece||'', compte:m.compteDebit, libelle:m.libelle||'', debit:m.montant||0, credit:0, _manuelId:m._id, stableId:'ms:'+m._id+':'+m.compteDebit });
+      lignes.push({ ecritureNum:num, date:m.date, journal:m.journal||'OD', piece:m.piece||'', compte:m.compteCredit, libelle:m.libelle||'', debit:0, credit:m.montant||0, _manuelId:m._id, stableId:'ms:'+m._id+':'+m.compteCredit });
     }
   });
 
@@ -914,11 +970,11 @@ function genererMouvements(){
   immobilisationsGlobal.forEach(im => {
     const num = 'EC-' + String(compteur++).padStart(5,'0');
     const lib = 'Immobilisation — ' + (im.designation || '');
-    lignes.push({ ecritureNum:num, date:im.dateAchat, journal:'AC', piece:im.piece||'', compte:im.compteImmo, libelle:lib, debit:im.montantHT||0, credit:0, _immoId:im._id });
+    lignes.push({ ecritureNum:num, date:im.dateAchat, journal:'AC', piece:im.piece||'', compte:im.compteImmo, libelle:lib, debit:im.montantHT||0, credit:0, _immoId:im._id, stableId:'ia:'+im._id+':'+im.compteImmo });
     if((im.montantTva||0) > 0){
-      lignes.push({ ecritureNum:num, date:im.dateAchat, journal:'AC', piece:im.piece||'', compte:'445620', libelle:lib, debit:im.montantTva||0, credit:0, _immoId:im._id });
+      lignes.push({ ecritureNum:num, date:im.dateAchat, journal:'AC', piece:im.piece||'', compte:'445620', libelle:lib, debit:im.montantTva||0, credit:0, _immoId:im._id, stableId:'ia:'+im._id+':445620' });
     }
-    lignes.push({ ecritureNum:num, date:im.dateAchat, journal:'AC', piece:im.piece||'', compte:im.compteTiers, libelle:lib, debit:0, credit:im.montantTTC||0, _immoId:im._id });
+    lignes.push({ ecritureNum:num, date:im.dateAchat, journal:'AC', piece:im.piece||'', compte:im.compteTiers, libelle:lib, debit:0, credit:im.montantTTC||0, _immoId:im._id, stableId:'ia:'+im._id+':'+im.compteTiers });
   });
 
   // Dotations aux amortissements (une ligne par bien et par exercice, générée manuellement depuis l'onglet Immobilisations)
@@ -926,8 +982,8 @@ function genererMouvements(){
     const num = 'EC-' + String(compteur++).padStart(5,'0');
     const dateEcriture = dt.annee + '-12-31';
     const lib = 'Dotation amortissement ' + dt.annee + ' — ' + (dt.designation || '');
-    lignes.push({ ecritureNum:num, date:dateEcriture, journal:'OD', piece:'', compte:'681000', libelle:lib, debit:dt.montant||0, credit:0, _dotationId:dt._id });
-    lignes.push({ ecritureNum:num, date:dateEcriture, journal:'OD', piece:'', compte:dt.compteAmortissement, libelle:lib, debit:0, credit:dt.montant||0, _dotationId:dt._id });
+    lignes.push({ ecritureNum:num, date:dateEcriture, journal:'OD', piece:'', compte:'681000', libelle:lib, debit:dt.montant||0, credit:0, _dotationId:dt._id, stableId:'da:'+dt._id+':681000' });
+    lignes.push({ ecritureNum:num, date:dateEcriture, journal:'OD', piece:'', compte:dt.compteAmortissement, libelle:lib, debit:0, credit:dt.montant||0, _dotationId:dt._id, stableId:'da:'+dt._id+':'+dt.compteAmortissement });
   });
 
   lignes.sort((a,b) => (a.date||'').localeCompare(b.date||'') || a.ecritureNum.localeCompare(b.ecritureNum));
@@ -947,7 +1003,7 @@ window.setTab = function(tab){
 };
 window.addEventListener('hashchange', () => {
   const hash = (window.location.hash || '#plan').replace('#','');
-  if(['plan','ecritures','grand-livre','balance','immo','tva','fec'].includes(hash)) setTab(hash);
+  if(['plan','ecritures','grand-livre','balance','rapprochement','immo','tva','fec'].includes(hash)) setTab(hash);
 });
 
 /* ═══════════════════════════════ Plan comptable UI ═══════════════════════════════ */
@@ -1453,6 +1509,59 @@ window.rafraichirBalance = function(){
   document.getElementById('balance-statut').innerHTML = equilibre
     ? '<span class="pill-ok">✓ Balance équilibrée</span>'
     : '<span class="pill-warn">⚠ Écart de ' + formatMontant(Math.abs(totalDebit-totalCredit)) + '</span>';
+};
+
+/* ═══════════════════════════════ Rapprochement bancaire ═══════════════════════════════ */
+window.rafraichirRapprochement = function(){
+  const dateReleve = document.getElementById('rappr-date-releve').value;
+  const soldeReleve = parseFloat(document.getElementById('rappr-solde-releve').value);
+
+  let lignes = mouvementsCache.filter(m => m.compte === '512000');
+  if(dateReleve) lignes = lignes.filter(m => m.date && m.date <= dateReleve);
+  lignes = lignes.slice().sort((a,b) => (a.date||'').localeCompare(b.date||'') || a.ecritureNum.localeCompare(b.ecritureNum));
+
+  const tbody = document.getElementById('tbl-rapprochement');
+  if(!lignes.length){
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#94a3b8;padding:24px;">Aucun mouvement bancaire pour cette période.</td></tr>';
+  } else {
+    tbody.innerHTML = lignes.map(m => {
+      const pointe = !!pointagesGlobal[m.stableId];
+      return `<tr>
+        <td><input type="checkbox" ${pointe ? 'checked' : ''} onchange="togglePointage('${m.stableId}', this.checked)" style="width:16px;height:16px;cursor:pointer;"></td>
+        <td>${formatDateFR(m.date)}</td>
+        <td><span class="tag-journal ${m.journal}">${m.journal}</span></td>
+        <td>${m.piece || '—'}</td>
+        <td>${m.libelle}</td>
+        <td class="num">${m.debit ? formatMontant(m.debit) : ''}</td>
+        <td class="num">${m.credit ? formatMontant(m.credit) : ''}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  const soldeComptable = lignes.reduce((s,m) => s + (m.debit||0) - (m.credit||0), 0);
+  const soldePointe = lignes.filter(m => pointagesGlobal[m.stableId]).reduce((s,m) => s + (m.debit||0) - (m.credit||0), 0);
+
+  document.getElementById('rappr-solde-comptable').textContent = formatMontant(soldeComptable);
+  document.getElementById('rappr-solde-pointe').textContent = formatMontant(soldePointe);
+
+  const ecartEl = document.getElementById('rappr-ecart');
+  if(isNaN(soldeReleve)){
+    ecartEl.innerHTML = '<span style="color:#94a3b8;font-size:.85rem;">Saisis le solde du relevé</span>';
+  } else {
+    const ecart = soldeReleve - soldePointe;
+    ecartEl.innerHTML = Math.abs(ecart) < 0.01
+      ? '<span class="pill-ok">✓ Concordant</span>'
+      : '<span class="pill-warn">⚠ ' + formatMontant(Math.abs(ecart)) + (ecart > 0 ? ' en trop sur le relevé' : ' en trop en compta') + '</span>';
+  }
+};
+
+window.togglePointage = async function(stableId, checked){
+  if(checked) pointagesGlobal[stableId] = true;
+  else delete pointagesGlobal[stableId];
+  try {
+    await sauvegarderPointages();
+  } catch(e){ console.warn('sauvegarderPointages:', e.message); }
+  rafraichirRapprochement();
 };
 
 /* ═══════════════════════════════ Déclaration TVA ═══════════════════════════════ */
