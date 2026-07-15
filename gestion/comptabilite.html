@@ -264,6 +264,12 @@ table.tbl tfoot td{padding:12px 10px;border-top:2px solid #e8edf4;font-weight:70
               </table>
             </div>
           </div>
+
+          <div class="panel-box">
+            <div style="font-size:11px;font-weight:700;color:#dc2626;text-transform:uppercase;letter-spacing:.03em;margin-bottom:8px;">Zone de test</div>
+            <p style="font-size:.78rem;color:#94a3b8;margin-bottom:10px;">Supprime définitivement toutes les écritures manuelles, immobilisations, dotations d'amortissement et pointages bancaires — pratique pour repartir de zéro après une phase de test. Le plan comptable et les paramètres ne sont pas touchés. Les écritures automatiques (factures/avoirs) disparaîtront aussi si tu vides ces bases sur leurs propres pages.</p>
+            <button class="btn-delete" style="padding:8px 14px;" onclick="viderToutLaComptabilite()">Réinitialiser toute la comptabilité</button>
+          </div>
         </div>
 
         <!-- ═══ GRAND LIVRE ═══ -->
@@ -1716,6 +1722,39 @@ window.genererFEC = function(){
 };
 
 /* ═══════════════════════════════ Modales génériques ═══════════════════════════════ */
+// ── Zone de test : réinitialisation complète (double confirmation) ──
+window.viderToutLaComptabilite = async function(){
+  const total = ecrituresManuellesGlobal.length + immobilisationsGlobal.length + dotationsGlobal.length + Object.keys(pointagesGlobal).length;
+  if(total === 0){
+    alert("Il n'y a déjà rien à supprimer dans la comptabilité (hors plan comptable et paramètres).");
+    return;
+  }
+  if(!confirm('Supprimer DÉFINITIVEMENT ' + ecrituresManuellesGlobal.length + ' écriture(s) manuelle(s), ' + immobilisationsGlobal.length + ' immobilisation(s), ' + dotationsGlobal.length + ' dotation(s) et remettre les pointages bancaires à zéro ? Cette action est irréversible.')) return;
+  const saisie = prompt('Pour confirmer, tape le mot SUPPRIMER en majuscules :');
+  if(saisie !== 'SUPPRIMER'){
+    alert('Suppression annulée.');
+    return;
+  }
+  try {
+    for(const m of ecrituresManuellesGlobal) await deleteDoc(doc(db, 'ecritures_manuelles', m._id));
+    for(const im of immobilisationsGlobal) await deleteDoc(doc(db, 'immobilisations', im._id));
+    for(const dt of dotationsGlobal) await deleteDoc(doc(db, 'dotations_amortissement', dt._id));
+    await setDoc(doc(db, 'comptabilite', 'pointages'), { pointes: {} });
+
+    await Promise.all([chargerEcrituresManuelles(), chargerImmobilisations(), chargerDotations(), chargerPointages()]);
+    genererMouvements();
+    rafraichirVueEcritures();
+    rafraichirGrandLivre();
+    rafraichirBalance();
+    afficherImmobilisations();
+    afficherDotations();
+    rafraichirRapprochement();
+    alert('La comptabilité (écritures manuelles, immobilisations, dotations, pointages) a été réinitialisée.');
+  } catch(e){
+    alert('Erreur : ' + e.message);
+  }
+};
+
 window.fermerModal = function(id){ document.getElementById(id).style.display = 'none'; };
 </script>
 </body>
