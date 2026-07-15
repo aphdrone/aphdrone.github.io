@@ -232,58 +232,8 @@ tr:last-child td{border-bottom:none;}
   <div class="mobile-nav-backdrop" id="mobile-nav-backdrop"></div>
 
   <!-- Sidebar -->
-  <aside class="admin-sidebar" id="admin-sidebar">
-    <div class="admin-brand">
-      <img src="/assets/logo.jpg" alt="APH Drone">
-      <div class="admin-brand-text">APH Drone<span>Administration</span></div>
-    </div>
-    <nav class="admin-nav">
-      <button class="admin-nav-item active" data-panel="panel-dashboard">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
-        Vue d'ensemble
-      </button>
-      <button class="admin-nav-item" data-panel="panel-clients">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        Clients
-      </button>
-      <button class="admin-nav-item" data-panel="panel-stagiaires">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
-        Stagiaires
-      </button>
-      <button class="admin-nav-item" data-panel="panel-publication">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
-        Publications
-      </button>
-      <button class="admin-nav-item" data-panel="panel-outils">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-        Outils
-      </button>
-      <button class="admin-nav-item" data-panel="panel-visibilite">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-        Visibilité
-      </button>
-      <button class="admin-nav-item" data-panel="panel-documents">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 13h6"/><path d="M9 17h6"/></svg>
-        Documents
-        <span class="nav-alert-dot" id="nav-alert-documents" style="display:none;"></span>
-      </button>
-      <button class="admin-nav-item" data-panel="panel-emargements">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-        Émargements
-      </button>
-      <a class="admin-nav-item" href="/gestion/index.html" style="margin-top:10px;padding-top:11px;border-top:1px solid rgba(255,255,255,.1);">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
-        Retour à la gestion
-      </a>
-      <a class="admin-nav-item" href="/index.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-        Retour au site
-      </a>
-    </nav>
-    <div class="admin-foot">
-      <div class="admin-foot-email" id="admin-email-display">—</div>
-      <button class="admin-logout" id="btn-logout">Se déconnecter</button>
-    </div>
+  <aside class="admin-sidebar sidebar" id="admin-sidebar">
+    <script src="/assets/js/sidebar.js"></script>
   </aside>
 
   <!-- Main -->
@@ -1004,7 +954,7 @@ onAuthStateChanged(auth, user => {
   }
   document.getElementById('gate').style.display = 'none';
   document.getElementById('admin-app').style.display = 'block';
-  document.getElementById('admin-email-display').textContent = user.email;
+  document.getElementById('user-email').textContent = user.email;
   loadClients();
   loadStagiaires();
   loadOutils();
@@ -1013,9 +963,9 @@ onAuthStateChanged(auth, user => {
   loadVisibilite();
 });
 
-document.getElementById('btn-logout').addEventListener('click', () => {
+window.doLogout = function(){
   signOut(auth).then(() => window.location.href = '/pages/connexion.html?loggedout=1');
-});
+};
 
 // ── Menu hamburger mobile ──
 const mobileSidebar = document.getElementById('admin-sidebar');
@@ -1039,26 +989,22 @@ document.querySelectorAll('.admin-nav-item[data-panel]').forEach(btn => {
 // ── Boutons "Voir tous" du tableau de bord ──
 document.querySelectorAll('[data-goto-panel]').forEach(btn => {
   btn.addEventListener('click', () => {
-    document.querySelectorAll('.admin-nav-item').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
-    document.querySelector('[data-panel="' + btn.dataset.gotoPanel + '"]').classList.add('active');
-    document.getElementById(btn.dataset.gotoPanel).classList.add('active');
+    window.location.hash = btn.dataset.gotoPanel;
   });
 });
 
 // ── Lien direct vers un panneau via le hash de l'URL (ex: office/index.html#panel-clients) ──
-(function ouvrirPanelDepuisHash(){
+function ouvrirPanelDepuisHash(){
   const idPanel = (window.location.hash || '').replace('#', '');
   if(!idPanel) return;
-  const btnCorrespondant = document.querySelector('.admin-nav-item[data-panel="' + idPanel + '"]');
   const panelCorrespondant = document.getElementById(idPanel);
-  if(btnCorrespondant && panelCorrespondant){
-    document.querySelectorAll('.admin-nav-item').forEach(b => b.classList.remove('active'));
+  if(panelCorrespondant){
     document.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
-    btnCorrespondant.classList.add('active');
     panelCorrespondant.classList.add('active');
   }
-})();
+}
+ouvrirPanelDepuisHash();
+window.addEventListener('hashchange', ouvrirPanelDepuisHash);
 
 // ── Helpers ──
 function genPassword(){
@@ -1723,10 +1669,7 @@ function openOutilModal(outilId){
 }
 
 document.getElementById('btn-quick-outil').addEventListener('click', () => {
-  document.querySelectorAll('.admin-nav-item').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
-  document.querySelector('[data-panel="panel-outils"]').classList.add('active');
-  document.getElementById('panel-outils').classList.add('active');
+  window.location.hash = 'panel-outils';
   openOutilModal(null);
 });
 
@@ -2269,10 +2212,7 @@ document.getElementById('btn-create-reclamation').addEventListener('click', asyn
 });
 
 document.getElementById('btn-goto-reclamations').addEventListener('click', () => {
-  document.querySelectorAll('.admin-nav-item').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
-  document.querySelector('[data-panel="panel-documents"]').classList.add('active');
-  document.getElementById('panel-documents').classList.add('active');
+  window.location.hash = 'panel-documents';
   document.getElementById('doc-type-filter').value = 'reclamation';
   renderDocumentsTable();
 });
