@@ -94,6 +94,7 @@ table.tbl tfoot td{padding:12px 10px;border-top:2px solid #e8edf4;font-weight:70
 .tag-journal.BQ{background:#e0f2fe;color:#0369a1;}
 .tag-journal.AV{background:#fee2e2;color:#dc2626;}
 .tag-journal.OD{background:#fef3c7;color:#b45309;}
+.tag-journal.AC{background:#ede9fe;color:#6d28d9;}
 .pill-ok{display:inline-flex;align-items:center;gap:6px;font-size:.8rem;font-weight:700;padding:6px 14px;border-radius:20px;background:#dcfce7;color:#15803d;}
 .pill-warn{display:inline-flex;align-items:center;gap:6px;font-size:.8rem;font-weight:700;padding:6px 14px;border-radius:20px;background:#fee2e2;color:#dc2626;}
 .toolbar{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:16px;}
@@ -190,6 +191,7 @@ table.tbl tfoot td{padding:12px 10px;border-top:2px solid #e8edf4;font-weight:70
         <a class="menu-link sub-nav-link" data-tab="ecritures" href="comptabilite.html#ecritures">Écritures</a>
         <a class="menu-link sub-nav-link" data-tab="grand-livre" href="comptabilite.html#grand-livre">Grand livre</a>
         <a class="menu-link sub-nav-link" data-tab="balance" href="comptabilite.html#balance">Balance</a>
+        <a class="menu-link sub-nav-link" data-tab="immo" href="comptabilite.html#immo">Immobilisations</a>
         <a class="menu-link sub-nav-link" data-tab="tva" href="comptabilite.html#tva">Déclaration TVA</a>
         <a class="menu-link sub-nav-link" data-tab="fec" href="comptabilite.html#fec">Export FEC</a>
 
@@ -227,6 +229,7 @@ table.tbl tfoot td{padding:12px 10px;border-top:2px solid #e8edf4;font-weight:70
         <button class="subtab" data-tab="ecritures" onclick="setTab('ecritures')">Écritures</button>
         <button class="subtab" data-tab="grand-livre" onclick="setTab('grand-livre')">Grand livre</button>
         <button class="subtab" data-tab="balance" onclick="setTab('balance')">Balance</button>
+        <button class="subtab" data-tab="immo" onclick="setTab('immo')">Immobilisations</button>
         <button class="subtab" data-tab="tva" onclick="setTab('tva')">Déclaration TVA</button>
         <button class="subtab" data-tab="fec" onclick="setTab('fec')">Export FEC</button>
       </div>
@@ -276,6 +279,7 @@ table.tbl tfoot td{padding:12px 10px;border-top:2px solid #e8edf4;font-weight:70
                 <option value="BQ">BQ — Banque</option>
                 <option value="AV">AV — Avoirs</option>
                 <option value="OD">OD — Opérations diverses</option>
+                <option value="AC">AC — Achats</option>
               </select>
               <input type="text" id="filtre-recherche-ecritures" placeholder="Rechercher (n°, libellé, client…)" oninput="rafraichirVueEcritures()" style="min-width:220px;">
             </div>
@@ -357,6 +361,57 @@ table.tbl tfoot td{padding:12px 10px;border-top:2px solid #e8edf4;font-weight:70
                   <td class="num" id="bal-total-solde-debiteur">0,00 €</td>
                   <td class="num" id="bal-total-solde-crediteur">0,00 €</td>
                 </tr></tfoot>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══ IMMOBILISATIONS ═══ -->
+        <div class="tab-pane" id="pane-immo">
+          <div class="panel-box">
+            <div style="background:#eef4fd;border-radius:10px;padding:14px 16px;margin-bottom:18px;font-size:.82rem;color:#334155;line-height:1.5;">
+              <strong style="color:var(--primary);">Bien durable (drone, véhicule, mobilier…) → à immobiliser</strong>, pas à passer en charge directe. En pratique : en-dessous de <strong>500 € HT</strong>, l'administration fiscale tolère de le passer directement en charge (compte 606/615…) ; au-dessus, il doit être enregistré ici et amorti sur sa durée d'usage. Durées usuelles : matériel technique/drone 3 à 5 ans, véhicule 4 à 5 ans, mobilier de bureau 5 à 10 ans.
+              <br><br>
+              <strong>Cas particulier véhicule :</strong> pour un véhicule de tourisme (VP), la TVA n'est en principe <strong>pas récupérable du tout</strong> (contrairement à un véhicule utilitaire) — pense à vérifier la carte grise (case J.1/J.2, genre VP ou CTTE) avant de saisir la TVA déductible.
+            </div>
+            <div class="toolbar">
+              <div>
+                <h3 style="margin-bottom:2px;">Registre des immobilisations</h3>
+                <div class="desc" style="margin-bottom:0;">Biens durables détenus par APH, avec leur valeur nette comptable à jour.</div>
+              </div>
+              <button class="btn-quick btn-quick--primary" onclick="ouvrirModalImmo()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Nouvelle immobilisation
+              </button>
+            </div>
+            <div class="table-scroll">
+              <table class="tbl">
+                <thead><tr>
+                  <th>Désignation</th><th style="width:95px;">Achat le</th><th class="num" style="width:110px;">Montant HT</th>
+                  <th style="width:110px;">Compte</th><th style="width:70px;">Durée</th>
+                  <th class="num" style="width:110px;">Amorti cumulé</th><th class="num" style="width:110px;">VNC</th><th style="width:40px;"></th>
+                </tr></thead>
+                <tbody id="tbl-immobilisations"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="panel-box">
+            <div class="toolbar">
+              <div>
+                <h3 style="margin-bottom:2px;">Dotations aux amortissements</h3>
+                <div class="desc" style="margin-bottom:0;">Génère l'écriture annuelle de dotation (681000) pour chaque bien, au prorata du nombre de mois de détention sur l'exercice.</div>
+              </div>
+            </div>
+            <div class="toolbar-filters" style="margin-bottom:14px;">
+              <select id="immo-annee-dotation"></select>
+              <button class="btn-quick btn-quick--outline" onclick="genererDotationsExercice()">Générer les dotations de l'exercice</button>
+            </div>
+            <div id="immo-dotation-status" style="font-size:.83rem;margin-bottom:10px;"></div>
+            <div class="table-scroll">
+              <table class="tbl">
+                <thead><tr><th>Bien</th><th style="width:90px;">Exercice</th><th class="num" style="width:120px;">Dotation</th><th style="width:40px;"></th></tr></thead>
+                <tbody id="tbl-dotations"></tbody>
               </table>
             </div>
           </div>
@@ -523,6 +578,52 @@ table.tbl tfoot td{padding:12px 10px;border-top:2px solid #e8edf4;font-weight:70
   </div>
 </div>
 
+<!-- ═══ Modale : Nouvelle immobilisation ═══ -->
+<div class="modal-overlay" id="modal-immo">
+  <div class="modal-box">
+    <div class="modal-head"><div class="t">Nouvelle immobilisation</div><button class="modal-close" onclick="fermerModal('modal-immo')">Fermer</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label>Désignation</label><input type="text" id="immo-designation" placeholder="Ex : Drone DJI Agras T100"></div>
+      <div class="form-row">
+        <div class="form-group"><label>Date d'achat</label><input type="date" id="immo-date-achat"></div>
+        <div class="form-group"><label>N° de pièce (facultatif)</label><input type="text" id="immo-piece" placeholder="Ex : FAC-FOURNISSEUR-001"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Montant HT</label><input type="number" step="0.01" id="immo-montant-ht" placeholder="0.00" oninput="recalculerTvaImmo()"></div>
+        <div class="form-group">
+          <label>TVA récupérable ?</label>
+          <select id="immo-taux-tva" onchange="recalculerTvaImmo()">
+            <option value="20">Oui — 20 %</option>
+            <option value="10">Oui — 10 %</option>
+            <option value="5.5">Oui — 5,5 %</option>
+            <option value="0">Non récupérable (ex : véhicule de tourisme)</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Montant TVA (445620)</label><input type="number" step="0.01" id="immo-montant-tva" readonly style="background:#f5f7fa;"></div>
+        <div class="form-group"><label>Montant TTC (payé au fournisseur)</label><input type="number" step="0.01" id="immo-montant-ttc" readonly style="background:#f5f7fa;"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Compte d'immobilisation</label>
+          <select id="immo-compte-immo" onchange="autoSelectCompteAmortissement()"></select>
+        </div>
+        <div class="form-group">
+          <label>Compte d'amortissement</label>
+          <select id="immo-compte-amortissement"></select>
+        </div>
+      </div>
+      <div class="form-group"><label>Durée d'amortissement (années)</label><input type="number" step="1" min="1" id="immo-duree" value="5"></div>
+      <div class="form-group"><label>Compte tiers (crédit TTC)</label><select id="immo-compte-tiers"></select></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-quick btn-quick--outline" onclick="fermerModal('modal-immo')">Annuler</button>
+      <button class="btn-quick btn-quick--primary" onclick="enregistrerImmobilisation()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
 <!-- Firebase -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -590,10 +691,17 @@ function formatDateFEC(iso){ return iso ? iso.replaceAll('-','') : ''; }
 const PLAN_COMPTABLE_DEFAUT = [
   { numero:'101000', libelle:'Capital social', classe:'1' },
   { numero:'455000', libelle:"Associés — comptes courants", classe:'1' },
+  { numero:'218300', libelle:'Matériel technique (drones, équipements)', classe:'2' },
+  { numero:'218200', libelle:'Matériel de transport (véhicules)', classe:'2' },
+  { numero:'218400', libelle:'Mobilier, matériel de bureau', classe:'2' },
+  { numero:'281830', libelle:'Amortissements — Matériel technique', classe:'2' },
+  { numero:'281820', libelle:'Amortissements — Matériel de transport', classe:'2' },
+  { numero:'281840', libelle:'Amortissements — Mobilier, matériel de bureau', classe:'2' },
   { numero:'401000', libelle:'Fournisseurs', classe:'4' },
   { numero:'411000', libelle:'Clients', classe:'4' },
   { numero:'421000', libelle:'Personnel — rémunérations dues', classe:'4' },
   { numero:'431000', libelle:'Sécurité sociale', classe:'4' },
+  { numero:'445620', libelle:'TVA déductible sur immobilisations', classe:'4' },
   { numero:'445660', libelle:'TVA déductible sur autres biens et services', classe:'4' },
   { numero:'445710', libelle:'TVA collectée', classe:'4' },
   { numero:'445510', libelle:'TVA à décaisser', classe:'4' },
@@ -623,12 +731,16 @@ let planComptable = [];
 let facturesGlobal = [];
 let avoirsGlobal = [];
 let ecrituresManuellesGlobal = [];
+let immobilisationsGlobal = [];
+let dotationsGlobal = [];
 let mouvementsCache = []; // toutes les lignes (auto + manuelles), calculées
 let parametresEntreprise = {};
 
+const IMMO_VERS_AMORTISSEMENT = { '218300':'281830', '218200':'281820', '218400':'281840' };
+
 /* ═══════════════════════════════ Initialisation ═══════════════════════════════ */
 async function initComptabilite(){
-  await Promise.all([chargerParametres(), chargerPlanComptable(), chargerFactures(), chargerAvoirs(), chargerEcrituresManuelles()]);
+  await Promise.all([chargerParametres(), chargerPlanComptable(), chargerFactures(), chargerAvoirs(), chargerEcrituresManuelles(), chargerImmobilisations(), chargerDotations()]);
   genererMouvements();
   remplirFiltresAnnee();
   remplirSelectsComptes();
@@ -636,12 +748,15 @@ async function initComptabilite(){
   rafraichirVueEcritures();
   rafraichirGrandLivre();
   rafraichirBalance();
+  afficherImmobilisations();
+  afficherDotations();
+  remplirAnneeDotation();
   setDefautDatesFEC();
   setDefautDatesTva();
 
   // Activer l'onglet depuis le hash de l'URL, ou "plan" par défaut
   const hash = (window.location.hash || '#plan').replace('#','');
-  setTab(['plan','ecritures','grand-livre','balance','tva','fec'].includes(hash) ? hash : 'plan');
+  setTab(['plan','ecritures','grand-livre','balance','immo','tva','fec'].includes(hash) ? hash : 'plan');
 }
 
 async function chargerParametres(){
@@ -656,6 +771,14 @@ async function chargerPlanComptable(){
     const snap = await getDoc(doc(db, 'comptabilite', 'plan_comptable'));
     if(snap.exists() && Array.isArray(snap.data().comptes) && snap.data().comptes.length){
       planComptable = snap.data().comptes;
+      // Fusion : ajoute les comptes par défaut manquants (ex : nouveaux comptes d'immobilisation)
+      // sans jamais toucher aux comptes déjà présents ni à leurs modifications.
+      const numerosExistants = new Set(planComptable.map(c => c.numero));
+      let modifie = false;
+      PLAN_COMPTABLE_DEFAUT.forEach(c => {
+        if(!numerosExistants.has(c.numero)){ planComptable.push(c); modifie = true; }
+      });
+      if(modifie) await sauvegarderPlanComptable();
     } else {
       planComptable = PLAN_COMPTABLE_DEFAUT.slice();
       await setDoc(doc(db, 'comptabilite', 'plan_comptable'), { comptes: planComptable });
@@ -688,6 +811,20 @@ async function chargerEcrituresManuelles(){
     ecrituresManuellesGlobal = [];
     snap.forEach(d => { const e = d.data(); e._id = d.id; ecrituresManuellesGlobal.push(e); });
   } catch(e){ console.warn('chargerEcrituresManuelles:', e.message); ecrituresManuellesGlobal = []; }
+}
+async function chargerImmobilisations(){
+  try {
+    const snap = await getDocs(query(collection(db, 'immobilisations'), orderBy('dateAchat')));
+    immobilisationsGlobal = [];
+    snap.forEach(d => { const im = d.data(); im._id = d.id; immobilisationsGlobal.push(im); });
+  } catch(e){ console.warn('chargerImmobilisations:', e.message); immobilisationsGlobal = []; }
+}
+async function chargerDotations(){
+  try {
+    const snap = await getDocs(query(collection(db, 'dotations_amortissement'), orderBy('annee')));
+    dotationsGlobal = [];
+    snap.forEach(d => { const dt = d.data(); dt._id = d.id; dotationsGlobal.push(dt); });
+  } catch(e){ console.warn('chargerDotations:', e.message); dotationsGlobal = []; }
 }
 
 function libelleCompte(numero){
@@ -773,6 +910,26 @@ function genererMouvements(){
     }
   });
 
+  // Achats d'immobilisations (drone, véhicule, mobilier…)
+  immobilisationsGlobal.forEach(im => {
+    const num = 'EC-' + String(compteur++).padStart(5,'0');
+    const lib = 'Immobilisation — ' + (im.designation || '');
+    lignes.push({ ecritureNum:num, date:im.dateAchat, journal:'AC', piece:im.piece||'', compte:im.compteImmo, libelle:lib, debit:im.montantHT||0, credit:0, _immoId:im._id });
+    if((im.montantTva||0) > 0){
+      lignes.push({ ecritureNum:num, date:im.dateAchat, journal:'AC', piece:im.piece||'', compte:'445620', libelle:lib, debit:im.montantTva||0, credit:0, _immoId:im._id });
+    }
+    lignes.push({ ecritureNum:num, date:im.dateAchat, journal:'AC', piece:im.piece||'', compte:im.compteTiers, libelle:lib, debit:0, credit:im.montantTTC||0, _immoId:im._id });
+  });
+
+  // Dotations aux amortissements (une ligne par bien et par exercice, générée manuellement depuis l'onglet Immobilisations)
+  dotationsGlobal.forEach(dt => {
+    const num = 'EC-' + String(compteur++).padStart(5,'0');
+    const dateEcriture = dt.annee + '-12-31';
+    const lib = 'Dotation amortissement ' + dt.annee + ' — ' + (dt.designation || '');
+    lignes.push({ ecritureNum:num, date:dateEcriture, journal:'OD', piece:'', compte:'681000', libelle:lib, debit:dt.montant||0, credit:0, _dotationId:dt._id });
+    lignes.push({ ecritureNum:num, date:dateEcriture, journal:'OD', piece:'', compte:dt.compteAmortissement, libelle:lib, debit:0, credit:dt.montant||0, _dotationId:dt._id });
+  });
+
   lignes.sort((a,b) => (a.date||'').localeCompare(b.date||'') || a.ecritureNum.localeCompare(b.ecritureNum));
   mouvementsCache = lignes;
 }
@@ -790,7 +947,7 @@ window.setTab = function(tab){
 };
 window.addEventListener('hashchange', () => {
   const hash = (window.location.hash || '#plan').replace('#','');
-  if(['plan','ecritures','grand-livre','balance','tva','fec'].includes(hash)) setTab(hash);
+  if(['plan','ecritures','grand-livre','balance','immo','tva','fec'].includes(hash)) setTab(hash);
 });
 
 /* ═══════════════════════════════ Plan comptable UI ═══════════════════════════════ */
@@ -861,7 +1018,207 @@ function remplirSelectsComptes(){
   // Par défaut : compte tiers = Fournisseurs (401000) si présent
   if(planComptable.some(c => c.numero === '401000')) document.getElementById('ec-compte-tiers').value = '401000';
   document.getElementById('filtre-compte-gl').innerHTML = '<option value="">— Sélectionner un compte —</option>' + options;
+
+  // Immobilisations : comptes de classe 2 (biens = numéro commençant par 21, amortissements = numéro commençant par 28)
+  const optionsImmo = planComptable.filter(c => c.classe === '2' && c.numero.startsWith('21'))
+    .map(c => `<option value="${c.numero}">${c.numero} — ${c.libelle}</option>`).join('');
+  const optionsAmort = planComptable.filter(c => c.classe === '2' && c.numero.startsWith('28'))
+    .map(c => `<option value="${c.numero}">${c.numero} — ${c.libelle}</option>`).join('');
+  document.getElementById('immo-compte-immo').innerHTML = optionsImmo;
+  document.getElementById('immo-compte-amortissement').innerHTML = optionsAmort;
+  document.getElementById('immo-compte-tiers').innerHTML = options;
+  if(planComptable.some(c => c.numero === '401000')) document.getElementById('immo-compte-tiers').value = '401000';
 }
+
+/* ═══════════════════════════════ Immobilisations UI ═══════════════════════════════ */
+window.ouvrirModalImmo = function(){
+  document.getElementById('immo-designation').value = '';
+  document.getElementById('immo-date-achat').value = new Date().toISOString().slice(0,10);
+  document.getElementById('immo-piece').value = '';
+  document.getElementById('immo-montant-ht').value = '';
+  document.getElementById('immo-taux-tva').value = '20';
+  document.getElementById('immo-montant-tva').value = '';
+  document.getElementById('immo-montant-ttc').value = '';
+  document.getElementById('immo-duree').value = '5';
+  document.getElementById('modal-immo').style.display = 'flex';
+  autoSelectCompteAmortissement();
+};
+
+window.autoSelectCompteAmortissement = function(){
+  const compteImmo = document.getElementById('immo-compte-immo').value;
+  const suggestion = IMMO_VERS_AMORTISSEMENT[compteImmo];
+  if(suggestion && planComptable.some(c => c.numero === suggestion)){
+    document.getElementById('immo-compte-amortissement').value = suggestion;
+  }
+};
+
+window.recalculerTvaImmo = function(){
+  const ht = parseFloat(document.getElementById('immo-montant-ht').value) || 0;
+  const taux = parseFloat(document.getElementById('immo-taux-tva').value) || 0;
+  const tva = ht * taux / 100;
+  document.getElementById('immo-montant-tva').value = tva.toFixed(2);
+  document.getElementById('immo-montant-ttc').value = (ht + tva).toFixed(2);
+};
+
+window.enregistrerImmobilisation = async function(){
+  const designation = document.getElementById('immo-designation').value.trim();
+  const dateAchat = document.getElementById('immo-date-achat').value;
+  const piece = document.getElementById('immo-piece').value.trim();
+  const montantHT = parseFloat(document.getElementById('immo-montant-ht').value);
+  const montantTva = parseFloat(document.getElementById('immo-montant-tva').value) || 0;
+  const montantTTC = parseFloat(document.getElementById('immo-montant-ttc').value);
+  const compteImmo = document.getElementById('immo-compte-immo').value;
+  const compteAmortissement = document.getElementById('immo-compte-amortissement').value;
+  const compteTiers = document.getElementById('immo-compte-tiers').value;
+  const dureeAnnees = parseInt(document.getElementById('immo-duree').value) || 5;
+
+  if(!designation || !dateAchat || !montantHT || montantHT <= 0){
+    alert('Merci de renseigner au minimum la désignation, la date et un montant HT positif.');
+    return;
+  }
+  if(!compteImmo || !compteAmortissement){ alert("Merci de sélectionner un compte d'immobilisation et un compte d'amortissement (ajoute-les dans le Plan comptable si besoin)."); return; }
+
+  try {
+    await addDoc(collection(db, 'immobilisations'), {
+      designation, dateAchat, piece, montantHT, montantTva, montantTTC,
+      compteImmo, compteAmortissement, compteTiers, dureeAnnees
+    });
+    await chargerImmobilisations();
+    genererMouvements();
+    afficherImmobilisations();
+    rafraichirVueEcritures();
+    rafraichirGrandLivre();
+    rafraichirBalance();
+    fermerModal('modal-immo');
+  } catch(e){ alert("Erreur d'enregistrement : " + e.message); }
+};
+
+window.supprimerImmobilisation = async function(id){
+  if(!confirm("Supprimer cette immobilisation ? Les dotations d'amortissement déjà générées pour ce bien resteront enregistrées séparément — supprime-les aussi si besoin.")) return;
+  try {
+    await deleteDoc(doc(db, 'immobilisations', id));
+    await chargerImmobilisations();
+    genererMouvements();
+    afficherImmobilisations();
+    rafraichirVueEcritures();
+    rafraichirGrandLivre();
+    rafraichirBalance();
+  } catch(e){ alert('Erreur de suppression : ' + e.message); }
+};
+
+// Amortissement cumulé déjà comptabilisé pour un bien (somme des dotations générées)
+function amortissementCumule(immoId){
+  return dotationsGlobal.filter(dt => dt.immoId === immoId).reduce((s,dt) => s + (dt.montant||0), 0);
+}
+
+function afficherImmobilisations(){
+  const tbody = document.getElementById('tbl-immobilisations');
+  if(!immobilisationsGlobal.length){
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:#94a3b8;padding:24px;">Aucune immobilisation enregistrée.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = immobilisationsGlobal.map(im => {
+    const cumule = amortissementCumule(im._id);
+    const vnc = Math.max((im.montantHT||0) - cumule, 0);
+    return `<tr>
+      <td>${im.designation}</td>
+      <td>${formatDateFR(im.dateAchat)}</td>
+      <td class="num">${formatMontant(im.montantHT)}</td>
+      <td class="badge-compte">${im.compteImmo}</td>
+      <td>${im.dureeAnnees} ans</td>
+      <td class="num">${formatMontant(cumule)}</td>
+      <td class="num">${formatMontant(vnc)}</td>
+      <td><button class="action-icon" title="Supprimer" onclick="supprimerImmobilisation('${im._id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button></td>
+    </tr>`;
+  }).join('');
+}
+
+function remplirAnneeDotation(){
+  const anneeActuelle = new Date().getFullYear();
+  const options = [];
+  for(let a = anneeActuelle - 4; a <= anneeActuelle; a++) options.push(a);
+  document.getElementById('immo-annee-dotation').innerHTML = options.map(a => `<option value="${a}">${a}</option>`).join('');
+  document.getElementById('immo-annee-dotation').value = String(anneeActuelle);
+}
+
+window.genererDotationsExercice = async function(){
+  const annee = parseInt(document.getElementById('immo-annee-dotation').value);
+  const statusEl = document.getElementById('immo-dotation-status');
+  const finExercice = new Date(annee, 11, 31);
+  let nbGenerees = 0, nbIgnorees = 0;
+
+  for(const im of immobilisationsGlobal){
+    // Ignore si le bien n'était pas encore acheté sur l'exercice, ou déjà entièrement amorti
+    const dateAchat = new Date(im.dateAchat);
+    if(dateAchat > finExercice) continue;
+
+    const dejaGeneree = dotationsGlobal.some(dt => dt.immoId === im._id && dt.annee === annee);
+    if(dejaGeneree){ nbIgnorees++; continue; }
+
+    const cumuleAvant = amortissementCumule(im._id);
+    const dotationAnnuelle = (im.montantHT||0) / (im.dureeAnnees||5);
+
+    // Prorata temporis pour l'année d'achat : mois restants dans l'exercice / 12
+    let montantDotation;
+    if(dateAchat.getFullYear() === annee){
+      const moisRestants = 12 - dateAchat.getMonth(); // achat en janvier = 12 mois, en décembre = 1 mois
+      montantDotation = dotationAnnuelle * moisRestants / 12;
+    } else {
+      montantDotation = dotationAnnuelle;
+    }
+
+    // Ne jamais dépasser la valeur totale du bien
+    montantDotation = Math.min(montantDotation, Math.max((im.montantHT||0) - cumuleAvant, 0));
+    if(montantDotation <= 0) continue;
+
+    await addDoc(collection(db, 'dotations_amortissement'), {
+      immoId: im._id, designation: im.designation, annee,
+      montant: Math.round(montantDotation * 100) / 100,
+      compteAmortissement: im.compteAmortissement
+    });
+    nbGenerees++;
+  }
+
+  await chargerDotations();
+  genererMouvements();
+  afficherImmobilisations();
+  afficherDotations();
+  rafraichirVueEcritures();
+  rafraichirGrandLivre();
+  rafraichirBalance();
+
+  statusEl.innerHTML = '<span style="color:var(--green);">✓ ' + nbGenerees + ' dotation(s) générée(s) pour ' + annee + (nbIgnorees ? ', ' + nbIgnorees + ' déjà existante(s) ignorée(s)' : '') + '.</span>';
+};
+
+function afficherDotations(){
+  const tbody = document.getElementById('tbl-dotations');
+  if(!dotationsGlobal.length){
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#94a3b8;padding:20px;">Aucune dotation générée pour le moment.</td></tr>';
+    return;
+  }
+  const triees = dotationsGlobal.slice().sort((a,b) => b.annee - a.annee || (a.designation||'').localeCompare(b.designation||''));
+  tbody.innerHTML = triees.map(dt => `
+    <tr>
+      <td>${dt.designation || '—'}</td>
+      <td>${dt.annee}</td>
+      <td class="num">${formatMontant(dt.montant)}</td>
+      <td><button class="action-icon" title="Supprimer" onclick="supprimerDotation('${dt._id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button></td>
+    </tr>`).join('');
+}
+
+window.supprimerDotation = async function(id){
+  if(!confirm('Supprimer cette dotation ?')) return;
+  try {
+    await deleteDoc(doc(db, 'dotations_amortissement', id));
+    await chargerDotations();
+    genererMouvements();
+    afficherImmobilisations();
+    afficherDotations();
+    rafraichirVueEcritures();
+    rafraichirGrandLivre();
+    rafraichirBalance();
+  } catch(e){ alert('Erreur de suppression : ' + e.message); }
+};
 
 /* ═══════════════════════════════ Écritures manuelles UI ═══════════════════════════════ */
 window.ouvrirModalEcriture = function(){
