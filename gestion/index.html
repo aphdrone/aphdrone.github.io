@@ -172,13 +172,13 @@ body{background:var(--light);color:#222;min-height:100vh;}
 .dash-activity-amount{font-size:.83rem;font-weight:700;color:var(--primary);flex-shrink:0;font-variant-numeric:tabular-nums;}
 
 /* Carte raccourcis compacte */
-.dash-shortcuts-group{margin-bottom:16px;}
+.dash-shortcuts-group{margin-bottom:4px;}
 .dash-shortcuts-group:last-child{margin-bottom:0;}
-.dash-shortcuts-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--secondary);margin-bottom:8px;}
-.dash-shortcuts-row{display:flex;flex-wrap:wrap;gap:8px;}
-.dash-shortcut-chip{display:inline-flex;align-items:center;gap:6px;font-size:.78rem;font-weight:600;color:#334155;background:#f5f7fa;border:1px solid #e8edf4;border-radius:20px;padding:7px 13px;text-decoration:none;transition:.15s;}
-.dash-shortcut-chip:hover{background:#eef4fd;border-color:var(--accent);color:var(--secondary);}
-.dash-shortcut-chip svg{width:13px;height:13px;}
+.dash-shortcuts-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--secondary);padding:12px 0 8px;border-top:1px solid #f0f3f7;}
+.dash-shortcuts-group:first-child .dash-shortcuts-label{border-top:none;padding-top:0;}
+.dash-shortcuts-row{display:flex;flex-wrap:wrap;column-gap:18px;row-gap:0;}
+.dash-shortcut-chip{font-size:.85rem;font-weight:600;color:#7a8fa5;text-decoration:none;padding:9px 0 8px;border-bottom:2.5px solid transparent;transition:.15s;}
+.dash-shortcut-chip:hover{color:var(--secondary);border-bottom-color:var(--secondary);}
 
 @media(max-width:900px){
   .dash-grid{grid-template-columns:1fr;}
