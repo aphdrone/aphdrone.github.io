@@ -348,8 +348,13 @@ body{background:var(--light);color:#222;min-height:100vh;}
               <button onclick="fermerListeAvoirs()" style="padding:9px 16px;background:#f5f7fa;color:#555;border:1px solid #dde3ec;border-radius:8px;font-size:.82rem;cursor:pointer;">Fermer</button>
             </div>
             <div style="padding:18px 24px 0;">
-              <div class="search-bar">
-                <input type="text" id="search-input" placeholder="Rechercher un avoir…" oninput="filtrerListeAvoirs()">
+              <div class="search-bar" style="flex-wrap:wrap;gap:10px;">
+                <input type="text" id="search-input" placeholder="Rechercher un avoir (n°, client)…" oninput="filtrerListeAvoirs()" style="flex:1;min-width:180px;">
+                <span style="font-size:.8rem;color:#94a3b8;align-self:center;">Du</span>
+                <input type="date" id="filtre-date-debut" onchange="filtrerListeAvoirs()" style="padding:9px 12px;border:1.5px solid #dde3ec;border-radius:8px;font-size:.82rem;">
+                <span style="font-size:.8rem;color:#94a3b8;align-self:center;">au</span>
+                <input type="date" id="filtre-date-fin" onchange="filtrerListeAvoirs()" style="padding:9px 12px;border:1.5px solid #dde3ec;border-radius:8px;font-size:.82rem;">
+                <button onclick="reinitialiserFiltresDate()" style="padding:9px 12px;background:#f5f7fa;color:#555;border:1px solid #dde3ec;border-radius:8px;font-size:.78rem;cursor:pointer;">Réinitialiser dates</button>
               </div>
             </div>
             <div style="max-height:65vh;overflow-y:auto;padding:0 24px 20px;">
@@ -1007,6 +1012,8 @@ function majTuilesAvoirs(){
 function afficherListeAvoirs(){
   const listEl = document.getElementById('avoir-list');
   const recherche = (document.getElementById('search-input').value || '').toLowerCase();
+  const dateDebut = document.getElementById('filtre-date-debut').value;
+  const dateFin = document.getElementById('filtre-date-fin').value;
 
   const filtres = allAvoirs.filter(dv => {
     if(filtreStatutActif !== 'all' && dv.statut !== filtreStatutActif) return false;
@@ -1014,6 +1021,8 @@ function afficherListeAvoirs(){
       const champ = ((dv.numero || '') + ' ' + (dv.clientNom || '') + ' ' + (dv.factureOrigineNumero || '')).toLowerCase();
       if(!champ.includes(recherche)) return false;
     }
+    if(dateDebut && (!dv.dateEmission || dv.dateEmission < dateDebut)) return false;
+    if(dateFin && (!dv.dateEmission || dv.dateEmission > dateFin)) return false;
     return true;
   });
 
@@ -1046,8 +1055,16 @@ window.ouvrirListeAvoirs = function(statut){
   filtreStatutActif = statut;
   document.getElementById('liste-avoir-titre').textContent = LABELS_TUILES_AVOIRS[statut] || 'Avoirs';
   document.getElementById('search-input').value = '';
+  document.getElementById('filtre-date-debut').value = '';
+  document.getElementById('filtre-date-fin').value = '';
   document.getElementById('liste-avoir-overlay').style.display = 'flex';
   document.getElementById('loading-list').style.display = 'none';
+  afficherListeAvoirs();
+};
+
+window.reinitialiserFiltresDate = function(){
+  document.getElementById('filtre-date-debut').value = '';
+  document.getElementById('filtre-date-fin').value = '';
   afficherListeAvoirs();
 };
 
