@@ -1080,6 +1080,12 @@ function verifierParametreEnvoiDirect(){
   if(idAEnvoyer && allFactures.find(dv => dv.id === idAEnvoyer)){
     envoyerDepuisListe(idAEnvoyer);
     history.replaceState(null, '', 'factures.html');
+    return;
+  }
+  const filtre = params.get('filtre');
+  if(filtre){
+    ouvrirListeFactures(filtre);
+    history.replaceState(null, '', 'factures.html');
   }
 }
 

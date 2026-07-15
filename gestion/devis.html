@@ -1028,6 +1028,12 @@ function verifierParametreEnvoiDirect(){
   if(idAEnvoyer && allDevis.find(dv => dv.id === idAEnvoyer)){
     envoyerDepuisListe(idAEnvoyer);
     history.replaceState(null, '', 'devis.html');
+    return;
+  }
+  const filtre = params.get('filtre');
+  if(filtre){
+    ouvrirListeDevis(filtre);
+    history.replaceState(null, '', 'devis.html');
   }
 }
 
