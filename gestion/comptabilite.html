@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comptabilité — APH Drone</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--primary:#0B1F3A;--secondary:#1F5FAF;--accent:#4A90E2;--light:#F5F7FA;--green:#16a34a;--red:#dc2626;--amber:#d97706;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
+body{background:var(--light);color:#222;min-height:100vh;}
+
+/* ── Écran de connexion / chargement ── */
+#gate{position:fixed;inset:0;background:linear-gradient(135deg,var(--primary) 0%,#1a3a6b 100%);display:flex;align-items:center;justify-content:center;z-index:9999;}
+.gate-box{background:white;border-radius:20px;padding:40px;width:100%;max-width:360px;text-align:center;}
+.gate-box img{width:64px;height:64px;border-radius:50%;margin-bottom:16px;}
+.gate-box h2{font-size:1.2rem;color:var(--primary);margin-bottom:6px;}
+.gate-box p{font-size:.85rem;color:#7a8fa5;margin-bottom:20px;}
+.gate-spinner{width:28px;height:28px;border:3px solid #e0e8f0;border-top-color:var(--secondary);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.gate-denied{color:var(--red);font-size:.85rem;font-weight:600;margin-top:12px;}
+.gate-link{display:inline-block;margin-top:16px;font-size:.82rem;color:var(--secondary);text-decoration:none;font-weight:600;}
+
+/* ── Layout ── */
+#app{display:none;min-height:100vh;}
+.shell{display:flex;min-height:100vh;}
+
+/* Sidebar */
+.sidebar{width:240px;background:var(--primary);color:white;flex-shrink:0;display:flex;flex-direction:column;padding:24px 0;overflow-y:auto;}
+.brand{display:flex;align-items:center;gap:10px;padding:0 24px 24px;border-bottom:1px solid rgba(255,255,255,.1);margin-bottom:8px;}
+.brand img{width:36px;height:36px;border-radius:50%;}
+.brand-text{font-size:.85rem;font-weight:700;line-height:1.3;}
+.brand-text span{display:block;font-size:.68rem;font-weight:500;color:rgba(255,255,255,.5);}
+.nav{flex:1;display:flex;flex-direction:column;padding:8px 0;}
+.menu-section-label{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.38);font-weight:700;padding:0 24px;margin:16px 0 6px;}
+.menu-link{display:block;padding:7px 24px;font-size:.86rem;color:rgba(255,255,255,.78);text-decoration:none;border-left:3px solid transparent;transition:.15s;position:relative;}
+.menu-link:hover{color:white;background:rgba(255,255,255,.05);}
+.menu-link.active{color:white;font-weight:600;border-left-color:var(--accent);background:rgba(255,255,255,.06);}
+.nav-alert-dot{position:absolute;top:9px;right:16px;width:7px;height:7px;border-radius:50%;background:var(--red);}
+.foot{padding:16px 24px 0;border-top:1px solid rgba(255,255,255,.1);margin-top:16px;}
+.foot-email{font-size:.72rem;color:rgba(255,255,255,.4);margin-bottom:10px;word-break:break-all;}
+.foot a.back-link{display:block;font-size:.78rem;color:rgba(255,255,255,.5);text-decoration:none;margin-bottom:10px;}
+.foot a.back-link:hover{color:white;}
+.logout-btn{font-size:.78rem;color:rgba(255,255,255,.65);background:none;border:1px solid rgba(255,255,255,.15);border-radius:7px;padding:8px 12px;cursor:pointer;width:100%;transition:.15s;}
+.logout-btn:hover{background:rgba(255,255,255,.08);color:white;}
+
+/* Main */
+.main{flex:1;overflow-y:auto;}
+.topbar{background:white;border-bottom:1px solid #e8edf4;padding:18px 32px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
+.topbar h1{font-size:1.15rem;color:var(--primary);}
+.topbar p{font-size:.78rem;color:#94a3b8;margin-top:2px;}
+.content{padding:28px 32px 60px;}
+
+/* Onglets internes */
+.subtabs{display:flex;gap:4px;background:white;border-bottom:1px solid #e8edf4;padding:0 32px;overflow-x:auto;}
+.subtab{padding:14px 16px;font-size:.85rem;font-weight:600;color:#7a8fa5;background:none;border:none;border-bottom:2.5px solid transparent;cursor:pointer;white-space:nowrap;transition:.15s;}
+.subtab:hover{color:var(--primary);}
+.subtab.active{color:var(--secondary);border-bottom-color:var(--secondary);}
+.tab-pane{display:none;}
+.tab-pane.active{display:block;}
+
+.panel-box{background:white;border:1px solid #e8edf4;border-radius:12px;padding:22px;margin-bottom:20px;}
+.panel-box h3{font-size:.95rem;color:var(--primary);margin-bottom:4px;font-weight:700;}
+.panel-box .desc{font-size:.8rem;color:#94a3b8;margin-bottom:18px;}
+
+.btn-quick{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:9px;font-size:.85rem;font-weight:600;text-decoration:none;cursor:pointer;border:none;transition:.15s;}
+.btn-quick svg{width:16px;height:16px;}
+.btn-quick--primary{background:var(--secondary);color:white;}
+.btn-quick--primary:hover{background:var(--accent);}
+.btn-quick--outline{background:white;color:var(--primary);border:1.5px solid #dde3ec;}
+.btn-quick--outline:hover{border-color:var(--accent);color:var(--accent);}
+.btn-quick--sm{padding:7px 12px;font-size:.76rem;}
+
+.form-group{margin-bottom:16px;}
+.form-group label{display:block;font-size:11px;font-weight:600;color:#555;letter-spacing:.03em;text-transform:uppercase;margin-bottom:6px;}
+.form-group input,.form-group select{
+  width:100%;padding:10px 13px;border:1.5px solid #dde3ec;border-radius:8px;
+  font-size:.86rem;outline:none;transition:.2s;font-family:'Inter',sans-serif;color:#222;
+}
+.form-group input:focus,.form-group select:focus{border-color:var(--accent);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.form-row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+
+table.tbl{width:100%;border-collapse:collapse;font-size:.83rem;}
+table.tbl thead th{text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:#94a3b8;font-weight:700;padding:0 10px 10px;border-bottom:1px solid #e8edf4;}
+table.tbl thead th.num{text-align:right;}
+table.tbl tbody td{padding:10px;border-bottom:1px solid #f0f3f7;color:#334155;vertical-align:middle;}
+table.tbl tbody td.num{text-align:right;font-variant-numeric:tabular-nums;}
+table.tbl tbody tr:hover{background:#fafbfc;}
+table.tbl tfoot td{padding:12px 10px;border-top:2px solid #e8edf4;font-weight:700;color:var(--primary);}
+.mono{font-family:'SF Mono',Consolas,monospace;}
+.tag-journal{font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;letter-spacing:.03em;text-transform:uppercase;background:#f1f5f9;color:#475569;}
+.tag-journal.VE{background:#dcfce7;color:#15803d;}
+.tag-journal.BQ{background:#e0f2fe;color:#0369a1;}
+.tag-journal.AV{background:#fee2e2;color:#dc2626;}
+.tag-journal.OD{background:#fef3c7;color:#b45309;}
+.pill-ok{display:inline-flex;align-items:center;gap:6px;font-size:.8rem;font-weight:700;padding:6px 14px;border-radius:20px;background:#dcfce7;color:#15803d;}
+.pill-warn{display:inline-flex;align-items:center;gap:6px;font-size:.8rem;font-weight:700;padding:6px 14px;border-radius:20px;background:#fee2e2;color:#dc2626;}
+.toolbar{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:16px;}
+.toolbar-filters{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+.toolbar-filters select,.toolbar-filters input{padding:8px 12px;border:1.5px solid #dde3ec;border-radius:8px;font-size:.82rem;outline:none;}
+.empty-state{text-align:center;padding:40px 16px;color:#94a3b8;}
+.empty-state svg{width:36px;height:36px;margin-bottom:12px;opacity:.35;}
+.empty-state p{font-size:.85rem;}
+.action-icon{background:none;border:none;cursor:pointer;color:#94a3b8;padding:4px;transition:.15s;}
+.action-icon:hover{color:var(--red);}
+.action-icon svg{width:16px;height:16px;}
+.badge-compte{font-family:'SF Mono',Consolas,monospace;font-weight:700;color:var(--primary);}
+.table-scroll{overflow-x:auto;}
+
+/* Modales */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(11,31,58,.55);z-index:2000;align-items:flex-start;justify-content:center;overflow-y:auto;padding:30px 16px;}
+.modal-box{background:white;border-radius:14px;max-width:560px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+.modal-head{display:flex;align-items:center;justify-content:space-between;padding:18px 24px;border-bottom:1px solid #eee;}
+.modal-head .t{font-size:1rem;font-weight:700;color:var(--primary);}
+.modal-close{padding:9px 16px;background:#f5f7fa;color:#555;border:1px solid #dde3ec;border-radius:8px;font-size:.82rem;cursor:pointer;}
+.modal-body{padding:20px 24px 24px;}
+.modal-foot{padding:14px 24px 20px;display:flex;justify-content:flex-end;gap:10px;}
+
+@media(max-width:900px){
+  .sidebar{position:fixed;left:0;top:0;bottom:0;z-index:500;transform:translateX(-100%);transition:.25s;}
+  .sidebar.mobile-open{transform:translateX(0);}
+  #mobile-burger{display:flex;}
+  .content{padding:20px 16px 50px;}
+  .topbar{padding:14px 16px;}
+  .subtabs{padding:0 16px;}
+  .form-row,.form-row3{grid-template-columns:1fr;}
+}
+@media(min-width:901px){#mobile-burger{display:none;}}
+#mobile-burger{align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;border:1px solid #e8edf4;background:white;cursor:pointer;}
+#mobile-burger svg{width:18px;height:18px;color:var(--primary);}
+#sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:400;}
+#sidebar-overlay.show{display:block;}
+</style>
+</head>
+<body>
+
+<!-- ═══ Écran de connexion ═══ -->
+<div id="gate">
+  <div class="gate-box">
+    <img src="/assets/logo.jpg" alt="APH Drone" onerror="this.style.display='none'">
+    <h2>Gestion — APH Drone</h2>
+    <p>Comptabilité</p>
+    <div class="gate-spinner" id="gate-spinner"></div>
+    <div id="gate-login" style="display:none;">
+      <input type="email" id="login-email" placeholder="Email" autocomplete="email"
+        style="width:100%;padding:12px 16px;border:1.5px solid #dde3ec;border-radius:8px;font-size:.9rem;margin-bottom:12px;outline:none;">
+      <input type="password" id="login-password" placeholder="Mot de passe" autocomplete="current-password"
+        onkeydown="if(event.key==='Enter') doLogin()"
+        style="width:100%;padding:12px 16px;border:1.5px solid #dde3ec;border-radius:8px;font-size:.9rem;margin-bottom:12px;outline:none;">
+      <button onclick="doLogin()" style="width:100%;padding:13px;background:var(--secondary);color:white;border:none;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer;">Se connecter</button>
+      <p class="gate-denied" id="gate-error" style="display:none;">Email ou mot de passe incorrect.</p>
+    </div>
+    <div id="gate-refused" style="display:none;">
+      <p class="gate-denied">Accès non autorisé.</p>
+      <a href="/pages/connexion.html" class="gate-link">Retour à la connexion</a>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ Application ═══ -->
+<div id="app">
+  <div id="sidebar-overlay" onclick="toggleSidebar(false)"></div>
+  <div class="shell">
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+      <div class="brand">
+        <img src="/assets/logo.jpg" alt="APH Drone" onerror="this.style.display='none'">
+        <div class="brand-text">Gestion<span>Devis &amp; Facturation</span></div>
+      </div>
+      <div class="nav">
+        <div class="menu-section-label">Pilotage</div>
+        <a class="menu-link" href="index.html">Tableau de bord</a>
+        <a class="menu-link" href="statistiques.html">Statistiques</a>
+
+        <div class="menu-section-label">Facturation</div>
+        <a class="menu-link" href="devis.html">Devis</a>
+        <a class="menu-link" href="factures.html">Factures<span class="nav-alert-dot" id="dot-factures" style="display:none;"></span></a>
+        <a class="menu-link" href="avoirs.html">Avoirs</a>
+
+        <div class="menu-section-label">Clients</div>
+        <a class="menu-link" href="clients.html">Liste des clients</a>
+
+        <div class="menu-section-label">Catalogue</div>
+        <a class="menu-link" href="catalogue.html">Prestations &amp; tarifs</a>
+
+        <div class="menu-section-label">Comptabilité</div>
+        <a class="menu-link sub-nav-link" data-tab="plan" href="comptabilite.html#plan">Plan comptable</a>
+        <a class="menu-link sub-nav-link" data-tab="ecritures" href="comptabilite.html#ecritures">Écritures</a>
+        <a class="menu-link sub-nav-link" data-tab="grand-livre" href="comptabilite.html#grand-livre">Grand livre</a>
+        <a class="menu-link sub-nav-link" data-tab="balance" href="comptabilite.html#balance">Balance</a>
+        <a class="menu-link sub-nav-link" data-tab="fec" href="comptabilite.html#fec">Export FEC</a>
+
+        <div class="menu-section-label">Configuration</div>
+        <a class="menu-link" href="parametres.html">Paramètres</a>
+      </div>
+      <div class="foot">
+        <a href="/office/" class="back-link">← Retour à l'admin du site</a>
+        <div class="foot-email" id="user-email"></div>
+        <button class="logout-btn" onclick="doLogout()">Déconnexion</button>
+      </div>
+    </div>
+
+    <!-- Main -->
+    <div class="main">
+      <div class="topbar">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <button id="mobile-burger" onclick="toggleSidebar(true)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+          <div>
+            <h1>Comptabilité</h1>
+            <p>Plan comptable, écritures, grand livre, balance &amp; export FEC</p>
+          </div>
+        </div>
+        <div class="quick-actions">
+          <button class="btn-quick btn-quick--outline" onclick="genererEcrituresAuto(true)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+            Rafraîchir depuis factures/avoirs
+          </button>
+        </div>
+      </div>
+
+      <!-- Sous-onglets -->
+      <div class="subtabs">
+        <button class="subtab" data-tab="plan" onclick="setTab('plan')">Plan comptable</button>
+        <button class="subtab" data-tab="ecritures" onclick="setTab('ecritures')">Écritures</button>
+        <button class="subtab" data-tab="grand-livre" onclick="setTab('grand-livre')">Grand livre</button>
+        <button class="subtab" data-tab="balance" onclick="setTab('balance')">Balance</button>
+        <button class="subtab" data-tab="fec" onclick="setTab('fec')">Export FEC</button>
+      </div>
+
+      <div class="content">
+
+        <!-- ═══ PLAN COMPTABLE ═══ -->
+        <div class="tab-pane" id="pane-plan">
+          <div class="panel-box">
+            <div class="toolbar">
+              <div>
+                <h3 style="margin-bottom:2px;">Plan comptable</h3>
+                <div class="desc" style="margin-bottom:0;">Liste des comptes utilisés pour la comptabilité d'APH. Basé sur le Plan Comptable Général (PCG), simplifié pour une activité de prestations de services.</div>
+              </div>
+              <button class="btn-quick btn-quick--primary" onclick="ouvrirModalCompte()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Nouveau compte
+              </button>
+            </div>
+            <div class="table-scroll">
+              <table class="tbl">
+                <thead><tr><th style="width:110px;">N° compte</th><th>Libellé</th><th style="width:110px;">Classe</th><th style="width:60px;"></th></tr></thead>
+                <tbody id="tbl-plan-comptable"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══ ÉCRITURES ═══ -->
+        <div class="tab-pane" id="pane-ecritures">
+          <div class="panel-box">
+            <div class="toolbar">
+              <div>
+                <h3 style="margin-bottom:2px;">Journal des écritures</h3>
+                <div class="desc" style="margin-bottom:0;">Générées automatiquement depuis les factures &amp; avoirs, complétées par des écritures manuelles (charges, salaires…).</div>
+              </div>
+              <button class="btn-quick btn-quick--primary" onclick="ouvrirModalEcriture()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Écriture manuelle
+              </button>
+            </div>
+            <div class="toolbar-filters" style="margin-bottom:14px;">
+              <select id="filtre-annee-ecritures" onchange="rafraichirVueEcritures()"></select>
+              <select id="filtre-journal-ecritures" onchange="rafraichirVueEcritures()">
+                <option value="">Tous les journaux</option>
+                <option value="VE">VE — Ventes</option>
+                <option value="BQ">BQ — Banque</option>
+                <option value="AV">AV — Avoirs</option>
+                <option value="OD">OD — Opérations diverses</option>
+              </select>
+              <input type="text" id="filtre-recherche-ecritures" placeholder="Rechercher (n°, libellé, client…)" oninput="rafraichirVueEcritures()" style="min-width:220px;">
+            </div>
+            <div class="table-scroll">
+              <table class="tbl">
+                <thead><tr>
+                  <th style="width:80px;">N°</th><th style="width:95px;">Date</th><th style="width:70px;">Journal</th>
+                  <th style="width:100px;">Pièce</th><th style="width:90px;">Compte</th><th>Libellé</th>
+                  <th class="num" style="width:110px;">Débit</th><th class="num" style="width:110px;">Crédit</th><th style="width:40px;"></th>
+                </tr></thead>
+                <tbody id="tbl-ecritures"></tbody>
+                <tfoot><tr>
+                  <td colspan="6">Total</td>
+                  <td class="num" id="total-debit-ecritures">0,00 €</td>
+                  <td class="num" id="total-credit-ecritures">0,00 €</td>
+                  <td></td>
+                </tr></tfoot>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══ GRAND LIVRE ═══ -->
+        <div class="tab-pane" id="pane-grand-livre">
+          <div class="panel-box">
+            <div class="toolbar">
+              <div>
+                <h3 style="margin-bottom:2px;">Grand livre</h3>
+                <div class="desc" style="margin-bottom:0;">Détail des mouvements compte par compte, avec solde cumulé.</div>
+              </div>
+            </div>
+            <div class="toolbar-filters" style="margin-bottom:14px;">
+              <select id="filtre-compte-gl" onchange="rafraichirGrandLivre()" style="min-width:260px;"></select>
+              <select id="filtre-annee-gl" onchange="rafraichirGrandLivre()"></select>
+            </div>
+            <div class="table-scroll">
+              <table class="tbl">
+                <thead><tr>
+                  <th style="width:95px;">Date</th><th style="width:70px;">Journal</th><th style="width:100px;">Pièce</th>
+                  <th>Libellé</th><th class="num" style="width:110px;">Débit</th><th class="num" style="width:110px;">Crédit</th><th class="num" style="width:120px;">Solde</th>
+                </tr></thead>
+                <tbody id="tbl-grand-livre"></tbody>
+                <tfoot><tr>
+                  <td colspan="4">Total du compte</td>
+                  <td class="num" id="gl-total-debit">0,00 €</td>
+                  <td class="num" id="gl-total-credit">0,00 €</td>
+                  <td class="num" id="gl-solde-final">0,00 €</td>
+                </tr></tfoot>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══ BALANCE ═══ -->
+        <div class="tab-pane" id="pane-balance">
+          <div class="panel-box">
+            <div class="toolbar">
+              <div>
+                <h3 style="margin-bottom:2px;">Balance générale</h3>
+                <div class="desc" style="margin-bottom:0;">Total des débits, crédits et solde par compte.</div>
+              </div>
+              <div id="balance-statut"></div>
+            </div>
+            <div class="toolbar-filters" style="margin-bottom:14px;">
+              <select id="filtre-annee-balance" onchange="rafraichirBalance()"></select>
+            </div>
+            <div class="table-scroll">
+              <table class="tbl">
+                <thead><tr>
+                  <th style="width:100px;">Compte</th><th>Libellé</th>
+                  <th class="num" style="width:120px;">Total débit</th><th class="num" style="width:120px;">Total crédit</th>
+                  <th class="num" style="width:120px;">Solde débiteur</th><th class="num" style="width:120px;">Solde créditeur</th>
+                </tr></thead>
+                <tbody id="tbl-balance"></tbody>
+                <tfoot><tr>
+                  <td colspan="2">Totaux</td>
+                  <td class="num" id="bal-total-debit">0,00 €</td>
+                  <td class="num" id="bal-total-credit">0,00 €</td>
+                  <td class="num" id="bal-total-solde-debiteur">0,00 €</td>
+                  <td class="num" id="bal-total-solde-crediteur">0,00 €</td>
+                </tr></tfoot>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══ EXPORT FEC ═══ -->
+        <div class="tab-pane" id="pane-fec">
+          <div class="panel-box" style="max-width:640px;">
+            <h3>Export FEC (Fichier des Écritures Comptables)</h3>
+            <div class="desc">
+              Génère le fichier au format officiel exigé par l'administration fiscale (texte, séparateur tabulation, 18 colonnes), nommé automatiquement <span class="mono">SIREN + FEC + date de clôture</span>, conformément à l'article A47 A-1 du LPF.
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Début d'exercice</label>
+                <input type="date" id="fec-date-debut">
+              </div>
+              <div class="form-group">
+                <label>Fin d'exercice (clôture)</label>
+                <input type="date" id="fec-date-fin">
+              </div>
+            </div>
+            <button class="btn-quick btn-quick--primary" onclick="genererFEC()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Générer et télécharger le FEC
+            </button>
+            <div id="fec-status" style="margin-top:14px;font-size:.83rem;"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ Modale : Nouveau/édition compte ═══ -->
+<div class="modal-overlay" id="modal-compte">
+  <div class="modal-box">
+    <div class="modal-head"><div class="t" id="modal-compte-titre">Nouveau compte</div><button class="modal-close" onclick="fermerModal('modal-compte')">Fermer</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="compte-edit-id">
+      <div class="form-row">
+        <div class="form-group"><label>N° de compte</label><input type="text" id="compte-numero" placeholder="Ex : 706000"></div>
+        <div class="form-group">
+          <label>Classe</label>
+          <select id="compte-classe">
+            <option value="1">Classe 1 — Capitaux</option>
+            <option value="2">Classe 2 — Immobilisations</option>
+            <option value="4">Classe 4 — Tiers</option>
+            <option value="5">Classe 5 — Financiers</option>
+            <option value="6">Classe 6 — Charges</option>
+            <option value="7">Classe 7 — Produits</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group"><label>Libellé</label><input type="text" id="compte-libelle" placeholder="Ex : Prestations de services"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-quick btn-quick--outline" onclick="fermerModal('modal-compte')">Annuler</button>
+      <button class="btn-quick btn-quick--primary" onclick="enregistrerCompte()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ Modale : Nouvelle écriture manuelle ═══ -->
+<div class="modal-overlay" id="modal-ecriture">
+  <div class="modal-box">
+    <div class="modal-head"><div class="t">Nouvelle écriture manuelle</div><button class="modal-close" onclick="fermerModal('modal-ecriture')">Fermer</button></div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group"><label>Date</label><input type="date" id="ec-date"></div>
+        <div class="form-group">
+          <label>Journal</label>
+          <select id="ec-journal">
+            <option value="OD">OD — Opérations diverses</option>
+            <option value="BQ">BQ — Banque</option>
+            <option value="AC">AC — Achats</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group"><label>Libellé</label><input type="text" id="ec-libelle" placeholder="Ex : Assurance RC pro — juillet 2026"></div>
+      <div class="form-group"><label>N° de pièce (facultatif)</label><input type="text" id="ec-piece" placeholder="Ex : FAC-2026-014"></div>
+      <div class="form-row">
+        <div class="form-group"><label>Compte débité</label><select id="ec-compte-debit"></select></div>
+        <div class="form-group"><label>Compte crédité</label><select id="ec-compte-credit"></select></div>
+      </div>
+      <div class="form-group"><label>Montant (€ TTC)</label><input type="number" step="0.01" id="ec-montant" placeholder="0.00"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-quick btn-quick--outline" onclick="fermerModal('modal-ecriture')">Annuler</button>
+      <button class="btn-quick btn-quick--primary" onclick="enregistrerEcritureManuelle()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Firebase -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, collection, getDocs, doc, getDoc, setDoc, addDoc, deleteDoc, query, orderBy }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAV5NQWfp8n9RkTrHSwqssBJ4R9lNAuYK8",
+  authDomain: "aph-drone.firebaseapp.com",
+  projectId: "aph-drone",
+  storageBucket: "aph-drone.firebasestorage.app",
+  messagingSenderId: "316810168380",
+  appId: "1:316810168380:web:66cb916cec4fdc00b9db39"
+};
+
+const ADMIN_EMAIL = "aph.moreau@gmail.com";
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+window.doLogin = async function(){
+  const email = document.getElementById('login-email').value;
+  const pwd = document.getElementById('login-password').value;
+  try { await signInWithEmailAndPassword(auth, email, pwd); }
+  catch(e){ document.getElementById('gate-error').style.display = 'block'; }
+};
+window.doLogout = async function(){ await signOut(auth); };
+
+onAuthStateChanged(auth, user => {
+  const spinner = document.getElementById('gate-spinner');
+  const loginBox = document.getElementById('gate-login');
+  const refusedBox = document.getElementById('gate-refused');
+  spinner.style.display = 'none';
+
+  if(user && user.email === ADMIN_EMAIL){
+    document.getElementById('gate').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    document.getElementById('user-email').textContent = user.email;
+    initComptabilite();
+  } else if(user){
+    refusedBox.style.display = 'block';
+    loginBox.style.display = 'none';
+  } else {
+    loginBox.style.display = 'block';
+    refusedBox.style.display = 'none';
+  }
+});
+
+window.toggleSidebar = function(open){
+  document.getElementById('sidebar').classList.toggle('mobile-open', open);
+  document.getElementById('sidebar-overlay').classList.toggle('show', open);
+};
+
+/* ═══════════════════════════════ Utilitaires ═══════════════════════════════ */
+function formatMontant(n){
+  return (n || 0).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
+}
+function formatDateFR(iso){ return iso ? new Date(iso).toLocaleDateString('fr-FR') : '—'; }
+function formatDateFEC(iso){ return iso ? iso.replaceAll('-','') : ''; }
+
+/* ═══════════════════════════ Plan comptable par défaut ═══════════════════════ */
+const PLAN_COMPTABLE_DEFAUT = [
+  { numero:'101000', libelle:'Capital social', classe:'1' },
+  { numero:'455000', libelle:"Associés — comptes courants", classe:'1' },
+  { numero:'401000', libelle:'Fournisseurs', classe:'4' },
+  { numero:'411000', libelle:'Clients', classe:'4' },
+  { numero:'421000', libelle:'Personnel — rémunérations dues', classe:'4' },
+  { numero:'431000', libelle:'Sécurité sociale', classe:'4' },
+  { numero:'445660', libelle:'TVA déductible sur autres biens et services', classe:'4' },
+  { numero:'445710', libelle:'TVA collectée', classe:'4' },
+  { numero:'445510', libelle:'TVA à décaisser', classe:'4' },
+  { numero:'512000', libelle:'Banque', classe:'5' },
+  { numero:'530000', libelle:'Caisse', classe:'5' },
+  { numero:'606100', libelle:"Fournitures non stockables (eau, énergie)", classe:'6' },
+  { numero:'606400', libelle:'Fournitures administratives', classe:'6' },
+  { numero:'613000', libelle:'Locations', classe:'6' },
+  { numero:'615000', libelle:'Entretien et réparations', classe:'6' },
+  { numero:'616000', libelle:"Primes d'assurance", classe:'6' },
+  { numero:'622600', libelle:'Honoraires', classe:'6' },
+  { numero:'623000', libelle:'Publicité, publications', classe:'6' },
+  { numero:'625100', libelle:'Voyages et déplacements', classe:'6' },
+  { numero:'626000', libelle:'Frais postaux et télécommunications', classe:'6' },
+  { numero:'627000', libelle:'Services bancaires', classe:'6' },
+  { numero:'635000', libelle:'Autres impôts et taxes', classe:'6' },
+  { numero:'641000', libelle:'Rémunérations du personnel', classe:'6' },
+  { numero:'645000', libelle:'Charges de sécurité sociale', classe:'6' },
+  { numero:'661000', libelle:"Charges d'intérêts", classe:'6' },
+  { numero:'681000', libelle:"Dotations aux amortissements", classe:'6' },
+  { numero:'695000', libelle:'Impôt sur les sociétés', classe:'6' },
+  { numero:'706000', libelle:'Prestations de services', classe:'7' },
+  { numero:'758000', libelle:'Produits divers de gestion courante', classe:'7' },
+];
+
+let planComptable = [];
+let facturesGlobal = [];
+let avoirsGlobal = [];
+let ecrituresManuellesGlobal = [];
+let mouvementsCache = []; // toutes les lignes (auto + manuelles), calculées
+let parametresEntreprise = {};
+
+/* ═══════════════════════════════ Initialisation ═══════════════════════════════ */
+async function initComptabilite(){
+  await Promise.all([chargerParametres(), chargerPlanComptable(), chargerFactures(), chargerAvoirs(), chargerEcrituresManuelles()]);
+  genererMouvements();
+  remplirFiltresAnnee();
+  remplirSelectsComptes();
+  afficherPlanComptable();
+  rafraichirVueEcritures();
+  rafraichirGrandLivre();
+  rafraichirBalance();
+  setDefautDatesFEC();
+
+  // Activer l'onglet depuis le hash de l'URL, ou "plan" par défaut
+  const hash = (window.location.hash || '#plan').replace('#','');
+  setTab(['plan','ecritures','grand-livre','balance','fec'].includes(hash) ? hash : 'plan');
+}
+
+async function chargerParametres(){
+  try {
+    const snap = await getDoc(doc(db, 'parametres', 'entreprise'));
+    parametresEntreprise = snap.exists() ? snap.data() : {};
+  } catch(e){ console.warn('chargerParametres:', e.message); parametresEntreprise = {}; }
+}
+
+async function chargerPlanComptable(){
+  try {
+    const snap = await getDoc(doc(db, 'comptabilite', 'plan_comptable'));
+    if(snap.exists() && Array.isArray(snap.data().comptes) && snap.data().comptes.length){
+      planComptable = snap.data().comptes;
+    } else {
+      planComptable = PLAN_COMPTABLE_DEFAUT.slice();
+      await setDoc(doc(db, 'comptabilite', 'plan_comptable'), { comptes: planComptable });
+    }
+    planComptable.sort((a,b) => a.numero.localeCompare(b.numero));
+  } catch(e){ console.warn('chargerPlanComptable:', e.message); planComptable = PLAN_COMPTABLE_DEFAUT.slice(); }
+}
+
+async function sauvegarderPlanComptable(){
+  await setDoc(doc(db, 'comptabilite', 'plan_comptable'), { comptes: planComptable });
+}
+
+async function chargerFactures(){
+  try {
+    const snap = await getDocs(collection(db, 'factures'));
+    facturesGlobal = [];
+    snap.forEach(d => { const f = d.data(); f._id = d.id; facturesGlobal.push(f); });
+  } catch(e){ console.warn('chargerFactures:', e.message); facturesGlobal = []; }
+}
+async function chargerAvoirs(){
+  try {
+    const snap = await getDocs(collection(db, 'avoirs'));
+    avoirsGlobal = [];
+    snap.forEach(d => { const a = d.data(); a._id = d.id; avoirsGlobal.push(a); });
+  } catch(e){ console.warn('chargerAvoirs:', e.message); avoirsGlobal = []; }
+}
+async function chargerEcrituresManuelles(){
+  try {
+    const snap = await getDocs(query(collection(db, 'ecritures_manuelles'), orderBy('date')));
+    ecrituresManuellesGlobal = [];
+    snap.forEach(d => { const e = d.data(); e._id = d.id; ecrituresManuellesGlobal.push(e); });
+  } catch(e){ console.warn('chargerEcrituresManuelles:', e.message); ecrituresManuellesGlobal = []; }
+}
+
+function libelleCompte(numero){
+  const c = planComptable.find(c => c.numero === numero);
+  return c ? c.libelle : '';
+}
+
+/* ═══════════════════════════ Génération des mouvements ═══════════════════════ */
+// Chaque mouvement : { ecritureNum, date, journal, piece, compte, libelle, debit, credit }
+function genererMouvements(){
+  const regimeTva = parametresEntreprise.regimeTva || 'assujetti';
+  const lignes = [];
+  let compteur = 1;
+
+  // Trier factures/avoirs par date pour une numérotation stable
+  const facturesTriees = facturesGlobal.filter(f => f.statut && f.statut !== 'brouillon')
+    .sort((a,b) => (a.dateEmission||'').localeCompare(b.dateEmission||''));
+
+  facturesTriees.forEach(f => {
+    const num = 'EC-' + String(compteur++).padStart(5,'0');
+    const libelleBase = 'Facture ' + (f.numero || '') + (f.clientNom ? ' — ' + f.clientNom : '');
+    const ttc = f.montantTTC || 0, ht = f.montantHT || 0, tva = f.montantTVA || 0;
+
+    // Écriture de vente (au 411 / 706 / 44571) à la date d'émission
+    lignes.push({ ecritureNum:num, date:f.dateEmission, journal:'VE', piece:f.numero, compte:'411000', libelle:libelleBase, debit:ttc, credit:0 });
+    lignes.push({ ecritureNum:num, date:f.dateEmission, journal:'VE', piece:f.numero, compte:'706000', libelle:libelleBase, debit:0, credit:ht });
+    if(regimeTva === 'assujetti' && tva > 0){
+      lignes.push({ ecritureNum:num, date:f.dateEmission, journal:'VE', piece:f.numero, compte:'445710', libelle:libelleBase, debit:0, credit:tva });
+    }
+
+    // Écriture de règlement (au 512 / 411) si la facture est payée
+    if(f.statut === 'payee' && f.datePaiement){
+      const numReg = 'EC-' + String(compteur++).padStart(5,'0');
+      const libReg = 'Règlement facture ' + (f.numero || '') + (f.clientNom ? ' — ' + f.clientNom : '');
+      lignes.push({ ecritureNum:numReg, date:f.datePaiement, journal:'BQ', piece:f.numero, compte:'512000', libelle:libReg, debit:ttc, credit:0 });
+      lignes.push({ ecritureNum:numReg, date:f.datePaiement, journal:'BQ', piece:f.numero, compte:'411000', libelle:libReg, debit:0, credit:ttc });
+    }
+  });
+
+  const avoirsTries = avoirsGlobal.filter(a => a.statut === 'emis')
+    .sort((a,b) => (a.dateEmission||'').localeCompare(b.dateEmission||''));
+
+  avoirsTries.forEach(a => {
+    const num = 'EC-' + String(compteur++).padStart(5,'0');
+    const libelleBase = 'Avoir ' + (a.numero || '') + (a.clientNom ? ' — ' + a.clientNom : '');
+    const ttc = a.montantTTC || 0, ht = a.montantHT || 0, tva = a.montantTVA || 0;
+
+    lignes.push({ ecritureNum:num, date:a.dateEmission, journal:'AV', piece:a.numero, compte:'706000', libelle:libelleBase, debit:ht, credit:0 });
+    if(regimeTva === 'assujetti' && tva > 0){
+      lignes.push({ ecritureNum:num, date:a.dateEmission, journal:'AV', piece:a.numero, compte:'445710', libelle:libelleBase, debit:tva, credit:0 });
+    }
+    lignes.push({ ecritureNum:num, date:a.dateEmission, journal:'AV', piece:a.numero, compte:'411000', libelle:libelleBase, debit:0, credit:ttc });
+  });
+
+  // Écritures manuelles (une paire débit/crédit chacune)
+  ecrituresManuellesGlobal.forEach(m => {
+    const num = 'EC-' + String(compteur++).padStart(5,'0');
+    lignes.push({ ecritureNum:num, date:m.date, journal:m.journal||'OD', piece:m.piece||'', compte:m.compteDebit, libelle:m.libelle||'', debit:m.montant||0, credit:0, _manuelId:m._id });
+    lignes.push({ ecritureNum:num, date:m.date, journal:m.journal||'OD', piece:m.piece||'', compte:m.compteCredit, libelle:m.libelle||'', debit:0, credit:m.montant||0, _manuelId:m._id });
+  });
+
+  lignes.sort((a,b) => (a.date||'').localeCompare(b.date||'') || a.ecritureNum.localeCompare(b.ecritureNum));
+  mouvementsCache = lignes;
+}
+
+/* ═══════════════════════════════ Onglets ═══════════════════════════════ */
+window.setTab = function(tab){
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.subtab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.sub-nav-link').forEach(a => a.classList.remove('active'));
+  document.getElementById('pane-' + tab).classList.add('active');
+  document.querySelector('.subtab[data-tab="'+tab+'"]').classList.add('active');
+  const navLink = document.querySelector('.sub-nav-link[data-tab="'+tab+'"]');
+  if(navLink) navLink.classList.add('active');
+  history.replaceState(null, '', '#' + tab);
+};
+window.addEventListener('hashchange', () => {
+  const hash = (window.location.hash || '#plan').replace('#','');
+  if(['plan','ecritures','grand-livre','balance','fec'].includes(hash)) setTab(hash);
+});
+
+/* ═══════════════════════════════ Plan comptable UI ═══════════════════════════════ */
+function afficherPlanComptable(){
+  const tbody = document.getElementById('tbl-plan-comptable');
+  if(!planComptable.length){
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#94a3b8;padding:20px;">Aucun compte.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = planComptable.map((c,i) => `
+    <tr>
+      <td class="badge-compte">${c.numero}</td>
+      <td>${c.libelle}</td>
+      <td>Classe ${c.classe}</td>
+      <td>
+        <button class="action-icon" title="Modifier" onclick="ouvrirModalCompte(${i})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+        <button class="action-icon" title="Supprimer" onclick="supprimerCompte(${i})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>
+      </td>
+    </tr>`).join('');
+}
+window.ouvrirModalCompte = function(index){
+  document.getElementById('compte-edit-id').value = (index !== undefined) ? index : '';
+  document.getElementById('modal-compte-titre').textContent = (index !== undefined) ? 'Modifier le compte' : 'Nouveau compte';
+  if(index !== undefined){
+    const c = planComptable[index];
+    document.getElementById('compte-numero').value = c.numero;
+    document.getElementById('compte-libelle').value = c.libelle;
+    document.getElementById('compte-classe').value = c.classe;
+  } else {
+    document.getElementById('compte-numero').value = '';
+    document.getElementById('compte-libelle').value = '';
+    document.getElementById('compte-classe').value = '6';
+  }
+  document.getElementById('modal-compte').style.display = 'flex';
+};
+window.enregistrerCompte = async function(){
+  const numero = document.getElementById('compte-numero').value.trim();
+  const libelle = document.getElementById('compte-libelle').value.trim();
+  const classe = document.getElementById('compte-classe').value;
+  if(!numero || !libelle){ alert('Numéro et libellé sont obligatoires.'); return; }
+  const idxStr = document.getElementById('compte-edit-id').value;
+  if(idxStr !== ''){
+    planComptable[parseInt(idxStr)] = { numero, libelle, classe };
+  } else {
+    if(planComptable.some(c => c.numero === numero)){ alert('Ce numéro de compte existe déjà.'); return; }
+    planComptable.push({ numero, libelle, classe });
+  }
+  planComptable.sort((a,b) => a.numero.localeCompare(b.numero));
+  await sauvegarderPlanComptable();
+  afficherPlanComptable();
+  remplirSelectsComptes();
+  fermerModal('modal-compte');
+};
+window.supprimerCompte = async function(index){
+  if(!confirm('Supprimer ce compte du plan comptable ?')) return;
+  planComptable.splice(index, 1);
+  await sauvegarderPlanComptable();
+  afficherPlanComptable();
+  remplirSelectsComptes();
+};
+
+function remplirSelectsComptes(){
+  const options = planComptable.map(c => `<option value="${c.numero}">${c.numero} — ${c.libelle}</option>`).join('');
+  document.getElementById('ec-compte-debit').innerHTML = options;
+  document.getElementById('ec-compte-credit').innerHTML = options;
+  document.getElementById('filtre-compte-gl').innerHTML = '<option value="">— Sélectionner un compte —</option>' + options;
+}
+
+/* ═══════════════════════════════ Écritures manuelles UI ═══════════════════════════════ */
+window.ouvrirModalEcriture = function(){
+  document.getElementById('ec-date').value = new Date().toISOString().slice(0,10);
+  document.getElementById('ec-journal').value = 'OD';
+  document.getElementById('ec-libelle').value = '';
+  document.getElementById('ec-piece').value = '';
+  document.getElementById('ec-montant').value = '';
+  document.getElementById('modal-ecriture').style.display = 'flex';
+};
+window.enregistrerEcritureManuelle = async function(){
+  const date = document.getElementById('ec-date').value;
+  const journal = document.getElementById('ec-journal').value;
+  const libelle = document.getElementById('ec-libelle').value.trim();
+  const piece = document.getElementById('ec-piece').value.trim();
+  const compteDebit = document.getElementById('ec-compte-debit').value;
+  const compteCredit = document.getElementById('ec-compte-credit').value;
+  const montant = parseFloat(document.getElementById('ec-montant').value);
+
+  if(!date || !libelle || !montant || montant <= 0){ alert('Merci de compléter la date, le libellé et un montant positif.'); return; }
+  if(compteDebit === compteCredit){ alert('Le compte débité et le compte crédité doivent être différents.'); return; }
+
+  try {
+    await addDoc(collection(db, 'ecritures_manuelles'), { date, journal, libelle, piece, compteDebit, compteCredit, montant });
+    await chargerEcrituresManuelles();
+    genererMouvements();
+    rafraichirVueEcritures();
+    rafraichirGrandLivre();
+    rafraichirBalance();
+    fermerModal('modal-ecriture');
+  } catch(e){ alert("Erreur d'enregistrement : " + e.message); }
+};
+window.supprimerEcritureManuelle = async function(id){
+  if(!confirm('Supprimer cette écriture manuelle ?')) return;
+  try {
+    await deleteDoc(doc(db, 'ecritures_manuelles', id));
+    await chargerEcrituresManuelles();
+    genererMouvements();
+    rafraichirVueEcritures();
+    rafraichirGrandLivre();
+    rafraichirBalance();
+  } catch(e){ alert('Erreur de suppression : ' + e.message); }
+};
+
+window.genererEcrituresAuto = async function(feedback){
+  await Promise.all([chargerFactures(), chargerAvoirs()]);
+  genererMouvements();
+  remplirFiltresAnnee();
+  rafraichirVueEcritures();
+  rafraichirGrandLivre();
+  rafraichirBalance();
+  if(feedback) alert('Écritures régénérées depuis les factures et avoirs à jour.');
+};
+
+/* ═══════════════════════════════ Filtres années ═══════════════════════════════ */
+function remplirFiltresAnnee(){
+  const annees = new Set(mouvementsCache.filter(m => m.date).map(m => m.date.slice(0,4)));
+  const anneeActuelle = String(new Date().getFullYear());
+  annees.add(anneeActuelle);
+  const listeAnnees = Array.from(annees).sort().reverse();
+  const optionsHtml = '<option value="">Toutes les années</option>' + listeAnnees.map(a => `<option value="${a}">${a}</option>`).join('');
+  const optionsHtmlSeul = listeAnnees.map(a => `<option value="${a}">${a}</option>`).join('');
+
+  ['filtre-annee-ecritures'].forEach(id => { document.getElementById(id).innerHTML = optionsHtml; });
+  document.getElementById('filtre-annee-gl').innerHTML = optionsHtml;
+  const balSelect = document.getElementById('filtre-annee-balance');
+  balSelect.innerHTML = optionsHtmlSeul;
+  if(listeAnnees.includes(anneeActuelle)) balSelect.value = anneeActuelle;
+}
+
+/* ═══════════════════════════════ Vue Écritures ═══════════════════════════════ */
+window.rafraichirVueEcritures = function(){
+  const annee = document.getElementById('filtre-annee-ecritures').value;
+  const journal = document.getElementById('filtre-journal-ecritures').value;
+  const recherche = document.getElementById('filtre-recherche-ecritures').value.trim().toLowerCase();
+
+  let lignes = mouvementsCache.slice();
+  if(annee) lignes = lignes.filter(m => (m.date||'').startsWith(annee));
+  if(journal) lignes = lignes.filter(m => m.journal === journal);
+  if(recherche){
+    lignes = lignes.filter(m => (m.piece||'').toLowerCase().includes(recherche) || (m.libelle||'').toLowerCase().includes(recherche) || (m.compte||'').includes(recherche));
+  }
+
+  const tbody = document.getElementById('tbl-ecritures');
+  if(!lignes.length){
+    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#94a3b8;padding:24px;">Aucune écriture pour ces filtres.</td></tr>';
+  } else {
+    tbody.innerHTML = lignes.map(m => `
+      <tr>
+        <td class="mono">${m.ecritureNum}</td>
+        <td>${formatDateFR(m.date)}</td>
+        <td><span class="tag-journal ${m.journal}">${m.journal}</span></td>
+        <td>${m.piece || '—'}</td>
+        <td class="badge-compte">${m.compte}<br><span style="font-weight:400;color:#94a3b8;font-size:.72rem;">${libelleCompte(m.compte)}</span></td>
+        <td>${m.libelle}</td>
+        <td class="num">${m.debit ? formatMontant(m.debit) : ''}</td>
+        <td class="num">${m.credit ? formatMontant(m.credit) : ''}</td>
+        <td>${m._manuelId ? `<button class="action-icon" title="Supprimer" onclick="supprimerEcritureManuelle('${m._manuelId}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>` : ''}</td>
+      </tr>`).join('');
+  }
+
+  const totalDebit = lignes.reduce((s,m) => s + (m.debit||0), 0);
+  const totalCredit = lignes.reduce((s,m) => s + (m.credit||0), 0);
+  document.getElementById('total-debit-ecritures').textContent = formatMontant(totalDebit);
+  document.getElementById('total-credit-ecritures').textContent = formatMontant(totalCredit);
+};
+
+/* ═══════════════════════════════ Grand livre ═══════════════════════════════ */
+window.rafraichirGrandLivre = function(){
+  const compte = document.getElementById('filtre-compte-gl').value;
+  const annee = document.getElementById('filtre-annee-gl').value;
+  const tbody = document.getElementById('tbl-grand-livre');
+
+  if(!compte){
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#94a3b8;padding:24px;">Sélectionne un compte pour afficher son détail.</td></tr>';
+    document.getElementById('gl-total-debit').textContent = '0,00 €';
+    document.getElementById('gl-total-credit').textContent = '0,00 €';
+    document.getElementById('gl-solde-final').textContent = '0,00 €';
+    return;
+  }
+
+  let lignes = mouvementsCache.filter(m => m.compte === compte);
+  if(annee) lignes = lignes.filter(m => (m.date||'').startsWith(annee));
+  lignes.sort((a,b) => (a.date||'').localeCompare(b.date||'') || a.ecritureNum.localeCompare(b.ecritureNum));
+
+  let solde = 0;
+  const rows = lignes.map(m => {
+    solde += (m.debit||0) - (m.credit||0);
+    return `<tr>
+      <td>${formatDateFR(m.date)}</td>
+      <td><span class="tag-journal ${m.journal}">${m.journal}</span></td>
+      <td>${m.piece || '—'}</td>
+      <td>${m.libelle}</td>
+      <td class="num">${m.debit ? formatMontant(m.debit) : ''}</td>
+      <td class="num">${m.credit ? formatMontant(m.credit) : ''}</td>
+      <td class="num">${formatMontant(solde)}</td>
+    </tr>`;
+  });
+
+  tbody.innerHTML = rows.length ? rows.join('') : '<tr><td colspan="7" style="text-align:center;color:#94a3b8;padding:24px;">Aucun mouvement sur ce compte.</td></tr>';
+
+  const totalDebit = lignes.reduce((s,m) => s + (m.debit||0), 0);
+  const totalCredit = lignes.reduce((s,m) => s + (m.credit||0), 0);
+  document.getElementById('gl-total-debit').textContent = formatMontant(totalDebit);
+  document.getElementById('gl-total-credit').textContent = formatMontant(totalCredit);
+  document.getElementById('gl-solde-final').textContent = formatMontant(totalDebit - totalCredit);
+};
+
+/* ═══════════════════════════════ Balance ═══════════════════════════════ */
+window.rafraichirBalance = function(){
+  const annee = document.getElementById('filtre-annee-balance').value;
+  let lignes = mouvementsCache.slice();
+  if(annee) lignes = lignes.filter(m => (m.date||'').startsWith(annee));
+
+  const parCompte = {};
+  lignes.forEach(m => {
+    if(!parCompte[m.compte]) parCompte[m.compte] = { debit:0, credit:0 };
+    parCompte[m.compte].debit += (m.debit||0);
+    parCompte[m.compte].credit += (m.credit||0);
+  });
+
+  const comptesUtilises = Object.keys(parCompte).sort();
+  const tbody = document.getElementById('tbl-balance');
+
+  if(!comptesUtilises.length){
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#94a3b8;padding:24px;">Aucun mouvement pour cette période.</td></tr>';
+  } else {
+    tbody.innerHTML = comptesUtilises.map(num => {
+      const { debit, credit } = parCompte[num];
+      const soldeDebiteur = debit > credit ? debit - credit : 0;
+      const soldeCrediteur = credit > debit ? credit - debit : 0;
+      return `<tr>
+        <td class="badge-compte">${num}</td>
+        <td>${libelleCompte(num) || '—'}</td>
+        <td class="num">${formatMontant(debit)}</td>
+        <td class="num">${formatMontant(credit)}</td>
+        <td class="num">${soldeDebiteur ? formatMontant(soldeDebiteur) : ''}</td>
+        <td class="num">${soldeCrediteur ? formatMontant(soldeCrediteur) : ''}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  const totalDebit = Object.values(parCompte).reduce((s,c) => s + c.debit, 0);
+  const totalCredit = Object.values(parCompte).reduce((s,c) => s + c.credit, 0);
+  const totalSoldeDebiteur = Object.values(parCompte).reduce((s,c) => s + (c.debit > c.credit ? c.debit - c.credit : 0), 0);
+  const totalSoldeCrediteur = Object.values(parCompte).reduce((s,c) => s + (c.credit > c.debit ? c.credit - c.debit : 0), 0);
+
+  document.getElementById('bal-total-debit').textContent = formatMontant(totalDebit);
+  document.getElementById('bal-total-credit').textContent = formatMontant(totalCredit);
+  document.getElementById('bal-total-solde-debiteur').textContent = formatMontant(totalSoldeDebiteur);
+  document.getElementById('bal-total-solde-crediteur').textContent = formatMontant(totalSoldeCrediteur);
+
+  const equilibre = Math.abs(totalDebit - totalCredit) < 0.01;
+  document.getElementById('balance-statut').innerHTML = equilibre
+    ? '<span class="pill-ok">✓ Balance équilibrée</span>'
+    : '<span class="pill-warn">⚠ Écart de ' + formatMontant(Math.abs(totalDebit-totalCredit)) + '</span>';
+};
+
+/* ═══════════════════════════════ Export FEC ═══════════════════════════════ */
+function setDefautDatesFEC(){
+  const now = new Date();
+  document.getElementById('fec-date-debut').value = now.getFullYear() + '-01-01';
+  document.getElementById('fec-date-fin').value = now.getFullYear() + '-12-31';
+}
+
+window.genererFEC = function(){
+  const debut = document.getElementById('fec-date-debut').value;
+  const fin = document.getElementById('fec-date-fin').value;
+  const statusEl = document.getElementById('fec-status');
+  if(!debut || !fin){ statusEl.innerHTML = '<span style="color:var(--red);">Merci de renseigner les deux dates.</span>'; return; }
+
+  const lignes = mouvementsCache.filter(m => m.date && m.date >= debut && m.date <= fin)
+    .sort((a,b) => (a.date||'').localeCompare(b.date||'') || a.ecritureNum.localeCompare(b.ecritureNum));
+
+  if(!lignes.length){ statusEl.innerHTML = '<span style="color:var(--amber);">Aucune écriture sur cette période.</span>'; return; }
+
+  const entetes = ['JournalCode','JournalLib','EcritureNum','EcritureDate','CompteNum','CompteLib','CompAuxNum','CompAuxLib','PieceRef','PieceDate','EcritureLib','Debit','Credit','EcritureLet','DateLet','ValidDate','Montantdevise','Idevise'];
+  const JOURNAL_LIB = { VE:'Ventes', BQ:'Banque', AV:'Avoirs', OD:'Opérations diverses', AC:'Achats' };
+
+  const lignesFEC = lignes.map(m => [
+    m.journal,
+    JOURNAL_LIB[m.journal] || m.journal,
+    m.ecritureNum,
+    formatDateFEC(m.date),
+    m.compte,
+    libelleCompte(m.compte) || '',
+    '', '',
+    m.piece || '',
+    formatDateFEC(m.date),
+    (m.libelle || '').replace(/\t/g,' '),
+    (m.debit || 0).toFixed(2).replace('.',','),
+    (m.credit || 0).toFixed(2).replace('.',','),
+    '', '',
+    formatDateFEC(fin),
+    '', ''
+  ].join('\t'));
+
+  const contenu = entetes.join('\t') + '\r\n' + lignesFEC.join('\r\n');
+  const siren = (parametresEntreprise.siret || '').replace(/\s/g,'').slice(0,9) || 'SIREN';
+  const nomFichier = siren + 'FEC' + formatDateFEC(fin) + '.txt';
+
+  const blob = new Blob(['\uFEFF' + contenu], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = nomFichier;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+
+  statusEl.innerHTML = '<span style="color:var(--green);">✓ Fichier généré : ' + nomFichier + ' (' + lignes.length + ' lignes)</span>';
+};
+
+/* ═══════════════════════════════ Modales génériques ═══════════════════════════════ */
+window.fermerModal = function(id){ document.getElementById(id).style.display = 'none'; };
+</script>
+</body>
+</html>
