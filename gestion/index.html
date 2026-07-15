@@ -114,6 +114,80 @@ body{background:var(--light);color:#222;min-height:100vh;}
 .breakdown-total-item .num{font-size:1.3rem;font-weight:800;color:var(--primary);}
 .breakdown-total-item .lbl{font-size:.72rem;color:#94a3b8;text-transform:uppercase;letter-spacing:.03em;font-weight:600;}
 
+/* ═══ Nouveau tableau de bord ═══ */
+.dash-hero{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px;margin-bottom:22px;}
+.dash-hero .eyebrow{font-size:10.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--secondary);margin-bottom:6px;}
+.dash-hero h1{font-size:1.55rem;font-weight:800;color:var(--primary);line-height:1.2;}
+.dash-hero .date{font-size:.83rem;color:#94a3b8;margin-top:4px;}
+.dash-hero-actions{display:flex;gap:10px;flex-wrap:wrap;}
+
+.dash-alert-banner{display:flex;align-items:center;gap:12px;background:#fff7ed;border:1px solid #fed7aa;border-radius:12px;padding:14px 18px;margin-bottom:20px;}
+.dash-alert-banner svg{width:20px;height:20px;color:#c2410c;flex-shrink:0;}
+.dash-alert-banner .txt{font-size:.85rem;color:#7c2d12;flex:1;}
+.dash-alert-banner .txt strong{font-weight:700;}
+.dash-alert-banner a{font-size:.8rem;font-weight:700;color:#c2410c;text-decoration:underline;white-space:nowrap;}
+
+.dash-grid{display:grid;grid-template-columns:1.6fr 1fr;gap:18px;align-items:start;}
+
+.dash-card{background:white;border:1px solid #e8edf4;border-radius:14px;padding:22px;}
+.dash-card-title{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#94a3b8;margin-bottom:14px;}
+
+/* Carte CA + sparkline */
+.dash-revenue-top{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:10px;margin-bottom:18px;}
+.dash-revenue-main .num{font-size:2rem;font-weight:800;color:var(--primary);line-height:1;font-variant-numeric:tabular-nums;}
+.dash-revenue-main .lbl{font-size:.78rem;color:#94a3b8;margin-top:5px;}
+.dash-revenue-side{text-align:right;font-size:.82rem;color:#7a8fa5;}
+.dash-revenue-side strong{color:var(--primary);font-weight:700;font-variant-numeric:tabular-nums;}
+.sparkline{display:flex;align-items:flex-end;gap:8px;height:74px;padding-top:6px;}
+.sparkline-col{flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;gap:6px;}
+.sparkline-bar{width:100%;max-width:34px;border-radius:5px 5px 2px 2px;background:linear-gradient(180deg,var(--accent),var(--secondary));transition:.2s;min-height:3px;}
+.sparkline-bar.empty{background:#eef2f7;}
+.sparkline-bar.current{background:linear-gradient(180deg,#67d18f,var(--green));}
+.sparkline-mois{font-size:10px;color:#adb9c7;font-weight:600;text-transform:uppercase;}
+
+/* Carte à traiter */
+.priority-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #f0f3f7;cursor:pointer;}
+.priority-item:last-child{border-bottom:none;}
+.priority-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.priority-icon svg{width:17px;height:17px;}
+.priority-icon.red{background:#fee2e2;color:var(--red);}
+.priority-icon.amber{background:#fef3c7;color:var(--amber);}
+.priority-body{flex:1;min-width:0;}
+.priority-title{font-size:.85rem;font-weight:700;color:var(--primary);}
+.priority-sub{font-size:.74rem;color:#94a3b8;margin-top:1px;}
+.priority-chevron{color:#c3cedb;flex-shrink:0;}
+.priority-allgood{text-align:center;padding:20px 10px;}
+.priority-allgood svg{width:32px;height:32px;color:var(--green);margin-bottom:10px;}
+.priority-allgood p{font-size:.83rem;color:#7a8fa5;font-weight:600;}
+
+/* Carte activité récente */
+.dash-activity-row{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid #f0f3f7;}
+.dash-activity-row:last-child{border-bottom:none;}
+.dash-activity-icon{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:#eef4fd;color:var(--secondary);}
+.dash-activity-icon svg{width:15px;height:15px;}
+.dash-activity-icon.avoir{background:#fee2e2;color:var(--red);}
+.dash-activity-body{flex:1;min-width:0;}
+.dash-activity-title{font-size:.83rem;font-weight:600;color:var(--primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.dash-activity-meta{font-size:.72rem;color:#94a3b8;margin-top:1px;}
+.dash-activity-amount{font-size:.83rem;font-weight:700;color:var(--primary);flex-shrink:0;font-variant-numeric:tabular-nums;}
+
+/* Carte raccourcis compacte */
+.dash-shortcuts-group{margin-bottom:16px;}
+.dash-shortcuts-group:last-child{margin-bottom:0;}
+.dash-shortcuts-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--secondary);margin-bottom:8px;}
+.dash-shortcuts-row{display:flex;flex-wrap:wrap;gap:8px;}
+.dash-shortcut-chip{display:inline-flex;align-items:center;gap:6px;font-size:.78rem;font-weight:600;color:#334155;background:#f5f7fa;border:1px solid #e8edf4;border-radius:20px;padding:7px 13px;text-decoration:none;transition:.15s;}
+.dash-shortcut-chip:hover{background:#eef4fd;border-color:var(--accent);color:var(--secondary);}
+.dash-shortcut-chip svg{width:13px;height:13px;}
+
+@media(max-width:900px){
+  .dash-grid{grid-template-columns:1fr;}
+  .dash-hero h1{font-size:1.3rem;}
+}
+@media(min-width:901px){
+  .topbar-mobile-only{display:none;}
+}
+
 /* Responsive */
 @media(max-width:900px){
   .sidebar{position:fixed;left:0;top:0;bottom:0;z-index:500;transform:translateX(-100%);transition:.25s;}
@@ -204,80 +278,104 @@ body{background:var(--light);color:#222;min-height:100vh;}
 
     <!-- Main -->
     <div class="main">
-      <div class="topbar">
-        <div style="display:flex;align-items:center;gap:12px;">
-          <button id="mobile-burger" onclick="toggleSidebar(true)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
-          <div>
-            <h1>Tableau de bord</h1>
-            <p>Vue d'ensemble de ton activité</p>
-          </div>
-        </div>
-        <div class="quick-actions">
-          <a href="devis.html?new=1" class="btn-quick btn-quick--outline">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            Nouveau devis
-          </a>
-          <a href="factures.html?new=1" class="btn-quick btn-quick--primary">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            Nouvelle facture
-          </a>
-        </div>
+      <div class="topbar topbar-mobile-only">
+        <button id="mobile-burger" onclick="toggleSidebar(true)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
       </div>
 
       <div class="content">
 
-        <!-- Stat cards -->
-        <div class="stat-row">
-          <div class="stat-card">
-            <div class="lbl">CA du mois</div>
-            <div class="num" id="stat-ca-mois">—</div>
-            <div class="sub" id="stat-ca-mois-sub">Chargement…</div>
+        <div class="dash-hero">
+          <div>
+            <div class="eyebrow">APH Drone · Gestion</div>
+            <h1 id="dash-greeting">Bonjour</h1>
+            <div class="date" id="dash-date"></div>
           </div>
-          <div class="stat-card">
-            <div class="lbl">CA de l'année</div>
-            <div class="num" id="stat-ca-annee">—</div>
-            <div class="sub" id="stat-ca-annee-sub">Chargement…</div>
-          </div>
-          <div class="stat-card alert" style="cursor:pointer;" onclick="ouvrirModalFactures()">
-            <div class="lbl">Factures en retard</div>
-            <div class="num" id="stat-retard">—</div>
-            <div class="sub" id="stat-retard-sub">Chargement…</div>
-          </div>
-          <div class="stat-card warn" style="cursor:pointer;" onclick="ouvrirModalDevis()">
-            <div class="lbl">Devis en attente</div>
-            <div class="num" id="stat-devis-attente">—</div>
-            <div class="sub" id="stat-devis-attente-sub">Chargement…</div>
-          </div>
-          <div class="stat-card" style="cursor:pointer;" onclick="window.location.href='avoirs.html'">
-            <div class="lbl">Avoirs émis (mois)</div>
-            <div class="num" id="stat-avoirs-mois">—</div>
-            <div class="sub" id="stat-avoirs-mois-sub">Chargement…</div>
+          <div class="dash-hero-actions">
+            <a href="devis.html?new=1" class="btn-quick btn-quick--outline">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Nouveau devis
+            </a>
+            <a href="factures.html?new=1" class="btn-quick btn-quick--primary">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Nouvelle facture
+            </a>
           </div>
         </div>
 
-        <!-- Accès rapide : 3 blocs distincts -->
-        <div class="section-grid quicklinks-grid">
-          <div class="panel-box">
-            <h3>Créer</h3>
-            <a class="quicklink" href="devis.html?new=1">+ Nouveau devis</a>
-            <a class="quicklink" href="factures.html?new=1">+ Nouvelle facture</a>
-            <a class="quicklink" href="avoirs.html?new=1">+ Nouvel avoir</a>
-            <a class="quicklink" href="clients.html?new=1">+ Nouveau client</a>
+        <!-- Bandeau d'alerte, affiché uniquement s'il y a des factures en retard -->
+        <div class="dash-alert-banner" id="dash-alert-banner" style="display:none;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <div class="txt" id="dash-alert-text"></div>
+          <a href="#" onclick="ouvrirModalFactures();return false;">Voir le détail</a>
+        </div>
+
+        <div class="dash-grid">
+
+          <!-- Colonne principale -->
+          <div>
+            <div class="dash-card" style="margin-bottom:18px;">
+              <div class="dash-card-title">Chiffre d'affaires</div>
+              <div class="dash-revenue-top">
+                <div class="dash-revenue-main">
+                  <div class="num" id="stat-ca-annee">—</div>
+                  <div class="lbl" id="stat-ca-annee-sub">Chargement…</div>
+                </div>
+                <div class="dash-revenue-side">
+                  Ce mois-ci : <strong id="stat-ca-mois">—</strong><br>
+                  <span id="stat-ca-mois-sub"></span>
+                </div>
+              </div>
+              <div class="sparkline" id="dash-sparkline"></div>
+            </div>
+
+            <div class="dash-card">
+              <div class="dash-card-title">Activité récente</div>
+              <div id="dash-activity-list">
+                <div style="text-align:center;padding:30px;color:#94a3b8;font-size:.85rem;">Chargement…</div>
+              </div>
+            </div>
           </div>
-          <div class="panel-box">
-            <h3>Consulter</h3>
-            <a class="quicklink" href="devis.html">Tous les devis</a>
-            <a class="quicklink" href="factures.html">Toutes les factures</a>
-            <a class="quicklink" href="avoirs.html">Tous les avoirs</a>
-            <a class="quicklink" href="clients.html">Tous les clients</a>
+
+          <!-- Colonne latérale -->
+          <div>
+            <div class="dash-card" style="margin-bottom:18px;">
+              <div class="dash-card-title">À traiter</div>
+              <div id="dash-priority-list">
+                <div style="text-align:center;padding:20px;color:#94a3b8;font-size:.85rem;">Chargement…</div>
+              </div>
+            </div>
+
+            <div class="dash-card">
+              <div class="dash-card-title">Raccourcis</div>
+              <div class="dash-shortcuts-group">
+                <div class="dash-shortcuts-label">Créer</div>
+                <div class="dash-shortcuts-row">
+                  <a class="dash-shortcut-chip" href="devis.html?new=1">+ Devis</a>
+                  <a class="dash-shortcut-chip" href="factures.html?new=1">+ Facture</a>
+                  <a class="dash-shortcut-chip" href="avoirs.html?new=1">+ Avoir</a>
+                  <a class="dash-shortcut-chip" href="clients.html?new=1">+ Client</a>
+                </div>
+              </div>
+              <div class="dash-shortcuts-group">
+                <div class="dash-shortcuts-label">Consulter</div>
+                <div class="dash-shortcuts-row">
+                  <a class="dash-shortcut-chip" href="devis.html">Devis</a>
+                  <a class="dash-shortcut-chip" href="factures.html">Factures</a>
+                  <a class="dash-shortcut-chip" href="avoirs.html">Avoirs</a>
+                  <a class="dash-shortcut-chip" href="clients.html">Clients</a>
+                </div>
+              </div>
+              <div class="dash-shortcuts-group">
+                <div class="dash-shortcuts-label">Outils</div>
+                <div class="dash-shortcuts-row">
+                  <a class="dash-shortcut-chip" href="statistiques.html">Statistiques</a>
+                  <a class="dash-shortcut-chip" href="comptabilite.html">Comptabilité</a>
+                  <a class="dash-shortcut-chip" href="parametres.html">Paramètres</a>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="panel-box">
-            <h3>Suivi</h3>
-            <a class="quicklink" href="#" onclick="ouvrirModalFactures();return false;">Factures en retard</a>
-            <a class="quicklink" href="#" onclick="ouvrirModalDevis();return false;">Devis en attente</a>
-            <a class="quicklink" href="statistiques.html">Statistiques</a>
-            <a class="quicklink" href="parametres.html">Paramètres</a>
-          </div>
+
         </div>
 
       </div>
@@ -365,7 +463,16 @@ let facturesGlobal = [];
 let devisGlobal = [];
 let avoirsGlobal = [];
 
+function afficherEnTeteEtDate(){
+  const now = new Date();
+  const heure = now.getHours();
+  const salutation = heure < 6 ? 'Bonsoir' : heure < 18 ? 'Bonjour' : 'Bonsoir';
+  document.getElementById('dash-greeting').textContent = salutation + ' Arnaud';
+  document.getElementById('dash-date').textContent = now.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+}
+
 async function chargerTableauDeBord(){
+  afficherEnTeteEtDate();
   const now = new Date();
   const debutMois = new Date(now.getFullYear(), now.getMonth(), 1);
   const debutAnnee = new Date(now.getFullYear(), 0, 1);
@@ -423,21 +530,115 @@ async function chargerTableauDeBord(){
     avoirsGlobal = avoirsList;
 
     document.getElementById('stat-ca-mois').textContent = formatMontant(caMois);
-    document.getElementById('stat-ca-mois-sub').textContent = now.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
+    document.getElementById('stat-ca-mois-sub').textContent = nbAvoirsMois > 0 ? '-' + formatMontant(montantAvoirsMois) + ' d\'avoirs' : '';
     document.getElementById('stat-ca-annee').textContent = formatMontant(caAnnee);
-    document.getElementById('stat-ca-annee-sub').textContent = 'Année ' + now.getFullYear();
-    document.getElementById('stat-retard').textContent = nbRetard;
-    document.getElementById('stat-retard-sub').textContent = nbRetard > 0 ? formatMontant(montantRetard) + ' en attente' : 'Aucune';
-    document.getElementById('stat-devis-attente').textContent = nbDevisAttente;
-    document.getElementById('stat-devis-attente-sub').textContent = nbDevisAttente > 0 ? 'À relancer' : 'Aucun';
-    document.getElementById('stat-avoirs-mois').textContent = nbAvoirsMois;
-    document.getElementById('stat-avoirs-mois-sub').textContent = nbAvoirsMois > 0 ? '-' + formatMontant(montantAvoirsMois) : 'Aucun ce mois';
+    document.getElementById('stat-ca-annee-sub').textContent = 'Encaissé sur l\'année ' + now.getFullYear();
 
-    if(nbRetard > 0) document.getElementById('dot-factures').style.display = 'block';
+    // ── Bandeau d'alerte ──
+    const banner = document.getElementById('dash-alert-banner');
+    if(nbRetard > 0){
+      document.getElementById('dash-alert-text').innerHTML = '<strong>' + nbRetard + ' facture' + (nbRetard > 1 ? 's' : '') + ' en retard</strong> pour un total de ' + formatMontant(montantRetard) + '.';
+      banner.style.display = 'flex';
+    } else {
+      banner.style.display = 'none';
+    }
+
+    // ── À traiter ──
+    const priorityEl = document.getElementById('dash-priority-list');
+    let priorityHtml = '';
+    if(nbRetard > 0){
+      priorityHtml += `
+        <div class="priority-item" onclick="ouvrirModalFactures()">
+          <div class="priority-icon red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+          <div class="priority-body">
+            <div class="priority-title">${nbRetard} facture${nbRetard > 1 ? 's' : ''} en retard</div>
+            <div class="priority-sub">${formatMontant(montantRetard)} en attente de règlement</div>
+          </div>
+          <svg class="priority-chevron" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>`;
+    }
+    if(nbDevisAttente > 0){
+      priorityHtml += `
+        <div class="priority-item" onclick="ouvrirModalDevis()">
+          <div class="priority-icon amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+          <div class="priority-body">
+            <div class="priority-title">${nbDevisAttente} devis en attente</div>
+            <div class="priority-sub">À relancer auprès du client</div>
+          </div>
+          <svg class="priority-chevron" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>`;
+    }
+    if(!priorityHtml){
+      priorityHtml = `
+        <div class="priority-allgood">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+          <p>Tout est à jour, rien à traiter.</p>
+        </div>`;
+    }
+    priorityEl.innerHTML = priorityHtml;
+
+    // ── Sparkline CA des 6 derniers mois ──
+    const facturesPayees = factures.filter(f => f.statut === 'payee' && f.dateEmission);
+    const avoirsEmis = avoirsList.filter(a => a.statut === 'emis' && a.dateEmission);
+    const moisData = [];
+    for(let i = 5; i >= 0; i--){
+      const refDate = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const debut = new Date(refDate.getFullYear(), refDate.getMonth(), 1);
+      const fin = new Date(refDate.getFullYear(), refDate.getMonth() + 1, 1);
+      let total = 0;
+      facturesPayees.forEach(f => { const d = new Date(f.dateEmission); if(d >= debut && d < fin) total += (f.montantTTC || 0); });
+      avoirsEmis.forEach(a => { const d = new Date(a.dateEmission); if(d >= debut && d < fin) total -= (a.montantTTC || 0); });
+      moisData.push({ label: refDate.toLocaleDateString('fr-FR', { month: 'short' }).replace('.', ''), total: Math.max(total, 0), estMoisActuel: i === 0 });
+    }
+    const maxMois = Math.max(...moisData.map(m => m.total), 1);
+    document.getElementById('dash-sparkline').innerHTML = moisData.map(m => {
+      const pct = m.total > 0 ? Math.max(8, Math.round(m.total / maxMois * 100)) : 4;
+      const classes = ['sparkline-bar'];
+      if(m.total <= 0) classes.push('empty');
+      else if(m.estMoisActuel) classes.push('current');
+      return `
+        <div class="sparkline-col" title="${m.label} : ${formatMontant(m.total)}">
+          <div class="${classes.join(' ')}" style="height:${pct}%;"></div>
+          <div class="sparkline-mois">${m.label}</div>
+        </div>`;
+    }).join('');
+
+    // ── Activité récente (devis + factures + avoirs, mélangés et triés par date) ──
+    const activite = [];
+    devisList.forEach(dv => activite.push({ type: 'devis', date: dv.dateCreation, numero: dv.numero, clientNom: dv.clientNom, montant: dv.montantTTC, statut: dv.statut }));
+    factures.forEach(f => activite.push({ type: 'facture', date: f.dateEmission, numero: f.numero, clientNom: f.clientNom, montant: f.montantTTC, statut: f.statut }));
+    avoirsList.forEach(a => activite.push({ type: 'avoir', date: a.dateEmission, numero: a.numero, clientNom: a.clientNom, montant: a.montantTTC, statut: a.statut }));
+    activite.sort((a,b) => (b.date||'').localeCompare(a.date||''));
+
+    const ICONES_TYPE = {
+      devis: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>',
+      facture: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="7" y1="9" x2="17" y2="9"/><line x1="7" y1="13" x2="17" y2="13"/><line x1="7" y1="17" x2="12" y2="17"/></svg>',
+      avoir: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-15-6.7L3 13"/></svg>'
+    };
+    const TYPE_LABELS = { devis: 'Devis', facture: 'Facture', avoir: 'Avoir' };
+
+    const activityEl = document.getElementById('dash-activity-list');
+    if(!activite.length){
+      activityEl.innerHTML = '<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><p>Aucun document créé pour le moment.</p></div>';
+    } else {
+      activityEl.innerHTML = activite.slice(0, 8).map(a => `
+        <a href="${a.type}s.html" class="dash-activity-row" style="text-decoration:none;">
+          <div class="dash-activity-icon ${a.type === 'avoir' ? 'avoir' : ''}">${ICONES_TYPE[a.type]}</div>
+          <div class="dash-activity-body">
+            <div class="dash-activity-title">${a.numero || '(brouillon)'} — ${a.clientNom || 'Client'}</div>
+            <div class="dash-activity-meta">${TYPE_LABELS[a.type]} · ${a.date ? new Date(a.date).toLocaleDateString('fr-FR') : '—'} · ${STATUS_LABELS[a.statut] || a.statut || ''}</div>
+          </div>
+          <div class="dash-activity-amount">${formatMontant(a.montant)}</div>
+        </a>`).join('');
+    }
+
+    if(nbRetard > 0){
+      const dot = document.getElementById('dot-factures');
+      if(dot) dot.style.display = 'block';
+    }
 
   } catch(e){
     console.warn('chargerTableauDeBord:', e.message);
-    ['stat-ca-mois','stat-ca-annee','stat-retard','stat-devis-attente','stat-avoirs-mois'].forEach(id => document.getElementById(id).textContent = '0');
   }
 }
 
