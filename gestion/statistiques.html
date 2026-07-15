@@ -324,10 +324,12 @@ onAuthStateChanged(auth, user => {
 
 async function initStatistiques(){
   try {
-    const [facturesSnap, devisSnap, avoirsSnap] = await Promise.all([
+    const [facturesSnap, devisSnap, avoirsSnap, clientsSnap, catalogueSnap] = await Promise.all([
       getDocs(collection(db, 'factures')),
       getDocs(collection(db, 'devis')),
-      getDocs(collection(db, 'avoirs'))
+      getDocs(collection(db, 'avoirs')),
+      getDocs(collection(db, 'clientsFacturation')),
+      getDocs(collection(db, 'catalogue'))
     ]);
     toutesLesFactures = [];
     facturesSnap.forEach(d => toutesLesFactures.push({ id: d.id, ...d.data() }));
@@ -344,12 +346,21 @@ async function initStatistiques(){
     select.innerHTML = anneesTriees.map(a => '<option value="' + a + '">' + a + '</option>').join('');
     appliquerPresetAnnee(false);
 
-    // Client : liste des clients distincts ayant au moins une facture
-    const clients = [...new Set(toutesLesFactures.map(f => f.clientNom).filter(Boolean))].sort((a,b) => a.localeCompare(b));
+    // Client : TOUS les clients enregistrés (clientsFacturation), pas seulement ceux ayant déjà une facture
+    const nomsClients = new Set();
+    clientsSnap.forEach(d => {
+      const c = d.data();
+      const nom = c.raisonSociale || [c.prenom, c.nom].filter(Boolean).join(' ');
+      if(nom) nomsClients.add(nom);
+    });
+    // + au cas où une facture référence un nom de client qui ne serait plus dans clientsFacturation
+    toutesLesFactures.forEach(f => { if(f.clientNom) nomsClients.add(f.clientNom); });
+    const clients = [...nomsClients].sort((a,b) => a.localeCompare(b));
     document.getElementById('filtre-client').innerHTML = '<option value="">Tous les clients</option>' + clients.map(c => `<option value="${c}">${c}</option>`).join('');
 
-    // Prestation : liste des désignations distinctes utilisées dans les lignes de factures
+    // Prestation : TOUTES les prestations du catalogue, pas seulement celles déjà facturées
     const prestations = new Set();
+    catalogueSnap.forEach(d => { const it = d.data(); if(it.designation) prestations.add(it.designation); });
     toutesLesFactures.forEach(f => (f.lignes || []).forEach(l => { if(l.designation) prestations.add(l.designation); }));
     const prestationsTriees = [...prestations].sort((a,b) => a.localeCompare(b));
     document.getElementById('filtre-prestation').innerHTML = '<option value="">Toutes les prestations</option>' + prestationsTriees.map(p => `<option value="${p}">${p}</option>`).join('');
