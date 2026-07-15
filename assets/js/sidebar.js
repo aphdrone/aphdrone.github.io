@@ -114,6 +114,7 @@
     html += `
       </div>
       <div class="foot">
+        <a href="/index.html" class="back-to-site-link">← Retour au site</a>
         <div class="foot-email" id="user-email"></div>
         <button class="logout-btn" id="btn-sidebar-logout">Déconnexion</button>
       </div>`;
@@ -142,6 +143,8 @@
       .sidebar .menu-link.active{color:white;font-weight:600;border-left-color:var(--accent);background:rgba(255,255,255,.06);}
       .sidebar .nav-alert-dot{position:absolute;top:9px;right:16px;width:7px;height:7px;border-radius:50%;background:#dc2626;}
       .sidebar .foot{padding:16px 24px 0;border-top:1px solid rgba(255,255,255,.1);margin-top:16px;}
+      .sidebar .back-to-site-link{display:block;font-size:.78rem;color:rgba(255,255,255,.5);text-decoration:none;margin-bottom:12px;transition:.15s;}
+      .sidebar .back-to-site-link:hover{color:white;}
       .sidebar .foot-email{font-size:.72rem;color:rgba(255,255,255,.4);margin-bottom:10px;word-break:break-all;}
       .sidebar .logout-btn{font-size:.78rem;color:rgba(255,255,255,.65);background:none;border:1px solid rgba(255,255,255,.15);border-radius:7px;padding:8px 12px;cursor:pointer;width:100%;transition:.15s;font-family:'Inter',sans-serif;}
       .sidebar .logout-btn:hover{background:rgba(255,255,255,.08);color:white;}
