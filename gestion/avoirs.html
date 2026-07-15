@@ -229,11 +229,21 @@ body{background:var(--light);color:#222;min-height:100vh;}
       </div>
 
       <div class="content">
-        <div class="avoirs-layout">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px;">
+          <div>
+            <h2 style="font-size:1rem;font-weight:700;color:var(--primary);">Avoirs</h2>
+          </div>
+          <button class="btn-save" style="flex:none;padding:11px 20px;" onclick="ouvrirNouvelAvoir()">+ Nouvel avoir</button>
+        </div>
 
-          <!-- FORMULAIRE -->
-          <div class="panel-box">
-            <h2 id="form-title">Nouvel avoir</h2>
+        <!-- ═══ Modale : Formulaire avoir ═══ -->
+        <div id="avoir-form-overlay" style="display:none;position:fixed;inset:0;background:rgba(11,31,58,.55);z-index:2000;align-items:flex-start;justify-content:center;overflow-y:auto;padding:30px 16px;">
+          <div style="background:white;border-radius:14px;max-width:720px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3);">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 24px;border-bottom:1px solid #eee;">
+              <div style="font-size:1rem;font-weight:700;color:#0B1F3A;" id="form-title">Nouvel avoir</div>
+              <button onclick="fermerFormAvoir()" style="padding:9px 16px;background:#f5f7fa;color:#555;border:1px solid #dde3ec;border-radius:8px;font-size:.82rem;cursor:pointer;">Fermer</button>
+            </div>
+            <div style="max-height:80vh;overflow-y:auto;padding:24px;">
             <input type="hidden" id="edit-id">
             <input type="hidden" id="f-numero">
 
@@ -335,35 +345,55 @@ body{background:var(--light);color:#222;min-height:100vh;}
             </div>
 
             <div class="form-actions">
-              <button class="btn-cancel" onclick="resetFormAvoir()">Annuler</button>
+              <button class="btn-cancel" onclick="fermerFormAvoir()">Annuler</button>
               <button class="btn-pdf" onclick="previsualiserPDF()">Aperçu PDF</button>
               <button class="btn-save" id="btn-save" onclick="enregistrerAvoir()">Enregistrer l'avoir</button>
             </div>
             <div id="save-status"></div>
-          </div>
-
-          <!-- LISTE -->
-          <div class="panel-box">
-            <h2>Avoirs enregistrés <span id="avoir-count" style="font-weight:400;color:#7a8fa5;font-size:.9rem;"></span></h2>
-            <div class="search-bar">
-              <input type="text" id="search-input" placeholder="Rechercher un avoir…" oninput="filtrerListeAvoirs()">
-            </div>
-            <div class="search-bar" style="margin-bottom:20px;">
-              <button class="filter-chip active" data-filter="all" onclick="setFiltreStatut(this,'all')">Tous</button>
-              <button class="filter-chip" data-filter="brouillon" onclick="setFiltreStatut(this,'brouillon')">Brouillons</button>
-              <button class="filter-chip" data-filter="emis" onclick="setFiltreStatut(this,'emis')">Émis</button>
-            </div>
-            <div id="loading-list" style="text-align:center;padding:40px;color:#7a8fa5;font-size:.88rem;">Chargement…</div>
-            <div id="avoir-list"></div>
-
-            <div style="margin-top:28px;padding-top:18px;border-top:1px dashed #f0b4b4;">
-              <div style="font-size:11px;font-weight:700;color:#dc2626;text-transform:uppercase;letter-spacing:.03em;margin-bottom:8px;">Zone de test</div>
-              <p style="font-size:.78rem;color:#94a3b8;margin-bottom:10px;">Supprime définitivement tous les avoirs enregistrés — pratique pour repartir de zéro après une phase de test.</p>
-              <button class="btn-delete" style="padding:8px 14px;" onclick="viderTousLesAvoirs()">Supprimer tous les avoirs</button>
             </div>
           </div>
-
         </div>
+
+        <div class="section-grid-tiles" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:20px;">
+          <div class="panel-box" style="cursor:pointer;text-align:center;padding:20px;" onclick="ouvrirListeAvoirs('brouillon')">
+            <div style="font-size:1.8rem;font-weight:800;color:#64748b;" id="tuile-brouillon">—</div>
+            <div style="font-size:.82rem;color:#7a8fa5;font-weight:600;margin-top:4px;">Brouillons</div>
+          </div>
+          <div class="panel-box" style="cursor:pointer;text-align:center;padding:20px;" onclick="ouvrirListeAvoirs('emis')">
+            <div style="font-size:1.8rem;font-weight:800;color:#dc2626;" id="tuile-emis">—</div>
+            <div style="font-size:.82rem;color:#7a8fa5;font-weight:600;margin-top:4px;">Émis</div>
+          </div>
+          <div class="panel-box" style="cursor:pointer;text-align:center;padding:20px;" onclick="ouvrirListeAvoirs('all')">
+            <div style="font-size:1.8rem;font-weight:800;color:var(--primary);" id="tuile-all">—</div>
+            <div style="font-size:.82rem;color:#7a8fa5;font-weight:600;margin-top:4px;">Tous</div>
+          </div>
+        </div>
+
+        <div class="panel-box">
+          <div style="font-size:11px;font-weight:700;color:#dc2626;text-transform:uppercase;letter-spacing:.03em;margin-bottom:8px;">Zone de test</div>
+          <p style="font-size:.78rem;color:#94a3b8;margin-bottom:10px;">Supprime définitivement tous les avoirs enregistrés — pratique pour repartir de zéro après une phase de test.</p>
+          <button class="btn-delete" style="padding:8px 14px;" onclick="viderTousLesAvoirs()">Supprimer tous les avoirs</button>
+        </div>
+
+        <!-- ═══ Modale : Liste des avoirs ═══ -->
+        <div id="liste-avoir-overlay" style="display:none;position:fixed;inset:0;background:rgba(11,31,58,.55);z-index:1900;align-items:flex-start;justify-content:center;overflow-y:auto;padding:30px 16px;">
+          <div style="background:white;border-radius:14px;max-width:720px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3);">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 24px;border-bottom:1px solid #eee;">
+              <div style="font-size:1rem;font-weight:700;color:#0B1F3A;" id="liste-avoir-titre">Avoirs</div>
+              <button onclick="fermerListeAvoirs()" style="padding:9px 16px;background:#f5f7fa;color:#555;border:1px solid #dde3ec;border-radius:8px;font-size:.82rem;cursor:pointer;">Fermer</button>
+            </div>
+            <div style="padding:18px 24px 0;">
+              <div class="search-bar">
+                <input type="text" id="search-input" placeholder="Rechercher un avoir…" oninput="filtrerListeAvoirs()">
+              </div>
+            </div>
+            <div style="max-height:65vh;overflow-y:auto;padding:0 24px 20px;">
+              <div id="loading-list" style="text-align:center;padding:40px;color:#7a8fa5;font-size:.88rem;">Chargement…</div>
+              <div id="avoir-list"></div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -977,8 +1007,8 @@ window.enregistrerAvoir = async function(){
       showStatus(isNew ? 'Avoir ' + numero + ' enregistré avec succès.' : 'Avoir mis à jour avec succès.', 'success');
     }
 
-    resetFormAvoir();
     chargerAvoirs();
+    setTimeout(() => { fermerFormAvoir(); }, 900);
   } catch(e){
     showStatus('Erreur : ' + e.message, 'error');
   }
@@ -989,19 +1019,24 @@ window.enregistrerAvoir = async function(){
 
 // ── Charger la liste ──
 async function chargerAvoirs(){
-  document.getElementById('loading-list').style.display = 'block';
-  document.getElementById('avoir-list').innerHTML = '';
   try {
     const q = query(collection(db, 'avoirs'), orderBy('ordre', 'desc'));
     const snap = await getDocs(q);
-    document.getElementById('loading-list').style.display = 'none';
-    document.getElementById('avoir-count').textContent = '(' + snap.size + ')';
     allAvoirs = [];
     snap.forEach(d => allAvoirs.push({ id: d.id, ...d.data() }));
+    majTuilesAvoirs();
     afficherListeAvoirs();
   } catch(e){
-    document.getElementById('loading-list').textContent = 'Erreur de chargement : ' + e.message;
+    console.warn('chargerAvoirs:', e.message);
   }
+}
+
+function majTuilesAvoirs(){
+  const counts = { brouillon: 0, emis: 0 };
+  allAvoirs.forEach(a => { if(counts[a.statut] != null) counts[a.statut]++; });
+  document.getElementById('tuile-brouillon').textContent = counts.brouillon;
+  document.getElementById('tuile-emis').textContent = counts.emis;
+  document.getElementById('tuile-all').textContent = allAvoirs.length;
 }
 
 function afficherListeAvoirs(){
@@ -1039,11 +1074,20 @@ function afficherListeAvoirs(){
 }
 
 window.filtrerListeAvoirs = afficherListeAvoirs;
-window.setFiltreStatut = function(btn, statut){
-  document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
+
+const LABELS_TUILES_AVOIRS = { brouillon: 'Brouillons', emis: 'Émis', all: 'Tous les avoirs' };
+
+window.ouvrirListeAvoirs = function(statut){
   filtreStatutActif = statut;
+  document.getElementById('liste-avoir-titre').textContent = LABELS_TUILES_AVOIRS[statut] || 'Avoirs';
+  document.getElementById('search-input').value = '';
+  document.getElementById('liste-avoir-overlay').style.display = 'flex';
+  document.getElementById('loading-list').style.display = 'none';
   afficherListeAvoirs();
+};
+
+window.fermerListeAvoirs = function(){
+  document.getElementById('liste-avoir-overlay').style.display = 'none';
 };
 
 window.editerAvoir = function(id){
@@ -1075,7 +1119,7 @@ window.editerAvoir = function(id){
 
   document.getElementById('form-title').textContent = 'Modifier l\'avoir ' + dv.numero;
   document.getElementById('btn-save').textContent = 'Mettre à jour';
-  document.querySelector('.panel-box').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.getElementById('avoir-form-overlay').style.display = 'flex';
 };
 
 window.envoyerDepuisListe = function(id){
@@ -1154,6 +1198,16 @@ window.resetFormAvoir = function(clearStatus){
   document.getElementById('btn-save').textContent = 'Enregistrer l\'avoir';
   document.getElementById('btn-save').disabled = false;
   if(clearStatus !== false) document.getElementById('save-status').style.display = 'none';
+};
+
+window.ouvrirNouvelAvoir = function(){
+  resetFormAvoir();
+  document.getElementById('avoir-form-overlay').style.display = 'flex';
+};
+
+window.fermerFormAvoir = function(){
+  document.getElementById('avoir-form-overlay').style.display = 'none';
+  resetFormAvoir();
 };
 
 function showStatus(msg, type){

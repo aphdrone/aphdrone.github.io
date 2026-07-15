@@ -232,11 +232,21 @@ body{background:var(--light);color:#222;min-height:100vh;}
       </div>
 
       <div class="content">
-        <div class="devis-layout">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px;">
+          <div>
+            <h2 style="font-size:1rem;font-weight:700;color:var(--primary);">Devis</h2>
+          </div>
+          <button class="btn-save" style="flex:none;padding:11px 20px;" onclick="ouvrirNouveauDevis()">+ Nouveau devis</button>
+        </div>
 
-          <!-- FORMULAIRE -->
-          <div class="panel-box">
-            <h2 id="form-title">Nouveau devis</h2>
+        <!-- ═══ Modale : Formulaire devis ═══ -->
+        <div id="devis-form-overlay" style="display:none;position:fixed;inset:0;background:rgba(11,31,58,.55);z-index:2000;align-items:flex-start;justify-content:center;overflow-y:auto;padding:30px 16px;">
+          <div style="background:white;border-radius:14px;max-width:720px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3);">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 24px;border-bottom:1px solid #eee;">
+              <div style="font-size:1rem;font-weight:700;color:#0B1F3A;" id="form-title">Nouveau devis</div>
+              <button onclick="fermerFormDevis()" style="padding:9px 16px;background:#f5f7fa;color:#555;border:1px solid #dde3ec;border-radius:8px;font-size:.82rem;cursor:pointer;">Fermer</button>
+            </div>
+            <div style="max-height:80vh;overflow-y:auto;padding:24px;">
             <input type="hidden" id="edit-id">
             <input type="hidden" id="f-numero">
 
@@ -310,37 +320,63 @@ body{background:var(--light);color:#222;min-height:100vh;}
             </div>
 
             <div class="form-actions">
-              <button class="btn-cancel" onclick="resetFormDevis()">Annuler</button>
+              <button class="btn-cancel" onclick="fermerFormDevis()">Annuler</button>
               <button class="btn-pdf" onclick="previsualiserPDF()">Aperçu PDF</button>
               <button class="btn-save" id="btn-save" onclick="enregistrerDevis()">Enregistrer le devis</button>
             </div>
             <div id="save-status"></div>
-          </div>
-
-          <!-- LISTE -->
-          <div class="panel-box">
-            <h2>Devis enregistrés <span id="devis-count" style="font-weight:400;color:#7a8fa5;font-size:.9rem;"></span></h2>
-            <div class="search-bar">
-              <input type="text" id="search-input" placeholder="Rechercher un devis…" oninput="filtrerListeDevis()">
-            </div>
-            <div class="search-bar" style="margin-bottom:20px;">
-              <button class="filter-chip active" data-filter="all" onclick="setFiltreStatut(this,'all')">Tous</button>
-              <button class="filter-chip" data-filter="brouillon" onclick="setFiltreStatut(this,'brouillon')">Brouillons</button>
-              <button class="filter-chip" data-filter="envoye" onclick="setFiltreStatut(this,'envoye')">Envoyés</button>
-              <button class="filter-chip" data-filter="acceptee" onclick="setFiltreStatut(this,'acceptee')">Acceptés</button>
-              <button class="filter-chip" data-filter="refusee" onclick="setFiltreStatut(this,'refusee')">Refusés</button>
-            </div>
-            <div id="loading-list" style="text-align:center;padding:40px;color:#7a8fa5;font-size:.88rem;">Chargement…</div>
-            <div id="devis-list"></div>
-
-            <div style="margin-top:28px;padding-top:18px;border-top:1px dashed #f0b4b4;">
-              <div style="font-size:11px;font-weight:700;color:#dc2626;text-transform:uppercase;letter-spacing:.03em;margin-bottom:8px;">Zone de test</div>
-              <p style="font-size:.78rem;color:#94a3b8;margin-bottom:10px;">Supprime définitivement tous les devis enregistrés — pratique pour repartir de zéro après une phase de test.</p>
-              <button class="btn-delete" style="padding:8px 14px;" onclick="viderTousLesDevis()">Supprimer tous les devis</button>
             </div>
           </div>
-
         </div>
+
+        <div class="section-grid-tiles" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:20px;">
+          <div class="panel-box" style="cursor:pointer;text-align:center;padding:20px;" onclick="ouvrirListeDevis('brouillon')">
+            <div style="font-size:1.8rem;font-weight:800;color:#64748b;" id="tuile-brouillon">—</div>
+            <div style="font-size:.82rem;color:#7a8fa5;font-weight:600;margin-top:4px;">Brouillons</div>
+          </div>
+          <div class="panel-box" style="cursor:pointer;text-align:center;padding:20px;" onclick="ouvrirListeDevis('envoye')">
+            <div style="font-size:1.8rem;font-weight:800;color:#0369a1;" id="tuile-envoye">—</div>
+            <div style="font-size:.82rem;color:#7a8fa5;font-weight:600;margin-top:4px;">Envoyés</div>
+          </div>
+          <div class="panel-box" style="cursor:pointer;text-align:center;padding:20px;" onclick="ouvrirListeDevis('acceptee')">
+            <div style="font-size:1.8rem;font-weight:800;color:#16a34a;" id="tuile-acceptee">—</div>
+            <div style="font-size:.82rem;color:#7a8fa5;font-weight:600;margin-top:4px;">Acceptés</div>
+          </div>
+          <div class="panel-box" style="cursor:pointer;text-align:center;padding:20px;" onclick="ouvrirListeDevis('refusee')">
+            <div style="font-size:1.8rem;font-weight:800;color:#dc2626;" id="tuile-refusee">—</div>
+            <div style="font-size:.82rem;color:#7a8fa5;font-weight:600;margin-top:4px;">Refusés</div>
+          </div>
+          <div class="panel-box" style="cursor:pointer;text-align:center;padding:20px;" onclick="ouvrirListeDevis('all')">
+            <div style="font-size:1.8rem;font-weight:800;color:var(--primary);" id="tuile-all">—</div>
+            <div style="font-size:.82rem;color:#7a8fa5;font-weight:600;margin-top:4px;">Tous</div>
+          </div>
+        </div>
+
+        <div class="panel-box">
+          <div style="font-size:11px;font-weight:700;color:#dc2626;text-transform:uppercase;letter-spacing:.03em;margin-bottom:8px;">Zone de test</div>
+          <p style="font-size:.78rem;color:#94a3b8;margin-bottom:10px;">Supprime définitivement tous les devis enregistrés — pratique pour repartir de zéro après une phase de test.</p>
+          <button class="btn-delete" style="padding:8px 14px;" onclick="viderTousLesDevis()">Supprimer tous les devis</button>
+        </div>
+
+        <!-- ═══ Modale : Liste des devis ═══ -->
+        <div id="liste-devis-overlay" style="display:none;position:fixed;inset:0;background:rgba(11,31,58,.55);z-index:1900;align-items:flex-start;justify-content:center;overflow-y:auto;padding:30px 16px;">
+          <div style="background:white;border-radius:14px;max-width:720px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3);">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 24px;border-bottom:1px solid #eee;">
+              <div style="font-size:1rem;font-weight:700;color:#0B1F3A;" id="liste-devis-titre">Devis</div>
+              <button onclick="fermerListeDevis()" style="padding:9px 16px;background:#f5f7fa;color:#555;border:1px solid #dde3ec;border-radius:8px;font-size:.82rem;cursor:pointer;">Fermer</button>
+            </div>
+            <div style="padding:18px 24px 0;">
+              <div class="search-bar">
+                <input type="text" id="search-input" placeholder="Rechercher un devis…" oninput="filtrerListeDevis()">
+              </div>
+            </div>
+            <div style="max-height:65vh;overflow-y:auto;padding:0 24px 20px;">
+              <div id="loading-list" style="text-align:center;padding:40px;color:#7a8fa5;font-size:.88rem;">Chargement…</div>
+              <div id="devis-list"></div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -865,8 +901,8 @@ window.enregistrerDevis = async function(){
       showStatus(isNew ? 'Devis ' + numero + ' enregistré avec succès.' : 'Devis mis à jour avec succès.', 'success');
     }
 
-    resetFormDevis();
     chargerDevis();
+    setTimeout(() => { fermerFormDevis(); }, 900);
   } catch(e){
     showStatus('Erreur : ' + e.message, 'error');
   }
@@ -877,19 +913,26 @@ window.enregistrerDevis = async function(){
 
 // ── Charger la liste ──
 async function chargerDevis(){
-  document.getElementById('loading-list').style.display = 'block';
-  document.getElementById('devis-list').innerHTML = '';
   try {
     const q = query(collection(db, 'devis'), orderBy('ordre', 'desc'));
     const snap = await getDocs(q);
-    document.getElementById('loading-list').style.display = 'none';
-    document.getElementById('devis-count').textContent = '(' + snap.size + ')';
     allDevis = [];
     snap.forEach(d => allDevis.push({ id: d.id, ...d.data() }));
+    majTuilesDevis();
     afficherListeDevis();
   } catch(e){
-    document.getElementById('loading-list').textContent = 'Erreur de chargement : ' + e.message;
+    console.warn('chargerDevis:', e.message);
   }
+}
+
+function majTuilesDevis(){
+  const counts = { brouillon: 0, envoye: 0, acceptee: 0, refusee: 0 };
+  allDevis.forEach(dv => { if(counts[dv.statut] != null) counts[dv.statut]++; });
+  document.getElementById('tuile-brouillon').textContent = counts.brouillon;
+  document.getElementById('tuile-envoye').textContent = counts.envoye;
+  document.getElementById('tuile-acceptee').textContent = counts.acceptee;
+  document.getElementById('tuile-refusee').textContent = counts.refusee;
+  document.getElementById('tuile-all').textContent = allDevis.length;
 }
 
 function afficherListeDevis(){
@@ -928,11 +971,20 @@ function afficherListeDevis(){
 }
 
 window.filtrerListeDevis = afficherListeDevis;
-window.setFiltreStatut = function(btn, statut){
-  document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
+
+const LABELS_TUILES_DEVIS = { brouillon: 'Brouillons', envoye: 'Envoyés', acceptee: 'Acceptés', refusee: 'Refusés', all: 'Tous les devis' };
+
+window.ouvrirListeDevis = function(statut){
   filtreStatutActif = statut;
+  document.getElementById('liste-devis-titre').textContent = LABELS_TUILES_DEVIS[statut] || 'Devis';
+  document.getElementById('search-input').value = '';
+  document.getElementById('liste-devis-overlay').style.display = 'flex';
+  document.getElementById('loading-list').style.display = 'none';
   afficherListeDevis();
+};
+
+window.fermerListeDevis = function(){
+  document.getElementById('liste-devis-overlay').style.display = 'none';
 };
 
 window.editerDevis = function(id){
@@ -955,7 +1007,7 @@ window.editerDevis = function(id){
 
   document.getElementById('form-title').textContent = 'Modifier le devis ' + dv.numero;
   document.getElementById('btn-save').textContent = 'Mettre à jour';
-  document.querySelector('.panel-box').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.getElementById('devis-form-overlay').style.display = 'flex';
 };
 
 window.dupliquerEnFacture = function(id){
@@ -1025,6 +1077,16 @@ window.resetFormDevis = function(clearStatus){
   document.getElementById('btn-save').textContent = 'Enregistrer le devis';
   document.getElementById('btn-save').disabled = false;
   if(clearStatus !== false) document.getElementById('save-status').style.display = 'none';
+};
+
+window.ouvrirNouveauDevis = function(){
+  resetFormDevis();
+  document.getElementById('devis-form-overlay').style.display = 'flex';
+};
+
+window.fermerFormDevis = function(){
+  document.getElementById('devis-form-overlay').style.display = 'none';
+  resetFormDevis();
 };
 
 function showStatus(msg, type){
