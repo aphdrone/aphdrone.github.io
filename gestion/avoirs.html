@@ -1139,9 +1139,16 @@ function verifierParametreEnvoiDirect(){
     envoyerDepuisListe(idAEnvoyer);
     history.replaceState(null, '', 'avoirs.html');
   } else if(idDepuisFacture && toutesLesFactures.find(f => f.id === idDepuisFacture)){
+    resetFormAvoir();
     selectionnerFacture(idDepuisFacture);
-    document.querySelector('.panel-box').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    document.getElementById('avoir-form-overlay').style.display = 'flex';
     history.replaceState(null, '', 'avoirs.html');
+  } else {
+    const filtre = params.get('filtre');
+    if(filtre){
+      ouvrirListeAvoirs(filtre);
+      history.replaceState(null, '', 'avoirs.html');
+    }
   }
 }
 
