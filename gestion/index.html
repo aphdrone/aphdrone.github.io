@@ -128,6 +128,7 @@ body{background:var(--light);color:#222;min-height:100vh;}
 .dash-stat-num{font-size:1.3rem;font-weight:700;color:var(--primary);font-variant-numeric:tabular-nums;}
 .dash-stat-num.alert{color:var(--red);}
 .dash-stat-num.warn{color:var(--amber);}
+.dash-stat-sub{font-size:10.5px;color:#94a3b8;margin-top:3px;min-height:13px;}
 
 .dash-section{background:white;border:1px solid #e8edf4;border-radius:8px;padding:20px;margin-bottom:16px;}
 .dash-section:last-child{margin-bottom:0;}
@@ -243,10 +244,12 @@ body{background:var(--light);color:#222;min-height:100vh;}
           <div class="dash-stat">
             <div class="dash-stat-lbl">CA du mois</div>
             <div class="dash-stat-num" id="stat-ca-mois">—</div>
+            <div class="dash-stat-sub" id="stat-ca-mois-attente"></div>
           </div>
           <div class="dash-stat">
             <div class="dash-stat-lbl">CA de l'année</div>
             <div class="dash-stat-num" id="stat-ca-annee">—</div>
+            <div class="dash-stat-sub" id="stat-ca-annee-attente"></div>
           </div>
           <div class="dash-stat">
             <div class="dash-stat-lbl">Factures en retard</div>
@@ -412,16 +415,22 @@ async function chargerTableauDeBord(){
     const devisSnap = await getDocs(collection(db, 'devis'));
     const avoirsSnap = await getDocs(collection(db, 'avoirs'));
 
-    let caMois = 0, caAnnee = 0, nbRetard = 0, nbDevisAttente = 0;
+    let caMois = 0, caAnnee = 0, encaisseMois = 0, encaisseAnnee = 0, nbRetard = 0, nbDevisAttente = 0;
     const factures = [];
     facturesSnap.forEach(d => {
       const f = d.data();
       f._id = d.id;
       factures.push(f);
       const dateEmission = f.dateEmission ? new Date(f.dateEmission) : null;
-      if(f.statut === 'payee' && dateEmission){
+      // Le CA se comptabilise dès la facture validée (émise), pas seulement à l'encaissement —
+      // cohérent avec l'écriture comptable automatique (compte 706) générée dès l'émission.
+      if(f.statut !== 'brouillon' && dateEmission){
         if(dateEmission >= debutAnnee) caAnnee += (f.montantTTC || 0);
         if(dateEmission >= debutMois) caMois += (f.montantTTC || 0);
+        if(f.statut === 'payee'){
+          if(dateEmission >= debutAnnee) encaisseAnnee += (f.montantTTC || 0);
+          if(dateEmission >= debutMois) encaisseMois += (f.montantTTC || 0);
+        }
       }
       if(f.statut === 'retard' || (f.statut === 'envoyee' && f.dateEcheance && new Date(f.dateEcheance) < now)){
         nbRetard++;
@@ -455,6 +464,10 @@ async function chargerTableauDeBord(){
 
     document.getElementById('stat-ca-mois').textContent = formatMontant(caMois);
     document.getElementById('stat-ca-annee').textContent = formatMontant(caAnnee);
+    const enAttenteMois = caMois - encaisseMois;
+    const enAttenteAnnee = caAnnee - encaisseAnnee;
+    document.getElementById('stat-ca-mois-attente').textContent = enAttenteMois > 0.01 ? 'dont ' + formatMontant(enAttenteMois) + ' en attente de règlement' : '';
+    document.getElementById('stat-ca-annee-attente').textContent = enAttenteAnnee > 0.01 ? 'dont ' + formatMontant(enAttenteAnnee) + ' en attente de règlement' : '';
     document.getElementById('stat-retard').textContent = nbRetard;
     document.getElementById('stat-retard').classList.toggle('alert', nbRetard > 0);
     document.getElementById('stat-devis-attente').textContent = nbDevisAttente;
