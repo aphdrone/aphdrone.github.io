@@ -308,24 +308,14 @@ body{background:var(--light);color:#222;min-height:100vh;}
 
             <div class="form-group" style="background:#fafbfc;border:1.5px solid #eee;border-radius:10px;padding:14px 16px;">
               <label style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;text-transform:none;font-size:.85rem;font-weight:600;color:#0B1F3A;margin-bottom:0;">
-                Accès espace client (site web)
+                Créer un accès de connexion
                 <span class="toggle" style="position:relative;display:inline-block;width:40px;height:22px;">
                   <input type="checkbox" id="f-espace-client" onchange="toggleEspaceClientInfo()" style="opacity:0;width:0;height:0;">
                   <span id="toggle-slider-espace" style="position:absolute;inset:0;background:#dde3ec;border-radius:22px;transition:.2s;"></span>
                   <span id="toggle-knob-espace" style="position:absolute;top:3px;left:3px;width:16px;height:16px;background:white;border-radius:50%;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.3);"></span>
                 </span>
               </label>
-              <div id="info-espace-client" style="display:none;margin-top:10px;font-size:.78rem;color:#7a8fa5;">Un compte de connexion sera créé avec l'email renseigné ci-dessus, et un mot de passe généré automatiquement s'affichera après l'enregistrement — à transmettre au client.</div>
-
-              <label style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;text-transform:none;font-size:.85rem;font-weight:600;color:#0B1F3A;margin:14px 0 0;">
-                Stagiaire (accès formation)
-                <span class="toggle" style="position:relative;display:inline-block;width:40px;height:22px;">
-                  <input type="checkbox" id="f-stagiaire" onchange="toggleStagiaireInfo()" style="opacity:0;width:0;height:0;">
-                  <span id="toggle-slider-stagiaire" style="position:absolute;inset:0;background:#dde3ec;border-radius:22px;transition:.2s;"></span>
-                  <span id="toggle-knob-stagiaire" style="position:absolute;top:3px;left:3px;width:16px;height:16px;background:white;border-radius:50%;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.3);"></span>
-                </span>
-              </label>
-              <div id="info-stagiaire" style="display:none;margin-top:10px;font-size:.78rem;color:#7a8fa5;">Crée aussi (ou met à jour) sa fiche stagiaire côté admin du site, pour lui débloquer l'accès aux modules de formation.</div>
+              <div id="info-espace-client" style="display:none;margin-top:10px;font-size:.78rem;color:#7a8fa5;">Un compte de connexion sera créé avec l'email renseigné ci-dessus, et un mot de passe généré automatiquement s'affichera après l'enregistrement — à transmettre au client. Si des formations sont sélectionnées ci-dessus, sa fiche stagiaire (accès aux modules) sera aussi créée automatiquement.</div>
             </div>
 
             <div class="form-group" style="background:#fafbfc;border:1.5px solid #eee;border-radius:10px;padding:14px 16px;">
@@ -452,7 +442,7 @@ function genPassword(){
 // Crée l'accès espace client (site web) et/ou stagiaire pour ce client, sans dupliquer
 // si un compte existe déjà pour cet email. Retourne le mot de passe généré si un compte
 // Firebase Auth a été créé (null si le compte existait déjà).
-async function creerAccesEspacePersonnel(nomAffichage, email, espaceClient, stagiaire){
+async function creerAccesEspacePersonnel(nomAffichage, email, espaceClient, stagiaire, formationLibelle){
   if(!email) return null;
 
   // Vérifie si des fiches "clients" / "stagiaires" existent déjà pour cet email
@@ -484,7 +474,7 @@ async function creerAccesEspacePersonnel(nomAffichage, email, espaceClient, stag
     await addDoc(collection(db, 'clients'), { name: nomAffichage, email, createdAt: Date.now() });
   }
   if(stagiaire && !aDejaCompteStagiaire){
-    await addDoc(collection(db, 'stagiaires'), { name: nomAffichage, email, formation: '', modules: [], createdAt: Date.now() });
+    await addDoc(collection(db, 'stagiaires'), { name: nomAffichage, email, formation: formationLibelle || '', modules: [], createdAt: Date.now() });
   }
 
   return motDePasseGenere;
@@ -749,13 +739,6 @@ window.toggleEspaceClientInfo = function(){
   document.getElementById('toggle-knob-espace').style.transform = checked ? 'translateX(18px)' : 'translateX(0)';
 };
 
-window.toggleStagiaireInfo = function(){
-  const checked = document.getElementById('f-stagiaire').checked;
-  document.getElementById('info-stagiaire').style.display = checked ? 'block' : 'none';
-  document.getElementById('toggle-slider-stagiaire').style.background = checked ? 'var(--secondary)' : '#dde3ec';
-  document.getElementById('toggle-knob-stagiaire').style.transform = checked ? 'translateX(18px)' : 'translateX(0)';
-};
-
 window.selectType = function(type){
   currentType = type;
   document.querySelectorAll('.type-btn').forEach(b => b.classList.toggle('active', b.dataset.type === type));
@@ -864,13 +847,13 @@ window.enregistrerClient = async function(){
     }
 
     const espaceClient = document.getElementById('f-espace-client').checked;
-    const stagiaire = document.getElementById('f-stagiaire').checked;
-    if(espaceClient || stagiaire){
+    const estStagiaire = selectionFormations.length > 0;
+    if(espaceClient){
       if(!data.email){
         showStatus('Client enregistré, mais aucun accès créé : renseigne un email pour ça.', 'error');
       } else {
         try {
-          const motDePasse = await creerAccesEspacePersonnel(nomAffichage, data.email, espaceClient, stagiaire);
+          const motDePasse = await creerAccesEspacePersonnel(nomAffichage, data.email, true, estStagiaire, selectionFormations.join(', '));
           if(motDePasse){
             document.getElementById('pwd-espace-email').textContent = data.email;
             document.getElementById('pwd-espace-valeur').textContent = motDePasse;
@@ -1009,19 +992,13 @@ window.editerClient = function(id){
   document.getElementById('btn-save').textContent = 'Mettre à jour';
   document.getElementById('client-form-overlay').style.display = 'flex';
 
-  // Reflète l'état réel des accès existants (sans bloquer l'ouverture de la fiche)
+  // Reflète l'état réel de l'accès existant (sans bloquer l'ouverture de la fiche)
   document.getElementById('f-espace-client').checked = false;
-  document.getElementById('f-stagiaire').checked = false;
   toggleEspaceClientInfo();
-  toggleStagiaireInfo();
   if(c.email){
-    Promise.all([
-      getDocs(query(collection(db, 'clients'), where('email', '==', c.email))),
-      getDocs(query(collection(db, 'stagiaires'), where('email', '==', c.email)))
-    ]).then(([snapClients, snapStagiaires]) => {
+    getDocs(query(collection(db, 'clients'), where('email', '==', c.email))).then(snapClients => {
       if(document.getElementById('edit-id').value !== id) return; // la fiche a changé entre-temps
       if(!snapClients.empty){ document.getElementById('f-espace-client').checked = true; toggleEspaceClientInfo(); }
-      if(!snapStagiaires.empty){ document.getElementById('f-stagiaire').checked = true; toggleStagiaireInfo(); }
     }).catch(() => {});
   }
 };
@@ -1072,8 +1049,6 @@ window.resetForm = function(clearStatus){
   toggleBlocageField();
   document.getElementById('f-espace-client').checked = false;
   toggleEspaceClientInfo();
-  document.getElementById('f-stagiaire').checked = false;
-  toggleStagiaireInfo();
   document.getElementById('contacts-list').innerHTML = '';
   ajouterLigneContact();
   selectionPrestations = [];
