@@ -336,7 +336,8 @@ body{background:var(--light);color:#222;min-height:100vh;}
           <tr style="border-bottom:1px solid #e8edf4;">
             <th style="text-align:left;padding:8px 6px;font-size:10px;color:#94a3b8;font-weight:700;text-transform:uppercase;">N°</th>
             <th style="text-align:left;padding:8px 6px;font-size:10px;color:#94a3b8;font-weight:700;text-transform:uppercase;">Client</th>
-            <th style="text-align:left;padding:8px 6px;font-size:10px;color:#94a3b8;font-weight:700;text-transform:uppercase;">Date</th>
+            <th style="text-align:left;padding:8px 6px;font-size:10px;color:#94a3b8;font-weight:700;text-transform:uppercase;">Émission</th>
+            <th style="text-align:left;padding:8px 6px;font-size:10px;color:#94a3b8;font-weight:700;text-transform:uppercase;">Échéance</th>
             <th style="text-align:left;padding:8px 6px;font-size:10px;color:#94a3b8;font-weight:700;text-transform:uppercase;">Statut</th>
             <th style="text-align:right;padding:8px 6px;font-size:10px;color:#94a3b8;font-weight:700;text-transform:uppercase;">Montant</th>
           </tr>
@@ -472,16 +473,21 @@ window.ouvrirFenetreFacturesFiltrees = function(){
 
   const tbody = document.getElementById('dash-factures-tbody');
   if(!resultats.length){
-    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#94a3b8;padding:24px;">Aucune facture ne correspond à ces filtres.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#94a3b8;padding:24px;">Aucune facture ne correspond à ces filtres.</td></tr>';
   } else {
-    tbody.innerHTML = resultats.map(f => `
+    const aujourdHui = new Date().toISOString().slice(0,10);
+    tbody.innerHTML = resultats.map(f => {
+      const echeanceDepassee = f.dateEcheance && f.dateEcheance < aujourdHui && f.statut !== 'payee';
+      return `
       <tr style="border-bottom:1px solid #f0f3f7;">
         <td style="padding:8px 6px;color:#334155;">${f.numero || '—'}</td>
         <td style="padding:8px 6px;color:#334155;">${f.clientNom || '—'}</td>
         <td style="padding:8px 6px;color:#334155;">${f.dateEmission ? new Date(f.dateEmission).toLocaleDateString('fr-FR') : '—'}</td>
+        <td style="padding:8px 6px;${echeanceDepassee ? 'color:#dc2626;font-weight:700;' : 'color:#334155;'}">${f.dateEcheance ? new Date(f.dateEcheance).toLocaleDateString('fr-FR') : '—'}${echeanceDepassee ? ' ⚠' : ''}</td>
         <td style="padding:8px 6px;color:#334155;">${LABELS_STATUT_FACTURE[f.statut] || f.statut || '—'}</td>
         <td style="padding:8px 6px;text-align:right;font-weight:600;color:#0B1F3A;">${formatMontant(f.montantTTC)}</td>
-      </tr>`).join('');
+      </tr>`;
+    }).join('');
   }
 
   document.getElementById('dash-factures-overlay').style.display = 'flex';
