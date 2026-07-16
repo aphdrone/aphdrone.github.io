@@ -1074,10 +1074,40 @@ function verifierParametreEnvoiDirect(){
     history.replaceState(null, '', 'factures.html');
     return;
   }
+  const idDepuisDevis = params.get('depuisDevis');
+  if(idDepuisDevis){
+    preremplirDepuisDevis(idDepuisDevis);
+    history.replaceState(null, '', 'factures.html');
+    return;
+  }
   const filtre = params.get('filtre');
   if(filtre){
     ouvrirListeFactures(filtre);
     history.replaceState(null, '', 'factures.html');
+  }
+}
+
+async function preremplirDepuisDevis(devisId){
+  try {
+    const snap = await getDoc(doc(db, 'devis', devisId));
+    if(!snap.exists()){ alert('Ce devis est introuvable (a-t-il été supprimé ?).'); return; }
+    const dv = snap.data();
+
+    resetFormFacture();
+
+    const c = tousLesClients.find(x => x.id === dv.clientId);
+    if(c) selectionnerClient(c.id);
+
+    document.getElementById('lignes-tbody').innerHTML = '';
+    (dv.lignes || []).forEach(l => ajouterLigne(l.designation, l.quantite, l.prixUnitaireHT, l.tvaTaux, l.remisePct, l.motifRemise));
+    if((dv.lignes || []).length === 0) ajouterLigne();
+    recalculerTotaux();
+
+    if(dv.notes) document.getElementById('f-notes').value = dv.notes;
+
+    document.getElementById('facture-form-overlay').style.display = 'flex';
+  } catch(e){
+    alert('Erreur lors de la récupération du devis : ' + e.message);
   }
 }
 
