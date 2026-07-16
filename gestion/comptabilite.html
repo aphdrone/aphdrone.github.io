@@ -779,7 +779,7 @@ async function initComptabilite(){
 
 async function chargerParametres(){
   try {
-    const snap = await getDoc(doc(db, 'parametres', 'entreprise'));
+    const snap = await getDoc(doc(db, 'parametres', 'societe'));
     parametresEntreprise = snap.exists() ? snap.data() : {};
   } catch(e){ console.warn('chargerParametres:', e.message); parametresEntreprise = {}; }
 }

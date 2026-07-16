@@ -497,6 +497,11 @@ window.allerVersListeFiltree = function(){
 
 const LABELS_STATUT_FACTURE = { brouillon: 'Brouillon', envoyee: 'Envoyée', payee: 'Payée', retard: 'En retard' };
 
+function calculerStatutAffiche(f){
+  if(f.statut === 'envoyee' && f.dateEcheance && new Date(f.dateEcheance) < new Date()) return 'retard';
+  return f.statut;
+}
+
 window.ouvrirFenetreFacturesFiltrees = function(){
   const statut = document.getElementById('dash-factures-statut').value;
   const client = document.getElementById('dash-factures-client').value;
@@ -504,7 +509,7 @@ window.ouvrirFenetreFacturesFiltrees = function(){
   const dateFin = document.getElementById('dash-factures-fin').value;
 
   const resultats = facturesGlobal.filter(f => {
-    if(statut && f.statut !== statut) return false;
+    if(statut && calculerStatutAffiche(f) !== statut) return false;
     if(client && f.clientNom !== client) return false;
     if(dateDebut && (!f.dateEmission || f.dateEmission < dateDebut)) return false;
     if(dateFin && (!f.dateEmission || f.dateEmission > dateFin)) return false;
@@ -528,7 +533,7 @@ window.ouvrirFenetreFacturesFiltrees = function(){
         <td style="padding:8px 6px;color:#334155;">${f.clientNom || '—'}</td>
         <td style="padding:8px 6px;color:#334155;">${f.dateEmission ? new Date(f.dateEmission).toLocaleDateString('fr-FR') : '—'}</td>
         <td style="padding:8px 6px;${echeanceDepassee ? 'color:#dc2626;font-weight:700;' : 'color:#334155;'}">${f.dateEcheance ? new Date(f.dateEcheance).toLocaleDateString('fr-FR') : '—'}${echeanceDepassee ? ' ⚠' : ''}</td>
-        <td style="padding:8px 6px;color:#334155;">${LABELS_STATUT_FACTURE[f.statut] || f.statut || '—'}</td>
+        <td style="padding:8px 6px;color:#334155;">${LABELS_STATUT_FACTURE[calculerStatutAffiche(f)] || f.statut || '—'}</td>
         <td style="padding:8px 6px;text-align:right;font-weight:600;color:#0B1F3A;">${formatMontant(f.montantTTC)}</td>
       </tr>`;
     }).join('');
@@ -581,7 +586,7 @@ window.ouvrirFenetreCaFiltre = function(){
         <td style="padding:8px 6px;color:#334155;">${f.clientNom || '—'}</td>
         <td style="padding:8px 6px;color:#334155;">${f.dateEmission ? new Date(f.dateEmission).toLocaleDateString('fr-FR') : '—'}</td>
         <td style="padding:8px 6px;${echeanceDepassee ? 'color:#dc2626;font-weight:700;' : 'color:#334155;'}">${f.dateEcheance ? new Date(f.dateEcheance).toLocaleDateString('fr-FR') : '—'}${echeanceDepassee ? ' ⚠' : ''}</td>
-        <td style="padding:8px 6px;color:#334155;">${LABELS_STATUT_FACTURE[f.statut] || f.statut || '—'}</td>
+        <td style="padding:8px 6px;color:#334155;">${LABELS_STATUT_FACTURE[calculerStatutAffiche(f)] || f.statut || '—'}</td>
         <td style="padding:8px 6px;text-align:right;font-weight:600;color:#0B1F3A;">${formatMontant(f.montantTTC)}</td>
       </tr>`;
     }).join('');
