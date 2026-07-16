@@ -48,11 +48,20 @@ window.definirEntrepriseInfo = function(infos){
   });
 };
 
+// Palette strictement noir / gris (aucune couleur) — le type de document se distingue
+// uniquement par son intitulé texte ("DEVIS" / "FACTURE" / "AVOIR"), pas par une couleur.
 const DOC_LABELS = {
-  devis: { titre: 'Devis', couleur: '#1F5FAF' },
-  facture: { titre: 'Facture', couleur: '#0B1F3A' },
-  avoir: { titre: 'Avoir', couleur: '#7c3aed' }
+  devis: { titre: 'Devis' },
+  facture: { titre: 'Facture' },
+  avoir: { titre: 'Avoir' }
 };
+
+const NOIR = '#111111';
+const GRIS_FONCE = '#333333';
+const GRIS = '#666666';
+const GRIS_CLAIR = '#999999';
+const GRIS_TRES_CLAIR = '#f4f4f4';
+const BORDURE = '#dddddd';
 
 function formaterMontantDoc(n){
   return (n || 0).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
@@ -82,7 +91,7 @@ function calculerTotauxDoc(lignes){
 }
 
 function construireBlocClient(client){
-  if(!client) return '<div style="font-size:11.5px;color:#94a3b8;">Client non renseigné</div>';
+  if(!client) return `<div style="font-size:11.5px;color:${GRIS_CLAIR};">Client non renseigné</div>`;
   const lignesIdentite = [];
   if(client.type === 'professionnel'){
     lignesIdentite.push(client.raisonSociale || client.nomAffichage);
@@ -102,10 +111,10 @@ function construireBlocClient(client){
   const adresse = [client.adresseRue, [client.adresseCP, client.adresseVille].filter(Boolean).join(' ')].filter(Boolean).join('<br>');
 
   return `
-    <div style="font-size:12.5px;font-weight:700;color:#0B1F3A;margin-bottom:4px;">${lignesIdentite[0] || ''}</div>
-    ${lignesIdentite.slice(1).map(l => '<div style="font-size:11px;color:#555;">' + l + '</div>').join('')}
-    ${adresse ? '<div style="font-size:11px;color:#555;margin-top:4px;">' + adresse + '</div>' : ''}
-    ${client.email ? '<div style="font-size:11px;color:#555;margin-top:4px;">' + client.email + '</div>' : ''}
+    <div style="font-size:12.5px;font-weight:700;color:${NOIR};margin-bottom:4px;">${lignesIdentite[0] || ''}</div>
+    ${lignesIdentite.slice(1).map(l => '<div style="font-size:11px;color:' + GRIS + ';">' + l + '</div>').join('')}
+    ${adresse ? '<div style="font-size:11px;color:' + GRIS + ';margin-top:4px;">' + adresse + '</div>' : ''}
+    ${client.email ? '<div style="font-size:11px;color:' + GRIS + ';margin-top:4px;">' + client.email + '</div>' : ''}
   `;
 }
 
@@ -119,20 +128,20 @@ function construireDocumentHTML(doc){
     const montantNet = montantBrut - montantBrut * (remisePct / 100);
     return `
       <tr>
-        <td style="padding:8px 6px;border-bottom:1px solid #eee;font-size:11px;color:#222;">
+        <td style="padding:8px 6px;border-bottom:1px solid ${BORDURE};font-size:11px;color:${GRIS_FONCE};">
           ${l.designation || ''}
-          ${remisePct > 0 ? '<div style="font-size:9.5px;color:#16a34a;margin-top:2px;">Remise ' + remisePct + '%' + (l.motifRemise ? ' — ' + l.motifRemise : '') + '</div>' : ''}
+          ${remisePct > 0 ? '<div style="font-size:9.5px;color:' + GRIS + ';font-style:italic;margin-top:2px;">Remise ' + remisePct + '%' + (l.motifRemise ? ' — ' + l.motifRemise : '') + '</div>' : ''}
         </td>
-        <td style="padding:8px 6px;border-bottom:1px solid #eee;font-size:11px;color:#222;text-align:center;">${l.quantite || 0}</td>
-        <td style="padding:8px 6px;border-bottom:1px solid #eee;font-size:11px;color:#222;text-align:right;">${formaterMontantDoc(l.prixUnitaireHT)}</td>
-        <td style="padding:8px 6px;border-bottom:1px solid #eee;font-size:11px;color:#222;text-align:right;">${l.tvaTaux != null ? l.tvaTaux : 20}%</td>
-        <td style="padding:8px 6px;border-bottom:1px solid #eee;font-size:11px;color:#0B1F3A;font-weight:700;text-align:right;">${formaterMontantDoc(montantNet)}</td>
+        <td style="padding:8px 6px;border-bottom:1px solid ${BORDURE};font-size:11px;color:${GRIS_FONCE};text-align:center;">${l.quantite || 0}</td>
+        <td style="padding:8px 6px;border-bottom:1px solid ${BORDURE};font-size:11px;color:${GRIS_FONCE};text-align:right;">${formaterMontantDoc(l.prixUnitaireHT)}</td>
+        <td style="padding:8px 6px;border-bottom:1px solid ${BORDURE};font-size:11px;color:${GRIS_FONCE};text-align:right;">${l.tvaTaux != null ? l.tvaTaux : 20}%</td>
+        <td style="padding:8px 6px;border-bottom:1px solid ${BORDURE};font-size:11px;color:${NOIR};font-weight:700;text-align:right;">${formaterMontantDoc(montantNet)}</td>
       </tr>
     `;
   }).join('');
 
   const tvaDetailHTML = Object.entries(totaux.tvaParTaux).map(([taux, montant]) => `
-    <div style="display:flex;justify-content:space-between;font-size:11px;color:#555;padding:3px 0;">
+    <div style="display:flex;justify-content:space-between;font-size:11px;color:${GRIS};padding:3px 0;">
       <span>TVA ${taux}%</span><span>${formaterMontantDoc(montant)}</span>
     </div>
   `).join('');
@@ -151,84 +160,87 @@ function construireDocumentHTML(doc){
   }
 
   const piedLegal = doc.typeDoc === 'facture'
-    ? `<div style="font-size:9px;color:#7a8fa5;line-height:1.6;">
-        ${APH_ENTREPRISE.iban ? '<div style="margin-bottom:6px;font-size:10px;color:#0B1F3A;font-weight:600;">Règlement par virement — IBAN : ' + APH_ENTREPRISE.iban + (APH_ENTREPRISE.bic ? ' · BIC : ' + APH_ENTREPRISE.bic : '') + '</div>' : ''}
+    ? `<div style="font-size:9px;color:${GRIS};line-height:1.6;">
+        ${APH_ENTREPRISE.iban ? '<div style="margin-bottom:6px;font-size:10px;color:' + NOIR + ';font-weight:600;">Règlement par virement — IBAN : ' + APH_ENTREPRISE.iban + (APH_ENTREPRISE.bic ? ' · BIC : ' + APH_ENTREPRISE.bic : '') + '</div>' : ''}
         En cas de retard de paiement, une indemnité forfaitaire de 40 € pour frais de recouvrement est due (art. L441-10 du Code de commerce), ainsi que des pénalités de retard calculées au taux d'intérêt de la BCE majoré de 10 points. Pas d'escompte pour paiement anticipé.
       </div>`
     : doc.typeDoc === 'devis'
-    ? `<div style="font-size:9px;color:#7a8fa5;line-height:1.6;">
+    ? `<div style="font-size:9px;color:${GRIS};line-height:1.6;">
         Devis valable jusqu'à la date indiquée ci-dessus. Bon pour accord à retourner signé pour validation de la commande.
       </div>
       <div style="margin-top:24px;display:flex;justify-content:flex-end;">
-        <div style="border:1px solid #dde3ec;border-radius:8px;padding:14px 18px;width:220px;text-align:center;">
-          <div style="font-size:10px;color:#7a8fa5;margin-bottom:30px;">Bon pour accord — date et signature</div>
+        <div style="border:1px solid ${BORDURE};border-radius:8px;padding:14px 18px;width:220px;text-align:center;">
+          <div style="font-size:10px;color:${GRIS};margin-bottom:30px;">Bon pour accord — date et signature</div>
         </div>
       </div>`
-    : `<div style="font-size:9px;color:#7a8fa5;line-height:1.6;">
+    : `<div style="font-size:9px;color:${GRIS};line-height:1.6;">
         Cet avoir annule et remplace partiellement ou totalement la facture référencée ci-dessus.
       </div>`;
 
   return `
-    <div style="font-family:'Inter',sans-serif;color:#222;">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid ${meta.couleur};padding-bottom:16px;margin-bottom:22px;">
-        <div style="display:flex;align-items:flex-start;gap:14px;">
-          <img src="/assets/logo.jpg" alt="APH Drone" style="width:52px;height:52px;border-radius:50%;object-fit:cover;flex-shrink:0;" onerror="this.style.display='none'">
-          <div>
-            <div style="font-size:16px;font-weight:800;color:#0B1F3A;">${APH_ENTREPRISE.nom}</div>
-            <div style="font-size:10px;color:#555;margin-top:2px;">${APH_ENTREPRISE.formeJuridique} — ${APH_ENTREPRISE.dirigeant}</div>
-            <div style="font-size:10px;color:#555;">${APH_ENTREPRISE.adresse}, ${APH_ENTREPRISE.cp} ${APH_ENTREPRISE.ville}</div>
-            <div style="font-size:10px;color:#555;">SIRET : ${APH_ENTREPRISE.siret}</div>
-            ${APH_ENTREPRISE.tva && APH_ENTREPRISE.tva !== '[N° TVA à compléter]' ? '<div style="font-size:10px;color:#555;">TVA intracom. : ' + APH_ENTREPRISE.tva + '</div>' : ''}
-            <div style="font-size:10px;color:#555;">${APH_ENTREPRISE.telephone} · ${APH_ENTREPRISE.email}</div>
+    <div style="font-family:'Inter',sans-serif;color:${GRIS_FONCE};height:100%;display:flex;flex-direction:column;">
+      <div>
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid ${NOIR};padding-bottom:16px;margin-bottom:22px;">
+          <div style="display:flex;align-items:flex-start;gap:14px;">
+            <img src="/assets/logo.jpg" alt="APH Drone" style="width:52px;height:52px;border-radius:50%;object-fit:cover;flex-shrink:0;filter:grayscale(100%);" onerror="this.style.display='none'">
+            <div>
+              <div style="font-size:16px;font-weight:800;color:${NOIR};">${APH_ENTREPRISE.nom}</div>
+              <div style="font-size:10px;color:${GRIS};margin-top:2px;">${APH_ENTREPRISE.formeJuridique} — ${APH_ENTREPRISE.dirigeant}</div>
+              <div style="font-size:10px;color:${GRIS};">${APH_ENTREPRISE.adresse}, ${APH_ENTREPRISE.cp} ${APH_ENTREPRISE.ville}</div>
+              <div style="font-size:10px;color:${GRIS};">SIRET : ${APH_ENTREPRISE.siret}</div>
+              ${APH_ENTREPRISE.tva && APH_ENTREPRISE.tva !== '[N° TVA à compléter]' ? '<div style="font-size:10px;color:' + GRIS + ';">TVA intracom. : ' + APH_ENTREPRISE.tva + '</div>' : ''}
+              <div style="font-size:10px;color:${GRIS};">${APH_ENTREPRISE.telephone} · ${APH_ENTREPRISE.email}</div>
+            </div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:20px;font-weight:800;color:${NOIR};text-transform:uppercase;letter-spacing:.04em;">${meta.titre}</div>
+            <div style="font-size:13px;font-weight:700;color:${NOIR};margin-top:2px;">${doc.numero || ''}</div>
+            <div style="font-size:10.5px;color:${GRIS};margin-top:6px;">Date d'émission : ${formaterDateDoc(doc.dateEmission)}</div>
+            ${dateSecondaireLabel ? '<div style="font-size:10.5px;color:' + GRIS + ';">' + dateSecondaireLabel + ' : ' + dateSecondaireValeur + '</div>' : ''}
           </div>
         </div>
-        <div style="text-align:right;">
-          <div style="font-size:20px;font-weight:800;color:${meta.couleur};text-transform:uppercase;">${meta.titre}</div>
-          <div style="font-size:13px;font-weight:700;color:#0B1F3A;margin-top:2px;">${doc.numero || ''}</div>
-          <div style="font-size:10.5px;color:#555;margin-top:6px;">Date d'émission : ${formaterDateDoc(doc.dateEmission)}</div>
-          ${dateSecondaireLabel ? '<div style="font-size:10.5px;color:#555;">' + dateSecondaireLabel + ' : ' + dateSecondaireValeur + '</div>' : ''}
-        </div>
-      </div>
 
-      <div style="display:flex;justify-content:flex-end;margin-bottom:22px;">
-        <div style="background:#F5F7FA;border-radius:8px;padding:12px 16px;min-width:230px;">
-          <div style="font-size:9px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:${meta.couleur};margin-bottom:6px;">Adressé à</div>
-          ${construireBlocClient(doc.client)}
-        </div>
-      </div>
-
-      <table style="width:100%;border-collapse:collapse;margin-bottom:14px;">
-        <thead>
-          <tr style="background:#F5F7FA;">
-            <th style="padding:8px 6px;text-align:left;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:#7a8fa5;">Désignation</th>
-            <th style="padding:8px 6px;text-align:center;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:#7a8fa5;">Qté</th>
-            <th style="padding:8px 6px;text-align:right;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:#7a8fa5;">PU HT</th>
-            <th style="padding:8px 6px;text-align:right;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:#7a8fa5;">TVA</th>
-            <th style="padding:8px 6px;text-align:right;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:#7a8fa5;">Total HT</th>
-          </tr>
-        </thead>
-        <tbody>${lignesHTML}</tbody>
-      </table>
-
-      <div style="display:flex;justify-content:flex-end;margin-bottom:22px;">
-        <div style="width:240px;">
-          ${totaux.totalRemises > 0 ? '<div style="display:flex;justify-content:space-between;font-size:10.5px;color:#16a34a;padding:3px 0;"><span>Dont remises accordées</span><span>-' + formaterMontantDoc(totaux.totalRemises) + '</span></div>' : ''}
-          <div style="display:flex;justify-content:space-between;font-size:11.5px;color:#0B1F3A;padding:5px 0;border-bottom:1px solid #eee;">
-            <span>Total HT</span><span>${formaterMontantDoc(totaux.totalHT)}</span>
-          </div>
-          ${tvaDetailHTML}
-          <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:800;color:${meta.couleur};padding:8px 0 0;margin-top:4px;border-top:1.5px solid #0B1F3A;">
-            <span>Total TTC</span><span>${formaterMontantDoc(totaux.totalTTC)}</span>
+        <div style="display:flex;justify-content:flex-end;margin-bottom:22px;">
+          <div style="background:${GRIS_TRES_CLAIR};border-radius:8px;padding:12px 16px;min-width:230px;">
+            <div style="font-size:9px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:${GRIS};margin-bottom:6px;">Adressé à</div>
+            ${construireBlocClient(doc.client)}
           </div>
         </div>
+
+        <table style="width:100%;border-collapse:collapse;margin-bottom:14px;">
+          <thead>
+            <tr style="background:${GRIS_TRES_CLAIR};">
+              <th style="padding:8px 6px;text-align:left;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:${GRIS};">Désignation</th>
+              <th style="padding:8px 6px;text-align:center;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:${GRIS};">Qté</th>
+              <th style="padding:8px 6px;text-align:right;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:${GRIS};">PU HT</th>
+              <th style="padding:8px 6px;text-align:right;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:${GRIS};">TVA</th>
+              <th style="padding:8px 6px;text-align:right;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:${GRIS};">Total HT</th>
+            </tr>
+          </thead>
+          <tbody>${lignesHTML}</tbody>
+        </table>
+
+        <div style="display:flex;justify-content:flex-end;margin-bottom:22px;">
+          <div style="width:240px;">
+            ${totaux.totalRemises > 0 ? '<div style="display:flex;justify-content:space-between;font-size:10.5px;color:' + GRIS + ';font-style:italic;padding:3px 0;"><span>Dont remises accordées</span><span>-' + formaterMontantDoc(totaux.totalRemises) + '</span></div>' : ''}
+            <div style="display:flex;justify-content:space-between;font-size:11.5px;color:${NOIR};padding:5px 0;border-bottom:1px solid ${BORDURE};">
+              <span>Total HT</span><span>${formaterMontantDoc(totaux.totalHT)}</span>
+            </div>
+            ${tvaDetailHTML}
+            <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:800;color:${NOIR};padding:8px 0 0;margin-top:4px;border-top:1.5px solid ${NOIR};">
+              <span>Total TTC</span><span>${formaterMontantDoc(totaux.totalTTC)}</span>
+            </div>
+          </div>
+        </div>
+
+        ${doc.notes ? '<div style="font-size:10.5px;color:' + GRIS_FONCE + ';margin-bottom:18px;line-height:1.6;"><strong>Notes :</strong> ' + doc.notes + '</div>' : ''}
       </div>
 
-      ${doc.notes ? '<div style="font-size:10.5px;color:#444;margin-bottom:18px;line-height:1.6;"><strong>Notes :</strong> ' + doc.notes + '</div>' : ''}
-
-      ${piedLegal}
-
-      <div style="margin-top:20px;padding-top:8px;border-top:1px solid #eee;font-size:8.5px;color:#b0b8c4;text-align:center;">
-        ${APH_ENTREPRISE.nom} ${APH_ENTREPRISE.formeJuridique} — ${APH_ENTREPRISE.adresse}, ${APH_ENTREPRISE.cp} ${APH_ENTREPRISE.ville} — SIRET ${APH_ENTREPRISE.siret}
+      <div style="margin-top:auto;">
+        ${piedLegal}
+        <div style="margin-top:20px;padding-top:8px;border-top:1px solid ${BORDURE};font-size:8.5px;color:${GRIS_CLAIR};text-align:center;">
+          ${APH_ENTREPRISE.nom} ${APH_ENTREPRISE.formeJuridique} — ${APH_ENTREPRISE.adresse}, ${APH_ENTREPRISE.cp} ${APH_ENTREPRISE.ville} — SIRET ${APH_ENTREPRISE.siret}
+        </div>
       </div>
     </div>
   `;
