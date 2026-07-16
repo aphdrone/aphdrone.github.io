@@ -294,7 +294,55 @@ body{background:var(--light);color:#222;min-height:100vh;}
           </div>
         </div>
 
+        <div class="dash-section">
+          <div class="dash-section-label">Factures — état des créances</div>
+          <div class="dash-filter-row">
+            <select id="dash-factures-statut">
+              <option value="">Tous les statuts</option>
+              <option value="brouillon">Brouillon</option>
+              <option value="envoyee">Envoyée</option>
+              <option value="payee">Payée</option>
+              <option value="retard">En retard</option>
+            </select>
+            <select id="dash-factures-client">
+              <option value="">Tous les clients</option>
+            </select>
+            <span style="font-size:.8rem;color:#94a3b8;align-self:center;">Du</span>
+            <input type="date" id="dash-factures-debut">
+            <span style="font-size:.8rem;color:#94a3b8;align-self:center;">au</span>
+            <input type="date" id="dash-factures-fin">
+            <button class="go" onclick="ouvrirFenetreFacturesFiltrees()">Voir →</button>
+          </div>
+        </div>
+
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ Fenêtre : résultat des factures filtrées ═══ -->
+<div id="dash-factures-overlay" style="display:none;position:fixed;inset:0;background:rgba(11,31,58,.55);z-index:2000;align-items:flex-start;justify-content:center;overflow-y:auto;padding:30px 16px;">
+  <div style="background:white;border-radius:14px;max-width:760px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3);">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 24px;border-bottom:1px solid #eee;">
+      <div style="font-size:1rem;font-weight:700;color:#0B1F3A;">Factures — résultat du filtre</div>
+      <button onclick="document.getElementById('dash-factures-overlay').style.display='none';" style="padding:9px 16px;background:#f5f7fa;color:#555;border:1px solid #dde3ec;border-radius:8px;font-size:.82rem;cursor:pointer;">Fermer</button>
+    </div>
+    <div style="padding:18px 24px 4px;font-size:.82rem;color:#7a8fa5;">
+      Total : <strong id="dash-factures-total" style="color:#0B1F3A;">—</strong> · <span id="dash-factures-nb"></span>
+    </div>
+    <div style="max-height:60vh;overflow-y:auto;padding:10px 24px 20px;">
+      <table style="width:100%;border-collapse:collapse;font-size:.83rem;">
+        <thead>
+          <tr style="border-bottom:1px solid #e8edf4;">
+            <th style="text-align:left;padding:8px 6px;font-size:10px;color:#94a3b8;font-weight:700;text-transform:uppercase;">N°</th>
+            <th style="text-align:left;padding:8px 6px;font-size:10px;color:#94a3b8;font-weight:700;text-transform:uppercase;">Client</th>
+            <th style="text-align:left;padding:8px 6px;font-size:10px;color:#94a3b8;font-weight:700;text-transform:uppercase;">Date</th>
+            <th style="text-align:left;padding:8px 6px;font-size:10px;color:#94a3b8;font-weight:700;text-transform:uppercase;">Statut</th>
+            <th style="text-align:right;padding:8px 6px;font-size:10px;color:#94a3b8;font-weight:700;text-transform:uppercase;">Montant</th>
+          </tr>
+        </thead>
+        <tbody id="dash-factures-tbody"></tbody>
+      </table>
     </div>
   </div>
 </div>
@@ -402,6 +450,43 @@ window.allerVersListeFiltree = function(){
   window.location.href = type + (statut ? '?filtre=' + statut : '');
 };
 
+const LABELS_STATUT_FACTURE = { brouillon: 'Brouillon', envoyee: 'Envoyée', payee: 'Payée', retard: 'En retard' };
+
+window.ouvrirFenetreFacturesFiltrees = function(){
+  const statut = document.getElementById('dash-factures-statut').value;
+  const client = document.getElementById('dash-factures-client').value;
+  const dateDebut = document.getElementById('dash-factures-debut').value;
+  const dateFin = document.getElementById('dash-factures-fin').value;
+
+  const resultats = facturesGlobal.filter(f => {
+    if(statut && f.statut !== statut) return false;
+    if(client && f.clientNom !== client) return false;
+    if(dateDebut && (!f.dateEmission || f.dateEmission < dateDebut)) return false;
+    if(dateFin && (!f.dateEmission || f.dateEmission > dateFin)) return false;
+    return true;
+  }).sort((a,b) => (b.dateEmission||'').localeCompare(a.dateEmission||''));
+
+  const total = resultats.reduce((s,f) => s + (f.montantTTC || 0), 0);
+  document.getElementById('dash-factures-total').textContent = formatMontant(total);
+  document.getElementById('dash-factures-nb').textContent = resultats.length + ' facture' + (resultats.length > 1 ? 's' : '');
+
+  const tbody = document.getElementById('dash-factures-tbody');
+  if(!resultats.length){
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#94a3b8;padding:24px;">Aucune facture ne correspond à ces filtres.</td></tr>';
+  } else {
+    tbody.innerHTML = resultats.map(f => `
+      <tr style="border-bottom:1px solid #f0f3f7;">
+        <td style="padding:8px 6px;color:#334155;">${f.numero || '—'}</td>
+        <td style="padding:8px 6px;color:#334155;">${f.clientNom || '—'}</td>
+        <td style="padding:8px 6px;color:#334155;">${f.dateEmission ? new Date(f.dateEmission).toLocaleDateString('fr-FR') : '—'}</td>
+        <td style="padding:8px 6px;color:#334155;">${LABELS_STATUT_FACTURE[f.statut] || f.statut || '—'}</td>
+        <td style="padding:8px 6px;text-align:right;font-weight:600;color:#0B1F3A;">${formatMontant(f.montantTTC)}</td>
+      </tr>`).join('');
+  }
+
+  document.getElementById('dash-factures-overlay').style.display = 'flex';
+};
+
 document.getElementById('dash-filtre-type').addEventListener('change', actualiserStatutsFiltre);
 
 async function chargerTableauDeBord(){
@@ -459,6 +544,8 @@ async function chargerTableauDeBord(){
     });
 
     facturesGlobal = factures;
+    const clientsFactures = [...new Set(factures.map(f => f.clientNom).filter(Boolean))].sort((a,b) => a.localeCompare(b));
+    document.getElementById('dash-factures-client').innerHTML = '<option value="">Tous les clients</option>' + clientsFactures.map(c => `<option value="${c}">${c}</option>`).join('');
     devisGlobal = devisList;
     avoirsGlobal = avoirsList;
 
