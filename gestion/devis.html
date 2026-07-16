@@ -1004,7 +1004,15 @@ window.editerDevis = function(id){
   document.getElementById('devis-form-overlay').style.display = 'flex';
 };
 
-window.dupliquerEnFacture = function(id){
+window.dupliquerEnFacture = async function(id){
+  try {
+    const dv = allDevis.find(x => x.id === id);
+    if(dv && dv.statut !== 'acceptee'){
+      await updateDoc(doc(db, 'devis', id), { statut: 'acceptee' });
+    }
+  } catch(e){
+    console.warn('Impossible de marquer le devis comme accepté :', e.message);
+  }
   window.location.href = 'factures.html?depuisDevis=' + id;
 };
 
