@@ -344,6 +344,13 @@ tr:last-child td{border-bottom:none;}
           <div class="panel-section-head"><h3 style="color:#dc2626;">Zone de test</h3></div>
           <div class="panel-section-body" style="padding-top:14px;">
             <p style="font-size:.82rem;color:#94a3b8;margin-bottom:14px;">Supprime définitivement des données de test — pratique pour repartir de zéro. Chaque bouton demande une double confirmation. Note : supprimer une fiche client ou stagiaire ne supprime pas son compte de connexion (Firebase Auth) associé, seulement sa fiche.</p>
+
+            <div style="background:#fff7f7;border:1.5px solid #fecaca;border-radius:10px;padding:14px 16px;margin-bottom:14px;">
+              <div style="font-size:.85rem;font-weight:700;color:#0B1F3A;margin-bottom:4px;">Tout ce qui a été généré via les espaces clients/stagiaires</div>
+              <p style="font-size:.78rem;color:#94a3b8;margin-bottom:10px;">Réclamations, avis de satisfaction, émargements signés, fiches de renseignements, règlements signés, attestations. Ne touche ni aux fiches Clients/Stagiaires elles-mêmes, ni aux publications, ni aux outils.</p>
+              <button class="btn btn-outline" style="border-color:#fca5a5;color:#dc2626;" onclick="viderCollections(['satisfactions','reclamations','fichesRenseignements','reglementsSignes','attestationsInformation','emargements'], 'toutes les données générées par les espaces clients/stagiaires (réclamations, satisfactions, émargements, fiches, règlements, attestations)')">Tout réinitialiser (données générées)</button>
+            </div>
+
             <div style="display:flex;flex-wrap:wrap;gap:10px;">
               <button class="btn btn-outline" style="border-color:#fca5a5;color:#dc2626;" onclick="viderCollections(['clients','stagiaires'], 'les fiches Clients (site) et Stagiaires')">Clients (site) + Stagiaires</button>
               <button class="btn btn-outline" style="border-color:#fca5a5;color:#dc2626;" onclick="viderCollections(['satisfactions','reclamations','fichesRenseignements','reglementsSignes','attestationsInformation'], 'tous les documents (réclamations, satisfactions, fiches, règlements, attestations)')">Documents</button>
