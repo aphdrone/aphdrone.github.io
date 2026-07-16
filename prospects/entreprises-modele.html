@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>APH Drone — Une mission drone pour votre activité</title>
+<meta name="description" content="Agriculture, sécurité, thermographie, inspection, cartographie : découvrez comment une mission drone APH répond à votre besoin, en 2 minutes.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+:root{
+  --primary:#0B1F3A; --secondary:#1F5FAF; --accent:#4A90E2; --light:#F5F7FA;
+  --ink:#0B1F3A; --paper:#ffffff; --line:#e4e9f0; --muted:#6b7a90;
+}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
+html{scroll-behavior:smooth;}
+body{background:var(--paper);color:var(--ink);overflow-x:hidden;}
+@media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto;} *{animation-duration:.001ms !important; transition-duration:.001ms !important;} }
+
+a{color:inherit;}
+:focus-visible{outline:2.5px solid var(--accent); outline-offset:3px;}
+
+/* ── Topbar minimal ── */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:18px 6%;background:rgba(255,255,255,.85);backdrop-filter:blur(10px);border-bottom:1px solid transparent;transition:.3s;}
+.topbar.scrolled{border-bottom-color:var(--line);}
+.topbar-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.topbar-logo img{width:34px;height:34px;border-radius:50%;object-fit:cover;}
+.topbar-logo span{font-weight:800;font-size:1rem;color:var(--primary);letter-spacing:-.01em;}
+.topbar-cta{display:inline-flex;align-items:center;gap:8px;background:var(--primary);color:white;padding:10px 18px;border-radius:30px;font-size:.82rem;font-weight:700;text-decoration:none;transition:.2s;}
+.topbar-cta:hover{background:var(--secondary);}
+
+/* ── Hero ── */
+.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:140px 6% 80px;background:
+  radial-gradient(1200px 600px at 85% -10%, rgba(74,144,226,.16), transparent 60%),
+  linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  overflow:hidden;}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:.75rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--secondary);margin-bottom:22px;}
+.hero-eyebrow::before{content:'';width:26px;height:1.5px;background:var(--accent);display:inline-block;}
+.hero h1{font-size:clamp(2.4rem,6vw,4.6rem);font-weight:800;line-height:1.03;letter-spacing:-.03em;color:var(--primary);max-width:15ch;}
+.hero h1 em{font-style:normal;color:var(--secondary);position:relative;white-space:nowrap;}
+.hero-sub{margin-top:26px;font-size:1.15rem;line-height:1.6;color:var(--muted);max-width:46ch;font-weight:400;}
+.hero-actions{margin-top:38px;display:flex;gap:14px;flex-wrap:wrap;align-items:center;}
+.btn-primary{display:inline-flex;align-items:center;gap:10px;background:var(--primary);color:white;padding:16px 26px;border-radius:10px;font-size:.95rem;font-weight:700;text-decoration:none;transition:.2s;border:none;cursor:pointer;}
+.btn-primary:hover{background:var(--secondary);transform:translateY(-1px);}
+.btn-ghost{display:inline-flex;align-items:center;gap:8px;color:var(--primary);font-size:.9rem;font-weight:600;text-decoration:none;padding:16px 6px;}
+.btn-ghost svg{transition:.2s;}
+.btn-ghost:hover svg{transform:translateY(3px);}
+
+/* Flight path ambient svg */
+.hero-flight{position:absolute;right:-4%;top:14%;width:56%;max-width:640px;opacity:.9;pointer-events:none;}
+.hero-flight svg{width:100%;height:auto;}
+.flight-path{fill:none;stroke:var(--accent);stroke-width:1.6;stroke-dasharray:6 7;stroke-linecap:round;opacity:.55;stroke-dashoffset:900;animation:draw 2.6s ease-out .3s forwards;}
+@keyframes draw{to{stroke-dashoffset:0;}}
+.flight-dot{fill:var(--secondary);opacity:0;animation:pop .4s ease-out forwards;}
+.flight-dot.d1{animation-delay:.5s;} .flight-dot.d2{animation-delay:1.15s;} .flight-dot.d3{animation-delay:1.8s;} .flight-dot.d4{animation-delay:2.4s;}
+@keyframes pop{from{opacity:0;transform:scale(.3);} to{opacity:1;transform:scale(1);}}
+.flight-drone{transform-origin:center;offset-path:path('M20,210 C120,40 300,260 420,90 C480,10 540,60 560,20');animation:flyalong 2.6s ease-out .3s forwards;}
+@keyframes flyalong{from{offset-distance:0%;opacity:0;} 5%{opacity:1;} to{offset-distance:100%;}}
+
+.hero-trust{margin-top:64px;display:flex;gap:36px;flex-wrap:wrap;padding-top:28px;border-top:1px solid var(--line);max-width:640px;}
+.hero-trust-item{}
+.hero-trust-num{font-size:1.5rem;font-weight:800;color:var(--primary);letter-spacing:-.02em;}
+.hero-trust-lbl{font-size:.74rem;color:var(--muted);margin-top:2px;}
+
+/* ── Votre site vu du ciel (personnalisation) ── */
+.site-section{padding:0 6% 20px;max-width:1280px;margin:0 auto;display:none;}
+.site-section.visible{display:block;}
+.site-card{display:grid;grid-template-columns:1.1fr 1fr;gap:0;border-radius:20px;overflow:hidden;box-shadow:0 20px 60px rgba(11,31,58,.12);border:1px solid var(--line);}
+.site-map{position:relative;min-height:340px;background:var(--light);}
+.site-map .leaflet-container{width:100%;height:100%;min-height:340px;}
+.site-map-badge{position:absolute;top:16px;left:16px;z-index:400;background:rgba(11,31,58,.85);color:white;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:7px 13px;border-radius:20px;backdrop-filter:blur(4px);}
+.site-copy{padding:40px;display:flex;flex-direction:column;justify-content:center;background:white;}
+.site-copy .section-eyebrow{margin-bottom:10px;}
+.site-copy h3{font-size:1.4rem;font-weight:800;color:var(--primary);letter-spacing:-.02em;margin-bottom:14px;line-height:1.25;}
+.site-copy p{font-size:.92rem;color:var(--muted);line-height:1.65;}
+.site-copy .addr{font-weight:700;color:var(--primary);}
+@media(max-width:820px){.site-card{grid-template-columns:1fr;}.site-map{min-height:260px;}}
+
+/* ── Section shell ── */
+.section{padding:100px 6%;max-width:1280px;margin:0 auto;}
+.section-eyebrow{font-size:.74rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--secondary);margin-bottom:14px;}
+.section h2{font-size:clamp(1.8rem,3.4vw,2.6rem);font-weight:800;letter-spacing:-.02em;color:var(--primary);max-width:20ch;line-height:1.15;}
+.section-lede{margin-top:16px;font-size:1.05rem;color:var(--muted);max-width:56ch;line-height:1.65;}
+
+/* ── Sector selector (signature) ── */
+.sector-nav{display:flex;gap:10px;flex-wrap:wrap;margin-top:44px;margin-bottom:6px;}
+.sector-btn{display:flex;align-items:center;gap:9px;padding:12px 18px;border-radius:30px;border:1.5px solid var(--line);background:white;font-size:.86rem;font-weight:600;color:var(--muted);cursor:pointer;transition:.18s;white-space:nowrap;}
+.sector-btn svg{width:16px;height:16px;flex-shrink:0;}
+.sector-btn:hover{border-color:var(--accent);color:var(--primary);}
+.sector-btn.active{background:var(--primary);border-color:var(--primary);color:white;}
+
+.sector-panel{margin-top:36px;background:linear-gradient(150deg,#0B1F3A 0%,#132c52 55%,#1a3a6e 100%);border-radius:22px;padding:52px;color:white;position:relative;overflow:hidden;min-height:400px;}
+.sector-panel::before{content:'';position:absolute;top:-40%;right:-10%;width:60%;height:180%;background:radial-gradient(closest-side, rgba(74,144,226,.25), transparent 70%);pointer-events:none;}
+.sector-inner{display:grid;grid-template-columns:1.3fr 1fr;gap:48px;position:relative;}
+.sector-tag{display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#9bc4f0;margin-bottom:14px;}
+.sector-panel h3{font-size:1.9rem;font-weight:800;letter-spacing:-.02em;line-height:1.15;margin-bottom:16px;}
+.sector-panel .pitch{font-size:1rem;line-height:1.7;color:rgba(255,255,255,.82);max-width:52ch;margin-bottom:26px;}
+.sector-benefits{list-style:none;display:flex;flex-direction:column;gap:12px;margin-bottom:28px;}
+.sector-benefits li{display:flex;gap:10px;font-size:.92rem;color:rgba(255,255,255,.9);align-items:flex-start;}
+.sector-benefits li svg{flex-shrink:0;margin-top:2px;color:#7ab8f5;}
+.sector-cta{display:inline-flex;align-items:center;gap:9px;background:white;color:var(--primary);padding:13px 22px;border-radius:9px;font-size:.87rem;font-weight:700;text-decoration:none;transition:.2s;border:none;cursor:pointer;}
+.sector-cta:hover{background:#e7f0fb;}
+
+.sector-stat-card{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:16px;padding:26px;align-self:start;}
+.sector-stat-num{font-size:2.6rem;font-weight:800;letter-spacing:-.03em;color:white;line-height:1;}
+.sector-stat-lbl{font-size:.82rem;color:rgba(255,255,255,.7);margin-top:8px;line-height:1.5;}
+.sector-case{margin-top:22px;padding-top:20px;border-top:1px solid rgba(255,255,255,.15);}
+.sector-case-lbl{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#9bc4f0;margin-bottom:8px;}
+.sector-case p{font-size:.85rem;color:rgba(255,255,255,.78);line-height:1.6;}
+
+@media(max-width:820px){
+  .sector-inner{grid-template-columns:1fr;}
+  .sector-panel{padding:32px 24px;}
+}
+
+/* ── Pourquoi (trust grid) ── */
+.trust-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-top:48px;}
+.trust-cell{background:white;padding:30px 26px;}
+.trust-cell svg{color:var(--secondary);margin-bottom:16px;}
+.trust-cell h4{font-size:.95rem;font-weight:700;color:var(--primary);margin-bottom:8px;}
+.trust-cell p{font-size:.83rem;color:var(--muted);line-height:1.55;}
+@media(max-width:900px){.trust-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:560px){.trust-grid{grid-template-columns:1fr;}}
+
+/* ── Process timeline ── */
+.timeline{margin-top:52px;display:grid;grid-template-columns:repeat(4,1fr);gap:0;position:relative;}
+.timeline::before{content:'';position:absolute;top:23px;left:12%;right:12%;height:1.5px;background:var(--line);}
+.timeline-step{position:relative;padding:0 18px 0 0;}
+.timeline-num{width:46px;height:46px;border-radius:50%;background:white;border:1.5px solid var(--accent);color:var(--secondary);font-weight:800;font-size:.95rem;display:flex;align-items:center;justify-content:center;position:relative;z-index:2;margin-bottom:20px;}
+.timeline-step h4{font-size:.95rem;font-weight:700;color:var(--primary);margin-bottom:8px;}
+.timeline-step p{font-size:.82rem;color:var(--muted);line-height:1.55;}
+@media(max-width:820px){.timeline{grid-template-columns:1fr;gap:28px;}.timeline::before{display:none;}}
+
+/* ── Final CTA / form ── */
+.cta-section{background:var(--primary);color:white;border-radius:24px;margin:0 6% 100px;padding:70px 6%;position:relative;overflow:hidden;}
+.cta-section::before{content:'';position:absolute;top:-20%;left:-6%;width:44%;height:160%;background:radial-gradient(closest-side, rgba(74,144,226,.28), transparent 70%);}
+.cta-inner{display:grid;grid-template-columns:1fr 1fr;gap:56px;position:relative;max-width:1100px;margin:0 auto;}
+.cta-copy h2{font-size:clamp(1.7rem,3vw,2.3rem);font-weight:800;letter-spacing:-.02em;line-height:1.18;margin-bottom:16px;}
+.cta-copy p{font-size:.98rem;color:rgba(255,255,255,.75);line-height:1.65;max-width:42ch;}
+.cta-copy .hero-trust{border-color:rgba(255,255,255,.18);margin-top:36px;}
+.cta-copy .hero-trust-num{color:white;}
+.cta-copy .hero-trust-lbl{color:rgba(255,255,255,.65);}
+
+.cta-form{background:white;border-radius:16px;padding:30px;color:var(--ink);}
+.cta-form h3{font-size:1.05rem;font-weight:700;color:var(--primary);margin-bottom:4px;}
+.cta-form .sub{font-size:.8rem;color:var(--muted);margin-bottom:20px;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+.cta-form input,.cta-form select,.cta-form textarea{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:9px;font-size:.86rem;font-family:'Inter',sans-serif;outline:none;transition:.15s;color:var(--ink);}
+.cta-form input:focus,.cta-form select:focus,.cta-form textarea:focus{border-color:var(--accent);}
+.cta-form textarea{resize:none;height:78px;margin-bottom:12px;}
+.cta-form .btn-primary{width:100%;justify-content:center;margin-top:4px;}
+.form-confirm{display:none;text-align:center;padding:18px;background:#eefbf2;border:1px solid #bfead0;border-radius:9px;margin-top:12px;}
+.form-confirm p{color:#15803d;font-weight:600;font-size:.86rem;}
+@media(max-width:860px){.cta-inner{grid-template-columns:1fr;}}
+
+/* ── Footer minimal ── */
+.foot-min{padding:36px 6% 50px;text-align:center;color:var(--muted);font-size:.78rem;border-top:1px solid var(--line);}
+.foot-min a{color:var(--secondary);text-decoration:none;font-weight:600;}
+</style>
+</head>
+<body>
+
+<div class="topbar" id="topbar">
+  <a href="/index.html" class="topbar-logo">
+    <img src="/assets/logo.jpg" alt="APH Drone" onerror="this.style.display='none'">
+    <span>APH Drone</span>
+  </a>
+  <a href="#contact" class="topbar-cta">Demander un devis</a>
+</div>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <div class="hero-eyebrow">Prestations drone professionnelles</div>
+  <h1>Une mission drone <em>pensée pour votre activité</em>, pas un catalogue générique.</h1>
+  <p class="hero-sub">Agriculture, sécurité, thermographie, inspection, cartographie, environnement — choisissez votre secteur ci-dessous et voyez concrètement ce qu'une mission APH change pour vous.</p>
+  <div class="hero-actions">
+    <a href="#secteurs" class="btn-primary">
+      Voir mon secteur
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </a>
+    <a href="#contact" class="btn-ghost">
+      Ou demander un devis directement
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+    </a>
+  </div>
+
+  <div class="hero-trust">
+    <div class="hero-trust-item"><div class="hero-trust-num">Open A2 · STS-01 · CATS</div><div class="hero-trust-lbl">Certifications DGAC à jour</div></div>
+    <div class="hero-trust-item"><div class="hero-trust-num">SORA v2.5</div><div class="hero-trust-lbl">Expertise catégorie Spécifique</div></div>
+    <div class="hero-trust-item"><div class="hero-trust-num">48h</div><div class="hero-trust-lbl">Délai de réponse devis</div></div>
+  </div>
+
+  <div class="hero-flight" aria-hidden="true">
+    <svg viewBox="0 0 600 300">
+      <path class="flight-path" d="M20,210 C120,40 300,260 420,90 C480,10 540,60 560,20"/>
+      <circle class="flight-dot d1" cx="20" cy="210" r="5"/>
+      <circle class="flight-dot d2" cx="300" cy="230" r="4"/>
+      <circle class="flight-dot d3" cx="420" cy="90" r="4"/>
+      <circle class="flight-dot d4" cx="560" cy="20" r="5"/>
+      <g class="flight-drone">
+        <circle r="7" fill="#0B1F3A"/>
+        <circle r="11" fill="none" stroke="#4A90E2" stroke-width="1.4"/>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<!-- ═══ VOTRE SITE VU DU CIEL (personnalisation) ═══ -->
+<section class="site-section" id="siteSection">
+  <div class="site-card">
+    <div class="site-map"><div class="site-map-badge">Vue satellite en direct</div><div id="siteMap" style="width:100%;height:100%;min-height:340px;"></div></div>
+    <div class="site-copy">
+      <div class="section-eyebrow">Concrètement, chez vous</div>
+      <h3 id="siteCopyTitre">Voici <span class="addr" id="siteAddr"></span> vu du ciel.</h3>
+      <p>C'est exactement ce type de vue qu'une mission drone vous fournit — en beaucoup plus précis, avec les données thermiques, les mesures ou la cartographie dont vous avez besoin, selon votre secteur d'activité.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SECTEURS (signature interactif) ═══ -->
+<section class="section" id="secteurs">
+  <div class="section-eyebrow">Votre secteur</div>
+  <h2>Dites-nous ce que vous faites, on vous montre ce qu'on peut faire.</h2>
+  <p class="section-lede">Six domaines, six façons différentes d'utiliser un drone. Cliquez sur le vôtre.</p>
+
+  <div class="sector-nav" id="sectorNav" role="tablist" aria-label="Choisir un secteur"></div>
+
+  <div class="sector-panel" id="sectorPanel"></div>
+</section>
+
+<!-- ═══ POURQUOI APH ═══ -->
+<section class="section">
+  <div class="section-eyebrow">Pourquoi APH Drone</div>
+  <h2>Ce qui rassure une entreprise ou une collectivité avant de signer.</h2>
+
+  <div class="trust-grid">
+    <div class="trust-cell">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/></svg>
+      <h4>Certifié &amp; assuré</h4>
+      <p>Télépilote DGAC (Open A2, STS-01, CATS), RC Pro dédiée, dossiers SORA pour les vols en catégorie Spécifique.</p>
+    </div>
+    <div class="trust-cell">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 12h8M12 8v8"/></svg>
+      <h4>Un seul interlocuteur</h4>
+      <p>De la prise de contact au livrable final, vous parlez à la même personne — pas de sous-traitance en cascade.</p>
+    </div>
+    <div class="trust-cell">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4.5 8-11V5l-8-3-8 3v6c0 6.5 8 11 8 11z"/></svg>
+      <h4>Données exploitables</h4>
+      <p>Pas juste des images : des rapports, cartes et mesures prêts à être intégrés à vos propres outils.</p>
+    </div>
+    <div class="trust-cell">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+      <h4>Réactivité réelle</h4>
+      <p>Réponse sous 48h, intervention rapide selon la nature du besoin — utile pour les urgences (sécurité, sinistre).</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ COMMENT ÇA SE PASSE ═══ -->
+<section class="section">
+  <div class="section-eyebrow">Le déroulement</div>
+  <h2>Quatre étapes, sans complexité de votre côté.</h2>
+
+  <div class="timeline">
+    <div class="timeline-step">
+      <div class="timeline-num">1</div>
+      <h4>Vous décrivez votre besoin</h4>
+      <p>Un appel ou le formulaire ci-dessous suffit — on cadre ensemble le site, l'objectif et les contraintes.</p>
+    </div>
+    <div class="timeline-step">
+      <div class="timeline-num">2</div>
+      <h4>Devis sous 48h</h4>
+      <p>Un chiffrage clair, sans surprise, incluant déplacement et livrables.</p>
+    </div>
+    <div class="timeline-step">
+      <div class="timeline-num">3</div>
+      <h4>Mission sur site</h4>
+      <p>Vol réalisé dans le respect du cadre réglementaire (autorisations, zones, SORA si nécessaire).</p>
+    </div>
+    <div class="timeline-step">
+      <div class="timeline-num">4</div>
+      <h4>Livrables exploitables</h4>
+      <p>Rapport, cartes, données ou images — dans le format qui vous sert vraiment.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CTA FINAL ═══ -->
+<section class="cta-section" id="contact">
+  <div class="cta-inner">
+    <div class="cta-copy">
+      <h2>Prêt à voir ce qu'un drone change concrètement pour vous ?</h2>
+      <p>Décrivez votre besoin — nous vous répondons sous 48h avec une proposition adaptée à votre secteur, pas un tarif générique.</p>
+      <div class="hero-trust">
+        <div class="hero-trust-item"><div class="hero-trust-num">06 95 39 07 76</div><div class="hero-trust-lbl">Réponse directe</div></div>
+        <div class="hero-trust-item"><div class="hero-trust-num">contact@aphdrone.fr</div><div class="hero-trust-lbl">Par email</div></div>
+      </div>
+    </div>
+
+    <div class="cta-form">
+      <h3>Demander un devis</h3>
+      <div class="sub">Sans engagement — réponse sous 48h.</div>
+      <div class="form-row">
+        <input type="text" id="f-nom" placeholder="Prénom et nom *">
+        <input type="email" id="f-email" placeholder="E-mail *">
+      </div>
+      <div class="form-row">
+        <input type="tel" id="f-tel" placeholder="Téléphone">
+        <select id="f-secteur">
+          <option value="" disabled selected>Votre secteur</option>
+          <option>Agriculture &amp; Arboriculture</option>
+          <option>Sécurité, Surveillance &amp; Secours</option>
+          <option>Thermographie infrarouge</option>
+          <option>Inspection technique</option>
+          <option>Cartographie &amp; Modélisation 3D</option>
+          <option>Environnement, Forêt &amp; Biodiversité</option>
+          <option>Autre / je ne sais pas encore</option>
+        </select>
+      </div>
+      <textarea id="f-message" placeholder="Décrivez votre site, vos objectifs, vos contraintes particulières…"></textarea>
+      <button class="btn-primary" onclick="sendDevis()">Envoyer ma demande</button>
+      <div class="form-confirm" id="form-confirm"><p>Demande reçue — nous vous contactons sous 48h.</p></div>
+    </div>
+  </div>
+</section>
+
+<div class="foot-min">
+  APH Drone — Luxeuil-les-Bains (70) · <a href="tel:0695390776">06 95 39 07 76</a> · <a href="mailto:contact@aphdrone.fr">contact@aphdrone.fr</a>
+</div>
+
+<script>
+window.addEventListener('scroll', () => {
+  document.getElementById('topbar').classList.toggle('scrolled', window.scrollY > 10);
+});
+
+const SECTEURS = [
+  {
+    key: 'agriculture', label: 'Agriculture', tag: 'Agriculture & Arboriculture',
+    icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22V12M12 12c0-4 3-7 7-7 0 4-3 7-7 7zM12 12C12 8 9 5 5 5c0 4 3 7 7 7z"/></svg>',
+    titre: 'Pulvérisation de précision et suivi de cultures, sans y passer vos journées.',
+    pitch: "Traitement ciblé (agréé catégorie Spécifique), détection sanitaire, comptage et cartographie de parcelles — vous intervenez plus vite, avec moins de produit, sur exactement les zones concernées.",
+    benefices: [
+      'Pulvérisation homogène même sur parcelles en pente ou difficiles d\'accès',
+      'Détection précoce des zones à problème (stress hydrique, maladies, ravageurs)',
+      'Rapport cartographique exploitable pour vos décisions de saison suivante'
+    ],
+    stat: { num: '−20 %', lbl: 'de produit utilisé en moyenne grâce au ciblage de précision, comparé à un traitement homogène classique.' },
+    cas: 'Détection de foyers de mildiou sur vigne avant qu\'ils ne soient visibles au sol, avec plan de traitement ciblé transmis sous 48h.'
+  },
+  {
+    key: 'securite', label: 'Sécurité & Surveillance', tag: 'Sécurité, Surveillance & Secours',
+    icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/></svg>',
+    titre: 'Une vue d\'ensemble immédiate, là où l\'accès au sol prend du temps.',
+    pitch: "Surveillance de site, recherche de personne, appui aux forces de secours, sécurisation d'événement — le drone couvre une zone large en quelques minutes, avec caméra thermique si la situation l'exige.",
+    benefices: [
+      'Couverture rapide de zones étendues ou difficiles d\'accès à pied',
+      'Vision thermique disponible pour les recherches de nuit ou en végétation dense',
+      'Intervention possible en complément des équipes SDIS / forces de l\'ordre'
+    ],
+    stat: { num: '< 10 min', lbl: 'pour couvrir une zone qui demanderait plusieurs heures de ratissage au sol.' },
+    cas: 'Appui à une recherche de personne égarée en forêt, avec caméra thermique, en coordination directe avec les équipes de secours au sol.'
+  },
+  {
+    key: 'thermo', label: 'Thermographie', tag: 'Thermographie infrarouge',
+    icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg>',
+    titre: 'Voir les déperditions de chaleur et les défauts invisibles à l\'œil nu.',
+    pitch: "Toiture, façade, installation photovoltaïque, réseau de chaleur — la caméra thermique embarquée révèle ce qu'un contrôle visuel classique ne peut pas voir, sans échafaudage ni accès dangereux.",
+    benefices: [
+      'Détection des ponts thermiques et défauts d\'isolation sur toute une toiture en un vol',
+      'Contrôle de panneaux photovoltaïques (cellules défectueuses, points chauds)',
+      'Rapport thermique géoréférencé, directement exploitable pour vos travaux'
+    ],
+    stat: { num: '100 %', lbl: 'de la toiture inspectée en un seul vol, sans mise en place d\'échafaudage.' },
+    cas: 'Diagnostic thermique d\'un bâtiment industriel de 3000 m² en une matinée, identifiant 4 zones de déperdition prioritaires.'
+  },
+  {
+    key: 'inspection', label: 'Inspection technique', tag: 'Inspection technique',
+    icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>',
+    titre: 'Inspecter un ouvrage en hauteur sans y envoyer quelqu\'un.',
+    pitch: "Toiture, charpente, pylône, ouvrage d'art, façade industrielle — le drone accède aux zones dangereuses ou difficiles, avec des images en très haute résolution pour un diagnostic précis.",
+    benefices: [
+      'Zéro mise en danger d\'un technicien sur des structures en hauteur ou instables',
+      'Images haute résolution permettant de zoomer sur chaque défaut identifié',
+      'Suivi dans le temps possible pour comparer l\'évolution d\'une fissure ou d\'une corrosion'
+    ],
+    stat: { num: '0', lbl: 'intervention humaine en hauteur nécessaire pour le diagnostic initial.' },
+    cas: 'Inspection d\'un pylône de télécommunication de 40 m, identifiant une corrosion avancée sur une fixation, sans nacelle ni cordiste.'
+  },
+  {
+    key: 'cartographie', label: 'Cartographie & 3D', tag: 'Cartographie & Modélisation 3D',
+    icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 6v16l7-4 8 4 7-4V2l-7 4-8-4z"/><path d="M8 2v16M16 6v16"/></svg>',
+    titre: 'Un plan précis et à jour, sans relevé topographique interminable.',
+    pitch: "Carrière, chantier, terrain agricole, site industriel — modèle 3D, orthophoto et calcul de volumes en un seul vol, avec une précision centimétrique si votre projet l'exige.",
+    benefices: [
+      'Calcul de volumes (stocks, déblais/remblais) sans mesure manuelle',
+      'Suivi de chantier régulier pour visualiser l\'avancement réel',
+      'Modèle 3D exploitable dans vos outils SIG ou BIM existants'
+    ],
+    stat: { num: '1 vol', lbl: 'suffit pour un relevé topographique complet, contre plusieurs jours en méthode traditionnelle.' },
+    cas: 'Calcul de volume de stock sur une carrière en une visite mensuelle, remplaçant un relevé topographique manuel de deux jours.'
+  },
+  {
+    key: 'environnement', label: 'Environnement & Forêt', tag: 'Environnement, Forêt & Biodiversité',
+    icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22V8M12 8C7 8 4 5 4 2c5 0 8 3 8 6zM12 8c0-3 3-6 8-6 0 3-3 6-8 6z"/><path d="M12 22c-3 0-6-2-6-6M12 22c3 0 6-2 6-6"/></svg>',
+    titre: 'Suivre un espace naturel ou une forêt sans le perturber au sol.',
+    pitch: "Suivi de biodiversité, état sanitaire forestier, cartographie de zones humides — collecte de données environnementales sans déranger la faune ni piétiner les milieux sensibles.",
+    benefices: [
+      'Suivi sanitaire des parcelles forestières (dépérissement, scolytes) à grande échelle',
+      'Cartographie de zones humides ou protégées sans intrusion au sol',
+      'Données répétables dans le temps pour objectiver une évolution environnementale'
+    ],
+    stat: { num: '0', lbl: 'perturbation au sol pour couvrir plusieurs hectares de milieu sensible.' },
+    cas: 'Cartographie de l\'état sanitaire d\'une parcelle forestière de 15 hectares, avec localisation précise des foyers de scolytes.'
+  }
+];
+
+let secteurActifKey = SECTEURS[0].key;
+
+// ── Personnalisation par lien : ?nom=Mairie+de+X&secteur=securite&lat=47.81&lng=6.38&adresse=Luxeuil-les-Bains ──
+const paramsUrl = new URLSearchParams(window.location.search);
+const nomClient = (paramsUrl.get('nom') || '').trim();
+const secteurUrl = paramsUrl.get('secteur');
+const latUrl = parseFloat(paramsUrl.get('lat'));
+const lngUrl = parseFloat(paramsUrl.get('lng'));
+const adresseUrl = (paramsUrl.get('adresse') || '').trim();
+if(secteurUrl && SECTEURS.some(s => s.key === secteurUrl)) secteurActifKey = secteurUrl;
+
+if(nomClient){
+  document.querySelector('.hero-eyebrow').textContent = 'Préparé spécialement pour ' + nomClient;
+  document.querySelector('.hero h1').innerHTML = 'Une mission drone <em>pensée pour ' + nomClient + '</em>, pas un catalogue générique.';
+  document.title = 'APH Drone — Proposition pour ' + nomClient;
+}
+
+if(!isNaN(latUrl) && !isNaN(lngUrl)){
+  document.getElementById('siteSection').classList.add('visible');
+  document.getElementById('siteAddr').textContent = adresseUrl || (nomClient ? 'chez ' + nomClient : 'votre site');
+  if(nomClient) document.getElementById('siteCopyTitre').innerHTML = 'Voici <span class="addr">' + (adresseUrl || 'votre site') + '</span>, ' + nomClient + ', vu du ciel.';
+
+  const map = L.map('siteMap', { zoomControl: false, attributionControl: false, scrollWheelZoom: false, dragging: true });
+  map.setView([latUrl, lngUrl], 17);
+  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+    maxZoom: 19
+  }).addTo(map);
+  const droneIcon = L.divIcon({
+    html: '<div style="width:16px;height:16px;border-radius:50%;background:#1F5FAF;border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,.4);"></div>',
+    className: '', iconSize: [16,16], iconAnchor: [8,8]
+  });
+  L.marker([latUrl, lngUrl], { icon: droneIcon }).addTo(map);
+}
+
+function rendreNav(){
+  document.getElementById('sectorNav').innerHTML = SECTEURS.map(s => `
+    <button class="sector-btn${s.key === secteurActifKey ? ' active' : ''}" role="tab" aria-selected="${s.key === secteurActifKey}" onclick="choisirSecteur('${s.key}')">
+      ${s.icon}${s.label}
+    </button>`).join('');
+}
+
+function rendrePanel(){
+  const s = SECTEURS.find(x => x.key === secteurActifKey);
+  document.getElementById('sectorPanel').innerHTML = `
+    <div class="sector-inner">
+      <div>
+        <div class="sector-tag">${s.tag}</div>
+        <h3>${s.titre}</h3>
+        <p class="pitch">${s.pitch}</p>
+        <ul class="sector-benefits">
+          ${s.benefices.map(b => `<li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>${b}</li>`).join('')}
+        </ul>
+        <button class="sector-cta" onclick="preremplirEtScroller('${s.tag.replace(/'/g,"\\'")}')">
+          Demander un devis ${s.label}
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+      </div>
+      <div class="sector-stat-card">
+        <div class="sector-stat-num">${s.stat.num}</div>
+        <div class="sector-stat-lbl">${s.stat.lbl}</div>
+        <div class="sector-case">
+          <div class="sector-case-lbl">Exemple concret</div>
+          <p>${s.cas}</p>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+window.choisirSecteur = function(key){
+  secteurActifKey = key;
+  rendreNav();
+  rendrePanel();
+};
+
+window.preremplirEtScroller = function(tag){
+  const select = document.getElementById('f-secteur');
+  [...select.options].forEach(o => { if(o.value === tag || o.textContent === tag) select.value = tag; });
+  document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
+};
+
+rendreNav();
+rendrePanel();
+
+if(nomClient) document.getElementById('f-nom').value = nomClient;
+if(secteurUrl){
+  const s = SECTEURS.find(x => x.key === secteurUrl);
+  if(s){
+    const select = document.getElementById('f-secteur');
+    [...select.options].forEach(o => { if(o.textContent === s.tag) select.value = s.tag; });
+  }
+}
+
+function sendDevis(){
+  const nom = document.getElementById('f-nom').value.trim();
+  const email = document.getElementById('f-email').value.trim();
+  const tel = document.getElementById('f-tel').value.trim();
+  const secteur = document.getElementById('f-secteur').value;
+  const message = document.getElementById('f-message').value.trim();
+  if(!nom || !email){ alert('Merci de renseigner votre nom et e-mail.'); return; }
+  const btn = document.querySelector('.cta-form .btn-primary');
+  btn.textContent = 'Envoi…'; btn.disabled = true;
+  fetch('https://formspree.io/f/xrewbond', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body: JSON.stringify({ source: 'Page présentation entreprises/collectivités', nom, email, telephone: tel, secteur, message })
+  })
+  .then(r => r.json())
+  .then(data => {
+    if(data.ok || data.next){ document.getElementById('form-confirm').style.display = 'block'; btn.style.display = 'none'; }
+    else { btn.textContent = 'Réessayer'; btn.disabled = false; }
+  })
+  .catch(() => { btn.textContent = 'Réessayer'; btn.disabled = false; });
+}
+</script>
+</body>
+</html>
