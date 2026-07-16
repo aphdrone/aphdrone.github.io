@@ -178,7 +178,7 @@ function construireDocumentHTML(doc){
       </div>`;
 
   return `
-    <div style="font-family:'Inter',sans-serif;color:${GRIS_FONCE};height:100%;display:flex;flex-direction:column;">
+    <div style="font-family:'Inter',sans-serif;color:${GRIS_FONCE};flex:1;display:flex;flex-direction:column;min-height:0;">
       <div>
         <div style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid ${NOIR};padding-bottom:16px;margin-bottom:22px;">
           <div style="display:flex;align-items:flex-start;gap:14px;">
