@@ -220,9 +220,13 @@ onAuthStateChanged(auth, async user => {
       return;
     }
 
-    window.location.href = selectedRole === 'client' ? 'espace-clients.html' : 'espace-stagiaires.html';
+    // Aucune fiche client ni stagiaire trouvée pour ce compte connecté :
+    // on refuse l'accès plutôt que de rediriger à l'aveugle vers un espace vide.
+    await signOut(auth).catch(() => {});
+    showError("Ce compte n'est associé à aucune fiche client ou stagiaire. Contactez APH Drone.");
   } catch(e){
-    window.location.href = selectedRole === 'client' ? 'espace-clients.html' : 'espace-stagiaires.html';
+    await signOut(auth).catch(() => {});
+    showError('Erreur de connexion : ' + e.message);
   }
 });
 
