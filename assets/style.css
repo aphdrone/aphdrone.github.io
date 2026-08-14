@@ -64,6 +64,7 @@ footer{background:#071A33;color:white;padding:60px 10% 0;}
 .footer-socials{display:flex;gap:14px;margin-top:8px;}
 .footer-socials a{color:rgba(255,255,255,.5);transition:.2s;}
 .footer-socials a:hover{color:#4A90E2;}
+.footer-social-inactive{color:rgba(255,255,255,.2);cursor:default;display:inline-flex;}
 .footer-legal{display:flex;align-items:center;flex-wrap:wrap;gap:0;padding:16px 0;}
 .footer-legal a{font-size:12px;color:rgba(255,255,255,.35);text-decoration:none;padding:0 18px;border-right:1px solid rgba(255,255,255,.12);transition:color .2s;}
 .footer-legal a:first-child{padding-left:0;}
