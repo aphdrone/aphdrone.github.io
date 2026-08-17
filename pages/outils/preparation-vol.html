@@ -242,6 +242,9 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
             <div class="metar-row"><span class="metar-label">Plafond</span><span>—</span></div>
             <div class="metar-row"><span class="metar-label">Température</span><span>—</span></div>
           </div>
+          <div class="metar-box" id="taf-result" style="margin-top:8px;">
+            <div class="metar-row"><span class="metar-label">TAF</span><span>—</span></div>
+          </div>
         </div>
       </div>
 
@@ -609,24 +612,34 @@ function fetchKpIndex(){
 fetchKpIndex();
 setInterval(fetchKpIndex, 5 * 60 * 1000);
 
+var APPS_SCRIPT_URL_METEO = 'https://script.google.com/macros/s/AKfycbw-0_8pBTZa9bdCOhZZvdNKWP3Pxltmv9oZHRr_7Xhft4iK7W9To5-ptwgFx_ZwrUng/exec';
+
 function fetchMetar(){
   var icao = document.getElementById('icao-input').value.trim().toUpperCase();
   if(icao.length !== 4){ alert('Code OACI à 4 lettres (ex: LFSX).'); return; }
 
   var box = document.getElementById('metar-result');
+  var tafBox = document.getElementById('taf-result');
   box.innerHTML = '<div class="metar-row"><span class="metar-label">Statut</span><span>Recherche en cours…</span></div>';
+  tafBox.innerHTML = '<div class="metar-row"><span class="metar-label">TAF</span><span>Recherche en cours…</span></div>';
 
-  fetch('https://aviationweather.gov/api/data/metar?ids=' + icao + '&format=json')
+  fetch(APPS_SCRIPT_URL_METEO + '?icao=' + icao)
     .then(function(r){
       if(!r.ok) throw new Error('reseau');
       return r.json();
     })
     .then(function(data){
-      if(!data || data.length === 0){
-        box.innerHTML = '<div class="metar-row"><span class="metar-label">Statut</span><span>Aucune donnée pour ' + icao + '. Vérifiez le code OACI.</span></div>';
+      if(data.error){
+        box.innerHTML = '<div class="metar-row"><span class="metar-label">Statut</span><span>' + data.error + '</span></div>';
+        tafBox.innerHTML = '';
         return;
       }
-      var m = data[0];
+      if(!data.metar){
+        box.innerHTML = '<div class="metar-row"><span class="metar-label">Statut</span><span>Aucune donnée pour ' + icao + '. Vérifiez le code OACI.</span></div>';
+        tafBox.innerHTML = '';
+        return;
+      }
+      var m = data.metar;
       var wind = (m.wdir != null && m.wspd != null) ? m.wdir + '° / ' + m.wspd + ' kt' : '—';
       var vis = (m.visib != null) ? m.visib + ' SM' : '—';
       var ceil = '—';
@@ -642,9 +655,16 @@ function fetchMetar(){
         '<div class="metar-row"><span class="metar-label">Plafond</span><span>' + ceil + '</span></div>' +
         '<div class="metar-row"><span class="metar-label">Température</span><span>' + temp + '</span></div>' +
         '<div class="metar-row"><span class="metar-label">Brut</span><span style="font-size:10px;">' + (m.rawOb || '—') + '</span></div>';
+
+      if(data.taf && data.taf.rawTAF){
+        tafBox.innerHTML = '<div class="metar-row"><span class="metar-label">TAF brut</span><span style="font-size:10px;">' + data.taf.rawTAF + '</span></div>';
+      } else {
+        tafBox.innerHTML = '<div class="metar-row"><span class="metar-label">TAF</span><span>Aucun TAF disponible pour ' + icao + '.</span></div>';
+      }
     })
     .catch(function(){
       box.innerHTML = '<div class="metar-row"><span class="metar-label">Statut</span><span>Service indisponible. Réessayez dans un instant.</span></div>';
+      tafBox.innerHTML = '';
     });
 }
 </script>
