@@ -216,7 +216,13 @@ onAuthStateChanged(auth, async user => {
         showError('Ce compte a été désactivé. Contactez APH Drone pour plus d\'informations.');
         return;
       }
-      window.location.href = 'espace-clients.html';
+      const nextUrl = urlParams.get('next');
+      if(nextUrl){
+        const zoneParam = urlParams.get('zone');
+        window.location.href = nextUrl + (zoneParam ? '?zone=' + encodeURIComponent(zoneParam) : '');
+      } else {
+        window.location.href = 'espace-clients.html';
+      }
       return;
     }
 
