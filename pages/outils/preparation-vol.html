@@ -47,6 +47,10 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
 .mod-badge.locked{background:#eef1f6;color:#667085;}
 .mod-body{padding:14px 22px 22px;flex:1;display:flex;flex-direction:column;}
 .mod-image{width:calc(100% + 44px);margin:14px -22px 4px;height:120px;overflow:hidden;background:var(--light);border-top:1px solid #eef1f6;border-bottom:1px solid #eef1f6;}
+
+.cartes-mosaic{position:relative;width:calc(100% + 44px);margin:14px -22px 4px;height:140px;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:2px;overflow:hidden;background:var(--primary);border-top:1px solid #eef1f6;border-bottom:1px solid #eef1f6;}
+.cartes-mosaic img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(1.05) brightness(.92);}
+.cartes-mosaic-lock{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:38px;height:38px;border-radius:50%;background:rgba(11,31,58,.72);backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;color:#fff;box-shadow:0 4px 14px rgba(11,31,58,.3);}
 .mod-image img{width:100%;height:100%;object-fit:cover;display:block;}
 .mod-body h3{font-size:1rem;font-weight:700;color:var(--primary);margin-bottom:6px;}
 .mod-body p{font-size:.83rem;color:#667085;line-height:1.6;margin-bottom:16px;flex:1;}
@@ -403,6 +407,13 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
         <div class="mod-body">
           <h3>Cartes OACI complètes APH</h3>
           <p>Sélectionnez une zone (Nord-Ouest, Nord-Est, Sud-Ouest, Sud-Est) et déverrouillez la carte haute résolution avec vos identifiants client.</p>
+          <div class="cartes-mosaic">
+            <img src="https://drive.google.com/thumbnail?id=1ZHOOv5S2JrKtsc3Gtie1AMaTf1VQpYv6&sz=w400" alt="Aperçu carte Nord-Ouest" loading="lazy">
+            <img src="/assets/images/cartes-apercu/nord-est.jpg" alt="Aperçu carte Nord-Est" loading="lazy">
+            <img src="https://drive.google.com/thumbnail?id=1U6WjAea8xuEQqULpK5lN25UyHznds9ZY&sz=w400" alt="Aperçu carte Sud-Ouest" loading="lazy">
+            <img src="https://drive.google.com/thumbnail?id=1BGyxRLElfS1ysLy5n1Nv9UhRHUoApd0u&sz=w400" alt="Aperçu carte Sud-Est" loading="lazy">
+            <div class="cartes-mosaic-lock"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+          </div>
           <a href="/pages/outils/cartes-oaci-client.html" class="mod-action primary">
             Accéder aux cartes
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
