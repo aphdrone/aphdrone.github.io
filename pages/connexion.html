@@ -194,7 +194,16 @@ onAuthStateChanged(auth, async user => {
   }
   if(!user) return;
   try {
-    if(user.email === ADMIN_EMAIL){ window.location.href = '../office/'; return; }
+    const nextUrlEarly = urlParams.get('next');
+    if(user.email === ADMIN_EMAIL){
+      if(nextUrlEarly){
+        const zoneParamEarly = urlParams.get('zone');
+        window.location.href = nextUrlEarly + (zoneParamEarly ? '?zone=' + encodeURIComponent(zoneParamEarly) : '');
+      } else {
+        window.location.href = '../office/';
+      }
+      return;
+    }
 
     const stagSnap = await getDocs(query(collection(db,'stagiaires'), where('email','==',user.email)));
     if(!stagSnap.empty){
