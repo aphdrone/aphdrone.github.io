@@ -37,6 +37,9 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
 .zone-card .zone-sub{color:rgba(255,255,255,.7);font-family:var(--mono);font-size:.68rem;letter-spacing:1px;margin-top:2px;}
 .zone-card .lock-badge{position:absolute;top:12px;right:12px;width:30px;height:30px;border-radius:50%;background:rgba(11,31,58,.75);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;color:#fff;}
 .zone-card .img-fallback{width:100%;height:100%;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;}
+.zone-card.no-thumb{background:linear-gradient(135deg,var(--primary) 0%,#173768 100%);}
+.zone-card.no-thumb::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 30% 30%,rgba(255,255,255,.06) 0%,transparent 45%),linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:100% 100%,28px 28px,28px 28px;}
+.zone-card.no-thumb::after{content:'';position:absolute;top:44%;left:50%;transform:translate(-50%,-50%);width:34px;height:34px;background:rgba(255,255,255,.08);border-radius:50%;box-shadow:0 0 0 1px rgba(255,255,255,.12);}
 
 .zone-hint{font-size:.82rem;color:#7a8fa5;text-align:center;margin-top:-16px;margin-bottom:8px;}
 
@@ -92,8 +95,8 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
         <span class="zone-title">Nord-Ouest</span>
       </div>
     </div>
-    <div class="zone-card" data-zone="nord-est" data-label="Nord-Est" data-file="1KgqfDDXRbIkZ8xRGFzg9k0X6DnTOTOWp">
-      <img src="https://drive.google.com/thumbnail?id=1KgqfDDXRbIkZ8xRGFzg9k0X6DnTOTOWp&sz=w800" alt="Aperçu carte Nord-Est" loading="lazy" onerror="this.style.display='none';this.parentElement.classList.add('no-thumb');">
+    <div class="zone-card" data-zone="nord-est" data-label="Nord-Est" data-file="1p9H7wVoP7wUyS3iuLqg-wu4jWvZmGhRS">
+      <img src="https://drive.google.com/thumbnail?id=1p9H7wVoP7wUyS3iuLqg-wu4jWvZmGhRS&sz=w800" alt="Aperçu carte Nord-Est" loading="lazy" onerror="this.style.display='none';this.parentElement.classList.add('no-thumb');">
       <div class="lock-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
       <div class="overlay">
         <span class="zone-sub">FRANCE</span>
@@ -152,7 +155,7 @@ const db = getFirestore(app);
 // Correspondance zone -> ID du fichier Google Drive (partagé "toute personne disposant du lien")
 const ZONE_FILES = {
   'nord-ouest': '1ZHOOv5S2JrKtsc3Gtie1AMaTf1VQpYv6',
-  'nord-est':   '1KgqfDDXRbIkZ8xRGFzg9k0X6DnTOTOWp',
+  'nord-est':   '1p9H7wVoP7wUyS3iuLqg-wu4jWvZmGhRS',
   'sud-ouest':  '1U6WjAea8xuEQqULpK5lN25UyHznds9ZY',
   'sud-est':    '1BGyxRLElfS1ysLy5n1Nv9UhRHUoApd0u'
 };
