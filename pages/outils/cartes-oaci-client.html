@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>APH Drone — Cartes OACI client</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/style.css">
+<style>
+:root{
+  --primary:#0B1F3A;
+  --secondary:#1F5FAF;
+  --accent:#4A90E2;
+  --light:#F5F7FA;
+  --mono:'JetBrains Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
+body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
+
+.page-head{max-width:900px;margin:0 auto;padding:40px 24px 8px;}
+.page-head h1{font-size:1.6rem;font-weight:800;color:var(--primary);}
+.page-head p{color:#7a8fa5;font-size:.9rem;margin-top:6px;}
+
+.wrap{max-width:900px;margin:0 auto;padding:24px;}
+
+/* ── Sélecteur de zone (carte hexagone France) ── */
+.zone-picker{display:flex;flex-direction:column;align-items:center;gap:24px;padding:32px 16px;}
+.hexmap{width:100%;max-width:420px;}
+.hex-zone{cursor:pointer;transition:.2s;}
+.hex-zone rect,.hex-zone path{transition:.2s;}
+.hex-zone:hover rect,.hex-zone:hover path{fill:var(--accent);}
+.hex-zone.selected rect,.hex-zone.selected path{fill:var(--secondary);}
+.hex-label{font-family:var(--mono);font-weight:700;font-size:13px;fill:white;pointer-events:none;letter-spacing:.5px;}
+.hex-sub{font-family:var(--mono);font-weight:500;font-size:8px;fill:rgba(255,255,255,.75);pointer-events:none;letter-spacing:1px;}
+
+.zone-hint{font-size:.82rem;color:#7a8fa5;text-align:center;}
+.zone-hint strong{color:var(--primary);}
+
+/* ── Panneau de verrouillage / contenu ── */
+.card{background:#fff;border:1px solid #e8edf4;border-radius:20px;padding:32px;box-shadow:0 8px 32px rgba(11,31,58,.06);}
+.card h2{font-size:1.15rem;font-weight:700;color:var(--primary);margin-bottom:6px;}
+.card p.sub{color:#7a8fa5;font-size:.85rem;margin-bottom:24px;}
+
+.lock-icon{width:40px;height:40px;border-radius:12px;background:var(--light);display:flex;align-items:center;justify-content:center;color:var(--secondary);margin-bottom:16px;}
+
+.form-group{margin-bottom:16px;}
+.form-group label{display:block;font-size:11px;font-weight:700;color:#555;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;}
+.form-group input{width:100%;padding:12px 16px;border:1.5px solid #dde3ec;border-radius:10px;font-size:.9rem;outline:none;transition:.2s;font-family:'Inter',sans-serif;color:#222;}
+.form-group input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(74,144,226,.1);}
+
+.btn{padding:12px 20px;border:none;border-radius:10px;font-size:.88rem;font-weight:600;cursor:pointer;transition:.2s;display:inline-flex;align-items:center;gap:8px;}
+.btn-primary{background:var(--secondary);color:#fff;}
+.btn-primary:hover{background:var(--accent);}
+.btn-primary:disabled{background:#9ca3af;cursor:not-allowed;}
+.btn-outline{background:transparent;color:var(--secondary);border:1.5px solid var(--secondary);}
+.btn-outline:hover{background:var(--light);}
+
+#login-error{display:none;background:#fee2e2;color:#dc2626;padding:10px 14px;border-radius:8px;font-size:.82rem;margin-top:12px;}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:currentColor;border-radius:50%;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ── Visionneuse carte ── */
+.viewer-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:12px;}
+.viewer-toolbar .zone-name{font-family:var(--mono);font-weight:700;color:var(--primary);font-size:.9rem;letter-spacing:.5px;}
+.viewer-frame{width:100%;height:70vh;min-height:420px;border:1px solid #e8edf4;border-radius:14px;overflow:hidden;background:var(--light);}
+.viewer-frame iframe{width:100%;height:100%;border:none;}
+.status-msg{padding:40px;text-align:center;color:#7a8fa5;font-size:.85rem;}
+</style>
+</head>
+<body>
+
+<div id="header-placeholder"></div>
+
+<div class="page-head">
+  <h1>Cartes OACI — accès client</h1>
+  <p>Sélectionnez une zone, puis connectez-vous avec vos identifiants client pour consulter et télécharger la carte complète en haute résolution.</p>
+</div>
+
+<div class="wrap">
+
+  <!-- ═══ Sélecteur de zone ═══ -->
+  <div class="zone-picker">
+    <svg class="hexmap" viewBox="0 0 400 380" xmlns="http://www.w3.org/2000/svg">
+      <!-- Hexagone "France" (400x380) — sommets: haut(200,40) haut-D(320,110) bas-D(320,260) bas(200,340) bas-G(80,260) haut-G(80,110) -->
+      <!-- Divisé en 4 quadrants autour du centre (200,200), séparateurs jusqu'aux points milieux des côtés gauche/droit -->
+      <g id="zone-no" class="hex-zone" data-zone="nord-ouest" data-label="Nord-Ouest">
+        <path d="M200 40 L80 110 L80 200 L200 200 Z" fill="var(--primary)" stroke="#fff" stroke-width="3"/>
+        <text x="140" y="132" class="hex-label" text-anchor="middle">NORD</text>
+        <text x="140" y="147" class="hex-sub" text-anchor="middle">OUEST</text>
+      </g>
+      <g id="zone-ne" class="hex-zone" data-zone="nord-est" data-label="Nord-Est">
+        <path d="M200 40 L320 110 L320 200 L200 200 Z" fill="var(--primary)" stroke="#fff" stroke-width="3"/>
+        <text x="260" y="132" class="hex-label" text-anchor="middle">NORD</text>
+        <text x="260" y="147" class="hex-sub" text-anchor="middle">EST</text>
+      </g>
+      <g id="zone-so" class="hex-zone" data-zone="sud-ouest" data-label="Sud-Ouest">
+        <path d="M80 200 L80 260 L200 340 L200 200 Z" fill="var(--primary)" stroke="#fff" stroke-width="3"/>
+        <text x="140" y="253" class="hex-label" text-anchor="middle">SUD</text>
+        <text x="140" y="268" class="hex-sub" text-anchor="middle">OUEST</text>
+      </g>
+      <g id="zone-se" class="hex-zone" data-zone="sud-est" data-label="Sud-Est">
+        <path d="M200 200 L200 340 L320 260 L320 200 Z" fill="var(--primary)" stroke="#fff" stroke-width="3"/>
+        <text x="260" y="253" class="hex-label" text-anchor="middle">SUD</text>
+        <text x="260" y="268" class="hex-sub" text-anchor="middle">EST</text>
+      </g>
+      <!-- Repère Luxeuil-les-Bains (siège APH), quadrant Nord-Est -->
+      <circle cx="255" cy="150" r="5" fill="var(--accent)" stroke="#fff" stroke-width="1.5"/>
+      <text x="255" y="172" font-family="'JetBrains Mono',monospace" font-size="8" font-weight="700" fill="var(--primary)" text-anchor="middle" letter-spacing="0.5">LUXEUIL</text>
+    </svg>
+    <p class="zone-hint">Cliquez sur une zone pour sélectionner la carte correspondante — repère bleu : <strong>Luxeuil-les-Bains</strong> (siège APH).</p>
+  </div>
+
+  <!-- ═══ Panneau dynamique ═══ -->
+  <div class="card" id="panel">
+    <p class="status-msg">Sélectionnez une zone ci-dessus pour commencer.</p>
+  </div>
+
+</div>
+
+<div id="footer-placeholder"></div>
+<script src="/assets/include.js"></script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, collection, getDocs, query, where }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAV5NQWfp8n9RkTrHSwqssBJ4R9lNAuYK8",
+  authDomain: "aph-drone.firebaseapp.com",
+  projectId: "aph-drone",
+  storageBucket: "aph-drone.firebasestorage.app",
+  messagingSenderId: "316810168380",
+  appId: "1:316810168380:web:66cb916cec4fdc00b9db39"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// Correspondance zone -> ID du fichier Google Drive (partagé "toute personne disposant du lien")
+const ZONE_FILES = {
+  'nord-ouest': '1ZHOOv5S2JrKtsc3Gtie1AMaTf1VQpYv6',
+  'nord-est':   '1KgqfDDXRbIkZ8xRGFzg9k0X6DnTOTOWp',
+  'sud-ouest':  '1U6WjAea8xuEQqULpK5lN25UyHznds9ZY',
+  'sud-est':    '1BGyxRLElfS1ysLy5n1Nv9UhRHUoApd0u'
+};
+
+let selectedZone = null;
+let isClientVerified = false;
+
+const panel = document.getElementById('panel');
+
+document.querySelectorAll('.hex-zone').forEach(zone => {
+  zone.addEventListener('click', () => {
+    document.querySelectorAll('.hex-zone').forEach(z => z.classList.remove('selected'));
+    zone.classList.add('selected');
+    selectedZone = zone.dataset.zone;
+    renderPanel(zone.dataset.label);
+  });
+});
+
+onAuthStateChanged(auth, async user => {
+  if(!user){ isClientVerified = false; if(selectedZone) renderPanel(currentZoneLabel()); return; }
+  try{
+    const snap = await getDocs(query(collection(db,'clients'), where('email','==',user.email)));
+    isClientVerified = !snap.empty;
+  }catch(e){
+    isClientVerified = false;
+  }
+  if(selectedZone) renderPanel(currentZoneLabel());
+});
+
+function currentZoneLabel(){
+  const el = document.querySelector('.hex-zone.selected');
+  return el ? el.dataset.label : '';
+}
+
+function renderPanel(zoneLabel){
+  const user = auth.currentUser;
+
+  if(!user || !isClientVerified){
+    panel.innerHTML = `
+      <div class="lock-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </div>
+      <h2>Carte ${zoneLabel} — accès protégé</h2>
+      <p class="sub">Connectez-vous avec vos identifiants client APH Drone pour déverrouiller cette carte.</p>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="carte-email" placeholder="votre@email.fr" autocomplete="email">
+      </div>
+      <div class="form-group">
+        <label>Mot de passe</label>
+        <input type="password" id="carte-password" placeholder="••••••••" autocomplete="current-password">
+      </div>
+      <button class="btn btn-primary" id="btn-carte-login">Déverrouiller la carte</button>
+      <div id="login-error"></div>
+    `;
+    document.getElementById('btn-carte-login').addEventListener('click', doLogin);
+    return;
+  }
+
+  panel.innerHTML = `
+    <div class="viewer-toolbar">
+      <span class="zone-name">Carte ${zoneLabel}</span>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-outline" id="btn-download">Télécharger le PDF</button>
+        <button class="btn btn-outline" id="btn-logout">Se déconnecter</button>
+      </div>
+    </div>
+    <div class="viewer-frame" id="viewer-frame">
+      <p class="status-msg">Chargement de la carte…</p>
+    </div>
+  `;
+
+  loadMap();
+
+  document.getElementById('btn-logout').addEventListener('click', () => signOut(auth));
+}
+
+async function doLogin(){
+  const email = document.getElementById('carte-email').value.trim();
+  const pwd = document.getElementById('carte-password').value;
+  const btn = document.getElementById('btn-carte-login');
+  const errBox = document.getElementById('login-error');
+  errBox.style.display = 'none';
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Connexion…';
+  try{
+    await signInWithEmailAndPassword(auth, email, pwd);
+    // onAuthStateChanged prend le relais et re-render le panneau
+  }catch(e){
+    errBox.textContent = "Identifiants incorrects. Vérifiez votre email et mot de passe.";
+    errBox.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Déverrouiller la carte';
+  }
+}
+
+async function loadMap(){
+  const frameBox = document.getElementById('viewer-frame');
+  const fileId = ZONE_FILES[selectedZone];
+  const previewUrl = `https://drive.google.com/file/d/${fileId}/preview`;
+  const downloadUrl = `https://drive.google.com/uc?export=download&id=${fileId}`;
+  frameBox.innerHTML = `<iframe src="${previewUrl}" title="Carte OACI" allow="autoplay"></iframe>`;
+  document.getElementById('btn-download').onclick = () => window.open(downloadUrl, '_blank');
+}
+</script>
+
+</body>
+</html>
