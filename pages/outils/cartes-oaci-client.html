@@ -134,7 +134,7 @@ body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut }
+import { getAuth, onAuthStateChanged, signOut }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { getFirestore, collection, getDocs, query, where }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -159,62 +159,72 @@ const ZONE_FILES = {
   'sud-ouest':  '1U6WjAea8xuEQqULpK5lN25UyHznds9ZY',
   'sud-est':    '1BGyxRLElfS1ysLy5n1Nv9UhRHUoApd0u'
 };
+const ZONE_LABELS = {
+  'nord-ouest': 'Nord-Ouest', 'nord-est': 'Nord-Est',
+  'sud-ouest': 'Sud-Ouest', 'sud-est': 'Sud-Est'
+};
 
 let selectedZone = null;
 let isClientVerified = false;
+let authResolved = false;
 
 const panel = document.getElementById('panel');
+
+// Zone demandée avant la connexion (portée par l'URL de retour depuis connexion.html)
+const urlParams = new URLSearchParams(window.location.search);
+const pendingZone = urlParams.get('zone');
+if(pendingZone && ZONE_FILES[pendingZone]){
+  selectedZone = pendingZone;
+  const card = document.querySelector(`.zone-card[data-zone="${pendingZone}"]`);
+  if(card) card.classList.add('selected');
+  window.history.replaceState({}, document.title, window.location.pathname);
+}
 
 document.querySelectorAll('.zone-card').forEach(zone => {
   zone.addEventListener('click', () => {
     document.querySelectorAll('.zone-card').forEach(z => z.classList.remove('selected'));
     zone.classList.add('selected');
     selectedZone = zone.dataset.zone;
-    renderPanel(zone.dataset.label);
+
+    if(!authResolved){
+      panel.innerHTML = '<p class="status-msg">Vérification de l\'accès…</p>';
+      return;
+    }
+    if(!isClientVerified){
+      goToLogin(selectedZone);
+      return;
+    }
+    renderViewer(ZONE_LABELS[selectedZone]);
   });
 });
 
 onAuthStateChanged(auth, async user => {
-  if(!user){ isClientVerified = false; if(selectedZone) renderPanel(currentZoneLabel()); return; }
+  authResolved = true;
+  if(!user){
+    isClientVerified = false;
+    if(selectedZone) goToLogin(selectedZone);
+    return;
+  }
   try{
     const snap = await getDocs(query(collection(db,'clients'), where('email','==',user.email)));
     isClientVerified = !snap.empty;
   }catch(e){
     isClientVerified = false;
   }
-  if(selectedZone) renderPanel(currentZoneLabel());
-});
-
-function currentZoneLabel(){
-  const el = document.querySelector('.zone-card.selected');
-  return el ? el.dataset.label : '';
-}
-
-function renderPanel(zoneLabel){
-  const user = auth.currentUser;
-
-  if(!user || !isClientVerified){
-    panel.innerHTML = `
-      <div class="lock-icon">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-      </div>
-      <h2>Carte ${zoneLabel} — accès protégé</h2>
-      <p class="sub">Connectez-vous avec vos identifiants client APH Drone pour déverrouiller cette carte.</p>
-      <div class="form-group">
-        <label>Email</label>
-        <input type="email" id="carte-email" placeholder="votre@email.fr" autocomplete="email">
-      </div>
-      <div class="form-group">
-        <label>Mot de passe</label>
-        <input type="password" id="carte-password" placeholder="••••••••" autocomplete="current-password">
-      </div>
-      <button class="btn btn-primary" id="btn-carte-login">Déverrouiller la carte</button>
-      <div id="login-error"></div>
-    `;
-    document.getElementById('btn-carte-login').addEventListener('click', doLogin);
+  if(!isClientVerified){
+    if(selectedZone) goToLogin(selectedZone);
     return;
   }
+  if(selectedZone){
+    renderViewer(ZONE_LABELS[selectedZone]);
+  }
+});
 
+function goToLogin(zone){
+  window.location.href = '../connexion.html?next=' + encodeURIComponent('/pages/outils/cartes-oaci-client.html') + '&zone=' + encodeURIComponent(zone);
+}
+
+function renderViewer(zoneLabel){
   panel.innerHTML = `
     <div class="viewer-toolbar">
       <span class="zone-name">Carte ${zoneLabel}</span>
@@ -227,29 +237,8 @@ function renderPanel(zoneLabel){
       <p class="status-msg">Chargement de la carte…</p>
     </div>
   `;
-
   loadMap();
-
-  document.getElementById('btn-logout').addEventListener('click', () => signOut(auth));
-}
-
-async function doLogin(){
-  const email = document.getElementById('carte-email').value.trim();
-  const pwd = document.getElementById('carte-password').value;
-  const btn = document.getElementById('btn-carte-login');
-  const errBox = document.getElementById('login-error');
-  errBox.style.display = 'none';
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Connexion…';
-  try{
-    await signInWithEmailAndPassword(auth, email, pwd);
-    // onAuthStateChanged prend le relais et re-render le panneau
-  }catch(e){
-    errBox.textContent = "Identifiants incorrects. Vérifiez votre email et mot de passe.";
-    errBox.style.display = 'block';
-    btn.disabled = false;
-    btn.textContent = 'Déverrouiller la carte';
-  }
+  document.getElementById('btn-logout').addEventListener('click', () => signOut(auth).then(() => window.location.reload()));
 }
 
 async function loadMap(){
