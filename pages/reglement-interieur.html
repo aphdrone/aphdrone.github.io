@@ -96,7 +96,7 @@ body{background:#fff;color:#222;min-height:100vh;padding-top:80px;}
 <div id="pdf-capture-zone">
 <div class="legal-content">
   <div class="legal-info">
-    APH SASU (anciennement APH Drone SARL) — 44 rue Georges Moulimard, 70300 Luxeuil-les-Bains — RCS Vesoul 108 639 220 — N° TVA FR00 108639220 — SIRET : <span class="fill">à compléter</span> — N° de déclaration d'activité (NDA) : <span class="fill">à compléter</span>.
+    APH SASU — 44 rue Georges Moulimard, 70300 Luxeuil-les-Bains — RCS Vesoul 108 639 220 — N° TVA FR00 108639220 — SIRET : <span class="fill">En attente</span> — N° de déclaration d'activité (NDA) : <span class="fill">En attente</span>.
   </div>
 
   <h2>Préambule</h2>
@@ -404,7 +404,7 @@ document.getElementById('btn-submit').addEventListener('click', async () => {
 
     await addDoc(collection(db,'reglementsSignes'), payload);
 
-    btn.textContent = 'Envoi de la preuve…';
+    btn.textContent = 'Envoi…';
     await sendReglementPdf({ name, formation, pdfBase64 });
 
     document.querySelectorAll('.sat-wrap, .legal-hero, .legal-content, #pdf-capture-zone').forEach(el => el.style.display = 'none');
