@@ -398,7 +398,6 @@ document.getElementById('btn-submit').addEventListener('click', async () => {
     const payload = {
       name, prenom, nom, email, formation,
       signature: signatureImg,
-      pdfBase64,
       timestamp
     };
     if(currentStagId){ payload.stagiaireId = currentStagId; }
