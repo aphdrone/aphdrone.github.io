@@ -754,6 +754,7 @@ tr:last-child td{border-bottom:none;}
         <span class="toggle-slider"></span>
       </label>
     </div>
+    <div id="fiche-client-link-banner" style="display:none;background:#eef4fd;border-left:3px solid var(--secondary,#1F5FAF);border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:.82rem;color:#334155;"></div>
     <div class="fiche-tabs">
       <button class="fiche-tab active" data-tab="tab-missions">Missions</button>
       <button class="fiche-tab" data-tab="tab-docs">Documents</button>
@@ -846,6 +847,7 @@ tr:last-child td{border-bottom:none;}
         <span class="toggle-slider"></span>
       </label>
     </div>
+    <div id="fiche-stag-link-banner" style="display:none;background:#eef4fd;border-left:3px solid var(--secondary,#1F5FAF);border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:.82rem;color:#334155;"></div>
     <div class="module-list" id="modules-list"></div>
 
     <p class="modal-subtitle">Documents</p>
@@ -1202,7 +1204,44 @@ async function openClientFicheModal(clientId){
   renderClientDocAdminList(data.documents || []);
   renderDevisAdminList(data.devis || []);
   renderFactureAdminList(data.factures || []);
+  await renderLinkBanner('fiche-client-link-banner', data, 'stagiaireId', 'stagiaires', 'espace stagiaire', clientId, 'clients');
   openModal('modal-client-fiche');
+}
+
+// Affiche un bandeau indiquant si cette personne a aussi un espace de l'autre type (client <-> stagiaire),
+// avec un lien direct vers sa fiche, ou un bouton pour relier les deux fiches si elles existent déjà
+// séparément (comptes créés avant la liaison automatique) mais partagent le même email.
+async function renderLinkBanner(bannerElId, data, linkField, otherCollection, otherLabel, ownId, ownCollection){
+  const el = document.getElementById(bannerElId);
+  if(!el) return;
+  el.style.display = 'none';
+  el.innerHTML = '';
+
+  if(data[linkField]){
+    el.style.display = 'block';
+    el.innerHTML = `🔗 Cette personne a aussi un ${otherLabel} lié — les documents ajoutés ici n'apparaissent que dans cet espace-ci.`;
+    return;
+  }
+  if(!data.email) return;
+
+  // Pas de lien enregistré : on regarde si une fiche de l'autre type existe avec le même email
+  const snap = await getDocs(query(collection(db, otherCollection), where('email','==',data.email)));
+  if(snap.empty) return;
+  const otherId = snap.docs[0].id;
+  el.style.display = 'block';
+  el.innerHTML = `⚠️ Une fiche ${otherLabel} existe avec le même email mais n'est pas reliée à celle-ci. `;
+  const btn = document.createElement('button');
+  btn.textContent = 'Relier maintenant';
+  btn.style.cssText = 'margin-left:6px;background:var(--secondary,#1F5FAF);color:#fff;border:none;border-radius:6px;padding:4px 10px;font-size:.78rem;font-weight:700;cursor:pointer;';
+  btn.addEventListener('click', async () => {
+    await Promise.all([
+      updateDoc(doc(db, ownCollection, ownId), { [linkField]: otherId }),
+      updateDoc(doc(db, otherCollection, otherId), { [otherCollection === 'stagiaires' ? 'clientId' : 'stagiaireId']: ownId })
+    ]);
+    showToast('Fiches reliées.');
+    if(ownCollection === 'clients') openClientFicheModal(ownId); else openModulesModal(ownId);
+  });
+  el.appendChild(btn);
 }
 
 document.getElementById('fiche-client-active-toggle').addEventListener('change', async (e) => {
@@ -1912,6 +1951,7 @@ async function openModulesModal(stagId){
   window._currentModalStagEmail = data.email;
   document.getElementById('modules-stag-name').textContent = 'Modules — ' + (data.name || '');
   document.getElementById('fiche-stag-active-toggle').checked = data.active !== false;
+  await renderLinkBanner('fiche-stag-link-banner', data, 'clientId', 'clients', 'espace client', stagId, 'stagiaires');
   const list = document.getElementById('modules-list');
   list.innerHTML = '';
   AVAILABLE_MODULES.forEach(mod => {
@@ -2146,12 +2186,11 @@ function openDocumentDetail(id, col){
 
   addRow('Date', entry.timestamp ? new Date(entry.timestamp).toLocaleString('fr-FR') : '—');
   Object.entries(entry.raw).forEach(([key, val]) => {
-    if(key === 'timestamp' || key === 'ratings' || key === 'signatureImage' || key === 'signature' || key === 'pdfBase64') return;
+    if(key === 'timestamp' || key === 'ratings' || key === 'signatureImage') return;
     if(typeof val === 'object') return;
     const label = DOC_FIELD_LABELS[key] || key;
     addRow(label, val);
   });
-
   if(entry.raw.ratings){
     const ratingsStr = Object.entries(entry.raw.ratings).map(([q,v]) => q + ' : ' + v + '/5').join('<br>');
     addRow('Notes', ratingsStr);
@@ -2219,7 +2258,7 @@ document.getElementById('btn-doc-download').addEventListener('click', () => {
 
   addLine('Date', currentDocDetail.timestamp ? new Date(currentDocDetail.timestamp).toLocaleString('fr-FR') : '—');
   Object.entries(currentDocDetail.raw).forEach(([key, val]) => {
-    if(key === 'timestamp' || key === 'ratings' || key === 'signatureImage' || key === 'signature' || key === 'pdfBase64') return;
+    if(key === 'timestamp' || key === 'ratings' || key === 'signatureImage') return;
     if(typeof val === 'object') return;
     addLine(DOC_FIELD_LABELS[key] || key, val);
   });
