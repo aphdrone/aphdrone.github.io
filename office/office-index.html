@@ -591,7 +591,6 @@ tr:last-child td{border-bottom:none;}
     </div>
 
     <div class="modal-actions">
-      <button class="btn btn-primary" id="btn-doc-download-signed" style="display:none;">Télécharger le PDF signé</button>
       <button class="btn btn-outline" id="btn-doc-download">Télécharger en PDF</button>
       <button class="btn btn-outline" onclick="closeModal('modal-document-detail')">Fermer</button>
     </div>
@@ -2153,12 +2152,6 @@ function openDocumentDetail(id, col){
     addRow(label, val);
   });
 
-  const btnSigned = document.getElementById('btn-doc-download-signed');
-  if(entry.raw.pdfBase64){
-    btnSigned.style.display = 'inline-flex';
-  } else {
-    btnSigned.style.display = 'none';
-  }
   if(entry.raw.ratings){
     const ratingsStr = Object.entries(entry.raw.ratings).map(([q,v]) => q + ' : ' + v + '/5').join('<br>');
     addRow('Notes', ratingsStr);
@@ -2194,22 +2187,6 @@ document.getElementById('btn-doc-save-reponse').addEventListener('click', async 
   closeModal('modal-document-detail');
   renderDocumentsTable();
   updateDashboardAlerts();
-});
-
-document.getElementById('btn-doc-download-signed').addEventListener('click', () => {
-  if(!currentDocDetail || !currentDocDetail.raw.pdfBase64) return;
-  const byteChars = atob(currentDocDetail.raw.pdfBase64);
-  const byteNumbers = new Array(byteChars.length);
-  for(let i = 0; i < byteChars.length; i++) byteNumbers[i] = byteChars.charCodeAt(i);
-  const blob = new Blob([new Uint8Array(byteNumbers)], { type: 'application/pdf' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = DOC_TYPE_LABELS[currentDocDetail.type].replace(/[^a-z0-9]/gi,'_') + '_signe_' + currentDocDetail.nom.replace(/[^a-z0-9]/gi,'_') + '.pdf';
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  URL.revokeObjectURL(url);
 });
 
 document.getElementById('btn-doc-download').addEventListener('click', () => {
