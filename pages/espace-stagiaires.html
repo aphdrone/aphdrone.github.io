@@ -465,6 +465,10 @@ onAuthStateChanged(auth, async user => {
     const d = snap.docs[0];
     currentStagId = d.id;
     currentStagiaire = d.data();
+    console.log('[DEBUG APH] Email connecté :', user.email);
+    console.log('[DEBUG APH] Fiche stagiaire trouvée, id :', currentStagId);
+    console.log('[DEBUG APH] Email dans la fiche :', currentStagiaire.email);
+    console.log('[DEBUG APH] Documents dans la fiche :', currentStagiaire.documents);
     document.getElementById('gate').style.display = 'none';
     document.getElementById('stag-app').style.display = 'block';
     renderWelcome();
