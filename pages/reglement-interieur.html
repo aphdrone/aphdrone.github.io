@@ -93,6 +93,7 @@ body{background:#fff;color:#222;min-height:100vh;padding-top:80px;}
   </div>
 </section>
 
+<div id="pdf-capture-zone">
 <div class="legal-content">
   <div class="legal-info">
     APH SASU (anciennement APH Drone SARL) — 44 rue Georges Moulimard, 70300 Luxeuil-les-Bains — RCS Vesoul 108 639 220 — N° TVA FR00 108639220 — SIRET : <span class="fill">à compléter</span> — N° de déclaration d'activité (NDA) : <span class="fill">à compléter</span>.
@@ -151,7 +152,7 @@ body{background:#fff;color:#222;min-height:100vh;padding-top:80px;}
 <div class="sat-wrap">
 
   <!-- Attestation + signature -->
-  <div class="sat-section" id="pdf-capture-zone">
+  <div class="sat-section">
     <div class="sat-section-title"><h3>Attestation de prise de connaissance</h3></div>
     <p class="sat-section-sub">Merci de compléter vos informations et de signer avant de valider.</p>
 
@@ -190,6 +191,9 @@ body{background:#fff;color:#222;min-height:100vh;padding-top:80px;}
     </div>
   </div>
 
+  </div>
+  <!-- fin pdf-capture-zone (règlement + attestation + signature) -->
+
   <div class="submit-bar">
     <button class="btn btn-primary" id="btn-submit">Valider et enregistrer ma signature</button>
   </div>
@@ -201,7 +205,7 @@ body{background:#fff;color:#222;min-height:100vh;padding-top:80px;}
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>
   </div>
   <h2>Signature enregistrée</h2>
-  <p>Votre acceptation du règlement intérieur a bien été transmise à APH SASU et enregistrée dans notre système de traçabilité.</p>
+  <p>Votre acceptation du règlement intérieur a bien été enregistrée et le document signé (PDF) a été transmis à APH SASU, qui le conserve comme preuve.</p>
   <a href="espace-stagiaires.html" class="btn btn-primary" style="width:auto;">Retour à mon espace</a>
 </div>
 
@@ -210,6 +214,8 @@ body{background:#fff;color:#222;min-height:100vh;padding-top:80px;}
 <div id="footer-placeholder"></div>
 
 <script src="/assets/include.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -230,6 +236,21 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+
+// ── Envoi du PDF signé par email via Google Apps Script ──
+// Déploiement SÉPARÉ des autres formulaires (satisfaction / fiche / attestation).
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyk2Ib4ltfQgTv43rgVoe5Oft0MEk81Rn7xglRHrcEzJMECiCKW5SwWm-FZyx5Qg6Uz/exec';
+
+async function sendReglementPdf({ name, formation, pdfBase64 }) {
+  const res = await fetch(APPS_SCRIPT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({ name, formation, pdfBase64 })
+  });
+  const result = await res.json();
+  if(!result.success){ throw new Error(result.error || 'Échec de l\'envoi côté Apps Script'); }
+  return result;
+}
 
 let currentStagId = null;
 
@@ -306,6 +327,47 @@ document.getElementById('sig-clear').addEventListener('click', () => {
   hasSignature = false;
 });
 
+// ── Génère un PDF qui est une capture fidèle du règlement tel que lu et signé ──
+async function buildSignedPdf(data){
+  const zone = document.getElementById('pdf-capture-zone');
+
+  const header = document.createElement('div');
+  header.style.cssText = 'background:#0B1F3A;color:#fff;padding:20px 26px;border-radius:16px;margin-bottom:20px;font-family:Inter,sans-serif;';
+  header.innerHTML =
+    '<div style="font-size:1.05rem;font-weight:800;">APH SASU — Règlement intérieur signé</div>' +
+    '<div style="font-size:.82rem;opacity:.85;margin-top:5px;">Stagiaire : ' + (data.name || '—') + ' — Formation : ' + (data.formation || '—') + '</div>' +
+    '<div style="font-size:.76rem;opacity:.7;margin-top:2px;">Signé le ' + new Date(data.timestamp).toLocaleDateString('fr-FR') + ' à ' + new Date(data.timestamp).toLocaleTimeString('fr-FR') + '</div>';
+  zone.insertBefore(header, zone.firstChild);
+
+  let canvasCap;
+  try{
+    canvasCap = await html2canvas(zone, { scale: 2, backgroundColor: '#ffffff', useCORS: true });
+  } finally {
+    header.remove();
+  }
+
+  const imgData = canvasCap.toDataURL('image/jpeg', 0.92);
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF('p', 'mm', 'a4');
+  const pageWidth = 210, pageHeight = 297, margin = 10;
+  const imgWidth = pageWidth - margin * 2;
+  const imgHeight = canvasCap.height * imgWidth / canvasCap.width;
+
+  let heightLeft = imgHeight;
+  let position = margin;
+  doc.addImage(imgData, 'JPEG', margin, position, imgWidth, imgHeight);
+  heightLeft -= (pageHeight - margin * 2);
+
+  while(heightLeft > 0){
+    position = margin - (imgHeight - heightLeft);
+    doc.addPage();
+    doc.addImage(imgData, 'JPEG', margin, position, imgWidth, imgHeight);
+    heightLeft -= (pageHeight - margin * 2);
+  }
+
+  return doc;
+}
+
 document.getElementById('btn-submit').addEventListener('click', async () => {
   const prenom = document.getElementById('f-prenom').value.trim();
   const nom = document.getElementById('f-nom').value.trim();
@@ -321,24 +383,36 @@ document.getElementById('btn-submit').addEventListener('click', async () => {
 
   const btn = document.getElementById('btn-submit');
   btn.disabled = true;
-  btn.textContent = 'Envoi en cours…';
+  btn.textContent = 'Génération du PDF…';
 
   const name = prenom + ' ' + nom;
-  const signatureImg = canvas.toDataURL('image/png');
-  const payload = {
-    name, prenom, nom, email, formation,
-    signature: signatureImg,
-    timestamp: Date.now()
-  };
-  if(currentStagId){ payload.stagiaireId = currentStagId; }
+  const timestamp = Date.now();
 
   try{
+    const pdfDoc = await buildSignedPdf({ name, formation, timestamp });
+    const pdfBase64 = pdfDoc.output('datauristring').split(',')[1];
+
+    btn.textContent = 'Enregistrement…';
+
+    const signatureImg = canvas.toDataURL('image/png');
+    const payload = {
+      name, prenom, nom, email, formation,
+      signature: signatureImg,
+      pdfBase64,
+      timestamp
+    };
+    if(currentStagId){ payload.stagiaireId = currentStagId; }
+
     await addDoc(collection(db,'reglementsSignes'), payload);
-    document.querySelectorAll('.sat-wrap, .legal-hero, .legal-content').forEach(el => el.style.display = 'none');
+
+    btn.textContent = 'Envoi de la preuve…';
+    await sendReglementPdf({ name, formation, pdfBase64 });
+
+    document.querySelectorAll('.sat-wrap, .legal-hero, .legal-content, #pdf-capture-zone').forEach(el => el.style.display = 'none');
     document.getElementById('sat-thanks').style.display = 'block';
     window.scrollTo({top:0, behavior:'smooth'});
   }catch(e){
-    showToast('Erreur lors de l\'enregistrement : ' + e.message);
+    showToast('Erreur lors de l\'envoi : ' + e.message);
     btn.disabled = false;
     btn.textContent = 'Valider et enregistrer ma signature';
   }
