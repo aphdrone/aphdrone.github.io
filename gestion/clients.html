@@ -440,7 +440,9 @@ function genPassword(){
 }
 
 // Crée l'accès espace client (site web) et/ou stagiaire pour ce client, sans dupliquer
-// si un compte existe déjà pour cet email. Retourne le mot de passe généré si un compte
+// si un compte existe déjà pour cet email. Relie systématiquement les deux fiches entre elles
+// (clientId <-> stagiaireId) pour que l'admin puisse naviguer de l'une à l'autre et ne jamais
+// se tromper de fiche en ajoutant un document. Retourne le mot de passe généré si un compte
 // Firebase Auth a été créé (null si le compte existait déjà).
 async function creerAccesEspacePersonnel(nomAffichage, email, espaceClient, stagiaire, formationLibelle){
   if(!email) return null;
@@ -452,8 +454,10 @@ async function creerAccesEspacePersonnel(nomAffichage, email, espaceClient, stag
   ]);
   const aDejaCompteClient = !snapClients.empty;
   const aDejaCompteStagiaire = !snapStagiaires.empty;
+  let clientId = aDejaCompteClient ? snapClients.docs[0].id : null;
+  let stagiaireId = aDejaCompteStagiaire ? snapStagiaires.docs[0].id : null;
 
-  if((!espaceClient || aDejaCompteClient) && (!stagiaire || aDejaCompteStagiaire)) return null;
+  const rienANouveau = (!espaceClient || aDejaCompteClient) && (!stagiaire || aDejaCompteStagiaire);
 
   let motDePasseGenere = null;
   // Le compte Firebase Auth n'est créé qu'une fois, même si les deux cases sont cochées
@@ -471,12 +475,30 @@ async function creerAccesEspacePersonnel(nomAffichage, email, espaceClient, stag
   }
 
   if(espaceClient && !aDejaCompteClient){
-    await addDoc(collection(db, 'clients'), { name: nomAffichage, email, createdAt: Date.now() });
+    const ref = await addDoc(collection(db, 'clients'), { name: nomAffichage, email, createdAt: Date.now() });
+    clientId = ref.id;
   }
   if(stagiaire && !aDejaCompteStagiaire){
-    await addDoc(collection(db, 'stagiaires'), { name: nomAffichage, email, formation: formationLibelle || '', modules: [], createdAt: Date.now() });
+    const ref = await addDoc(collection(db, 'stagiaires'), { name: nomAffichage, email, formation: formationLibelle || '', modules: [], createdAt: Date.now() });
+    stagiaireId = ref.id;
   }
 
+  // Relie les deux fiches entre elles (dans les deux sens), qu'elles viennent d'être créées
+  // ou qu'elles existaient déjà — pour rattraper aussi les comptes créés avant cette évolution.
+  if(clientId && stagiaireId){
+    const updates = [];
+    const clientSnap = clientId === (snapClients.docs[0] && snapClients.docs[0].id) ? snapClients.docs[0] : null;
+    const stagiaireSnap = stagiaireId === (snapStagiaires.docs[0] && snapStagiaires.docs[0].id) ? snapStagiaires.docs[0] : null;
+    if(!clientSnap || clientSnap.data().stagiaireId !== stagiaireId){
+      updates.push(updateDoc(doc(db, 'clients', clientId), { stagiaireId }));
+    }
+    if(!stagiaireSnap || stagiaireSnap.data().clientId !== clientId){
+      updates.push(updateDoc(doc(db, 'stagiaires', stagiaireId), { clientId }));
+    }
+    if(updates.length) await Promise.all(updates);
+  }
+
+  if(rienANouveau) return null;
   return motDePasseGenere;
 }
 
