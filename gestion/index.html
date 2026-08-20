@@ -316,6 +316,36 @@ body{background:var(--light);color:#222;min-height:100vh;}
         </div>
 
         <div class="dash-section">
+          <div class="dash-section-label">Activité site & stagiaires</div>
+          <div class="dash-stats-row">
+            <div class="dash-stat">
+              <div class="dash-stat-lbl">Clients (accès site)</div>
+              <div class="dash-stat-num" id="stat-clients-site">—</div>
+            </div>
+            <div class="dash-stat">
+              <div class="dash-stat-lbl">Stagiaires</div>
+              <div class="dash-stat-num" id="stat-stagiaires-site">—</div>
+            </div>
+            <div class="dash-stat">
+              <div class="dash-stat-lbl">Réclamations en attente</div>
+              <div class="dash-stat-num" id="stat-reclamations-attente" style="color:var(--red);">—</div>
+            </div>
+            <div class="dash-stat">
+              <div class="dash-stat-lbl">Émargements manquants</div>
+              <div class="dash-stat-num" id="stat-emargements-manquants" style="color:var(--red);">—</div>
+            </div>
+            <div class="dash-stat">
+              <div class="dash-stat-lbl">Avis de satisfaction</div>
+              <div class="dash-stat-num" id="stat-satisfactions-total">—</div>
+            </div>
+          </div>
+          <div id="reclamations-attente-block" style="display:none;margin-top:10px;">
+            <div style="font-size:.82rem;font-weight:700;color:var(--primary);margin-bottom:8px;">Réclamations en attente</div>
+            <div id="reclamations-attente-list"></div>
+          </div>
+        </div>
+
+        <div class="dash-section">
           <div class="dash-section-label">Chiffre d'affaires — détail</div>
           <div class="dash-filter-row">
             <select id="dash-ca-client">
@@ -450,6 +480,7 @@ onAuthStateChanged(auth, user => {
     document.getElementById('app').style.display = 'block';
     document.getElementById('user-email').textContent = user.email;
     chargerTableauDeBord();
+    chargerActiviteSiteStagiaires();
   } else if(user){
     refusedBox.style.display = 'block';
     loginBox.style.display = 'none';
@@ -461,6 +492,55 @@ onAuthStateChanged(auth, user => {
 
 function formatMontant(n){
   return (n || 0).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
+}
+
+async function chargerActiviteSiteStagiaires(){
+  try{
+    const [snapClients, snapStagiaires, snapReclamations, snapEmargements, snapSatisfactions] = await Promise.all([
+      getDocs(collection(db, 'clients')),
+      getDocs(collection(db, 'stagiaires')),
+      getDocs(collection(db, 'reclamations')),
+      getDocs(collection(db, 'emargements')),
+      getDocs(collection(db, 'satisfactions'))
+    ]);
+
+    const clientsActifs = snapClients.docs.filter(d => d.data().active !== false).length;
+    document.getElementById('stat-clients-site').textContent = clientsActifs;
+
+    const stagiaires = snapStagiaires.docs.map(d => ({ id: d.id, ...d.data() }));
+    document.getElementById('stat-stagiaires-site').textContent = stagiaires.filter(s => s.active !== false).length;
+
+    const reclamations = snapReclamations.docs.map(d => d.data());
+    const reclamationsAttente = reclamations.filter(r => (r.statut || 'nouvelle') === 'nouvelle');
+    document.getElementById('stat-reclamations-attente').textContent = reclamationsAttente.length;
+    const blockReclam = document.getElementById('reclamations-attente-block');
+    const listReclam = document.getElementById('reclamations-attente-list');
+    if(reclamationsAttente.length){
+      blockReclam.style.display = 'block';
+      listReclam.innerHTML = reclamationsAttente.map(r => `
+        <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid #f1f5f9;font-size:.83rem;">
+          <span>${r.name || '—'} <span style="color:#94a3b8;">— ${r.typeReclamation || 'Réclamation'}</span></span>
+          <span style="color:#94a3b8;">${r.timestamp ? new Date(r.timestamp).toLocaleDateString('fr-FR') : ''}</span>
+        </div>
+      `).join('');
+    } else {
+      blockReclam.style.display = 'none';
+    }
+
+    const emargements = snapEmargements.docs.map(d => d.data());
+    let manquants = 0;
+    stagiaires.forEach(s => {
+      (s.modules || []).forEach(mod => {
+        const aEmarge = emargements.some(e => e.stagiaireId === s.id && e.formation === mod);
+        if(!aEmarge) manquants++;
+      });
+    });
+    document.getElementById('stat-emargements-manquants').textContent = manquants;
+
+    document.getElementById('stat-satisfactions-total').textContent = snapSatisfactions.size;
+  }catch(e){
+    console.warn('chargerActiviteSiteStagiaires:', e.message);
+  }
 }
 
 const STATUS_LABELS = {
