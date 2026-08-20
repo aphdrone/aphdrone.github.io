@@ -60,8 +60,7 @@
         { label: 'Publications', href: '/office/index.html#panel-publication' },
         { label: 'Outils', href: '/office/index.html#panel-outils' },
         { label: 'Hébergement', href: '/office/index.html#panel-hebergement' },
-        { label: 'Visibilité', href: '/office/index.html#panel-visibilite' },
-        { label: 'Réclamations & documents signés', href: '/office/index.html#panel-documents', dotId: 'nav-alert-documents' }
+        { label: 'Visibilité', href: '/office/index.html#panel-visibilite' }
       ]
     },
     {
