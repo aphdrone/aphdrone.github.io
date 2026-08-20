@@ -406,8 +406,8 @@ body{background:var(--light);color:#222;min-height:100vh;}
 
             <div style="margin-top:28px;padding-top:18px;border-top:1px dashed #f0b4b4;">
               <div style="font-size:11px;font-weight:700;color:#dc2626;text-transform:uppercase;letter-spacing:.03em;margin-bottom:8px;">Zone de test</div>
-              <p style="font-size:.78rem;color:#94a3b8;margin-bottom:10px;">Supprime définitivement tous les clients enregistrés (facturation) — pratique pour repartir de zéro après une phase de test.</p>
-              <button class="btn-delete" style="padding:8px 14px;" onclick="viderTousLesClients()">Supprimer tous les clients</button>
+              <p style="font-size:.78rem;color:#94a3b8;margin-bottom:10px;">Supprime définitivement toutes les fiches enregistrées — facturation, accès site et accès stagiaire confondus — pratique pour repartir de zéro après une phase de test.</p>
+              <button class="btn-delete" style="padding:8px 14px;" onclick="viderTousLesClients()">Supprimer toutes les fiches</button>
             </div>
           </div>
         </div>
@@ -1227,11 +1227,12 @@ window.supprimerClient = async function(id, nom){
 
 // ── Zone de test : suppression de tous les clients (double confirmation) ──
 window.viderTousLesClients = async function(){
-  if(allClients.length === 0){
-    alert('Il n\'y a déjà aucun client enregistré.');
+  const total = allClients.length + allSiteClients.length + allStagiairesGlobal.length;
+  if(total === 0){
+    alert('Il n\'y a déjà aucune personne enregistrée.');
     return;
   }
-  if(!confirm('Supprimer DÉFINITIVEMENT les ' + allClients.length + ' client(s) enregistré(s) ? Cette action est irréversible.')) return;
+  if(!confirm('Supprimer DÉFINITIVEMENT les ' + total + ' fiche(s) enregistrée(s) — facturation, accès site ET accès stagiaire confondus ? Cette action est irréversible.')) return;
   const saisie = prompt('Pour confirmer, tape le mot SUPPRIMER en majuscules :');
   if(saisie !== 'SUPPRIMER'){
     alert('Suppression annulée.');
@@ -1241,8 +1242,14 @@ window.viderTousLesClients = async function(){
     for(const c of allClients){
       await deleteDoc(doc(db, 'clientsFacturation', c.id));
     }
-    chargerClients();
-    alert('Tous les clients ont été supprimés.');
+    for(const s of allSiteClients){
+      await deleteDoc(doc(db, 'clients', s.id));
+    }
+    for(const s of allStagiairesGlobal){
+      await deleteDoc(doc(db, 'stagiaires', s.id));
+    }
+    await chargerToutesLesPersonnes();
+    alert('Toutes les fiches (facturation, site, stagiaire) ont été supprimées.');
   } catch(e){
     alert('Erreur : ' + e.message);
   }
