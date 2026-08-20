@@ -738,6 +738,7 @@ padding:60px 10% 0;
   .fiche-actions{flex-direction:column;}
   .ot-cards-grid{grid-template-columns:1fr !important;}
   .ot-partner-banner{flex-direction:column;text-align:center;}
+  .ot-partner-banner > div[style*="border-left"]{border-left:none !important;border-top:1px solid #eef1f6;padding-left:0 !important;padding-top:20px;}
 }
 @media (max-width: 768px) {
   footer{padding:44px 6% 0 !important;}
@@ -777,17 +778,14 @@ document.addEventListener('DOMContentLoaded', function(){
 <div style="max-width:1100px;margin:40px auto 0;padding:0 10%;">
 
   <!-- Bandeau partenaire — Office de Tourisme -->
-  <div class="ot-partner-banner" style="display:flex;align-items:center;gap:26px;background:#fff;border:1px solid #e8edf4;border-radius:16px;padding:26px 32px;margin-bottom:28px;box-shadow:0 4px 16px rgba(11,31,58,.04);">
-    <div style="background:#fff;border:1px solid #f0f0f0;border-radius:14px;padding:8px;flex-shrink:0;box-shadow:0 2px 8px rgba(11,31,58,.05);">
-      <img src="/assets/images/hébergement/logo-office-tourisme.jpg" alt="Office de Tourisme Luxeuil-les-Bains, Vosges du Sud" style="height:100px;width:100px;border-radius:8px;object-fit:cover;display:block;">
-    </div>
-    <div style="flex:1;min-width:0;">
-      <div style="font-size:.75rem;font-weight:700;color:var(--secondary);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;">En partenariat avec</div>
-      <div style="font-size:1.3rem;font-weight:800;color:var(--primary);margin-bottom:8px;line-height:1.25;">Office de Tourisme de Luxeuil-les-Bains, Vosges du Sud</div>
-      <div style="display:flex;flex-wrap:wrap;gap:5px 20px;font-size:.87rem;color:#64748b;">
+  <div class="ot-partner-banner" style="display:flex;align-items:center;gap:32px;background:#fff;border:1px solid #e8edf4;border-radius:18px;padding:30px 38px;margin-bottom:28px;box-shadow:0 4px 20px rgba(11,31,58,.05);">
+    <img src="/assets/images/hébergement/logo-office-tourisme.jpg" alt="Office de Tourisme Luxeuil-les-Bains, Vosges du Sud" style="height:150px;width:150px;border-radius:14px;object-fit:cover;flex-shrink:0;box-shadow:0 8px 24px rgba(11,31,58,.12);">
+    <div style="flex:1;min-width:0;border-left:1px solid #eef1f6;padding-left:32px;">
+      <div style="font-size:.72rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">En partenariat avec</div>
+      <div style="font-size:1.15rem;font-weight:700;color:var(--primary);margin-bottom:16px;line-height:1.3;">Office de Tourisme<br>Luxeuil-les-Bains, Vosges du Sud</div>
+      <div style="display:flex;flex-direction:column;gap:4px;font-size:.78rem;color:#94a3b8;">
         <span>30, rue Victor Genoux — 70300 Luxeuil-les-Bains</span>
-        <span>Tél. 03 84 40 06 41</span>
-        <a href="https://www.luxeuil-vosges-sud.fr" target="_blank" rel="noopener" style="color:var(--secondary);font-weight:600;text-decoration:none;">luxeuil-vosges-sud.fr</a>
+        <span>Tél. 03 84 40 06 41 &nbsp;·&nbsp; <a href="https://www.luxeuil-vosges-sud.fr" target="_blank" rel="noopener" style="color:#94a3b8;text-decoration:underline;">luxeuil-vosges-sud.fr</a></span>
       </div>
     </div>
   </div>
