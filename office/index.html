@@ -69,6 +69,8 @@ body{background:var(--light);color:#222;min-height:100vh;}
 .btn-primary:hover{background:var(--accent);}
 .btn-outline{background:white;color:var(--secondary);border:1.5px solid #dde3ec;}
 .btn-outline:hover{border-color:var(--secondary);}
+.btn-delete{background:#fee2e2;color:#dc2626;border:none;}
+.btn-delete:hover{background:#fecaca;}
 .btn-danger{background:#fee2e2;color:var(--red);}
 .btn-danger:hover{background:#fecaca;}
 .btn-sm{padding:6px 11px;font-size:.74rem;}
@@ -607,6 +609,7 @@ tr:last-child td{border-bottom:none;}
     </div>
 
     <div class="modal-actions">
+      <button class="btn btn-delete" id="btn-doc-delete">Supprimer</button>
       <button class="btn btn-outline" id="btn-doc-download">Télécharger en PDF</button>
       <button class="btn btn-outline" onclick="closeModal('modal-document-detail')">Fermer</button>
     </div>
@@ -2255,6 +2258,17 @@ document.getElementById('btn-doc-save-reponse').addEventListener('click', async 
   currentDocDetail.raw.reponseAdmin = reponse;
   currentDocDetail.statut = 'traitee';
   showToast('Réponse enregistrée, réclamation marquée traitée.');
+  closeModal('modal-document-detail');
+  renderDocumentsTable();
+  updateDashboardAlerts();
+});
+
+document.getElementById('btn-doc-delete').addEventListener('click', async () => {
+  if(!currentDocDetail) return;
+  if(!confirm('Supprimer définitivement ce document (' + (DOC_TYPE_LABELS[currentDocDetail.type] || currentDocDetail.type) + ' — ' + (currentDocDetail.nom || '') + ') ? Cette action est irréversible.')) return;
+  await deleteDoc(doc(db, currentDocDetail.col, currentDocDetail.id));
+  allDocumentsCache = allDocumentsCache.filter(d => !(d.id === currentDocDetail.id && d.col === currentDocDetail.col));
+  showToast('Document supprimé.');
   closeModal('modal-document-detail');
   renderDocumentsTable();
   updateDashboardAlerts();
