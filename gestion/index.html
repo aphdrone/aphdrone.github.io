@@ -316,7 +316,10 @@ body{background:var(--light);color:#222;min-height:100vh;}
         </div>
 
         <div class="dash-section">
-          <div class="dash-section-label">Activité site & stagiaires</div>
+          <div class="dash-section-label" style="display:flex;justify-content:space-between;align-items:center;">
+            <span>Activité site & stagiaires</span>
+            <a href="/office/index.html#panel-documents" style="font-size:.78rem;font-weight:600;color:var(--secondary);text-decoration:none;">Voir toutes les réclamations →</a>
+          </div>
           <div class="dash-stats-row">
             <div class="dash-stat">
               <div class="dash-stat-lbl">Clients (accès site)</div>
@@ -510,7 +513,7 @@ async function chargerActiviteSiteStagiaires(){
     const stagiaires = snapStagiaires.docs.map(d => ({ id: d.id, ...d.data() }));
     document.getElementById('stat-stagiaires-site').textContent = stagiaires.filter(s => s.active !== false).length;
 
-    const reclamations = snapReclamations.docs.map(d => d.data());
+    const reclamations = snapReclamations.docs.map(d => ({ id: d.id, ...d.data() }));
     const reclamationsAttente = reclamations.filter(r => (r.statut || 'nouvelle') === 'nouvelle');
     document.getElementById('stat-reclamations-attente').textContent = reclamationsAttente.length;
     const blockReclam = document.getElementById('reclamations-attente-block');
@@ -518,10 +521,10 @@ async function chargerActiviteSiteStagiaires(){
     if(reclamationsAttente.length){
       blockReclam.style.display = 'block';
       listReclam.innerHTML = reclamationsAttente.map(r => `
-        <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid #f1f5f9;font-size:.83rem;">
-          <span>${r.name || '—'} <span style="color:#94a3b8;">— ${r.typeReclamation || 'Réclamation'}</span></span>
-          <span style="color:#94a3b8;">${r.timestamp ? new Date(r.timestamp).toLocaleDateString('fr-FR') : ''}</span>
-        </div>
+        <a href="/office/index.html?doc=${r.id}&col=reclamations#panel-documents" style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid #f1f5f9;font-size:.83rem;text-decoration:none;color:inherit;">
+          <span style="color:var(--secondary);font-weight:600;">${r.name || '—'} <span style="color:#94a3b8;font-weight:400;">— ${r.typeReclamation || 'Réclamation'}</span></span>
+          <span style="color:#94a3b8;">${r.timestamp ? new Date(r.timestamp).toLocaleDateString('fr-FR') : ''} →</span>
+        </a>
       `).join('');
     } else {
       blockReclam.style.display = 'none';
