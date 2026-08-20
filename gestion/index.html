@@ -317,34 +317,46 @@ body{background:var(--light);color:#222;min-height:100vh;}
 
         <div class="dash-section">
           <div class="dash-section-label" style="display:flex;justify-content:space-between;align-items:center;">
-            <span>Activité site & stagiaires</span>
-            <a href="/office/index.html#panel-documents" style="font-size:.78rem;font-weight:600;color:var(--secondary);text-decoration:none;">Voir toutes les réclamations →</a>
+            <span>Réclamations</span>
+            <a href="/office/index.html#panel-documents" style="font-size:.78rem;font-weight:600;color:var(--secondary);text-decoration:none;">Voir tout →</a>
           </div>
-          <div class="dash-stats-row">
+          <div class="dash-stats-row" style="grid-template-columns:repeat(1,1fr);max-width:220px;">
             <div class="dash-stat">
-              <div class="dash-stat-lbl">Clients (accès site)</div>
-              <div class="dash-stat-num" id="stat-clients-site">—</div>
-            </div>
-            <div class="dash-stat">
-              <div class="dash-stat-lbl">Stagiaires</div>
-              <div class="dash-stat-num" id="stat-stagiaires-site">—</div>
-            </div>
-            <div class="dash-stat">
-              <div class="dash-stat-lbl">Réclamations en attente</div>
+              <div class="dash-stat-lbl">En attente</div>
               <div class="dash-stat-num" id="stat-reclamations-attente" style="color:var(--red);">—</div>
             </div>
+          </div>
+          <div id="reclamations-attente-block" style="display:none;margin-top:14px;">
+            <div id="reclamations-attente-list"></div>
+          </div>
+        </div>
+
+        <div class="dash-section">
+          <div class="dash-section-label" style="display:flex;justify-content:space-between;align-items:center;">
+            <span>Émargements</span>
+            <a href="/gestion/clients.html#stagiaire-emargement" style="font-size:.78rem;font-weight:600;color:var(--secondary);text-decoration:none;">Voir tout →</a>
+          </div>
+          <div class="dash-stats-row" style="grid-template-columns:repeat(1,1fr);max-width:220px;">
             <div class="dash-stat">
-              <div class="dash-stat-lbl">Émargements manquants</div>
+              <div class="dash-stat-lbl">Manquants</div>
               <div class="dash-stat-num" id="stat-emargements-manquants" style="color:var(--red);">—</div>
             </div>
+          </div>
+          <div id="emargements-manquants-block" style="display:none;margin-top:14px;">
+            <div id="emargements-manquants-list"></div>
+          </div>
+        </div>
+
+        <div class="dash-section">
+          <div class="dash-section-label" style="display:flex;justify-content:space-between;align-items:center;">
+            <span>Avis de satisfaction</span>
+            <a href="/office/index.html#panel-documents" style="font-size:.78rem;font-weight:600;color:var(--secondary);text-decoration:none;">Voir tout →</a>
+          </div>
+          <div class="dash-stats-row" style="grid-template-columns:repeat(1,1fr);max-width:220px;">
             <div class="dash-stat">
-              <div class="dash-stat-lbl">Avis de satisfaction</div>
+              <div class="dash-stat-lbl">Total reçus</div>
               <div class="dash-stat-num" id="stat-satisfactions-total">—</div>
             </div>
-          </div>
-          <div id="reclamations-attente-block" style="display:none;margin-top:10px;">
-            <div style="font-size:.82rem;font-weight:700;color:var(--primary);margin-bottom:8px;">Réclamations en attente</div>
-            <div id="reclamations-attente-list"></div>
           </div>
         </div>
 
@@ -499,19 +511,14 @@ function formatMontant(n){
 
 async function chargerActiviteSiteStagiaires(){
   try{
-    const [snapClients, snapStagiaires, snapReclamations, snapEmargements, snapSatisfactions] = await Promise.all([
-      getDocs(collection(db, 'clients')),
+    const [snapStagiaires, snapReclamations, snapEmargements, snapSatisfactions] = await Promise.all([
       getDocs(collection(db, 'stagiaires')),
       getDocs(collection(db, 'reclamations')),
       getDocs(collection(db, 'emargements')),
       getDocs(collection(db, 'satisfactions'))
     ]);
 
-    const clientsActifs = snapClients.docs.filter(d => d.data().active !== false).length;
-    document.getElementById('stat-clients-site').textContent = clientsActifs;
-
     const stagiaires = snapStagiaires.docs.map(d => ({ id: d.id, ...d.data() }));
-    document.getElementById('stat-stagiaires-site').textContent = stagiaires.filter(s => s.active !== false).length;
 
     const reclamations = snapReclamations.docs.map(d => ({ id: d.id, ...d.data() }));
     const reclamationsAttente = reclamations.filter(r => (r.statut || 'nouvelle') === 'nouvelle');
@@ -531,14 +538,27 @@ async function chargerActiviteSiteStagiaires(){
     }
 
     const emargements = snapEmargements.docs.map(d => d.data());
-    let manquants = 0;
+    const manquants = [];
     stagiaires.forEach(s => {
       (s.modules || []).forEach(mod => {
         const aEmarge = emargements.some(e => e.stagiaireId === s.id && e.formation === mod);
-        if(!aEmarge) manquants++;
+        if(!aEmarge) manquants.push({ stagiaireName: s.name || s.email, formation: mod });
       });
     });
-    document.getElementById('stat-emargements-manquants').textContent = manquants;
+    document.getElementById('stat-emargements-manquants').textContent = manquants.length;
+    const blockEmarg = document.getElementById('emargements-manquants-block');
+    const listEmarg = document.getElementById('emargements-manquants-list');
+    if(manquants.length){
+      blockEmarg.style.display = 'block';
+      listEmarg.innerHTML = manquants.map(m => `
+        <a href="/gestion/clients.html#stagiaire-emargement" style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid #f1f5f9;font-size:.83rem;text-decoration:none;color:inherit;">
+          <span style="color:var(--secondary);font-weight:600;">${m.stagiaireName}</span>
+          <span style="color:#94a3b8;">${m.formation} →</span>
+        </a>
+      `).join('');
+    } else {
+      blockEmarg.style.display = 'none';
+    }
 
     document.getElementById('stat-satisfactions-total').textContent = snapSatisfactions.size;
   }catch(e){
