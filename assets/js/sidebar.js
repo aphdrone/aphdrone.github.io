@@ -23,7 +23,16 @@
     {
       key: 'clients', label: 'Clients', collapsible: true,
       links: [
-        { label: 'Liste des clients', href: '/gestion/clients.html' }
+        { label: 'Liste des clients & stagiaires', href: '/gestion/clients.html#liste' },
+        { type: 'label', label: 'Stagiaire' },
+        { label: 'Nouveau stagiaire', href: '/gestion/clients.html#stagiaire-nouveau' },
+        { label: 'Émargement', href: '/gestion/clients.html#stagiaire-emargement' },
+        { label: 'Nouveau document', href: '/gestion/clients.html#stagiaire-doc-nouveau' },
+        { label: 'Tous les documents', href: '/gestion/clients.html#stagiaire-doc-tous' },
+        { type: 'label', label: 'Client' },
+        { label: 'Nouveau client', href: '/gestion/clients.html#client-nouveau' },
+        { label: 'Nouveau document', href: '/gestion/clients.html#client-doc-nouveau' },
+        { label: 'Tous les documents', href: '/gestion/clients.html#client-doc-tous' }
       ]
     },
     {
@@ -48,14 +57,10 @@
     {
       key: 'site', label: 'Site web', collapsible: true,
       links: [
-        { label: "Vue d'ensemble", href: '/office/index.html#panel-dashboard' },
-        { label: 'Clients (site)', href: '/office/index.html#panel-clients' },
-        { label: 'Stagiaires', href: '/office/index.html#panel-stagiaires' },
         { label: 'Publications', href: '/office/index.html#panel-publication' },
         { label: 'Outils', href: '/office/index.html#panel-outils' },
-        { label: 'Visibilité', href: '/office/index.html#panel-visibilite' },
-        { label: 'Documents', href: '/office/index.html#panel-documents', dotId: 'nav-alert-documents' },
-        { label: 'Émargements', href: '/office/index.html#panel-emargements' }
+        { label: 'Hébergement', href: '/office/index.html#panel-hebergement' },
+        { label: 'Visibilité', href: '/office/index.html#panel-visibilite' }
       ]
     },
     {
@@ -71,6 +76,7 @@
   }
 
   function estActif(href){
+    if(!href) return false;
     const [chemin, hash] = href.split('#');
     const cheminNormalise = chemin.replace(/\/+$/, '');
     if(cheminActuel() !== cheminNormalise) return false;
@@ -103,6 +109,10 @@
       }
       html += `<div class="menu-group-body${section.collapsible ? '' : ' always-open'}"${ouverte ? '' : ' style="display:none;"'} data-group-body="${section.key}">`;
       section.links.forEach(link => {
+        if(link.type === 'label'){
+          html += `<div class="menu-sub-label">${link.label}</div>`;
+          return;
+        }
         const active = estActif(link.href);
         html += `<a class="menu-link${active ? ' active' : ''}" href="${link.href}">${link.label}`;
         if(link.dotId) html += `<span class="nav-alert-dot" id="${link.dotId}" style="display:none;"></span>`;
@@ -138,6 +148,7 @@
       .sidebar .menu-group-toggle .chevron{transition:.2s;flex-shrink:0;}
       .sidebar .menu-group-toggle.open .chevron{transform:rotate(180deg);}
       .sidebar .menu-group-body{display:flex;flex-direction:column;}
+      .sidebar .menu-sub-label{font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.32);font-weight:700;padding:10px 24px 3px;}
       .sidebar .menu-link{display:block;padding:7px 24px;font-size:.86rem;color:rgba(255,255,255,.78);text-decoration:none;border-left:3px solid transparent;transition:.15s;position:relative;}
       .sidebar .menu-link:hover{color:white;background:rgba(255,255,255,.05);}
       .sidebar .menu-link.active{color:white;font-weight:600;border-left-color:var(--accent);background:rgba(255,255,255,.06);}
