@@ -583,8 +583,9 @@ body{background:var(--light);color:#222;min-height:100vh;}
 <div id="modal-pwd-espace" style="display:none;position:fixed;inset:0;background:rgba(11,31,58,.55);z-index:2500;align-items:center;justify-content:center;padding:16px;">
   <div style="background:white;border-radius:14px;max-width:420px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3);padding:24px;">
     <h3 style="font-size:1rem;color:#0B1F3A;margin-bottom:8px;">Accès créé</h3>
-    <p style="font-size:.82rem;color:#64748b;margin-bottom:16px;">Un email a été envoyé à la personne pour qu'elle choisisse elle-même son mot de passe et active son compte.</p>
+    <p style="font-size:.82rem;color:#64748b;margin-bottom:16px;">Transmets ces identifiants à la personne concernée — le mot de passe ne sera plus réaffiché ensuite. Elle pourra ensuite le modifier elle-même à tout moment.</p>
     <div class="form-group"><label>Email</label><div style="padding:10px 13px;border:1.5px solid #dde3ec;border-radius:8px;font-size:.85rem;background:#fafbfc;" id="pwd-espace-email"></div></div>
+    <div class="form-group"><label>Mot de passe</label><div style="padding:10px 13px;border:1.5px solid #dde3ec;border-radius:8px;font-size:.95rem;font-weight:700;font-family:'SF Mono',Consolas,monospace;background:#fafbfc;color:var(--secondary);" id="pwd-espace-valeur"></div></div>
     <button onclick="document.getElementById('modal-pwd-espace').style.display='none';" style="width:100%;padding:11px;background:#1F5FAF;color:white;border:none;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;margin-top:6px;">Fermer</button>
   </div>
 </div>
@@ -653,17 +654,15 @@ async function creerAccesEspacePersonnel(nomAffichage, email, espaceClient, stag
 
   const rienANouveau = (!espaceClient || aDejaCompteClient) && (!stagiaire || aDejaCompteStagiaire);
 
-  let emailActivationEnvoye = false;
+  let motDePasseGenere = null;
   // Le compte Firebase Auth n'est créé qu'une fois, même si les deux cases sont cochées
   if((espaceClient && !aDejaCompteClient) || (stagiaire && !aDejaCompteStagiaire)){
-    const motDePasseTemporaire = genPassword(); // jamais communiqué : juste requis techniquement par Firebase à la création
+    motDePasseGenere = genPassword();
     try {
-      await createAccountKeepingAdminSession(email, motDePasseTemporaire);
-      await sendPasswordResetEmail(auth, email);
-      emailActivationEnvoye = true;
+      await createAccountKeepingAdminSession(email, motDePasseGenere);
     } catch(e){
       if(e.code === 'auth/email-already-in-use'){
-        emailActivationEnvoye = false; // le compte de connexion existe déjà (créé ailleurs) ; on rattache juste les fiches
+        motDePasseGenere = null; // le compte de connexion existe déjà (créé ailleurs) ; on rattache juste les fiches
       } else {
         throw e;
       }
@@ -695,7 +694,7 @@ async function creerAccesEspacePersonnel(nomAffichage, email, espaceClient, stag
   }
 
   if(rienANouveau) return null;
-  return emailActivationEnvoye;
+  return motDePasseGenere;
 }
 
 const TYPE_LABELS = { particulier: 'Particulier', professionnel: 'Professionnel', collectivite: 'Collectivité', association: 'Association' };
@@ -1066,9 +1065,10 @@ window.enregistrerClient = async function(){
         showStatus('Client enregistré, mais aucun accès créé : renseigne un email pour ça.', 'error');
       } else {
         try {
-          const emailEnvoye = await creerAccesEspacePersonnel(nomAffichage, data.email, true, estStagiaire, selectionFormations.join(', '));
-          if(emailEnvoye){
+          const motDePasse = await creerAccesEspacePersonnel(nomAffichage, data.email, true, estStagiaire, selectionFormations.join(', '));
+          if(motDePasse){
             document.getElementById('pwd-espace-email').textContent = data.email;
+            document.getElementById('pwd-espace-valeur').textContent = motDePasse;
             document.getElementById('modal-pwd-espace').style.display = 'flex';
           }
         } catch(e){
@@ -1620,12 +1620,13 @@ window.creerAccesDepuisFiche = async function(type){
   const nom = nomPersonne(p);
   if(!email){ alert('Aucun email disponible pour créer cet accès.'); return; }
   try{
-    const emailEnvoye = await creerAccesEspacePersonnel(nom, email, type === 'site', type === 'stagiaire', '');
+    const motDePasse = await creerAccesEspacePersonnel(nom, email, type === 'site', type === 'stagiaire', '');
     await chargerToutesLesPersonnes();
     const nouvelleP = allPersonnes.find(x => x.key === p.key) || allPersonnes.find(x => (emailPersonne(x)||'').toLowerCase() === email.toLowerCase());
     if(nouvelleP) window.ouvrirFichePersonne(nouvelleP.key);
-    if(emailEnvoye){
+    if(motDePasse){
       document.getElementById('pwd-espace-email').textContent = email;
+      document.getElementById('pwd-espace-valeur').textContent = motDePasse;
       document.getElementById('modal-pwd-espace').style.display = 'flex';
     } else {
       showToast('Accès créé.');
@@ -1653,13 +1654,15 @@ document.getElementById('btn-create-stagiaire').addEventListener('click', async 
   const formation = document.getElementById('new-stag-formation').value.trim();
   if(!name || !email){ alert("Renseignez le nom et l'email."); return; }
   try{
-    const motDePasseTemporaire = genPassword(); // jamais communiqué : juste requis techniquement par Firebase à la création
-    await createAccountKeepingAdminSession(email, motDePasseTemporaire);
-    await sendPasswordResetEmail(auth, email);
-    await addDoc(collection(db,'stagiaires'), { name, email, formation, modules: [], createdAt: Date.now() });
+    const motDePasse = await creerAccesEspacePersonnel(name, email, false, true, formation);
     fermerModalStagiaire();
-    document.getElementById('pwd-espace-email').textContent = email;
-    document.getElementById('modal-pwd-espace').style.display = 'flex';
+    if(motDePasse){
+      document.getElementById('pwd-espace-email').textContent = email;
+      document.getElementById('pwd-espace-valeur').textContent = motDePasse;
+      document.getElementById('modal-pwd-espace').style.display = 'flex';
+    } else {
+      showToast('Fiche stagiaire créée. Un compte de connexion existait déjà pour cet email — il a été rattaché.');
+    }
     chargerToutesLesPersonnes();
   }catch(e){
     alert('Erreur : ' + e.message);
