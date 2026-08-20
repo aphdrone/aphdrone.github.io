@@ -1506,12 +1506,23 @@ async function renderFicheEspaceSite(p){
     </div>
     <p class="mini-doc-row" style="border:none;font-weight:700;color:#1F5FAF;padding-top:0;">Documents</p>
     <div id="fiche-site-doc-list">${docs.length ? docs.map((d,i) => `<div class="mini-doc-row"><span>${d.name} <span style="color:#94a3b8;">(${d.type||'Document'})</span></span><a href="${d.url}" target="_blank" style="color:var(--secondary);font-weight:600;font-size:.8rem;">Ouvrir</a></div>`).join('') : '<div class="mini-empty">Aucun document.</div>'}</div>
+    <div style="margin-top:20px;padding-top:14px;border-top:1px dashed #f0b4b4;">
+      <button class="btn-delete" style="padding:7px 13px;font-size:.78rem;" onclick="supprimerAccesSite('${s.id}')">Supprimer cet accès site</button>
+    </div>
   `;
   document.getElementById('fiche-site-active').addEventListener('change', async (e) => {
     await updateDoc(doc(db,'clients', s.id), { active: e.target.checked });
     showToast(e.target.checked ? 'Accès site activé.' : 'Accès site désactivé.');
   });
 }
+
+window.supprimerAccesSite = async function(siteId){
+  if(!confirm("Supprimer cet accès site ? Cette action est définitive (le compte de connexion n'est pas supprimé, seul l'accès à l'espace client l'est).")) return;
+  await deleteDoc(doc(db,'clients', siteId));
+  showToast('Accès site supprimé.');
+  await chargerToutesLesPersonnes();
+  fermerFiche();
+};
 
 // ── Espace stagiaire (formation) : toggle actif, modules, documents ──
 const AVAILABLE_MODULES = [
@@ -1543,6 +1554,9 @@ async function renderFicheEspaceStagiaire(p){
     `).join('')}</div>
     <p class="mini-doc-row" style="border:none;font-weight:700;color:#1F5FAF;padding-top:16px;">Documents</p>
     <div id="fiche-stag-doc-list">${docs.length ? docs.map(d => `<div class="mini-doc-row"><span>${d.name} <span style="color:#94a3b8;">(${d.type||'Document'})</span></span><a href="${d.url}" target="_blank" style="color:var(--secondary);font-weight:600;font-size:.8rem;">Ouvrir</a></div>`).join('') : '<div class="mini-empty">Aucun document.</div>'}</div>
+    <div style="margin-top:20px;padding-top:14px;border-top:1px dashed #f0b4b4;">
+      <button class="btn-delete" style="padding:7px 13px;font-size:.78rem;" onclick="supprimerAccesStagiaire('${s.id}')">Supprimer cet accès stagiaire</button>
+    </div>
   `;
   document.getElementById('fiche-stag-active').addEventListener('change', async (e) => {
     await updateDoc(doc(db,'stagiaires', s.id), { active: e.target.checked });
@@ -1556,6 +1570,14 @@ async function renderFicheEspaceStagiaire(p){
     });
   });
 }
+
+window.supprimerAccesStagiaire = async function(stagId){
+  if(!confirm("Supprimer cet accès stagiaire ? Cette action est définitive (le compte de connexion n'est pas supprimé, seul l'accès à l'espace stagiaire l'est).")) return;
+  await deleteDoc(doc(db,'stagiaires', stagId));
+  showToast('Accès stagiaire supprimé.');
+  await chargerToutesLesPersonnes();
+  fermerFiche();
+};
 
 // Ouvre le formulaire "Nouveau client" pré-rempli avec le nom/email de la personne dont la fiche est ouverte
 window.creerFacturationDepuisFiche = function(){
