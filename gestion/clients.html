@@ -583,9 +583,8 @@ body{background:var(--light);color:#222;min-height:100vh;}
 <div id="modal-pwd-espace" style="display:none;position:fixed;inset:0;background:rgba(11,31,58,.55);z-index:2500;align-items:center;justify-content:center;padding:16px;">
   <div style="background:white;border-radius:14px;max-width:420px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3);padding:24px;">
     <h3 style="font-size:1rem;color:#0B1F3A;margin-bottom:8px;">Accès créé</h3>
-    <p style="font-size:.82rem;color:#64748b;margin-bottom:16px;">Transmets ces identifiants à la personne concernée — le mot de passe ne sera plus réaffiché ensuite.</p>
+    <p style="font-size:.82rem;color:#64748b;margin-bottom:16px;">Un email a été envoyé à la personne pour qu'elle choisisse elle-même son mot de passe et active son compte.</p>
     <div class="form-group"><label>Email</label><div style="padding:10px 13px;border:1.5px solid #dde3ec;border-radius:8px;font-size:.85rem;background:#fafbfc;" id="pwd-espace-email"></div></div>
-    <div class="form-group"><label>Mot de passe</label><div style="padding:10px 13px;border:1.5px solid #dde3ec;border-radius:8px;font-size:.95rem;font-weight:700;font-family:'SF Mono',Consolas,monospace;background:#fafbfc;color:var(--secondary);" id="pwd-espace-valeur"></div></div>
     <button onclick="document.getElementById('modal-pwd-espace').style.display='none';" style="width:100%;padding:11px;background:#1F5FAF;color:white;border:none;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;margin-top:6px;">Fermer</button>
   </div>
 </div>
@@ -595,7 +594,7 @@ body{background:var(--light);color:#222;min-height:100vh;}
 
 <script type="module">
 import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword }
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword, sendPasswordResetEmail }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, updateDoc, orderBy, query, where }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -654,15 +653,17 @@ async function creerAccesEspacePersonnel(nomAffichage, email, espaceClient, stag
 
   const rienANouveau = (!espaceClient || aDejaCompteClient) && (!stagiaire || aDejaCompteStagiaire);
 
-  let motDePasseGenere = null;
+  let emailActivationEnvoye = false;
   // Le compte Firebase Auth n'est créé qu'une fois, même si les deux cases sont cochées
   if((espaceClient && !aDejaCompteClient) || (stagiaire && !aDejaCompteStagiaire)){
-    motDePasseGenere = genPassword();
+    const motDePasseTemporaire = genPassword(); // jamais communiqué : juste requis techniquement par Firebase à la création
     try {
-      await createAccountKeepingAdminSession(email, motDePasseGenere);
+      await createAccountKeepingAdminSession(email, motDePasseTemporaire);
+      await sendPasswordResetEmail(auth, email);
+      emailActivationEnvoye = true;
     } catch(e){
       if(e.code === 'auth/email-already-in-use'){
-        motDePasseGenere = null; // le compte de connexion existe déjà (créé ailleurs) ; on rattache juste les fiches
+        emailActivationEnvoye = false; // le compte de connexion existe déjà (créé ailleurs) ; on rattache juste les fiches
       } else {
         throw e;
       }
@@ -694,7 +695,7 @@ async function creerAccesEspacePersonnel(nomAffichage, email, espaceClient, stag
   }
 
   if(rienANouveau) return null;
-  return motDePasseGenere;
+  return emailActivationEnvoye;
 }
 
 const TYPE_LABELS = { particulier: 'Particulier', professionnel: 'Professionnel', collectivite: 'Collectivité', association: 'Association' };
@@ -1065,10 +1066,9 @@ window.enregistrerClient = async function(){
         showStatus('Client enregistré, mais aucun accès créé : renseigne un email pour ça.', 'error');
       } else {
         try {
-          const motDePasse = await creerAccesEspacePersonnel(nomAffichage, data.email, true, estStagiaire, selectionFormations.join(', '));
-          if(motDePasse){
+          const emailEnvoye = await creerAccesEspacePersonnel(nomAffichage, data.email, true, estStagiaire, selectionFormations.join(', '));
+          if(emailEnvoye){
             document.getElementById('pwd-espace-email').textContent = data.email;
-            document.getElementById('pwd-espace-valeur').textContent = motDePasse;
             document.getElementById('modal-pwd-espace').style.display = 'flex';
           }
         } catch(e){
@@ -1513,7 +1513,8 @@ async function renderFicheEspaceSite(p){
     </div>
     <p class="mini-doc-row" style="border:none;font-weight:700;color:#1F5FAF;padding-top:0;">Documents</p>
     <div id="fiche-site-doc-list">${docs.length ? docs.map((d,i) => `<div class="mini-doc-row"><span>${d.name} <span style="color:#94a3b8;">(${d.type||'Document'})</span></span><a href="${d.url}" target="_blank" style="color:var(--secondary);font-weight:600;font-size:.8rem;">Ouvrir</a></div>`).join('') : '<div class="mini-empty">Aucun document.</div>'}</div>
-    <div style="margin-top:20px;padding-top:14px;border-top:1px dashed #f0b4b4;">
+    <div style="margin-top:20px;padding-top:14px;border-top:1px dashed #f0b4b4;display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="btn-sm-outline" onclick="envoyerResetMotDePasse('${(s.email||'').replace(/'/g,"\\'")}')">Réinitialiser le mot de passe</button>
       <button class="btn-delete" style="padding:7px 13px;font-size:.78rem;" onclick="supprimerAccesSite('${s.id}')">Supprimer cet accès site</button>
     </div>
   `;
@@ -1522,6 +1523,16 @@ async function renderFicheEspaceSite(p){
     showToast(e.target.checked ? 'Accès site activé.' : 'Accès site désactivé.');
   });
 }
+
+window.envoyerResetMotDePasse = async function(email){
+  if(!email){ showToast('Aucun email disponible.'); return; }
+  try{
+    await sendPasswordResetEmail(auth, email);
+    showToast('Email de réinitialisation envoyé à ' + email);
+  }catch(e){
+    showToast('Erreur : ' + e.message);
+  }
+};
 
 window.supprimerAccesSite = async function(siteId){
   if(!confirm("Supprimer cet accès site ? Cette action est définitive (le compte de connexion n'est pas supprimé, seul l'accès à l'espace client l'est).")) return;
@@ -1561,7 +1572,8 @@ async function renderFicheEspaceStagiaire(p){
     `).join('')}</div>
     <p class="mini-doc-row" style="border:none;font-weight:700;color:#1F5FAF;padding-top:16px;">Documents</p>
     <div id="fiche-stag-doc-list">${docs.length ? docs.map(d => `<div class="mini-doc-row"><span>${d.name} <span style="color:#94a3b8;">(${d.type||'Document'})</span></span><a href="${d.url}" target="_blank" style="color:var(--secondary);font-weight:600;font-size:.8rem;">Ouvrir</a></div>`).join('') : '<div class="mini-empty">Aucun document.</div>'}</div>
-    <div style="margin-top:20px;padding-top:14px;border-top:1px dashed #f0b4b4;">
+    <div style="margin-top:20px;padding-top:14px;border-top:1px dashed #f0b4b4;display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="btn-sm-outline" onclick="envoyerResetMotDePasse('${(s.email||'').replace(/'/g,"\\'")}')">Réinitialiser le mot de passe</button>
       <button class="btn-delete" style="padding:7px 13px;font-size:.78rem;" onclick="supprimerAccesStagiaire('${s.id}')">Supprimer cet accès stagiaire</button>
     </div>
   `;
@@ -1608,13 +1620,12 @@ window.creerAccesDepuisFiche = async function(type){
   const nom = nomPersonne(p);
   if(!email){ alert('Aucun email disponible pour créer cet accès.'); return; }
   try{
-    const motDePasse = await creerAccesEspacePersonnel(nom, email, type === 'site', type === 'stagiaire', '');
+    const emailEnvoye = await creerAccesEspacePersonnel(nom, email, type === 'site', type === 'stagiaire', '');
     await chargerToutesLesPersonnes();
     const nouvelleP = allPersonnes.find(x => x.key === p.key) || allPersonnes.find(x => (emailPersonne(x)||'').toLowerCase() === email.toLowerCase());
     if(nouvelleP) window.ouvrirFichePersonne(nouvelleP.key);
-    if(motDePasse){
+    if(emailEnvoye){
       document.getElementById('pwd-espace-email').textContent = email;
-      document.getElementById('pwd-espace-valeur').textContent = motDePasse;
       document.getElementById('modal-pwd-espace').style.display = 'flex';
     } else {
       showToast('Accès créé.');
@@ -1642,12 +1653,12 @@ document.getElementById('btn-create-stagiaire').addEventListener('click', async 
   const formation = document.getElementById('new-stag-formation').value.trim();
   if(!name || !email){ alert("Renseignez le nom et l'email."); return; }
   try{
-    const pwd = genPassword();
-    await createAccountKeepingAdminSession(email, pwd);
+    const motDePasseTemporaire = genPassword(); // jamais communiqué : juste requis techniquement par Firebase à la création
+    await createAccountKeepingAdminSession(email, motDePasseTemporaire);
+    await sendPasswordResetEmail(auth, email);
     await addDoc(collection(db,'stagiaires'), { name, email, formation, modules: [], createdAt: Date.now() });
     fermerModalStagiaire();
     document.getElementById('pwd-espace-email').textContent = email;
-    document.getElementById('pwd-espace-valeur').textContent = pwd;
     document.getElementById('modal-pwd-espace').style.display = 'flex';
     chargerToutesLesPersonnes();
   }catch(e){
