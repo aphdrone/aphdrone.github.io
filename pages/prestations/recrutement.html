@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<link rel="icon" href="/assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+<link rel="manifest" href="/assets/site.webmanifest">
+<meta name="theme-color" content="#FFFFFF">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recrutement — APH Drone</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/style.css">
+<style>
+:root{--primary:#0B1F3A;--secondary:#1F5FAF;--accent:#4A90E2;--light:#F5F7FA;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
+body{background:#fff;color:#222;overflow-x:hidden;padding-top:80px;}
+
+/* ── HERO ── */
+.page-hero{padding:140px 10% 80px;background:linear-gradient(135deg,var(--primary) 0%,#1a3a6b 100%);color:white;position:relative;overflow:hidden;}
+.page-hero::after{content:'';position:absolute;right:-80px;bottom:-80px;width:400px;height:400px;border-radius:50%;background:rgba(74,144,226,.08);}
+.breadcrumb{display:flex;align-items:center;gap:8px;font-size:12px;color:rgba(255,255,255,.5);margin-bottom:20px;letter-spacing:.04em;}
+.breadcrumb a{color:rgba(255,255,255,.5);text-decoration:none;}
+.breadcrumb a:hover{color:white;}
+.page-hero h1{font-size:3rem;font-weight:700;line-height:1.1;margin-bottom:16px;}
+.page-hero p{font-size:1.1rem;color:rgba(255,255,255,.7);max-width:600px;line-height:1.7;}
+
+/* ── OFFRES FIREBASE ── */
+.offres-section{padding:80px 10%;background:var(--light);}
+.section-label{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;display:block;}
+.section-title{font-size:2rem;font-weight:700;color:var(--primary);line-height:1.2;margin-bottom:40px;}
+
+#offres-grid{display:flex;flex-direction:column;gap:20px;}
+.offre-card{
+  background:white;border-radius:16px;padding:32px;
+  border:1px solid #e8edf4;
+  box-shadow:0 4px 16px rgba(0,0,0,.05);
+  display:flex;align-items:flex-start;gap:28px;
+  transition:.3s;
+}
+.offre-card:hover{box-shadow:0 12px 40px rgba(0,0,0,.1);transform:translateY(-2px);}
+.offre-card--featured{border-left:4px solid var(--secondary);}
+.offre-icon{
+  width:56px;height:56px;border-radius:14px;
+  background:var(--light);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+}
+.offre-icon svg{width:26px;height:26px;color:var(--secondary);}
+.offre-body{flex:1;min-width:0;}
+.offre-meta{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap;}
+.offre-type{font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;color:white;letter-spacing:.04em;text-transform:uppercase;}
+.offre-lieu{font-size:12px;color:#7a8fa5;display:flex;align-items:center;gap:4px;}
+.offre-lieu svg{width:12px;height:12px;}
+.offre-date{font-size:11px;color:#9aa8b8;}
+.offre-titre{font-size:1.15rem;font-weight:700;color:var(--primary);margin-bottom:10px;}
+.offre-desc{font-size:.85rem;color:#555;line-height:1.75;margin-bottom:16px;}
+.offre-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px;}
+.offre-tag{padding:4px 10px;border-radius:20px;font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;background:var(--light);color:#555;border:1px solid #e0e8f0;}
+.btn-postuler{display:inline-flex;align-items:center;gap:8px;background:var(--secondary);color:white;padding:11px 22px;border-radius:8px;font-size:.85rem;font-weight:600;text-decoration:none;transition:.2s;flex-shrink:0;}
+.btn-postuler:hover{background:var(--accent);}
+
+/* Aucune offre */
+.no-offres{
+  background:var(--light);border-radius:16px;padding:60px 40px;
+  text-align:center;border:1px dashed #cdd6e4;
+}
+.no-offres-icon{width:64px;height:64px;border-radius:50%;background:white;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;box-shadow:0 4px 16px rgba(0,0,0,.06);}
+.no-offres-icon svg{width:28px;height:28px;color:var(--accent);}
+.no-offres h3{font-size:1.1rem;font-weight:700;color:var(--primary);margin-bottom:10px;}
+.no-offres p{font-size:.88rem;color:#7a8fa5;line-height:1.7;max-width:400px;margin:0 auto;}
+
+/* ── CANDIDATURE SPONTANÉE ── */
+.spontanee-section{padding:80px 10%;background:var(--light);}
+.spontanee-inner{
+  display:grid;grid-template-columns:1fr 1.2fr;gap:60px;align-items:start;
+  background:white;border-radius:20px;padding:48px;
+  box-shadow:0 8px 32px rgba(0,0,0,.06);
+}
+.spontanee-text h2{font-size:1.6rem;font-weight:700;color:var(--primary);margin-bottom:16px;line-height:1.2;}
+.spontanee-text p{font-size:.88rem;color:#555;line-height:1.8;margin-bottom:20px;}
+.profils-list{display:flex;flex-direction:column;gap:10px;}
+.profil-item{display:flex;align-items:center;gap:10px;font-size:.85rem;color:#444;}
+.profil-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0;}
+
+/* Formulaire candidature */
+.form-candidature{display:flex;flex-direction:column;gap:16px;}
+.fc-group label{display:block;font-size:12px;font-weight:600;color:#555;letter-spacing:.04em;text-transform:uppercase;margin-bottom:6px;}
+.fc-group input,.fc-group select,.fc-group textarea{width:100%;padding:11px 14px;border:1.5px solid #dde3ec;border-radius:8px;font-size:.88rem;outline:none;transition:.2s;font-family:'Inter',sans-serif;}
+.fc-group input:focus,.fc-group select:focus,.fc-group textarea:focus{border-color:var(--accent);}
+.fc-group textarea{min-height:120px;resize:vertical;line-height:1.6;}
+.fc-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.btn-send{width:100%;padding:14px;background:var(--secondary);color:white;border:none;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer;transition:.2s;margin-top:4px;}
+.btn-send:hover{background:var(--accent);}
+#form-status{display:none;padding:10px 14px;border-radius:8px;font-size:.85rem;font-weight:500;margin-top:8px;}
+#form-status.success{background:#dcfce7;color:#16a34a;}
+#form-status.error{background:#fee2e2;color:#dc2626;}
+
+/* ── Pourquoi APH ── */
+.pourquoi-section{padding:80px 10%;background:white;}
+.pourquoi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+.pourquoi-card{padding:32px;border-radius:16px;border:1px solid #e8edf4;transition:.3s;}
+.pourquoi-card:hover{border-color:var(--accent);background:var(--light);}
+.pourquoi-icon{width:48px;height:48px;border-radius:12px;background:var(--light);display:flex;align-items:center;justify-content:center;margin-bottom:18px;transition:.3s;}
+.pourquoi-card:hover .pourquoi-icon{background:var(--secondary);}
+.pourquoi-icon svg{width:24px;height:24px;color:var(--secondary);}
+.pourquoi-card:hover .pourquoi-icon svg{color:white;}
+.pourquoi-title{font-size:.95rem;font-weight:700;color:var(--primary);margin-bottom:8px;}
+.pourquoi-desc{font-size:.82rem;color:#666;line-height:1.65;}
+
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease;}
+.reveal.visible{opacity:1;transform:none;}
+</style>
+<link rel="stylesheet" href="../assets/mobile.css">
+</head>
+<body>
+<div id="header-placeholder"></div>
+  
+
+<!-- ═══ HERO ═══ -->
+<div class="page-hero">
+  <div class="breadcrumb">
+    <a href="../index.html">Accueil</a><span>›</span>
+    <span style="color:rgba(255,255,255,.8);">Recrutement</span>
+  </div>
+  <h1>Rejoignez APH Drone</h1>
+  <p>Vous partagez notre passion pour le drone et les métiers de l'aérien ? Découvrez nos offres ou envoyez-nous une candidature spontanée.</p>
+</div>
+
+<!-- ═══ OFFRES D'EMPLOI (Firebase) ═══ -->
+<section class="offres-section">
+  <span class="section-label reveal">Opportunités</span>
+  <h2 class="section-title reveal">Offres d'emploi</h2>
+  <div id="offres-grid">
+    <div style="text-align:center;padding:40px 0;color:#7a8fa5;font-size:.88rem;">Chargement des offres...</div>
+  </div>
+</section>
+
+<!-- ═══ POURQUOI NOUS REJOINDRE ═══ -->
+<section class="pourquoi-section">
+  <span class="section-label reveal">Pourquoi nous rejoindre</span>
+  <h2 class="section-title reveal">Un environnement unique</h2>
+  <div class="pourquoi-grid">
+    <div class="pourquoi-card reveal">
+      <div class="pourquoi-title">Expertise terrain réelle</div>
+      <div class="pourquoi-desc">Vous intervenez sur des missions concrètes — thermographie, cartographie, agriculture, sécurité civile — avec des outils professionnels de dernière génération.</div>
+    </div>
+    <div class="pourquoi-card reveal">
+      <div class="pourquoi-title">Structure à taille humaine</div>
+      <div class="pourquoi-desc">Vous avez une vraie responsabilité, une vraie marge d'initiative, et un interlocuteur unique.</div>
+    </div>
+    <div class="pourquoi-card reveal">
+      <div class="pourquoi-title">Montée en compétences</div>
+      <div class="pourquoi-desc">Accès aux formations. Vous développez une expertise reconnue et certifiée.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CANDIDATURE SPONTANÉE ═══ -->
+<section class="spontanee-section">
+  <div class="spontanee-inner reveal">
+    <div class="spontanee-text">
+      <span class="section-label">Candidature spontanée</span>
+      <h2>Votre profil nous intéresse</h2>
+      <p>Aucune offre ne correspond exactement à votre profil ? Envoyez-nous votre candidature spontanée. Nous la conservons et vous recontactons dès qu'une opportunité se présente.</p>
+      <p style="font-weight:600;color:var(--primary);margin-bottom:12px;">Profils recherchés :</p>
+      <div class="profils-list">
+        <div class="profil-item"><div class="profil-dot"></div>Télépilote certifié (Open / Spécifique)</div>
+        <div class="profil-item"><div class="profil-dot"></div>Formateur drone ou aéronautique</div>
+        <div class="profil-item"><div class="profil-dot"></div>Technicien en traitement de données (Pix4D, QGIS...)</div>
+        <div class="profil-item"><div class="profil-dot"></div>Spécialiste imagerie multispectrale</div>
+        <div class="profil-item"><div class="profil-dot"></div>Spécialiste thermographie</div>
+        <div class="profil-item"><div class="profil-dot"></div>Commercial / développement d'activité</div>
+      </div>
+    </div>
+    <form class="form-candidature" action="https://formspree.io/f/xrewbond" method="POST">
+      <input type="hidden" name="_subject" value="Candidature spontanée APH Drone">
+      <div class="fc-row">
+        <div class="fc-group"><label>Prénom *</label><input type="text" name="prenom" placeholder="" required></div>
+        <div class="fc-group"><label>Nom *</label><input type="text" name="nom" placeholder="" required></div>
+      </div>
+      <div class="fc-group"><label>Email *</label><input type="email" name="email" placeholder="" required></div>
+      <div class="fc-group"><label>Téléphone</label><input type="tel" name="telephone" placeholder=""></div>
+      <div class="fc-group">
+        <label>Poste souhaité *</label>
+        <select name="poste" required>
+          <option value="" disabled selected>Sélectionner un profil</option>
+          <option>Télépilote professionnel</option>
+          <option>Formateur drone</option>
+          <option>Technicien données / traitement</option>
+          <option>Spécialiste imagerie multispectrale</option>
+          <option>Spécialiste thermographie</option>
+          <option>Commercial / développement</option>
+          <option>Autre</option>
+        </select>
+      </div>
+      <div class="fc-group"><label>Message / Motivations *</label><textarea name="message" placeholder="Présentez-vous, vos certifications, votre expérience et vos motivations..." required></textarea></div>
+      <button type="submit" class="btn-send">Envoyer ma candidature</button>
+      <div id="form-status"></div>
+    </form>
+  </div>
+</section>
+
+<a id="back-top" href="tel:0695390776">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.5 19.79 19.79 0 0 1 1.61 5a2 2 0 0 1 1.95-2H6a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 10a16 16 0 0 0 6 6l.27-.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 18z"/></svg>
+</a>
+
+<div id="footer-placeholder"></div>
+<script src="/assets/include.js"></script>
+<script>
+(function(){
+  var els = document.querySelectorAll('.reveal');
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target);}
+    });
+  },{threshold:0.1});
+  els.forEach(function(el){io.observe(el);});
+})();
+</script>
+
+<!-- Firebase — offres d'emploi -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, getDocs, orderBy, query }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAV5NQWfp8n9RkTrHSwqssBJ4R9lNAuYK8",
+  authDomain: "aph-drone.firebaseapp.com",
+  projectId: "aph-drone",
+  storageBucket: "aph-drone.firebasestorage.app",
+  messagingSenderId: "316810168380",
+  appId: "1:316810168380:web:66cb916cec4fdc00b9db39"
+};
+
+const typeColors = {
+  'CDI':'#16a34a','CDD':'#1F5FAF','Alternance':'#7c3aed',
+  'Stage':'#ea580c','Freelance':'#0891b2','Bénévolat':'#6b7280'
+};
+
+const typeIcons = {
+  'CDI':'<path d="M20 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>',
+  'CDD':'<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>',
+  'default':'<path d="M20 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>'
+};
+
+try {
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const q = query(collection(db,'offres'), orderBy('ordre','desc'));
+  const snap = await getDocs(q);
+  const grid = document.getElementById('offres-grid');
+
+  if(snap.empty){
+    grid.innerHTML = `
+      <div class="no-offres">
+        <div class="no-offres-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></div>
+        <h3>Aucun poste ouvert actuellement</h3>
+        <p>Nous n'avons pas de poste à pourvoir en ce moment, mais nous étudions toutes les candidatures spontanées. N'hésitez pas à nous écrire ci-dessous.</p>
+      </div>`;
+  } else {
+
+  grid.innerHTML = '';
+  let first = true;
+  snap.forEach(docSnap => {
+    const d = docSnap.data();
+    const color = typeColors[d.type] || '#6b7280';
+    const icon = typeIcons[d.type] || typeIcons['default'];
+    const tags = d.competences ? d.competences.split(',').map(t=>t.trim()).filter(Boolean) : [];
+    const card = document.createElement('div');
+    card.className = 'offre-card reveal' + (first ? ' offre-card--featured' : '');
+    card.innerHTML = `
+      <div class="offre-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">${icon}</svg></div>
+      <div class="offre-body">
+        <div class="offre-meta">
+          <span class="offre-type" style="background:${color}">${d.type}</span>
+          <span class="offre-lieu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>${d.lieu}</span>
+          <span class="offre-date">${d.date}</span>
+        </div>
+        <div class="offre-titre">${d.titre}</div>
+        <div class="offre-desc">${d.desc}</div>
+        ${tags.length ? '<div class="offre-tags">'+tags.map(t=>`<span class="offre-tag">${t}</span>`).join('')+'</div>' : ''}
+      </div>
+      <a href="#candidature" class="btn-postuler">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        Postuler
+      </a>`;
+    grid.appendChild(card);
+    first = false;
+  });
+
+  // Reveal nouvelles cartes
+  const io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target);}
+    });
+  },{threshold:0.1});
+  grid.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+  }
+
+} catch(e){ console.warn('Firebase:',e.message); }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<link rel="icon" href="/assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+<link rel="manifest" href="/assets/site.webmanifest">
+<meta name="theme-color" content="#FFFFFF">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Règlement Intérieur — APH SASU</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/style.css">
+<style>
+:root{--primary:#0B1F3A;--secondary:#1F5FAF;--accent:#4A90E2;--light:#F5F7FA;--green:#16a34a;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
+body{background:#fff;color:#222;min-height:100vh;padding-top:80px;}
+
+.legal-hero{background:var(--light);border-bottom:1px solid #e8edf4;padding:44px 5%;}
+.legal-hero-inner{max-width:820px;margin:0 auto;}
+.legal-hero a.back{color:var(--secondary);text-decoration:none;font-size:.8rem;font-weight:600;display:inline-flex;align-items:center;gap:6px;margin-bottom:14px;}
+.legal-hero a.back:hover{color:var(--accent);}
+.legal-hero a.back svg{width:14px;height:14px;}
+.legal-hero h1{font-size:1.6rem;color:var(--primary);font-weight:800;margin-bottom:8px;}
+.legal-hero p{font-size:.88rem;color:#7a8fa5;line-height:1.55;max-width:600px;}
+
+.legal-content{max-width:820px;margin:0 auto;padding:36px 5% 10px;line-height:1.7;}
+.legal-content h2{font-size:1.02rem;color:var(--primary);font-weight:700;margin:30px 0 10px;padding-top:6px;}
+.legal-content h2:first-child{margin-top:0;}
+.legal-content h3{font-size:.88rem;color:var(--secondary);font-weight:700;margin:16px 0 6px;}
+.legal-content p{font-size:.88rem;color:#334155;margin-bottom:11px;text-align:justify;}
+.legal-content ul{margin:0 0 12px 20px;}
+.legal-content li{font-size:.88rem;color:#334155;margin-bottom:6px;line-height:1.65;}
+.legal-content .fill{background:#fff2e0;color:#b45309;padding:1px 6px;border-radius:4px;font-size:.85em;font-weight:600;}
+.legal-info{background:#eef4fd;border-left:4px solid var(--secondary);border-radius:10px;padding:16px 20px;margin-bottom:8px;font-size:.83rem;color:#334155;}
+
+.sat-wrap{max-width:820px;margin:0 auto;padding:16px 5% 70px;}
+
+.sat-section{background:#fff;border:1px solid #e8edf4;border-radius:16px;padding:26px 26px 22px;margin-bottom:20px;}
+.sat-section-title{display:flex;align-items:center;gap:10px;margin-bottom:4px;}
+.sat-section-title h3{font-size:1rem;color:var(--primary);font-weight:700;}
+.sat-section-sub{font-size:.8rem;color:#94a3b8;margin:2px 0 18px 0;}
+
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.f-group{margin-bottom:0;}
+.f-group label{display:block;font-size:.72rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.03em;margin-bottom:6px;}
+.f-group input,.f-group select{width:100%;padding:11px 14px;border:1.5px solid #dde3ec;border-radius:9px;font-size:.9rem;outline:none;font-family:'Inter',sans-serif;background:white;}
+.f-group input:focus,.f-group select:focus{border-color:var(--accent);}
+
+.f-check{display:flex;align-items:flex-start;gap:10px;font-size:.84rem;color:#475569;line-height:1.55;margin-bottom:0;padding:16px 18px;background:var(--light);border-radius:10px;border-left:3px solid var(--secondary);}
+.f-check input{width:18px;height:18px;margin-top:2px;flex-shrink:0;accent-color:var(--secondary);}
+
+.sig-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:18px 0;}
+.sig-pad-wrap{border:1.5px dashed #cbd5e1;border-radius:12px;background:#fbfcfe;padding:10px;}
+.sig-pad-wrap canvas{width:100%;height:150px;display:block;border-radius:8px;background:#fff;touch-action:none;cursor:crosshair;}
+.sig-actions{display:flex;justify-content:space-between;align-items:center;margin-top:8px;}
+.sig-hint{font-size:.75rem;color:#94a3b8;}
+.sig-clear{font-size:.78rem;font-weight:600;color:var(--secondary);background:none;border:none;cursor:pointer;padding:4px 8px;}
+.sig-clear:hover{color:var(--accent);}
+
+.sig-formateur{border:1.5px solid #dde3ec;border-radius:12px;padding:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:#fbfcfe;}
+.sig-formateur img{height:70px;width:auto;display:block;margin-bottom:6px;}
+.sig-formateur .name{font-size:.86rem;font-weight:700;color:var(--primary);}
+.sig-formateur .role{font-size:.76rem;color:#94a3b8;}
+
+.submit-bar{display:flex;flex-direction:column;gap:16px;background:#fff;border:1px solid #e8edf4;border-radius:16px;padding:24px 26px;}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:13px 22px;border-radius:9px;font-size:.9rem;font-weight:700;cursor:pointer;border:none;text-decoration:none;transition:.15s;justify-content:center;}
+.btn-primary{background:var(--secondary);color:white;width:100%;}
+.btn-primary:hover{background:var(--accent);}
+.btn:disabled{opacity:.55;cursor:not-allowed;}
+
+.sat-thanks{display:none;text-align:center;padding:70px 5% 90px;max-width:520px;margin:0 auto;}
+.sat-thanks .icon{width:64px;height:64px;border-radius:50%;background:#dcfce7;color:var(--green);display:flex;align-items:center;justify-content:center;margin:0 auto 22px;}
+.sat-thanks .icon svg{width:30px;height:30px;}
+.sat-thanks h2{font-size:1.4rem;color:var(--primary);margin-bottom:10px;}
+.sat-thanks p{font-size:.9rem;color:#7a8fa5;line-height:1.6;margin-bottom:26px;}
+
+.toast{position:fixed;bottom:24px;right:24px;background:var(--primary);color:white;padding:13px 20px;border-radius:10px;font-size:.85rem;font-weight:500;box-shadow:0 12px 32px rgba(0,0,0,.2);z-index:2000;display:none;}
+
+@media(max-width:640px){
+  .info-grid,.sig-row{grid-template-columns:1fr;}
+  .legal-hero h1{font-size:1.35rem;}
+}
+</style>
+</head>
+<body>
+
+<div id="header-placeholder"></div>
+
+<section class="legal-hero">
+  <div class="legal-hero-inner">
+    <a class="back" href="espace-stagiaires.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+      Retour à mon espace
+    </a>
+    <h1>Règlement Intérieur</h1>
+    <p>Organisme de formation professionnelle — établi conformément aux articles L.6352-3, L.6352-4 et R.6352-1 à R.6352-15 du Code du travail.</p>
+  </div>
+</section>
+
+<div id="pdf-capture-zone">
+<div class="legal-content">
+  <div class="legal-info">
+    APH SASU — 44 rue Georges Moulimard, 70300 Luxeuil-les-Bains — RCS Vesoul 108 639 220 — N° TVA FR00 108639220 — SIRET : <span class="fill">En attente</span> — N° de déclaration d'activité (NDA) : <span class="fill">En attente</span>.
+  </div>
+
+  <h2>Préambule</h2>
+  <p>Le présent règlement intérieur est établi conformément aux dispositions des articles L.6352-3, L.6352-4 et R.6352-1 à R.6352-15 du Code du travail. Il s'applique à toute personne participant à une action de formation organisée par APH SASU (ci-après « l'Organisme »), qu'il s'agisse d'un stagiaire individuel autofinancé, d'un salarié envoyé par son employeur, d'un agent de la fonction publique, d'un sapeur-pompier volontaire ou de toute autre personne physique participant à une formation.</p>
+  <p>Il détermine les règles d'hygiène et de sécurité, les règles générales et permanentes relatives à la discipline, ainsi que la nature et l'échelle des sanctions pouvant être prises à l'encontre des stagiaires qui y contreviennent, et les garanties procédurales applicables lorsqu'une sanction est envisagée. La signature électronique ci-dessous vaut prise de connaissance et acceptation du présent règlement.</p>
+
+  <h2>Article 1 — Objet et champ d'application</h2>
+  <p>Le présent règlement s'applique à l'ensemble des stagiaires inscrits à une action de formation dispensée par APH SASU, quel que soit le lieu de déroulement de la formation : locaux de l'Organisme, locaux mis à disposition par un tiers, terrain d'évolution en extérieur, ou formation à distance en visioconférence synchrone.</p>
+  <p>Lorsque la formation se déroule dans les locaux d'une entreprise ou d'un établissement déjà doté d'un règlement intérieur, les mesures d'hygiène et de sécurité applicables aux stagiaires sont celles de ce règlement, sans préjudice de l'application des règles de discipline du présent document.</p>
+
+  <h2>Article 2 — Accès aux formations, aux locaux et au terrain</h2>
+  <p>L'accès aux formations est réservé aux personnes régulièrement inscrites, ayant satisfait aux prérequis mentionnés dans le programme de formation correspondant (notamment détention du certificat A1/A3, compte Alphatango actif et assurance responsabilité civile professionnelle en cours de validité, selon la formation concernée).</p>
+  <p>Sauf autorisation expresse de l'Organisme, les stagiaires ne peuvent entrer ou demeurer dans les locaux à d'autres fins que la formation, faciliter l'introduction de tiers non inscrits, emporter du matériel appartenant à l'Organisme, ou se maintenir sur les lieux en dehors des horaires prévus.</p>
+  <p>Pour les formations comportant des vols de drone, l'accès au terrain d'évolution est conditionné au respect strict des consignes de sécurité aérienne données par le formateur, y compris l'interdiction de tout vol sans autorisation explicite de celui-ci.</p>
+
+  <h2>Article 3 — Hygiène et sécurité</h2>
+  <p>Chaque stagiaire doit veiller à sa sécurité personnelle et à celle des autres participants en respectant les consignes générales et particulières de sécurité, notamment celles relatives à l'usage des aéronefs télépilotés (drones), en vigueur sur le lieu de formation.</p>
+  <p>Lorsque la formation comporte des phases pratiques de vol, le stagiaire s'engage à respecter scrupuleusement les briefings de sécurité et les zones d'évolution délimitées par le formateur, à ne procéder à aucun vol sans supervision directe pendant l'apprentissage, à signaler immédiatement tout incident ou dysfonctionnement, et à respecter les consignes météorologiques de type GO/NO-GO.</p>
+  <p>Il est formellement interdit de fumer, de vapoter ou de consommer de l'alcool ou tout produit stupéfiant dans les locaux et sur le terrain de formation, ainsi que de s'y présenter sous l'emprise de tels produits.</p>
+
+  <h2>Article 4 — Horaires, absences et assiduité</h2>
+  <p>Les horaires de formation sont fixés par l'Organisme et communiqués aux stagiaires avant le début de la session. En cas d'absence, de retard ou de départ anticipé, le stagiaire doit en avertir préalablement l'Organisme. Une feuille d'émargement est signée par demi-journée. Des absences répétées non justifiées peuvent compromettre l'atteinte des objectifs pédagogiques et la délivrance de l'attestation de formation.</p>
+
+  <h2>Article 5 — Tenue, comportement et discipline générale</h2>
+  <p>Le stagiaire est invité à se présenter en tenue adaptée à l'activité et à adopter un comportement respectueux envers le formateur et les autres stagiaires. Il s'engage à respecter le matériel pédagogique et les aéronefs mis à disposition, à ne pas perturber le déroulement de la formation et à respecter la confidentialité des informations partagées par d'autres stagiaires ou par des tiers.</p>
+
+  <h2>Article 6 — Formation à distance</h2>
+  <p>Lorsqu'une partie ou la totalité de la formation est dispensée à distance en visioconférence synchrone, le stagiaire s'engage à se connecter à l'horaire convenu avec un équipement adapté, à activer sa caméra si le formateur en fait la demande à des fins de suivi d'assiduité, à ne pas enregistrer ou diffuser la session sans accord écrit préalable, et à signaler sans délai toute difficulté technique.</p>
+
+  <h2>Article 7 — Sanctions disciplinaires</h2>
+  <p>Constitue une sanction toute mesure — autre qu'une observation verbale — prise par le responsable de l'Organisme à la suite d'un agissement du stagiaire considéré comme fautif. Les amendes et autres sanctions pécuniaires sont interdites (art. R.6352-4 du Code du travail).</p>
+  <p>Selon la gravité du manquement, les sanctions pouvant être prononcées sont, par ordre croissant : le rappel à l'ordre, l'avertissement écrit, l'exclusion temporaire, et l'exclusion définitive de la formation.</p>
+  <h3>7.1 — Procédure disciplinaire</h3>
+  <p>Aucune sanction ne peut être infligée sans que le stagiaire ait été informé au préalable des griefs retenus contre lui. Lorsque la sanction envisagée a une incidence sur sa présence en formation, le stagiaire est convoqué par lettre recommandée ou remise en main propre contre décharge, et peut se faire assister par une personne de son choix lors de l'entretien. La sanction ne peut intervenir moins d'un jour franc ni plus de quinze jours après l'entretien, et fait l'objet d'une décision écrite et motivée, notifiée au stagiaire.</p>
+  <p>Lorsque l'agissement a rendu indispensable une mesure conservatoire d'exclusion temporaire à effet immédiat, aucune sanction définitive relative à cet agissement ne peut être prise sans que cette procédure ait été respectée.</p>
+
+  <h2>Article 8 — Représentation des stagiaires</h2>
+  <p>Conformément aux articles R.6352-9 et R.6352-10 du Code du travail, dans les stages d'une durée supérieure à cinq cents heures, il est procédé à l'élection d'un délégué titulaire et d'un délégué suppléant dans les deux premiers mois du stage. Les formations actuellement proposées par APH SASU étant toutes d'une durée inférieure à cinq cents heures, cette disposition ne trouve pas à s'appliquer en l'état du catalogue de formation.</p>
+
+  <h2>Article 9 — Accessibilité et situation de handicap</h2>
+  <p>APH SASU s'engage à étudier, dans la mesure du possible, les demandes d'adaptation pédagogique, matérielle ou organisationnelle formulées par un stagiaire en situation de handicap. Le stagiaire est invité à faire part de ses besoins spécifiques le plus en amont possible de la formation.</p>
+
+  <h2>Article 10 — Réclamations et protection des données (RGPD)</h2>
+  <p>Toute réclamation peut être adressée par email à contact@aphdrone.fr ou via le formulaire disponible dans l'espace stagiaire. Les données personnelles collectées sont traitées par APH SASU conformément au RGPD (UE 2016/679) pour la gestion administrative et pédagogique de la formation. Le stagiaire dispose d'un droit d'accès, de rectification et d'effacement en contactant contact@aphdrone.fr.</p>
+
+  <h2>Article 11 — Propriété intellectuelle</h2>
+  <p>Tous les supports pédagogiques sont la propriété exclusive d'APH SASU. Le stagiaire est autorisé à les utiliser uniquement dans le cadre de sa formation personnelle. Toute reproduction ou diffusion sans autorisation est interdite.</p>
+
+  <h2>Article 12 — Entrée en vigueur et modification</h2>
+  <p>Le présent règlement intérieur pourra être modifié à tout moment par l'Organisme, dans le respect des dispositions légales applicables. La version en vigueur est celle disponible dans l'espace stagiaire au moment de la formation.</p>
+</div>
+
+<div class="sat-wrap">
+
+  <!-- Attestation + signature -->
+  <div class="sat-section">
+    <div class="sat-section-title"><h3>Attestation de prise de connaissance</h3></div>
+    <p class="sat-section-sub">Merci de compléter vos informations et de signer avant de valider.</p>
+
+    <div class="info-grid" style="margin-bottom:16px;">
+      <div class="f-group"><label>Prénom</label><input type="text" id="f-prenom" placeholder="Votre prénom"></div>
+      <div class="f-group"><label>Nom</label><input type="text" id="f-nom" placeholder="Votre nom"></div>
+      <div class="f-group"><label>Email</label><input type="email" id="f-email" placeholder="votre@email.fr"></div>
+      <div class="f-group"><label>Formation suivie</label><select id="f-formation"><option value="">Sélectionnez</option></select></div>
+    </div>
+
+    <label class="f-check">
+      <input type="checkbox" id="check-lu">
+      Je certifie avoir lu et compris l'intégralité du règlement intérieur d'APH SASU et m'engage à le respecter pendant toute la durée de ma formation.
+    </label>
+
+    <div class="sig-row">
+      <div>
+        <div class="f-group" style="margin-bottom:8px;"><label>Signature du stagiaire</label></div>
+        <div class="sig-pad-wrap">
+          <canvas id="sig-canvas"></canvas>
+          <div class="sig-actions">
+            <span class="sig-hint">Signez avec le doigt ou la souris</span>
+            <button type="button" class="sig-clear" id="sig-clear">Effacer</button>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="f-group" style="margin-bottom:8px;"><label>Signature du formateur</label></div>
+        <div class="sig-formateur">
+          <img src="/assets/images/signature-arnaud-moreau.png" alt="Signature Arnaud MOREAU" onerror="this.style.display='none'">
+          <div class="name">Arnaud MOREAU</div>
+          <div class="role">Président — APH SASU</div>
+          <div class="role" id="dateAuto" style="margin-top:6px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  </div>
+  <!-- fin pdf-capture-zone (règlement + attestation + signature) -->
+
+  <div class="submit-bar">
+    <button class="btn btn-primary" id="btn-submit">Valider et enregistrer ma signature</button>
+  </div>
+
+</div>
+
+<div class="sat-thanks" id="sat-thanks">
+  <div class="icon">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+  </div>
+  <h2>Signature enregistrée</h2>
+  <p>Votre acceptation du règlement intérieur a bien été enregistrée et le document signé (PDF) a été transmis à APH SASU, qui le conserve comme preuve.</p>
+  <a href="espace-stagiaires.html" class="btn btn-primary" style="width:auto;">Retour à mon espace</a>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div id="footer-placeholder"></div>
+
+<script src="/assets/include.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, onAuthStateChanged }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, collection, getDocs, query, where, addDoc }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAV5NQWfp8n9RkTrHSwqssBJ4R9lNAuYK8",
+  authDomain: "aph-drone.firebaseapp.com",
+  projectId: "aph-drone",
+  storageBucket: "aph-drone.firebasestorage.app",
+  messagingSenderId: "316810168380",
+  appId: "1:316810168380:web:66cb916cec4fdc00b9db39"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// ── Envoi du PDF signé par email via Google Apps Script ──
+// Déploiement SÉPARÉ des autres formulaires (satisfaction / fiche / attestation).
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyk2Ib4ltfQgTv43rgVoe5Oft0MEk81Rn7xglRHrcEzJMECiCKW5SwWm-FZyx5Qg6Uz/exec';
+
+async function sendReglementPdf({ name, formation, pdfBase64 }) {
+  const res = await fetch(APPS_SCRIPT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({ name, formation, pdfBase64 })
+  });
+  const result = await res.json();
+  if(!result.success){ throw new Error(result.error || 'Échec de l\'envoi côté Apps Script'); }
+  return result;
+}
+
+let currentStagId = null;
+
+const CATALOGUE_COMPLET = [
+  'Initiation A1/A3','BAPD A2','CATS STS','Vol de nuit','Sylviculture & biodiversité',
+  'Surveillance, Sécurité & Secours','Agriculture de précision','Thermographie','Cartographie & 3D',
+  'Production de données exploitables','Inspection Technique','Maîtrise opérationnelle',
+  'Mise à niveau réglementaire','Catégorie Spécifique','Changer de carrière'
+];
+function fillFormationSelect(list){
+  const sel = document.getElementById('f-formation');
+  sel.innerHTML = '<option value="">Sélectionnez</option>' + list.map(m => `<option value="${m}">${m}</option>`).join('');
+}
+fillFormationSelect(CATALOGUE_COMPLET);
+
+const now = new Date();
+document.getElementById('dateAuto').textContent = 'Fait le ' + now.toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' });
+
+onAuthStateChanged(auth, async user => {
+  if(!user) return;
+  try{
+    const snap = await getDocs(query(collection(db,'stagiaires'), where('email','==',user.email)));
+    if(snap.empty) return;
+    const d = snap.docs[0];
+    currentStagId = d.id;
+    const data = d.data();
+    const parts = (data.name || '').split(' ');
+    document.getElementById('f-prenom').value = parts[0] || '';
+    document.getElementById('f-nom').value = parts.slice(1).join(' ') || '';
+    document.getElementById('f-email').value = user.email || '';
+    if(data.formation){ document.getElementById('f-formation').value = data.formation; }
+  }catch(e){
+    console.error('Erreur chargement stagiaire :', e);
+  }
+});
+
+// ── Pad de signature manuscrite ──
+const canvas = document.getElementById('sig-canvas');
+const ctx = canvas.getContext('2d');
+let drawing = false, hasSignature = false;
+
+function resizeCanvas(){
+  const ratio = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width * ratio;
+  canvas.height = rect.height * ratio;
+  ctx.scale(ratio, ratio);
+  ctx.lineWidth = 2.2;
+  ctx.lineCap = 'round';
+  ctx.strokeStyle = '#0B1F3A';
+}
+window.addEventListener('resize', () => { const data = hasSignature ? canvas.toDataURL() : null; resizeCanvas(); if(data){ const img = new Image(); img.onload = () => ctx.drawImage(img,0,0,canvas.width,canvas.height); img.src = data; } });
+resizeCanvas();
+
+function getPos(e){
+  const rect = canvas.getBoundingClientRect();
+  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+  return { x: clientX - rect.left, y: clientY - rect.top };
+}
+function startDraw(e){ drawing = true; hasSignature = true; const p = getPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); e.preventDefault(); }
+function moveDraw(e){ if(!drawing) return; const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); e.preventDefault(); }
+function endDraw(){ drawing = false; }
+
+canvas.addEventListener('mousedown', startDraw);
+canvas.addEventListener('mousemove', moveDraw);
+window.addEventListener('mouseup', endDraw);
+canvas.addEventListener('touchstart', startDraw, { passive:false });
+canvas.addEventListener('touchmove', moveDraw, { passive:false });
+canvas.addEventListener('touchend', endDraw);
+
+document.getElementById('sig-clear').addEventListener('click', () => {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  hasSignature = false;
+});
+
+// ── Génère un PDF qui est une capture fidèle du règlement tel que lu et signé ──
+async function buildSignedPdf(data){
+  const zone = document.getElementById('pdf-capture-zone');
+
+  const header = document.createElement('div');
+  header.style.cssText = 'background:#0B1F3A;color:#fff;padding:20px 26px;border-radius:16px;margin-bottom:20px;font-family:Inter,sans-serif;';
+  header.innerHTML =
+    '<div style="font-size:1.05rem;font-weight:800;">APH SASU — Règlement intérieur signé</div>' +
+    '<div style="font-size:.82rem;opacity:.85;margin-top:5px;">Stagiaire : ' + (data.name || '—') + ' — Formation : ' + (data.formation || '—') + '</div>' +
+    '<div style="font-size:.76rem;opacity:.7;margin-top:2px;">Signé le ' + new Date(data.timestamp).toLocaleDateString('fr-FR') + ' à ' + new Date(data.timestamp).toLocaleTimeString('fr-FR') + '</div>';
+  zone.insertBefore(header, zone.firstChild);
+
+  let canvasCap;
+  try{
+    canvasCap = await html2canvas(zone, { scale: 2, backgroundColor: '#ffffff', useCORS: true });
+  } finally {
+    header.remove();
+  }
+
+  const imgData = canvasCap.toDataURL('image/jpeg', 0.92);
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF('p', 'mm', 'a4');
+  const pageWidth = 210, pageHeight = 297, margin = 10;
+  const imgWidth = pageWidth - margin * 2;
+  const imgHeight = canvasCap.height * imgWidth / canvasCap.width;
+
+  let heightLeft = imgHeight;
+  let position = margin;
+  doc.addImage(imgData, 'JPEG', margin, position, imgWidth, imgHeight);
+  heightLeft -= (pageHeight - margin * 2);
+
+  while(heightLeft > 0){
+    position = margin - (imgHeight - heightLeft);
+    doc.addPage();
+    doc.addImage(imgData, 'JPEG', margin, position, imgWidth, imgHeight);
+    heightLeft -= (pageHeight - margin * 2);
+  }
+
+  return doc;
+}
+
+document.getElementById('btn-submit').addEventListener('click', async () => {
+  const prenom = document.getElementById('f-prenom').value.trim();
+  const nom = document.getElementById('f-nom').value.trim();
+  const email = document.getElementById('f-email').value.trim();
+  const formation = document.getElementById('f-formation').value;
+  const toastEl = document.getElementById('toast');
+
+  if(!prenom || !nom){ showToast('Merci de saisir votre nom et prénom.'); return; }
+  if(!email || !email.includes('@')){ showToast('Merci de saisir une adresse email valide.'); return; }
+  if(!formation){ showToast('Merci de sélectionner votre formation.'); return; }
+  if(!document.getElementById('check-lu').checked){ showToast('Merci de cocher la case attestant avoir lu le règlement.'); return; }
+  if(!hasSignature){ showToast('Merci de signer dans le cadre prévu à cet effet.'); document.querySelector('.sig-pad-wrap').scrollIntoView({behavior:'smooth', block:'center'}); return; }
+
+  const btn = document.getElementById('btn-submit');
+  btn.disabled = true;
+  btn.textContent = 'Génération du PDF…';
+
+  const name = prenom + ' ' + nom;
+  const timestamp = Date.now();
+
+  try{
+    const pdfDoc = await buildSignedPdf({ name, formation, timestamp });
+    const pdfBase64 = pdfDoc.output('datauristring').split(',')[1];
+
+    btn.textContent = 'Enregistrement…';
+
+    const signatureImg = canvas.toDataURL('image/png');
+    const payload = {
+      name, prenom, nom, email, formation,
+      signature: signatureImg,
+      timestamp
+    };
+    if(currentStagId){ payload.stagiaireId = currentStagId; }
+
+    await addDoc(collection(db,'reglementsSignes'), payload);
+
+    btn.textContent = 'Envoi…';
+    await sendReglementPdf({ name, formation, pdfBase64 });
+
+    document.querySelectorAll('.sat-wrap, .legal-hero, .legal-content, #pdf-capture-zone').forEach(el => el.style.display = 'none');
+    document.getElementById('sat-thanks').style.display = 'block';
+    window.scrollTo({top:0, behavior:'smooth'});
+  }catch(e){
+    showToast('Erreur lors de l\'envoi : ' + e.message);
+    btn.disabled = false;
+    btn.textContent = 'Valider et enregistrer ma signature';
+  }
+});
+
+function showToast(msg){
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.style.display = 'block';
+  setTimeout(() => el.style.display = 'none', 3800);
+}
+</script>
+</body>
+</html>
