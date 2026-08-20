@@ -736,6 +736,8 @@ padding:60px 10% 0;
   .annuaire-wrap{padding:24px 6% 60px !important;}
   .annuaire-grid{grid-template-columns:1fr !important;}
   .fiche-actions{flex-direction:column;}
+  .ot-cards-grid{grid-template-columns:1fr !important;}
+  .ot-partner-banner{flex-direction:column;text-align:center;}
 }
 @media (max-width: 768px) {
   footer{padding:44px 6% 0 !important;}
@@ -772,11 +774,55 @@ document.addEventListener('DOMContentLoaded', function(){
   <p style="font-size:1.1rem;color:rgba(255,255,255,.7);max-width:600px;line-height:1.7;">Toutes les adresses utiles autour de Luxeuil-les-Bains pour votre visite.</p>
 </div>
 
+<div style="max-width:1100px;margin:40px auto 0;padding:0 10%;">
+
+  <!-- Bandeau partenaire — Office de Tourisme -->
+  <div class="ot-partner-banner" style="display:flex;align-items:center;gap:20px;background:#fff;border:1px solid #e8edf4;border-radius:16px;padding:20px 26px;margin-bottom:28px;box-shadow:0 4px 16px rgba(11,31,58,.04);">
+    <img src="/assets/images/hébergement/logo-office-tourisme.jpg" alt="Office de Tourisme Luxeuil-les-Bains, Vosges du Sud" style="height:64px;width:64px;border-radius:12px;object-fit:cover;flex-shrink:0;">
+    <div style="flex:1;min-width:0;">
+      <div style="font-size:.72rem;font-weight:700;color:var(--secondary);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px;">En partenariat avec</div>
+      <div style="font-size:1.05rem;font-weight:700;color:var(--primary);margin-bottom:5px;">Office de Tourisme de Luxeuil-les-Bains, Vosges du Sud</div>
+      <div style="display:flex;flex-wrap:wrap;gap:4px 18px;font-size:.83rem;color:#64748b;">
+        <span>30, rue Victor Genoux — 70300 Luxeuil-les-Bains</span>
+        <span>Tél. 03 84 40 06 41</span>
+        <a href="https://www.luxeuil-vosges-sud.fr" target="_blank" rel="noopener" style="color:var(--secondary);font-weight:600;text-decoration:none;">luxeuil-vosges-sud.fr</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="ot-cards-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+
+    <!-- Carte Où dormir -->
+    <div style="border-radius:18px;overflow:hidden;background:#fff;border:1px solid #e8edf4;box-shadow:0 6px 24px rgba(11,31,58,.06);">
+      <div style="height:190px;background:linear-gradient(135deg,#1F5FAF 0%,#0B1F3A 100%);position:relative;display:flex;align-items:center;justify-content:center;">
+        <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" opacity="0.9"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/><path d="M9 9v.01"/><path d="M9 12v.01"/><path d="M9 15v.01"/><path d="M9 18v.01"/></svg>
+      </div>
+      <div style="padding:28px 30px 30px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--secondary);margin-bottom:10px;">Où dormir</div>
+        <p style="font-size:.95rem;color:#334155;line-height:1.65;margin-bottom:20px;">Vous recherchez un hébergement pour votre formation ? Hôtel, chambres d'hôtes, ou meublés de tourisme… Retrouvez la liste des hébergements disponibles à Luxeuil-les-Bains et aux alentours sur le site de l'Office de Tourisme.</p>
+        <a href="https://www.luxeuil-vosges-sud.fr/ou-dormir/" target="_blank" rel="noopener" class="btn-section btn-section--primary">Voir les hébergements →</a>
+      </div>
+    </div>
+
+    <!-- Carte Où manger -->
+    <div style="border-radius:18px;overflow:hidden;background:#fff;border:1px solid #e8edf4;box-shadow:0 6px 24px rgba(11,31,58,.06);">
+      <div style="height:190px;background:#0B1F3A;position:relative;">
+        <img src="/assets/images/hébergement/ot-restaurant.jpg" alt="Table conviviale à Luxeuil-les-Bains" style="width:100%;height:100%;object-fit:cover;opacity:.92;">
+      </div>
+      <div style="padding:28px 30px 30px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--secondary);margin-bottom:10px;">Où manger</div>
+        <p style="font-size:.95rem;color:#334155;line-height:1.65;margin-bottom:20px;">Boulangeries, marchés, producteurs locaux, restaurants… Retrouvez toutes nos idées pour vous concocter un repas local ou vous restaurer à Luxeuil-les-Bains, Vosges du Sud et aux alentours sur le site de l'Office de Tourisme.</p>
+        <a href="https://www.luxeuil-vosges-sud.fr/ou-manger/" target="_blank" rel="noopener" class="btn-section btn-section--primary">Voir les restaurants →</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
 <div class="filtres-heb">
   <button class="filtre-btn active" data-cat="Tous">Tous</button>
   <button class="filtre-btn" data-cat="Hôtel">Hôtels</button>
   <button class="filtre-btn" data-cat="Restaurant">Restaurants</button>
-  <button class="filtre-btn" data-cat="Chambre d'hôtes">Chambres d'hôtes</button>
   <button class="filtre-btn" data-cat="Meublé">Meublés &amp; Gîtes</button>
   <button class="filtre-btn" data-cat="Restauration rapide">Restauration rapide</button>
 </div>
@@ -851,18 +897,6 @@ Le restaurant de l'hôtel propose une cuisine française traditionnelle et vous 
       </div>
   </div>
 
-  <div class="sep-label" style="margin-top:32px;">Chambres d'hôtes</div>
-  <div class="annuaire-grid">
-    <div class="fiche" data-cat="Chambre d'hôtes">
-      <div class="fiche-img"><img src="https://images.unsplash.com/photo-1584132967334-10e028bd69f7?w=600&q=80" alt="Chambre d'hôtes"><span class="fiche-cat cat-chambre">Chambre d'hôtes</span></div>
-      <div class="fiche-body">
-        <div class="fiche-nom">À compléter</div>
-        <div class="fiche-desc">Nous référençons actuellement les chambres d'hôtes de qualité autour de Luxeuil-les-Bains.</div>
-        <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Luxeuil-les-Bains et environs (70)</div>
-        <div class="fiche-actions"><a href="contact.html" class="btn-fiche btn-fiche-primary">Nous contacter</a></div>
-      </div>
-    </div>
-  </div>
 
   <div class="sep-label" style="margin-top:32px;">Meublés &amp; Gîtes</div>
   <div class="annuaire-grid">
@@ -903,6 +937,7 @@ Le restaurant de l'hôtel propose une cuisine française traditionnelle et vous 
         </div>
       </div>
     </div>
+</div>
 </div>
 
 <script>
