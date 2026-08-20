@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<link rel="icon" href="/assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+<link rel="manifest" href="/assets/site.webmanifest">
+<meta name="theme-color" content="#FFFFFF">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>APH Drone - Formation & Expertise Drone</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/style.css">
+
+<style>
+:root{
+--primary:#0B1F3A;
+--secondary:#1F5FAF;
+--accent:#4A90E2;
+--light:#F5F7FA;
+--white:#fff;
+}
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Inter',sans-serif;
+}
+
+body{
+background:#fff;
+color:#222;
+overflow-x:hidden;
+}
+
+nav{position:static;}
+nav ul{position:relative;}
+
+header{
+position:fixed;
+top:0;
+width:100%;
+z-index:999;
+padding:20px 60px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+background:rgba(11,31,58,.15);
+backdrop-filter:blur(12px);
+transition:.3s;
+}
+
+.logo{
+font-size:28px;
+font-weight:700;
+color:white;
+}
+
+nav ul{
+display:flex;
+gap:35px;
+list-style:none;
+}
+
+nav a{
+color:white;
+text-decoration:none;
+font-weight:500;
+}
+
+/* DROPDOWNS */
+nav .has-dropdown{position:relative;}
+nav .dropdown{
+  display:none;
+  position:absolute;
+  top:100%;
+  left:0;
+  background:#fff;
+  min-width:220px;
+  box-shadow:0 8px 32px rgba(0,0,0,.15);
+  border-top:3px solid #4A90E2;
+  z-index:99999;
+  padding:6px 0;
+}
+nav .dropdown li{list-style:none;}
+nav .dropdown li a{
+  display:block;
+  padding:10px 18px;
+  font-size:13px;
+  font-weight:500;
+  color:#0B1F3A;
+  border-bottom:1px solid #f0f0f0;
+  transition:.15s;
+  white-space:nowrap;
+  text-decoration:none;
+}
+nav .dropdown li:last-child a{border:none;}
+nav .dropdown li a:hover{background:#f5f7fa;color:#4A90E2;padding-left:24px;}
+
+.hero{
+height:100vh;
+position:relative;
+display:flex;
+align-items:center;
+padding:0 10%;
+color:white;
+overflow:hidden;
+}
+
+.hero video{
+position:absolute;
+width:100%;
+height:100%;
+object-fit:cover;
+top:0;
+left:0;
+z-index:-2;
+}
+
+.hero::before{
+content:'';
+position:absolute;
+inset:0;
+background:linear-gradient(
+90deg,
+rgba(11,31,58,.92),
+rgba(11,31,58,.4)
+);
+z-index:-1;
+}
+
+.hero-content{
+max-width:700px;
+}
+
+.hero h1{
+font-size:4rem;
+line-height:1.1;
+margin-bottom:20px;
+}
+
+.hero p{
+font-size:1.2rem;
+margin-bottom:30px;
+}
+
+.btn{
+display:inline-block;
+padding:15px 30px;
+border-radius:50px;
+text-decoration:none;
+font-weight:600;
+margin-right:15px;
+}
+
+.btn-primary{
+background:var(--secondary);
+color:white;
+}
+
+.btn-outline{
+border:1px solid white;
+color:white;
+}
+
+.section{
+padding:100px 10%;
+}
+
+.section-title{
+font-size:2.6rem;
+margin-bottom:50px;
+color:var(--primary);
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+gap:30px;
+}
+
+.card{
+background:white;
+border-radius:20px;
+padding:30px;
+box-shadow:0 15px 40px rgba(0,0,0,.08);
+transition:.4s;
+}
+
+.card:hover{
+transform:translateY(-10px);
+}
+
+/* Card avec image */
+.card-img{
+background:white;
+border-radius:20px;
+box-shadow:0 15px 40px rgba(0,0,0,.08);
+transition:.4s;
+overflow:hidden;
+display:flex;
+flex-direction:column;
+}
+.card-img:hover{transform:translateY(-10px);}
+
+/* ── Section header avec boutons ── */
+.section-header{
+  display:flex;flex-direction:column;
+  align-items:flex-start;gap:16px;
+  margin-bottom:32px;
+}
+.section-header .section-title{margin-bottom:0;}
+.section-btns{display:flex;gap:12px;}
+.btn-section{
+  display:inline-flex;align-items:center;
+  padding:10px 22px;border-radius:8px;
+  font-size:13px;font-weight:600;
+  text-decoration:none;transition:.25s;
+  letter-spacing:.02em;
+}
+.btn-section--primary{
+  background:var(--secondary);color:white;
+}
+.btn-section--primary:hover{
+  background:var(--accent);transform:translateY(-2px);
+  box-shadow:0 8px 20px rgba(74,144,226,.3);
+}
+.btn-section--outline{
+  background:transparent;color:var(--secondary);
+  border:1.5px solid var(--secondary);
+}
+.btn-section--outline:hover{
+  background:var(--secondary);color:white;
+  transform:translateY(-2px);
+}
+
+/* Carrousel horizontal */
+.carousel-wrapper{
+  position:relative;
+}
+.carousel-track{
+  display:flex;
+  gap:30px;
+  overflow-x:auto;
+  scroll-snap-type:x mandatory;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+  padding-bottom:8px;
+}
+.carousel-track::-webkit-scrollbar{display:none;}
+.carousel-track .card-img{
+  flex:0 0 280px;
+  scroll-snap-align:start;
+}
+.carousel-track .card-img:hover{transform:translateY(-10px);}
+
+/* Flèches carrousel */
+.carousel-btn{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  width:44px;height:44px;
+  border-radius:50%;
+  background:white;
+  border:none;
+  box-shadow:0 4px 16px rgba(0,0,0,.15);
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  z-index:10;
+  transition:.2s;
+  color:var(--primary);
+}
+.carousel-btn:hover{background:var(--secondary);color:white;box-shadow:0 6px 20px rgba(31,95,175,.3);}
+.carousel-btn--prev{left:-22px;}
+.carousel-btn--next{right:-22px;}
+
+.card-img .card-thumb{
+width:100%;height:180px;
+background:#e8edf4;
+display:flex;align-items:center;justify-content:center;
+overflow:hidden;flex-shrink:0;
+}
+.card-img .card-thumb img{width:100%;height:100%;object-fit:cover;}
+.card-img .card-thumb-placeholder{font-size:11px;color:#7a8fa5;letter-spacing:.06em;text-transform:uppercase;}
+.card-img .card-body{padding:24px 28px 28px;flex:1;display:flex;flex-direction:column;}
+.card-img .card-body h3{font-size:1rem;font-weight:600;color:var(--primary);margin-bottom:8px;}
+.card-img .card-body p{font-size:.85rem;color:#555;line-height:1.6;flex:1;}
+
+.stats{
+background:var(--primary);
+color:white;
+}
+
+.stats-grid{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:30px;
+text-align:center;
+}
+
+.stat-number{
+font-size:3rem;
+font-weight:700;
+}
+
+/* ── Actualités ── */
+.actu-section{background:#fff;}
+.actu-header{
+  display:flex;justify-content:space-between;align-items:flex-end;
+  margin-bottom:40px;
+}
+.actu-label{
+  display:inline-block;
+  font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:10px;
+}
+.actu-track{
+  display:flex;
+  gap:24px;
+  overflow-x:auto;
+  scrollbar-width:none;
+  padding-bottom:12px;
+}
+.actu-track::-webkit-scrollbar{display:none;}
+.actu-card{
+  background:#fff;
+  border-radius:16px;
+  overflow:hidden;
+  box-shadow:0 8px 32px rgba(0,0,0,.07);
+  transition:.35s;
+  display:flex;flex-direction:column;
+  flex-shrink:0;
+}
+.actu-card:hover{transform:translateY(-6px);box-shadow:0 16px 48px rgba(0,0,0,.12);}
+.actu-card--lg{width:420px;}
+.actu-card--md{width:300px;}
+.actu-card--sm{width:250px;}
+.actu-img{
+  position:relative;
+  width:100%;
+  background:#e8edf4;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;flex-shrink:0;
+}
+.actu-card--lg .actu-img{height:240px;}
+.actu-card--md .actu-img{height:180px;}
+.actu-card--sm .actu-img{height:150px;}
+.actu-img img{width:100%;height:100%;object-fit:cover;}
+.actu-img-placeholder{font-size:11px;color:#7a8fa5;letter-spacing:.06em;text-transform:uppercase;}
+.actu-tag{
+  position:absolute;top:14px;left:14px;
+  color:white;
+  font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  padding:4px 10px;border-radius:20px;
+}
+.actu-tag--bleu{background:var(--secondary);}
+.actu-tag--vert{background:#16a34a;}
+.actu-tag--rouge{background:#dc2626;}
+.actu-tag--orange{background:#ea580c;}
+.actu-tag--violet{background:#7c3aed;}
+.actu-body{padding:22px 24px 26px;flex:1;display:flex;flex-direction:column;}
+.actu-date{font-size:11px;color:#7a8fa5;font-weight:500;letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px;display:block;}
+.actu-title{font-weight:700;color:var(--primary);line-height:1.4;margin-bottom:10px;}
+.actu-card--lg .actu-title{font-size:1.15rem;}
+.actu-card--md .actu-title{font-size:.95rem;}
+.actu-card--sm .actu-title{font-size:.88rem;}
+.actu-excerpt{font-size:.83rem;color:#555;line-height:1.7;flex:1;margin-bottom:16px;}
+.actu-card--sm .actu-excerpt{display:none;}
+.actu-lire{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:.82rem;font-weight:600;color:var(--secondary);
+  text-decoration:none;transition:.2s;
+}
+.actu-lire:hover{color:var(--accent);gap:10px;}
+
+/* ── Hero À propos ── */
+.hero-apropos-wrap{
+  min-height:100vh;
+  background:linear-gradient(135deg,#0B1F3A 0%,#1a3a6b 100%);
+  display:grid;grid-template-columns:1fr 1fr;
+  align-items:center;
+  padding:140px 10% 80px;
+  gap:80px;position:relative;overflow:hidden;
+}
+.hero-apropos-text{position:relative;z-index:1;}
+.hero-apropos-visual{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:28px;}
+.hero-apropos-stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;}
+
+/* ── Curseur personnalisé ── */
+*{cursor:none;}
+#cursor{
+  position:fixed;width:10px;height:10px;
+  background:var(--accent);border-radius:50%;
+  pointer-events:none;z-index:99999;
+  transform:translate(-50%,-50%);
+  transition:width .2s,height .2s,background .2s;
+}
+#cursor-ring{
+  position:fixed;width:36px;height:36px;
+  border:1.5px solid rgba(74,144,226,.5);border-radius:50%;
+  pointer-events:none;z-index:99998;
+  transform:translate(-50%,-50%);
+  transition:transform .08s linear,width .2s,height .2s,opacity .2s;
+}
+body:hover #cursor{opacity:1;}
+a:hover ~ #cursor, button:hover ~ #cursor{width:16px;height:16px;background:white;}
+
+/* ── Hero animations ── */
+.hero-content h1{
+  overflow:hidden;
+}
+.hero-content h1 .line{
+  display:block;
+  transform:translateY(100%);
+  opacity:0;
+  animation:lineUp .8s cubic-bezier(.16,1,.3,1) forwards;
+}
+.hero-content h1 .line:nth-child(2){animation-delay:.15s;}
+.hero-content p{opacity:0;transform:translateY(20px);animation:fadeUp .7s .5s ease forwards;}
+.hero-content .btn:first-of-type{opacity:0;transform:translateY(20px);animation:fadeUp .7s .7s ease forwards;}
+.hero-content .btn:last-of-type{opacity:0;transform:translateY(20px);animation:fadeUp .7s .85s ease forwards;}
+@keyframes lineUp{to{transform:translateY(0);opacity:1;}}
+@keyframes fadeUp{to{transform:translateY(0);opacity:1;}}
+
+/* ── Scroll indicator ── */
+.scroll-indicator{
+  position:absolute;bottom:36px;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  color:rgba(255,255,255,.6);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+  animation:fadeUp .7s 1.2s ease forwards;opacity:0;
+}
+.scroll-indicator .arrow{
+  width:20px;height:20px;border-right:1.5px solid rgba(255,255,255,.5);
+  border-bottom:1.5px solid rgba(255,255,255,.5);
+  transform:rotate(45deg);
+  animation:bounce 1.6s infinite;
+}
+@keyframes bounce{0%,100%{transform:rotate(45deg) translateY(0);}50%{transform:rotate(45deg) translateY(5px);}}
+
+/* ── Boutons premium ── */
+.btn{position:relative;overflow:hidden;}
+.btn::after{
+  content:'';position:absolute;inset:0;
+  background:rgba(255,255,255,.15);
+  transform:translateX(-101%);
+  transition:transform .35s cubic-bezier(.4,0,.2,1);
+}
+.btn:hover::after{transform:translateX(0);}
+.btn-primary{transition:box-shadow .3s,transform .2s;}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(31,95,175,.4);}
+.btn-outline{transition:background .3s,transform .2s;}
+.btn-outline:hover{background:rgba(255,255,255,.12);transform:translateY(-2px);}
+
+/* ── Ticker bandeau ── */
+.ticker-wrap{
+  background:var(--primary);padding:14px 0;overflow:hidden;
+  border-top:1px solid rgba(255,255,255,.06);
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.ticker-track{
+  display:flex;white-space:nowrap;
+  animation:ticker 30s linear infinite;
+}
+.ticker-track:hover{animation-play-state:paused;}
+.ticker-item{
+  display:inline-flex;align-items:center;gap:18px;
+  padding:0 32px;
+  font-size:12px;font-weight:600;letter-spacing:.14em;
+  text-transform:uppercase;color:rgba(255,255,255,.5);
+}
+.ticker-item .dot{width:4px;height:4px;border-radius:50%;background:var(--accent);flex-shrink:0;}
+@keyframes ticker{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+/* ── Processus ── */
+.process-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:0;position:relative;
+}
+.process-grid::before{
+  content:'';position:absolute;top:32px;left:12.5%;right:12.5%;height:1.5px;
+  background:linear-gradient(90deg,var(--accent),rgba(74,144,226,.2));
+  z-index:0;
+}
+.process-step{
+  display:flex;flex-direction:column;align-items:center;
+  text-align:center;padding:0 20px;position:relative;z-index:1;
+}
+.process-num{
+  width:64px;height:64px;border-radius:50%;
+  background:white;border:2px solid var(--accent);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.3rem;font-weight:700;color:var(--accent);
+  margin-bottom:20px;
+  transition:.4s;
+  box-shadow:0 0 0 0 rgba(74,144,226,.3);
+}
+.process-step.visible .process-num{
+  animation:pulse-ring 1s .3s ease forwards;
+}
+@keyframes pulse-ring{
+  0%{box-shadow:0 0 0 0 rgba(74,144,226,.4);}
+  70%{box-shadow:0 0 0 16px rgba(74,144,226,0);}
+  100%{box-shadow:0 0 0 0 rgba(74,144,226,0);}
+}
+.process-step h3{font-size:1rem;font-weight:600;color:var(--primary);margin-bottom:8px;}
+.process-step p{font-size:.85rem;color:#777;line-height:1.6;}
+
+/* ── Back to top ── */
+#back-top{
+  position:fixed;bottom:32px;right:32px;
+  width:44px;height:44px;border-radius:50%;
+  background:var(--secondary);color:white;
+  display:flex;align-items:center;justify-content:center;
+  cursor:none;z-index:9000;
+  opacity:0;transform:translateY(20px);
+  transition:opacity .3s,transform .3s,background .2s;
+  pointer-events:none;
+}
+#back-top.visible{opacity:1;transform:translateY(0);pointer-events:all;}
+#back-top:hover{background:var(--accent);}
+#back-top svg{width:18px;height:18px;}
+
+footer{
+background:#071A33;
+color:white;
+padding:60px 10% 0;
+}
+.footer-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:40px;
+  padding-bottom:48px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.footer-title{
+  font-size:11px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.14em;
+  color:rgba(255,255,255,.9);
+  margin-bottom:16px;
+}
+.footer-links{
+  list-style:none;padding:0;margin:0;
+}
+.footer-links li{margin-bottom:9px;}
+.footer-links a{
+  font-size:13px;color:rgba(255,255,255,.55);
+  text-decoration:none;
+  display:flex;align-items:baseline;gap:7px;
+  transition:color .2s;
+}
+.footer-links a:hover{color:#4A90E2;}
+.footer-links a span{
+  color:var(--accent);font-size:11px;flex-shrink:0;
+  transition:transform .2s;
+}
+.footer-links a:hover span{transform:translateX(3px);}
+.footer-desc{
+  font-size:13px;color:rgba(255,255,255,.45);
+  line-height:1.7;margin-bottom:18px;
+}
+.footer-socials{
+  display:flex;gap:14px;margin-top:8px;
+}
+.footer-socials a{
+  color:rgba(255,255,255,.5);transition:.2s;
+}
+.footer-socials a:hover{color:#4A90E2;}
+.footer-legal{
+  display:flex;align-items:center;flex-wrap:wrap;
+  gap:0;padding:16px 0;
+  border-top:none;
+}
+.footer-legal a{
+  font-size:12px;color:rgba(255,255,255,.35);
+  text-decoration:none;
+  padding:0 18px;
+  border-right:1px solid rgba(255,255,255,.12);
+  transition:color .2s;
+}
+.footer-legal a:first-child{padding-left:0;}
+.footer-legal a:hover{color:rgba(255,255,255,.7);}
+.footer-legal-copy{
+  font-size:12px;color:rgba(255,255,255,.25);
+  margin-left:auto;
+}
+
+/* ── Animations reveal ── */
+.reveal{opacity:0;transform:translateY(30px);transition:opacity .6s ease,transform .6s ease;}
+.reveal.visible{opacity:1;transform:none;}
+
+/* ── Pourquoi APH Drone ── */
+.why-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:30px;}
+.why-card{background:white;border-radius:20px;padding:32px 28px;box-shadow:0 10px 40px rgba(0,0,0,.07);border-top:3px solid var(--accent);transition:.3s;}
+.why-card:hover{transform:translateY(-6px);box-shadow:0 20px 50px rgba(0,0,0,.12);}
+.why-icon{width:48px;height:48px;margin-bottom:18px;color:var(--accent);}
+.why-icon svg{width:100%;height:100%;}
+.why-card h3{font-size:1.05rem;font-weight:600;color:var(--primary);margin-bottom:10px;}
+.why-card p{font-size:.88rem;color:#555;line-height:1.7;}
+
+/* ── Stats animées ── */
+.stat-item{text-align:center;}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:30px;text-align:center;}
+.stat-number{font-size:3rem;font-weight:700;}
+
+/* ── Zone d'intervention ── */
+.zone-wrap{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;}
+.zone-list{list-style:none;padding:0;display:flex;flex-direction:column;gap:12px;}
+.zone-list li{display:flex;align-items:center;gap:10px;font-size:.95rem;color:#444;}
+.zone-dot{width:10px;height:10px;border-radius:50%;background:var(--accent);flex-shrink:0;}
+.zone-dot--light{background:#b0c4de;}
+.zone-map svg{width:100%;max-width:300px;display:block;margin:auto;}
+
+/* ── Témoignages ── */
+.temoignages-track{
+  display:flex;
+  gap:24px;
+  overflow-x:auto;
+  scrollbar-width:none;
+  padding-bottom:8px;
+}
+.temoignages-track::-webkit-scrollbar{display:none;}
+.temoignage{
+  flex:0 0 340px;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:16px;
+  padding:28px;
+}
+.temoignage-stars{color:#f59e0b;font-size:1.1rem;margin-bottom:14px;letter-spacing:2px;}
+.temoignage p{color:rgba(255,255,255,.8);font-size:.9rem;line-height:1.7;font-style:italic;margin-bottom:16px;}
+.temoignage-author{font-size:.8rem;color:rgba(255,255,255,.45);font-weight:500;}
+
+/* ── Certifications ── */
+.certif-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:20px;}
+.certif-badge{background:white;border:1px solid #e8edf4;border-radius:14px;padding:22px 16px;display:flex;flex-direction:column;align-items:center;gap:12px;transition:.3s;cursor:default;}
+.certif-badge:hover{border-color:var(--accent);box-shadow:0 8px 24px rgba(74,144,226,.15);transform:translateY(-4px);}
+.certif-badge svg{width:32px;height:32px;}
+.certif-badge span{font-size:.8rem;font-weight:600;color:var(--primary);text-align:center;}
+
+/* ── Contact ── */
+.contact-wrap{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start;}
+.contact-infos{display:flex;flex-direction:column;gap:14px;}
+.contact-info-item{display:flex;align-items:center;gap:12px;color:var(--secondary);font-weight:600;font-size:.95rem;text-decoration:none;transition:.2s;}
+.contact-info-item:hover{color:var(--accent);}
+.contact-info-item svg{width:20px;height:20px;flex-shrink:0;}
+.contact-form{display:flex;flex-direction:column;gap:14px;}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:14px 16px;border:1.5px solid #dde3ec;border-radius:10px;font-family:'Inter',sans-serif;font-size:.9rem;color:#222;background:white;transition:.2s;outline:none;}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(74,144,226,.12);}
+.form-group textarea{resize:vertical;}
+.form-group select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237a8fa5' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;}
+
+/* ── Page Hébergement ── */
+.page-hero-heb{padding:140px 10% 80px;background:linear-gradient(135deg,#0B1F3A 0%,#1a3a6b 100%);color:white;position:relative;overflow:hidden;}
+.breadcrumb-heb{display:flex;align-items:center;gap:8px;font-size:12px;color:rgba(255,255,255,.5);margin-bottom:20px;}
+.breadcrumb-heb a{color:rgba(255,255,255,.5);text-decoration:none;}
+.filtres-heb{padding:40px 10% 0;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.filtre-btn{padding:8px 18px;border-radius:30px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid #dde3ec;background:white;color:#555;transition:.2s;}
+.filtre-btn:hover{border-color:#4A90E2;color:#4A90E2;}
+.filtre-btn.active{background:#1F5FAF;color:white;border-color:#1F5FAF;}
+.annuaire-wrap{padding:40px 10% 80px;}
+.annuaire-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+.sep-label{display:flex;align-items:center;gap:16px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#4A90E2;padding:20px 0 12px;}
+.sep-label::after{content:'';flex:1;height:1px;background:#e8edf4;}
+.fiche{background:white;border-radius:16px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.07);transition:.3s;display:flex;flex-direction:column;}
+.fiche.hidden{display:none;}
+.fiche:hover{transform:translateY(-6px);box-shadow:0 16px 48px rgba(0,0,0,.12);}
+.fiche-img{width:100%;height:180px;position:relative;overflow:hidden;flex-shrink:0;}
+.fiche-img img{width:100%;height:100%;object-fit:cover;}
+.fiche-cat{position:absolute;top:14px;left:14px;color:white;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 12px;border-radius:20px;}
+.cat-hotel{background:#0B1F3A;}.cat-resto{background:#b45309;}.cat-chambre{background:#15803d;}.cat-meuble{background:#6d28d9;}.cat-rapide{background:#dc2626;}
+.fiche-body{padding:20px 22px 24px;flex:1;display:flex;flex-direction:column;}
+.fiche-nom{font-size:1rem;font-weight:700;color:#0B1F3A;margin-bottom:6px;}
+.fiche-desc{font-size:.82rem;color:#555;line-height:1.65;flex:1;margin-bottom:14px;}
+.fiche-info{display:flex;align-items:flex-start;gap:8px;font-size:.76rem;color:#7a8fa5;margin-bottom:5px;}
+.fiche-info svg{width:12px;height:12px;flex-shrink:0;margin-top:2px;color:#4A90E2;}
+.fiche-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+.btn-fiche{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:7px;font-size:.78rem;font-weight:600;text-decoration:none;transition:.2s;}
+.btn-fiche-primary{background:#1F5FAF;color:white;}.btn-fiche-primary:hover{background:#4A90E2;}
+.btn-fiche-outline{background:white;color:#1F5FAF;border:1.5px solid #1F5FAF;}.btn-fiche-outline:hover{background:#1F5FAF;color:white;}
+@media(max-width:768px){
+  .page-hero-heb{padding:100px 6% 60px !important;}
+  .filtres-heb{padding:24px 6% 0 !important;}
+  .annuaire-wrap{padding:24px 6% 60px !important;}
+  .annuaire-grid{grid-template-columns:1fr !important;}
+  .fiche-actions{flex-direction:column;}
+}
+
+</style>
+</head>
+
+<body>
+<style>
+/* Pas de curseur custom sur mobile */
+@media (max-width:768px){
+  #cursor-dot,#cursor-ring,#cursor{display:none !important;}
+  *{cursor:auto !important;}
+}
+
+/* ── Page Hébergement ── */
+.page-hero-heb{padding:140px 10% 80px;background:linear-gradient(135deg,#0B1F3A 0%,#1a3a6b 100%);color:white;position:relative;overflow:hidden;}
+.breadcrumb-heb{display:flex;align-items:center;gap:8px;font-size:12px;color:rgba(255,255,255,.5);margin-bottom:20px;}
+.breadcrumb-heb a{color:rgba(255,255,255,.5);text-decoration:none;}
+.filtres-heb{padding:40px 10% 0;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.filtre-btn{padding:8px 18px;border-radius:30px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid #dde3ec;background:white;color:#555;transition:.2s;}
+.filtre-btn:hover{border-color:#4A90E2;color:#4A90E2;}
+.filtre-btn.active{background:#1F5FAF;color:white;border-color:#1F5FAF;}
+.annuaire-wrap{padding:40px 10% 80px;}
+.annuaire-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+.sep-label{display:flex;align-items:center;gap:16px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#4A90E2;padding:20px 0 12px;}
+.sep-label::after{content:'';flex:1;height:1px;background:#e8edf4;}
+.fiche{background:white;border-radius:16px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.07);transition:.3s;display:flex;flex-direction:column;}
+.fiche.hidden{display:none;}
+.fiche:hover{transform:translateY(-6px);box-shadow:0 16px 48px rgba(0,0,0,.12);}
+.fiche-img{width:100%;height:180px;position:relative;overflow:hidden;flex-shrink:0;}
+.fiche-img img{width:100%;height:100%;object-fit:cover;}
+.fiche-cat{position:absolute;top:14px;left:14px;color:white;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 12px;border-radius:20px;}
+.cat-hotel{background:#0B1F3A;}.cat-resto{background:#b45309;}.cat-chambre{background:#15803d;}.cat-meuble{background:#6d28d9;}.cat-rapide{background:#dc2626;}
+.fiche-body{padding:20px 22px 24px;flex:1;display:flex;flex-direction:column;}
+.fiche-nom{font-size:1rem;font-weight:700;color:#0B1F3A;margin-bottom:6px;}
+.fiche-desc{font-size:.82rem;color:#555;line-height:1.65;flex:1;margin-bottom:14px;}
+.fiche-info{display:flex;align-items:flex-start;gap:8px;font-size:.76rem;color:#7a8fa5;margin-bottom:5px;}
+.fiche-info svg{width:12px;height:12px;flex-shrink:0;margin-top:2px;color:#4A90E2;}
+.fiche-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+.btn-fiche{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:7px;font-size:.78rem;font-weight:600;text-decoration:none;transition:.2s;}
+.btn-fiche-primary{background:#1F5FAF;color:white;}.btn-fiche-primary:hover{background:#4A90E2;}
+.btn-fiche-outline{background:white;color:#1F5FAF;border:1.5px solid #1F5FAF;}.btn-fiche-outline:hover{background:#1F5FAF;color:white;}
+
+@media(max-width:768px){
+  .page-hero-heb{padding:100px 6% 60px !important;}
+  .filtres-heb{padding:24px 6% 0 !important;}
+  .annuaire-wrap{padding:24px 6% 60px !important;}
+  .annuaire-grid{grid-template-columns:1fr !important;}
+  .fiche-actions{flex-direction:column;}
+}
+@media (max-width: 768px) {
+  footer{padding:44px 6% 0 !important;}
+  .footer-grid{grid-template-columns:1fr !important;gap:32px !important;}
+  .footer-legal{flex-direction:column !important;align-items:flex-start !important;gap:8px !important;padding:20px 0 !important;}
+  .footer-legal a{border-right:none !important;padding:0 !important;}
+  .footer-legal-copy{margin-left:0 !important;}
+}
+</style>
+
+
+<div id="header-placeholder"></div>
+
+<script src="/assets/include.js"></script>
+<script>
+// Effet scroll : header devient opaque au défilement
+document.addEventListener('DOMContentLoaded', function(){
+  function attachScrollEffect(){
+    var h = document.getElementById('site-header');
+    if(!h){ setTimeout(attachScrollEffect, 50); return; }
+    window.addEventListener('scroll', function(){ h.classList.toggle('scrolled', window.scrollY > 50); });
+  }
+  attachScrollEffect();
+});
+</script>
+
+<!-- ═══ HÉBERGEMENT & RESTAURATION ═══ -->
+<div class="page-hero-heb">
+  <div class="breadcrumb-heb">
+    <a href="../index.html">Accueil</a><span>›</span>
+    <span style="color:rgba(255,255,255,.8);">Hébergement &amp; Restauration</span>
+  </div>
+  <h1 style="font-size:3rem;font-weight:700;line-height:1.1;margin-bottom:16px;">Hébergement &amp; Restauration</h1>
+  <p style="font-size:1.1rem;color:rgba(255,255,255,.7);max-width:600px;line-height:1.7;">Toutes les adresses utiles autour de Luxeuil-les-Bains pour votre visite.</p>
+</div>
+
+<div class="filtres-heb">
+  <button class="filtre-btn active" data-cat="Tous">Tous</button>
+  <button class="filtre-btn" data-cat="Hôtel">Hôtels</button>
+  <button class="filtre-btn" data-cat="Restaurant">Restaurants</button>
+  <button class="filtre-btn" data-cat="Chambre d'hôtes">Chambres d'hôtes</button>
+  <button class="filtre-btn" data-cat="Meublé">Meublés &amp; Gîtes</button>
+  <button class="filtre-btn" data-cat="Restauration rapide">Restauration rapide</button>
+</div>
+
+<div class="annuaire-wrap">
+  <div class="sep-label">Hôtels</div>
+  <div class="annuaire-grid">
+    <div class="fiche" data-cat="Hôtel">
+      <div class="fiche-img"><img src="/assets/image" alt="M"><span class="fiche-cat cat-hotel">Hôtel ★★★</span></div>
+      <div class="fiche-body">
+        <div class="fiche-nom">M</div>
+        <div class="fiche-desc">Hôtel 3 étoiles .</div>
+        <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>, 70300 Luxeuil-les-Bains</div>
+        <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.5 19.79 19.79 0 0 1 1.61 5a2 2 0 0 1 1.95-2H6a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 10a16 16 0 0 0 6 6l.27-.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 18z"/></svg>03 84 93 90 90</div>
+        <div class="fiche-actions"><a href="tel:0384" class="btn-fiche btn-fiche-primary">Réserver</a><a href="https://www/" target="_blank" class="btn-fiche btn-fiche-outline">Site web</a></div>
+      </div>
+    </div>
+    <div class="fiche" data-cat="Hôtel">
+      <div class="fiche-img"><img src="/assets/images/hébergement/Le beau site.jpg" alt="Hotel Spa Restaurant Beau Site"><span class="fiche-cat cat-hotel">Hôtel ★★★</span></div>
+      <div class="fiche-body">
+        <div class="fiche-nom">Hotel Spa Restaurant Beau Site</div>
+        <div class="fiche-desc">Hôtel familial depuis 4 générations, situé à deux pas des thermes et du casino, dans un parc arboré d'1 ha. Piscine chauffée, salle de fitness et espace bien-être comprenant jacuzzi, sauna, massage (sur réservation).
+Le restaurant de l'hôtel propose une cuisine française traditionnelle et vous accueille dans une atmosphère chaleureuse, en intérieur ou en terrasse.</div>
+        <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>18 rue Georges Moulimard, 70300 Luxeuil-les-Bains</div>
+        <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.5 19.79 19.79 0 0 1 1.61 5a2 2 0 0 1 1.95-2H6a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 10a16 16 0 0 0 6 6l.27-.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 18z"/></svg>03 84 40 14 67</div>
+        <div class="fiche-actions"><a href="tel:0384401467" class="btn-fiche btn-fiche-primary">Réserver</a><a href="https://www.beau-site-luxeuil.com/" target="_blank" class="btn-fiche btn-fiche-outline">Site web</a></div>
+      </div>
+    </div>
+    <div class="fiche" data-cat="Hôtel">
+      <div class="fiche-img"><img src="/assets/image" alt="Mercure"><span class="fiche-cat cat-hotel">Hôtel ★★★</span></div>
+      <div class="fiche-body">
+        <div class="fiche-nom">Mercure</div>
+        <div class="fiche-desc">Hôtel .</div>
+        <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>16 rue des Thermes, 70300 Luxeuil-les-Bains</div>
+        <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.5 19.79 19.79 0 0 1 1.61 5a2 2 0 0 1 1.95-2H6a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 10a16 16 0 0 0 6 6l.27-.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 18z"/></svg>03 84 93 90 90</div>
+        <div class="fiche-actions"><a href="tel:0384" class="btn-fiche btn-fiche-primary">Réserver</a><a href="https://www." target="_blank" class="btn-fiche btn-fiche-outline">Site web</a></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sep-label" style="margin-top:32px;">Restaurants</div>
+  <div class="annuaire-grid">
+    <div class="fiche" data-cat="Restaurant">
+      <div class="fiche-img"><img src="/assets/images/hébergement/latabledetienne.png" alt="Restaurant La table d'Etienne"><span class="fiche-cat cat-resto">Restaurant</span></div>
+      <div class="fiche-body">
+        <div class="fiche-nom">La Table d'Etienne</div>
+        <div class="fiche-desc">Exellent acceuil. Cuisine traditionnelle, ambiance familiale.</div>
+        <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Zone artisanale du bouquet, 27 rue Caricaies, 70300 Saint Sauveur</div>
+        <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.5 19.79 19.79 0 0 1 1.61 5a2 2 0 0 1 1.95-2H6a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 10a16 16 0 0 0 6 6l.27-.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 18z"/></svg>03 84 40 27 93</div>
+        <div class="fiche-actions"><a href="tel:0384409383" class="btn-fiche btn-fiche-primary">Réserver</a><a href="https://www.la-table-detienne-restaurant-saint-sauveur.fr/" target="_blank" class="btn-fiche btn-fiche-outline">Site web</a></div>
+      </div>
+    </div>
+    <div class="fiche" data-cat="Restaurant">
+      <div class="fiche-img"><img src="/assets" alt="Le Métropole"><span class="fiche-cat cat-resto">Restaurant</span></div>
+      <div class="fiche-body">
+        <div class="fiche-nom">Le Métropole</div>
+        <div class="fiche-desc">Ca.</div>
+        <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>4 Av. des Thermes, 70300 Luxeuil-les-Bains</div>
+        <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.5 19.79 19.79 0 0 1 1.61 5a2 2 0 0 1 1.95-2H6a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 10a16 16 0 0 0 6 6l.27-.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 18z"/></svg>06 09 25 61 89</div>
+        <div class="fiche-actions"><a href="tel:0609256189" class="btn-fiche btn-fiche-primary">Réserver</a><a href="https://www.garden-city.fr/fr/restaurant-luxeuil.html" target="_blank" class="btn-fiche btn-fiche-outline">Site web</a></div>
+      </div>
+      </div>
+    <div class="fiche" data-cat="Restaurant">
+      <div class="fiche-img"><img src="/assets/images/hébergement/lelac.jpg" alt="Restaurant Le Lac"><span class="fiche-cat cat-resto">Restaurant</span></div>
+      <div class="fiche-body">
+        <div class="fiche-nom">Restaurant Le Lac</div>
+        <div class="fiche-desc">Cadre verdoyant au lac des 7 chevaux. Cuisine traditionnelle, pizzas, ambiance familiale.</div>
+        <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Les 7 Chevaux, 70300 Luxeuil-les-Bains</div>
+        <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.5 19.79 19.79 0 0 1 1.61 5a2 2 0 0 1 1.95-2H6a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 10a16 16 0 0 0 6 6l.27-.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 18z"/></svg>03 84 40 27 93</div>
+        <div class="fiche-actions"><a href="tel:0384402793" class="btn-fiche btn-fiche-primary">Appeler</a><a href="https://restaurant-le-lac.fr/" target="_blank" class="btn-fiche btn-fiche-outline">Site web</a></div>
+      </div>
+      </div>
+  </div>
+
+  <div class="sep-label" style="margin-top:32px;">Chambres d'hôtes</div>
+  <div class="annuaire-grid">
+    <div class="fiche" data-cat="Chambre d'hôtes">
+      <div class="fiche-img"><img src="https://images.unsplash.com/photo-1584132967334-10e028bd69f7?w=600&q=80" alt="Chambre d'hôtes"><span class="fiche-cat cat-chambre">Chambre d'hôtes</span></div>
+      <div class="fiche-body">
+        <div class="fiche-nom">À compléter</div>
+        <div class="fiche-desc">Nous référençons actuellement les chambres d'hôtes de qualité autour de Luxeuil-les-Bains.</div>
+        <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Luxeuil-les-Bains et environs (70)</div>
+        <div class="fiche-actions"><a href="contact.html" class="btn-fiche btn-fiche-primary">Nous contacter</a></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sep-label" style="margin-top:32px;">Meublés &amp; Gîtes</div>
+  <div class="annuaire-grid">
+    <div class="fiche" data-cat="Meublé">
+      <div class="fiche-img"><img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&q=80" alt="Résidence Les Thermes"><span class="fiche-cat cat-meuble">Meublé</span></div>
+      <div class="fiche-body">
+        <div class="fiche-nom">Ré</div>
+        <div class="fiche-desc">6.</div>
+        <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>4 rue des Thermes, 70300 Luxeuil-les-Bains</div>
+        <div class="fiche-actions"><a href="contact.html" class="btn-fiche btn-fiche-primary">Nous contacter</a></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sep-label" style="margin-top:32px;">Restauration rapide</div>
+  <div class="annuaire-grid">
+    <div class="fiche" data-cat="Restauration rapide">
+      <div class="fiche-img"><img src="https://images.unsplash.c" alt="BRASSERIE LUXOVIENNE"><span class="fiche-cat cat-rapide">Restauration rapide</span></div>
+      <div class="fiche-body">
+        <div class="fiche-nom">BRASSERIE LUXOVIENNE</div>
+        <div class="fiche-desc">Offre Restauration : Planches de charcuterie et fromages locaux, frites maison, tartines chaudes et le célèbre Croque Luxovien.</div>
+        <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>9 Rue du Dr Gilles Cugnier, 70300 Luxeuil-les-Bains</div>
+        <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.5 19.79 19.79 0 0 1 1.61 5a2 2 0 0 1 1.95-2H6a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 10a16 16 0 0 0 6 6l.27-.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 18z"/></svg>03 84 93 67 22</div>
+        <div class="fiche-actions"><a href="tel:0384936722" class="btn-fiche btn-fiche-primary">Appeler</a><a href="https://www.instagram.com/brasserie.luxovienne/" target="_blank" class="btn-fiche btn-fiche-outline">Instagram</a></div>
+      </div>
+    </div>
+    <div class="fiche" data-cat="Restauration rapide">
+      <div class="fiche-img"><img src="/assets/images/hébergement/pizzella.jpg" alt="Pizz'Ella - notre terrasse"><span class="fiche-cat cat-rapide">Restauration rapide</span></div>
+      <div class="fiche-body">
+        <div class="fiche-nom">PIZZ'ELLA</div>
+        <div class="fiche-desc">Nouveau à Luxeuil. Pizzas artisanales, pâte fraîche faite maison, jusqu'en XXL 50 cm. Livraison à domicile 6j/7 dès 20€, ou dégustez sur place sur notre petite terrasse ombragée.</div>
+        <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>12 rue Victor Genoux, 70300 Luxeuil-les-Bains</div>
+        <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.5 19.79 19.79 0 0 1 1.61 5a2 2 0 0 1 1.95-2H6a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 10a16 16 0 0 0 6 6l.27-.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 18z"/></svg>09 86 67 15 68</div>
+        <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>11h-14h / 18h-23h (sam-dim 12h-14h / 18h-23h) · Fermé le mercredi</div>
+        <div class="fiche-actions">
+          <a href="tel:0986671568" class="btn-fiche btn-fiche-primary">Appeler</a>
+          <a href="/assets/documents/carte-pizzella.pdf" target="_blank" class="btn-fiche btn-fiche-outline">Voir la carte</a>
+        </div>
+      </div>
+    </div>
+</div>
+
+<script>
+(function(){
+  var btns = document.querySelectorAll('.filtre-btn');
+  var fiches = document.querySelectorAll('.fiche');
+  btns.forEach(function(btn){
+    btn.addEventListener('click',function(){
+      btns.forEach(function(b){b.classList.remove('active');});
+      btn.classList.add('active');
+      var cat = btn.dataset.cat;
+      fiches.forEach(function(f){
+        f.classList.toggle('hidden', cat!=='Tous' && f.dataset.cat!==cat);
+      });
+    });
+  });
+})();
+</script>
+
+
+<div id="footer-placeholder"></div>
+
+
+<!-- Curseur personnalisé -->
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- Back to top -->
+<a id="back-top" href="tel:0695390776">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.5 19.79 19.79 0 0 1 1.61 5a2 2 0 0 1 1.95-2H6a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 10a16 16 0 0 0 6 6l.27-.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 18z"/></svg>
+</a>
+
+<script>
+// ── Dropdowns header ──
+(function(){
+  function attachDropdowns(){
+    var headerEl = document.getElementById('site-header');
+    if(!headerEl){ setTimeout(attachDropdowns, 50); return; }
+    document.querySelectorAll('#site-header .has-dropdown').forEach(function(item){
+      var dd = item.querySelector('.dropdown');
+      item.addEventListener('mouseenter', function(){ dd.style.display='block'; });
+      item.addEventListener('mouseleave', function(){ dd.style.display='none'; });
+    });
+  }
+  attachDropdowns();
+})();
+
+// ── Curseur ──
+(function(){
+  var c = document.getElementById('cursor');
+  var r = document.getElementById('cursor-ring');
+  var mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove',function(e){
+    mx=e.clientX; my=e.clientY;
+    c.style.left=mx+'px'; c.style.top=my+'px';
+  });
+  function animRing(){
+    rx += (mx-rx)*.12; ry += (my-ry)*.12;
+    r.style.left=rx+'px'; r.style.top=ry+'px';
+    requestAnimationFrame(animRing);
+  }
+  animRing();
+  document.querySelectorAll('a,button,[type=submit]').forEach(function(el){
+    el.addEventListener('mouseenter',function(){
+      c.style.width='20px';c.style.height='20px';c.style.background='white';
+      r.style.width='52px';r.style.height='52px';r.style.opacity='.3';
+    });
+    el.addEventListener('mouseleave',function(){
+      c.style.width='10px';c.style.height='10px';c.style.background='var(--accent)';
+      r.style.width='36px';r.style.height='36px';r.style.opacity='1';
+    });
+  });
+})();
+
+// ── Reveal au scroll ──
+(function(){
+  var els = document.querySelectorAll('.reveal');
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); }
+    });
+  },{threshold:0.15});
+  els.forEach(function(el){ io.observe(el); });
+})();
+
+// ── Compteurs stats animés ──
+(function(){
+  var nums = document.querySelectorAll('.stat-number[data-target]');
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(!e.isIntersecting) return;
+      var el = e.target;
+      var raw = el.dataset.target;
+      var target = parseFloat(raw);
+      // Si la valeur n'est pas un nombre (ex: "48h", "7j/7", "360°"), afficher directement
+      if(isNaN(target)){
+        el.textContent = raw;
+        io.unobserve(el);
+        return;
+      }
+      var duration = 1800, start = null;
+      function step(ts){
+        if(!start) start = ts;
+        var progress = Math.min((ts-start)/duration,1);
+        var ease = 1-Math.pow(1-progress,3);
+        var val = Math.round(ease*target);
+        el.textContent = val;
+        if(progress < 1) requestAnimationFrame(step);
+        else el.textContent = raw; // affiche la valeur finale exacte du data-target
+      }
+      requestAnimationFrame(step);
+      io.unobserve(el);
+    });
+  },{threshold:0.5});
+  nums.forEach(function(n){ io.observe(n); });
+})();
+
+// Bouton téléphone — toujours visible
+(function(){
+  var bt = document.getElementById('back-top');
+  if(bt) bt.classList.add('visible');
+})();
+
+// ── Carrousels : auto-scroll continu + flèches ──
+(function(){
+  var SPEED = 1.2;   // px par frame
+  var CARD_W = 310;  // 280px + 30px gap
+
+  function setupCarousel(track, customSpeed){
+    var spd = customSpeed || SPEED;
+    // 1. Cloner les cartes pour boucle infinie
+    var origCards = Array.from(track.children);
+    origCards.forEach(function(card){
+      var clone = card.cloneNode(true);
+      clone.setAttribute('aria-hidden','true');
+      track.appendChild(clone);
+    });
+    var halfWidth = track.scrollWidth / 2;
+
+    // 2. Désactiver scroll-snap (incompatible avec scrollLeft+=)
+    track.style.scrollSnapType = 'none';
+
+    var paused = false;
+
+    function autoScroll(){
+      if(!paused){
+        track.scrollLeft += spd;
+        if(track.scrollLeft >= halfWidth){
+          track.scrollLeft -= halfWidth;
+        }
+      }
+      requestAnimationFrame(autoScroll);
+    }
+
+    // Pause au survol
+    track.addEventListener('mouseenter', function(){ paused = true; });
+    track.addEventListener('mouseleave', function(){ paused = false; });
+    track.addEventListener('touchstart', function(){ paused = true; }, {passive:true});
+    track.addEventListener('touchend', function(){
+      setTimeout(function(){ paused = false; }, 2000);
+    }, {passive:true});
+
+    // Méthode pause temporaire pour les flèches
+    track._pause = function(){
+      paused = true;
+      setTimeout(function(){ paused = false; }, 2500);
+    };
+
+    requestAnimationFrame(autoScroll);
+  }
+
+  // Flèches
+  window.scrollCarousel = function(btn, dir){
+    var wrapper = btn.closest('.carousel-wrapper');
+    var track = wrapper.querySelector('.carousel-track, .actu-track, .temoignages-track');
+    track._pause && track._pause();
+    track.scrollBy({ left: dir * CARD_W, behavior: 'smooth' });
+  };
+
+  // Lancer après chargement complet
+  window.addEventListener('load', function(){
+    document.querySelectorAll('.carousel-track').forEach(setupCarousel);
+    // Témoignages : vitesse lente
+    var temoTrack = document.getElementById('carousel-temoignages');
+    if(temoTrack) setupCarousel(temoTrack, 0.4);
+    // Actualités : vitesse lente
+    var actuTrack = document.querySelector('.actu-track');
+    if(actuTrack) setupCarousel(actuTrack, 0.5);
+  });
+})();
+
+</script>
+
+<!-- Firebase — 3 dernières actus dans le carrousel -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, getDocs, orderBy, query, limit }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAV5NQWfp8n9RkTrHSwqssBJ4R9lNAuYK8",
+  authDomain: "aph-drone.firebaseapp.com",
+  projectId: "aph-drone",
+  storageBucket: "aph-drone.firebasestorage.app",
+  messagingSenderId: "316810168380",
+  appId: "1:316810168380:web:66cb916cec4fdc00b9db39"
+};
+const tagClasses = {
+  'Réglementation':'actu-tag--rouge','Formation':'actu-tag--bleu','Mission':'actu-tag--vert',
+  'Événement':'actu-tag--violet','Agriculture':'actu-tag--orange','Sécurité civile':'actu-tag--marine'
+};
+try {
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const q = query(collection(db, 'actualites'), orderBy('ordre','desc'), limit(3));
+  const snap = await getDocs(q);
+  if(!snap.empty){
+    const track = document.querySelector('.actu-track');
+    const sizes = ['lg','md','sm'];
+    let i = 0;
+    const firstChild = track.firstChild;
+    snap.forEach(docSnap => {
+      const d = docSnap.data();
+      const taille = sizes[i % sizes.length];
+      const tagClass = tagClasses[d.cat] || 'actu-tag--bleu';
+      const imgHtml = d.photoUrl
+        ? `<img src="${d.photoUrl}" alt="${d.titre}" style="width:100%;height:100%;object-fit:cover;">`
+        : `<span class="actu-img-placeholder">Photo</span>`;
+      const art = document.createElement('article');
+      art.className = `actu-card actu-card--${taille}`;
+      art.innerHTML = `
+        <div class="actu-img">${imgHtml}<span class="actu-tag ${tagClass}">${d.cat}</span></div>
+        <div class="actu-body">
+          <time class="actu-date">${d.date}</time>
+          <h3 class="actu-title">${d.titre}</h3>
+          ${d.extrait ? `<p class="actu-excerpt">${d.extrait}</p>` : ''}
+          <a href="actualites.html" class="actu-lire">Lire la suite <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+        </div>`;
+      track.insertBefore(art, firstChild);
+      i++;
+    });
+  }
+} catch(e){ console.warn('Firebase:', e.message); }
+</script>
+</body>
+</html>
