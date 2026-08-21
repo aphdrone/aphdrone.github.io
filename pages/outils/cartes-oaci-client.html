@@ -160,6 +160,8 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+const ADMIN_EMAIL = 'aph.moreau@gmail.com';
+
 // Correspondance zone -> ID du fichier Google Drive (partagé "toute personne disposant du lien")
 const ZONE_FILES = {
   'nord-ouest': '1ZHOOv5S2JrKtsc3Gtie1AMaTf1VQpYv6',
@@ -213,11 +215,15 @@ onAuthStateChanged(auth, async user => {
     if(selectedZone) goToLogin(selectedZone);
     return;
   }
-  try{
-    const snap = await getDocs(query(collection(db,'clients'), where('email','==',user.email)));
-    isClientVerified = !snap.empty;
-  }catch(e){
-    isClientVerified = false;
+  if(user.email === ADMIN_EMAIL){
+    isClientVerified = true;
+  } else {
+    try{
+      const snap = await getDocs(query(collection(db,'clients'), where('email','==',user.email)));
+      isClientVerified = !snap.empty;
+    }catch(e){
+      isClientVerified = false;
+    }
   }
   if(!isClientVerified){
     if(selectedZone) goToLogin(selectedZone);
