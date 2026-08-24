@@ -145,22 +145,25 @@
     });
   }
 
-  // ── Bandeau d'annonce flottant (piloté depuis l'admin → siteConfig/bandeau) ──
+  // ── Bandeau d'annonce (piloté depuis l'admin → siteConfig/bandeau) ──
+  // S'affiche uniquement là où un emplacement #aph-banner-slot existe dans la page
+  // (aujourd'hui : sous les boutons du hero de l'accueil). Pas d'effet ailleurs.
   function renderAnnounceBanner(cfg) {
+    var slot = document.getElementById('aph-banner-slot');
+    if (!slot) return;
     if (!cfg || cfg.active !== true) return;
     if (sessionStorage.getItem('aph_banner_closed_' + (cfg.updatedAt || '')) === '1') return;
 
     var style = document.createElement('style');
     style.textContent =
-      '@keyframes aphBannerIn{from{transform:translateY(-100%);opacity:0}to{transform:translateY(0);opacity:1}}' +
+      '@keyframes aphBannerIn{from{transform:translateY(-8px);opacity:0}to{transform:translateY(0);opacity:1}}' +
       '@keyframes aphBadgePulse{0%,100%{box-shadow:0 0 0 0 rgba(224,49,49,.55)}50%{box-shadow:0 0 0 6px rgba(224,49,49,0)}}' +
-      '#aph-banner{animation:aphBannerIn .5s ease-out;position:fixed;top:0;left:0;width:100%;box-sizing:border-box;z-index:10000;background:#0B1F3A;color:#fff;padding:9px 44px 9px 16px;display:flex;align-items:center;gap:12px;justify-content:center;flex-wrap:wrap;font-family:"Inter",sans-serif;}' +
+      '#aph-banner{animation:aphBannerIn .5s ease-out;display:inline-flex;align-items:center;gap:12px;justify-content:center;flex-wrap:wrap;background:rgba(11,31,58,.85);border:1px solid rgba(255,255,255,.15);border-radius:30px;padding:8px 18px 8px 8px;font-family:"Inter",sans-serif;position:relative;}' +
       '#aph-banner .aph-badge{background:#E03131;color:#fff;font-size:11px;font-weight:600;letter-spacing:.03em;padding:3px 11px;border-radius:20px;animation:aphBadgePulse 1.8s ease-in-out infinite;white-space:nowrap;}' +
-      '#aph-banner .aph-msg{font-size:13px;}' +
+      '#aph-banner .aph-msg{font-size:13px;color:#fff;}' +
       '#aph-banner .aph-cta{background:#4A90E2;color:#fff;font-size:12px;font-weight:600;padding:6px 14px;border-radius:20px;text-decoration:none;white-space:nowrap;}' +
-      '#aph-banner .aph-close{position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;color:rgba(255,255,255,.65);font-size:18px;line-height:1;background:none;border:none;padding:4px;}' +
-      '#aph-banner .aph-close:hover{color:#fff;}' +
-      '@media(max-width:600px){#aph-banner{font-size:12px;padding:8px 40px 8px 12px;}}';
+      '#aph-banner .aph-close{cursor:pointer;color:rgba(255,255,255,.65);font-size:16px;line-height:1;background:none;border:none;padding:2px;margin-left:2px;}' +
+      '#aph-banner .aph-close:hover{color:#fff;}';
     document.head.appendChild(style);
 
     var bar = document.createElement('div');
@@ -171,42 +174,15 @@
       (cfg.linkUrl ? '<a class="aph-cta" href="' + cfg.linkUrl + '">' + (cfg.linkLabel || 'Découvrir') + '</a>' : '') +
       '<button class="aph-close" aria-label="Fermer">&times;</button>';
 
-    document.body.insertBefore(bar, document.body.firstChild);
-
-    // Le menu (#site-header) est en position fixed collé en haut, et body a déjà
-    // un padding-top pour compenser sa hauteur. On repousse le menu sous le bandeau
-    // (fixed lui aussi) et on ajoute la hauteur du bandeau au padding existant.
-    function repositionHeader() {
-      var h = bar.offsetHeight;
-      var header = document.getElementById('site-header');
-      if (header) {
-        if (!header.dataset.aphOrigTop) {
-          header.dataset.aphOrigTop = header.style.top || '0px';
-        }
-        if (!header.dataset.aphOrigPad) {
-          var cs = window.getComputedStyle(document.body);
-          header.dataset.aphOrigPad = parseFloat(cs.paddingTop) || 0;
-        }
-        header.style.top = h + 'px';
-        document.body.style.paddingTop = (h + parseFloat(header.dataset.aphOrigPad)) + 'px';
-      }
-    }
-    repositionHeader();
-    window.addEventListener('resize', repositionHeader);
-
+    slot.appendChild(bar);
     bar.querySelector('.aph-close').addEventListener('click', function () {
       sessionStorage.setItem('aph_banner_closed_' + (cfg.updatedAt || ''), '1');
       bar.remove();
-      var header = document.getElementById('site-header');
-      if (header) {
-        header.style.top = header.dataset.aphOrigTop || '0px';
-        document.body.style.paddingTop = header.dataset.aphOrigPad ? header.dataset.aphOrigPad + 'px' : '';
-      }
-      window.removeEventListener('resize', repositionHeader);
     });
   }
 
   function loadAnnounceBanner() {
+    if (!document.getElementById('aph-banner-slot')) return; // rien à faire hors accueil
     import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js').then(function (appMod) {
       import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js').then(function (fsMod) {
         var firebaseConfig = {
