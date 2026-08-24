@@ -496,6 +496,36 @@ tr:last-child td{border-bottom:none;}
       </div>
       <div class="admin-content">
         <div class="panel-section">
+          <div class="panel-section-head">
+            <h3>Bandeau d'annonce</h3>
+            <label class="toggle" title="Afficher le bandeau sur tout le site">
+              <input type="checkbox" id="bandeau-active">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="panel-section-body" style="padding-top:14px;display:flex;flex-direction:column;gap:10px;max-width:520px;">
+            <div>
+              <label style="display:block;font-size:.78rem;font-weight:600;color:#555;margin-bottom:4px;">Badge (ex: Nouveau)</label>
+              <input type="text" id="bandeau-badge" placeholder="Nouveau" style="width:100%;padding:9px 12px;border:1.5px solid #dde3ec;border-radius:7px;font-size:.85rem;font-family:'Inter',sans-serif;outline:none;">
+            </div>
+            <div>
+              <label style="display:block;font-size:.78rem;font-weight:600;color:#555;margin-bottom:4px;">Message</label>
+              <input type="text" id="bandeau-message" placeholder="Formation Drone & IA : boostez votre activité au quotidien" style="width:100%;padding:9px 12px;border:1.5px solid #dde3ec;border-radius:7px;font-size:.85rem;font-family:'Inter',sans-serif;outline:none;">
+            </div>
+            <div style="display:flex;gap:10px;">
+              <div style="flex:1;">
+                <label style="display:block;font-size:.78rem;font-weight:600;color:#555;margin-bottom:4px;">Texte du bouton</label>
+                <input type="text" id="bandeau-link-label" placeholder="Découvrir" style="width:100%;padding:9px 12px;border:1.5px solid #dde3ec;border-radius:7px;font-size:.85rem;font-family:'Inter',sans-serif;outline:none;">
+              </div>
+              <div style="flex:2;">
+                <label style="display:block;font-size:.78rem;font-weight:600;color:#555;margin-bottom:4px;">Lien du bouton</label>
+                <input type="text" id="bandeau-link-url" placeholder="/pages/formations/ia-drone-quotidien.html" style="width:100%;padding:9px 12px;border:1.5px solid #dde3ec;border-radius:7px;font-size:.85rem;font-family:'Inter',sans-serif;outline:none;">
+              </div>
+            </div>
+            <button class="btn btn-primary" id="btn-save-bandeau" style="align-self:flex-start;margin-top:4px;">Enregistrer le bandeau</button>
+          </div>
+        </div>
+        <div class="panel-section">
           <div class="panel-section-head"><h3>Formations</h3></div>
           <div class="panel-section-body" style="padding-top:14px;">
             <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
@@ -922,7 +952,7 @@ import {
   EmailAuthProvider, sendPasswordResetEmail
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import {
-  getFirestore, collection, getDocs, addDoc, doc, updateDoc, deleteDoc, setDoc
+  getFirestore, collection, getDocs, addDoc, doc, updateDoc, deleteDoc, setDoc, getDoc
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -1619,7 +1649,42 @@ async function loadVisibilite(){
   } catch(e){
     console.warn('loadVisibilite:', e.message);
   }
+  loadBandeau();
 }
+
+async function loadBandeau(){
+  try{
+    const snap = await getDoc(doc(db, 'siteConfig', 'bandeau'));
+    const data = snap.exists() ? snap.data() : {};
+    document.getElementById('bandeau-active').checked = data.active === true;
+    document.getElementById('bandeau-badge').value = data.badge || '';
+    document.getElementById('bandeau-message').value = data.message || '';
+    document.getElementById('bandeau-link-label').value = data.linkLabel || '';
+    document.getElementById('bandeau-link-url').value = data.linkUrl || '';
+  } catch(e){
+    console.warn('loadBandeau:', e.message);
+  }
+}
+
+document.getElementById('btn-save-bandeau')?.addEventListener('click', async () => {
+  const btn = document.getElementById('btn-save-bandeau');
+  btn.disabled = true; btn.textContent = 'Enregistrement...';
+  try{
+    await setDoc(doc(db, 'siteConfig', 'bandeau'), {
+      active: document.getElementById('bandeau-active').checked,
+      badge: document.getElementById('bandeau-badge').value.trim(),
+      message: document.getElementById('bandeau-message').value.trim(),
+      linkLabel: document.getElementById('bandeau-link-label').value.trim(),
+      linkUrl: document.getElementById('bandeau-link-url').value.trim(),
+      updatedAt: Date.now()
+    });
+    showToast('Bandeau enregistré');
+  } catch(e){
+    showToast('Erreur : ' + e.message);
+  } finally {
+    btn.disabled = false; btn.textContent = 'Enregistrer le bandeau';
+  }
+});
 
 function renderVisibiliteTable(type, list, statusMap, tbodyId, showBadgeColumn){
   const tbody = document.getElementById(tbodyId);
