@@ -154,7 +154,7 @@
     style.textContent =
       '@keyframes aphBannerIn{from{transform:translateY(-100%);opacity:0}to{transform:translateY(0);opacity:1}}' +
       '@keyframes aphBadgePulse{0%,100%{box-shadow:0 0 0 0 rgba(224,49,49,.55)}50%{box-shadow:0 0 0 6px rgba(224,49,49,0)}}' +
-      '#aph-banner{animation:aphBannerIn .5s ease-out;background:#0B1F3A;color:#fff;padding:9px 44px 9px 16px;display:flex;align-items:center;gap:12px;justify-content:center;flex-wrap:wrap;position:relative;font-family:"Inter",sans-serif;}' +
+      '#aph-banner{animation:aphBannerIn .5s ease-out;position:fixed;top:0;left:0;width:100%;box-sizing:border-box;z-index:10000;background:#0B1F3A;color:#fff;padding:9px 44px 9px 16px;display:flex;align-items:center;gap:12px;justify-content:center;flex-wrap:wrap;font-family:"Inter",sans-serif;}' +
       '#aph-banner .aph-badge{background:#E03131;color:#fff;font-size:11px;font-weight:600;letter-spacing:.03em;padding:3px 11px;border-radius:20px;animation:aphBadgePulse 1.8s ease-in-out infinite;white-space:nowrap;}' +
       '#aph-banner .aph-msg{font-size:13px;}' +
       '#aph-banner .aph-cta{background:#4A90E2;color:#fff;font-size:12px;font-weight:600;padding:6px 14px;border-radius:20px;text-decoration:none;white-space:nowrap;}' +
@@ -173,13 +173,23 @@
 
     document.body.insertBefore(bar, document.body.firstChild);
 
-    // Le menu (#site-header) est en position fixed collé en haut : on le repousse
-    // sous le bandeau, et on ajoute l'espace correspondant en haut de la page.
+    // Le menu (#site-header) est en position fixed collé en haut, et body a déjà
+    // un padding-top pour compenser sa hauteur. On repousse le menu sous le bandeau
+    // (fixed lui aussi) et on ajoute la hauteur du bandeau au padding existant.
     function repositionHeader() {
       var h = bar.offsetHeight;
       var header = document.getElementById('site-header');
-      if (header) header.style.top = h + 'px';
-      document.body.style.paddingTop = h + 'px';
+      if (header) {
+        if (!header.dataset.aphOrigTop) {
+          header.dataset.aphOrigTop = header.style.top || '0px';
+        }
+        if (!header.dataset.aphOrigPad) {
+          var cs = window.getComputedStyle(document.body);
+          header.dataset.aphOrigPad = parseFloat(cs.paddingTop) || 0;
+        }
+        header.style.top = h + 'px';
+        document.body.style.paddingTop = (h + parseFloat(header.dataset.aphOrigPad)) + 'px';
+      }
     }
     repositionHeader();
     window.addEventListener('resize', repositionHeader);
@@ -188,8 +198,10 @@
       sessionStorage.setItem('aph_banner_closed_' + (cfg.updatedAt || ''), '1');
       bar.remove();
       var header = document.getElementById('site-header');
-      if (header) header.style.top = '0px';
-      document.body.style.paddingTop = '';
+      if (header) {
+        header.style.top = header.dataset.aphOrigTop || '0px';
+        document.body.style.paddingTop = header.dataset.aphOrigPad ? header.dataset.aphOrigPad + 'px' : '';
+      }
       window.removeEventListener('resize', repositionHeader);
     });
   }
