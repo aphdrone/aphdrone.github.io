@@ -145,9 +145,67 @@
     });
   }
 
+  // ── Bandeau d'annonce flottant (piloté depuis l'admin → siteConfig/bandeau) ──
+  function renderAnnounceBanner(cfg) {
+    if (!cfg || cfg.active !== true) return;
+    if (sessionStorage.getItem('aph_banner_closed_' + (cfg.updatedAt || '')) === '1') return;
+
+    var style = document.createElement('style');
+    style.textContent =
+      '@keyframes aphBannerIn{from{transform:translateY(-100%);opacity:0}to{transform:translateY(0);opacity:1}}' +
+      '@keyframes aphBadgePulse{0%,100%{box-shadow:0 0 0 0 rgba(224,49,49,.55)}50%{box-shadow:0 0 0 6px rgba(224,49,49,0)}}' +
+      '#aph-banner{animation:aphBannerIn .5s ease-out;background:#0B1F3A;color:#fff;padding:9px 44px 9px 16px;display:flex;align-items:center;gap:12px;justify-content:center;flex-wrap:wrap;position:relative;font-family:"Inter",sans-serif;}' +
+      '#aph-banner .aph-badge{background:#E03131;color:#fff;font-size:11px;font-weight:600;letter-spacing:.03em;padding:3px 11px;border-radius:20px;animation:aphBadgePulse 1.8s ease-in-out infinite;white-space:nowrap;}' +
+      '#aph-banner .aph-msg{font-size:13px;}' +
+      '#aph-banner .aph-cta{background:#4A90E2;color:#fff;font-size:12px;font-weight:600;padding:6px 14px;border-radius:20px;text-decoration:none;white-space:nowrap;}' +
+      '#aph-banner .aph-close{position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;color:rgba(255,255,255,.65);font-size:18px;line-height:1;background:none;border:none;padding:4px;}' +
+      '#aph-banner .aph-close:hover{color:#fff;}' +
+      '@media(max-width:600px){#aph-banner{font-size:12px;padding:8px 40px 8px 12px;}}';
+    document.head.appendChild(style);
+
+    var bar = document.createElement('div');
+    bar.id = 'aph-banner';
+    bar.innerHTML =
+      (cfg.badge ? '<span class="aph-badge">' + cfg.badge + '</span>' : '') +
+      '<span class="aph-msg">' + (cfg.message || '') + '</span>' +
+      (cfg.linkUrl ? '<a class="aph-cta" href="' + cfg.linkUrl + '">' + (cfg.linkLabel || 'Découvrir') + '</a>' : '') +
+      '<button class="aph-close" aria-label="Fermer">&times;</button>';
+
+    document.body.insertBefore(bar, document.body.firstChild);
+    bar.querySelector('.aph-close').addEventListener('click', function () {
+      sessionStorage.setItem('aph_banner_closed_' + (cfg.updatedAt || ''), '1');
+      bar.remove();
+    });
+  }
+
+  function loadAnnounceBanner() {
+    import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js').then(function (appMod) {
+      import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js').then(function (fsMod) {
+        var firebaseConfig = {
+          apiKey: "AIzaSyAV5NQWfp8n9RkTrHSwqssBJ4R9lNAuYK8",
+          authDomain: "aph-drone.firebaseapp.com",
+          projectId: "aph-drone",
+          storageBucket: "aph-drone.firebasestorage.app",
+          messagingSenderId: "316810168380",
+          appId: "1:316810168380:web:66cb916cec4fdc00b9db39"
+        };
+        try {
+          var app = appMod.initializeApp(firebaseConfig, 'Banner-' + Date.now());
+          var db = fsMod.getFirestore(app);
+          fsMod.getDoc(fsMod.doc(db, 'siteConfig', 'bandeau')).then(function (snap) {
+            if (snap.exists()) renderAnnounceBanner(snap.data());
+          });
+        } catch (e) {
+          console.warn('announce-banner:', e.message);
+        }
+      });
+    });
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
     loadPartial('/partials/header.html', 'header-placeholder', initHeaderBehavior);
     loadPartial('/partials/footer.html', 'footer-placeholder');
+    loadAnnounceBanner();
 
     // Bandeau de consentement cookies (RGPD), chargé une seule fois sur toute page
     if (!document.querySelector('script[src="/assets/cookies.js"]')) {
