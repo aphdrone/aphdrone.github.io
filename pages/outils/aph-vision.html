@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VFJHXQNGWQ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-VFJHXQNGWQ');
+</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>APH Vision — Analyse de données drone (bientôt disponible) — APH Drone</title>
+<meta name="description" content="APH Vision : plateforme d'analyse de données drone en préparation — cartographie, modélisation 3D, thermographie, multispectral. Bientôt disponible.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/style.css">
+<style>
+:root{--primary:#0B1F3A;--secondary:#1F5FAF;--accent:#4A90E2;--light:#F5F7FA;--mono:'JetBrains Mono',monospace;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
+body{background:#fff;color:#222;padding-top:80px;}
+
+/* Hero */
+.reg-hero{background:linear-gradient(135deg,var(--primary) 0%,#1a3a6b 100%);padding:56px 5%;position:relative;overflow:hidden;}
+.reg-hero::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:36px 36px;}
+.reg-hero-inner{max-width:900px;margin:0 auto;position:relative;z-index:1;}
+.reg-hero a.back{color:rgba(255,255,255,.5);text-decoration:none;font-size:.75rem;font-weight:700;font-family:var(--mono);letter-spacing:.03em;display:inline-flex;align-items:center;gap:6px;margin-bottom:18px;}
+.reg-hero a.back:hover{color:white;}
+.reg-hero-eyebrow{font-family:var(--mono);font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:10px;}
+.reg-hero h1{color:white;font-size:1.9rem;font-weight:800;margin-bottom:10px;}
+.reg-hero p{color:rgba(255,255,255,.65);font-size:.92rem;max-width:600px;line-height:1.6;}
+.soon-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(74,144,226,.15);border:1px solid rgba(74,144,226,.4);color:#9cc4f0;font-family:var(--mono);font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:6px 14px;border-radius:20px;margin-bottom:16px;}
+.soon-badge .dot{width:6px;height:6px;border-radius:50%;background:#4A90E2;animation:pulseDot 1.6s ease-in-out infinite;}
+@keyframes pulseDot{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* Sections */
+.reg-content{max-width:900px;margin:0 auto;padding:44px 5% 70px;}
+.reg-block{margin-bottom:44px;}
+.reg-block-label{display:flex;align-items:center;gap:12px;margin-bottom:18px;}
+.reg-block-label .txt{font-family:var(--mono);font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--secondary);white-space:nowrap;}
+.reg-block-label .line{flex:1;height:1px;background:#e3e9f1;}
+
+.reg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;}
+.reg-card{display:flex;flex-direction:column;gap:8px;background:white;border:1px solid #e3e9f1;border-radius:14px;padding:20px;transition:.2s;}
+.reg-card-icon{width:34px;height:34px;border-radius:9px;background:#eef4fd;display:flex;align-items:center;justify-content:center;color:var(--secondary);flex-shrink:0;}
+.reg-card-icon svg{width:17px;height:17px;}
+.reg-card h3{font-size:.94rem;color:var(--primary);font-weight:700;}
+.reg-card p{font-size:.8rem;color:#7a8fa5;line-height:1.5;}
+
+.reg-note{background:var(--light);border:1px solid #e8edf4;border-radius:14px;padding:22px 24px;font-size:.85rem;color:#475569;line-height:1.6;}
+.reg-note strong{color:var(--primary);}
+
+/* Formulaire de notification */
+.notify-section{background:var(--light);padding:60px 10%;text-align:center;}
+.notify-section h2{font-size:1.5rem;font-weight:800;color:var(--primary);margin-bottom:8px;}
+.notify-section p{color:#64748b;font-size:.9rem;margin-bottom:26px;max-width:480px;margin:0 auto 26px;}
+.notify-form{max-width:440px;margin:0 auto;display:flex;gap:10px;}
+.notify-form input{flex:1;padding:12px 14px;border:1.5px solid #dde3ec;border-radius:9px;font-size:.85rem;font-family:'Inter',sans-serif;outline:none;background:#fff;}
+.notify-form input:focus{border-color:var(--secondary);}
+.notify-form button{background:var(--secondary);color:#fff;border:none;padding:12px 20px;border-radius:9px;font-size:.85rem;font-weight:700;cursor:pointer;white-space:nowrap;transition:.2s;}
+.notify-form button:hover{background:var(--primary);}
+.notify-confirm{display:none;background:#e8f6ee;border:1px solid #b7e4c7;border-radius:10px;padding:14px 18px;margin-top:16px;max-width:440px;margin-left:auto;margin-right:auto;font-size:.85rem;color:#2d6a4f;}
+
+@media(max-width:640px){
+  .reg-hero{padding:40px 5%;}
+  .reg-hero h1{font-size:1.4rem;}
+  .reg-grid{grid-template-columns:1fr;}
+  .notify-form{flex-direction:column;}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ Header ═══ -->
+<div id="header-placeholder"></div>
+
+<!-- ═══ Hero ═══ -->
+<section class="reg-hero">
+  <div class="reg-hero-inner">
+    <a class="back" href="/">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+      Retour à l'accueil
+    </a>
+    <p class="reg-hero-eyebrow">APH Drone · Outils</p>
+    <div class="soon-badge"><span class="dot"></span> Bientôt disponible</div>
+    <h1>APH Vision — l'analyse de vos données drone, réunie au même endroit</h1>
+    <p>Une plateforme en préparation pour exploiter simplement vos données de vol : cartographie, modélisation 3D, thermographie, multispectral, et d'autres modules à venir.</p>
+  </div>
+</section>
+
+<!-- ═══ Contenu ═══ -->
+<div class="reg-content">
+
+  <div class="reg-block">
+    <div class="reg-block-label">
+      <span class="txt">01 — Ce que couvrira APH Vision</span>
+      <span class="line"></span>
+    </div>
+    <div class="reg-grid">
+
+      <div class="reg-card">
+        <div class="reg-card-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg></div>
+        <h3>Cartographie</h3>
+        <p>Assemblage et analyse de vos relevés cartographiques issus de vos missions drone.</p>
+      </div>
+
+      <div class="reg-card">
+        <div class="reg-card-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div>
+        <h3>Modélisation 3D</h3>
+        <p>Génération de modèles 3D exploitables à partir de vos jeux de données de terrain.</p>
+      </div>
+
+      <div class="reg-card">
+        <div class="reg-card-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a5 5 0 0 0-5 5v6a5 5 0 0 0 10 0V7a5 5 0 0 0-5-5z"/><path d="M8 14a4 4 0 0 0 8 0"/><line x1="12" y1="18" x2="12" y2="22"/></svg></div>
+        <h3>Thermographie</h3>
+        <p>Détection automatique d'anomalies thermiques sur vos relevés infrarouges.</p>
+      </div>
+
+      <div class="reg-card">
+        <div class="reg-card-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg></div>
+        <h3>Multispectral (NDVI)</h3>
+        <p>Analyse de la vigueur végétale et suivi agronomique à partir de vos données multispectrales.</p>
+      </div>
+
+    </div>
+    <div class="reg-note" style="margin-top:18px;">
+      <strong>Une plateforme, pas des outils dispersés :</strong> l'objectif d'APH Vision est de réunir ces différents types d'analyse dans un seul outil, simple et pensé pour les petites structures du secteur drone.
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══ Notification ═══ -->
+<div class="notify-section" id="form-notify">
+  <h2>Soyez informé au lancement</h2>
+  <p>Laissez votre e-mail pour être prévenu dès qu'APH Vision sera disponible.</p>
+  <div class="notify-form">
+    <input type="email" id="f-email-notify" placeholder="votre@email.com">
+    <button onclick="sendNotify()">M'informer</button>
+  </div>
+  <div class="notify-confirm" id="notify-confirm">Merci, vous serez prévenu dès le lancement d'APH Vision.</div>
+</div>
+
+<!-- ═══ Bouton téléphone ═══ -->
+<a id="back-top" href="tel:0695390776">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.5 19.79 19.79 0 0 1 1.61 5a2 2 0 0 1 1.95-2H6a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 10a16 16 0 0 0 6 6l.27-.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 18z"/></svg>
+</a>
+
+<!-- ═══ Footer ═══ -->
+<div id="footer-placeholder"></div>
+
+<script src="/assets/include.js"></script>
+
+<script>
+function sendNotify(){
+  var email=document.getElementById('f-email-notify').value.trim();
+  if(!email){alert('Merci de renseigner votre email.');return;}
+  var btn=document.querySelector('.notify-form button');
+  btn.textContent='Envoi...';btn.disabled=true;
+  fetch('https://formspree.io/f/xrewbond',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Accept':'application/json'},
+    body:JSON.stringify({email:email,demande:"APH Vision — être informé au lancement"})
+  }).then(function(r){return r.json();}).then(function(d){
+    if(d.ok||d.next){document.getElementById('notify-confirm').style.display='block';document.querySelector('.notify-form').style.display='none';}
+    else{btn.textContent='Réessayer';btn.disabled=false;}
+  }).catch(function(){btn.textContent='Réessayer';btn.disabled=false;});
+}
+</script>
+</body>
+</html>
