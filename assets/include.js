@@ -172,9 +172,25 @@
       '<button class="aph-close" aria-label="Fermer">&times;</button>';
 
     document.body.insertBefore(bar, document.body.firstChild);
+
+    // Le menu (#site-header) est en position fixed collé en haut : on le repousse
+    // sous le bandeau, et on ajoute l'espace correspondant en haut de la page.
+    function repositionHeader() {
+      var h = bar.offsetHeight;
+      var header = document.getElementById('site-header');
+      if (header) header.style.top = h + 'px';
+      document.body.style.paddingTop = h + 'px';
+    }
+    repositionHeader();
+    window.addEventListener('resize', repositionHeader);
+
     bar.querySelector('.aph-close').addEventListener('click', function () {
       sessionStorage.setItem('aph_banner_closed_' + (cfg.updatedAt || ''), '1');
       bar.remove();
+      var header = document.getElementById('site-header');
+      if (header) header.style.top = '0px';
+      document.body.style.paddingTop = '';
+      window.removeEventListener('resize', repositionHeader);
     });
   }
 
