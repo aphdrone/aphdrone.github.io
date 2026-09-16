@@ -654,6 +654,72 @@ padding:60px 10% 0;
 .form-group textarea{resize:vertical;}
 .form-group select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237a8fa5' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;}
 
+
+/* ── Partenaire Garden & City ── */
+.gc{max-width:1100px;margin:56px auto 0;padding:0 10%;box-sizing:content-box;}
+.gc-head{display:flex;justify-content:space-between;align-items:flex-end;gap:32px;flex-wrap:wrap;margin-bottom:28px;}
+.gc-kicker{font-size:.8rem;font-weight:600;color:#1F5FAF;margin-bottom:8px;}
+.gc-title{font-size:2.2rem;font-weight:700;color:#0B1F3A;line-height:1.15;margin-bottom:10px;}
+.gc-lead{font-size:1rem;color:#475569;line-height:1.65;max-width:560px;}
+.gc-cta{display:flex;gap:10px;flex-wrap:wrap;}
+.gc-gallery{display:grid;grid-template-columns:2fr 1fr 1fr;grid-template-rows:210px 210px;gap:10px;border-radius:18px;overflow:hidden;margin-bottom:28px;}
+.gc-gallery figure{margin:0;position:relative;overflow:hidden;background:#e8edf4;}
+.gc-gallery figure:first-child{grid-row:1 / span 2;}
+.gc-gallery .gc-wide{grid-column:2 / span 2;}
+.gc-gallery .gc-wide img{object-position:center 65%;}
+.gc-gallery img{width:100%;height:100%;object-fit:cover;display:block;}
+.gc-gallery figcaption{position:absolute;left:10px;bottom:10px;background:rgba(11,31,58,.78);color:#fff;font-size:.72rem;font-weight:500;padding:4px 10px;border-radius:6px;}
+.gc-cols{display:grid;grid-template-columns:1.25fr 1fr;gap:24px;align-items:start;}
+.gc-cols > *{min-width:0;}
+.gc-panel{background:#fff;border:1px solid #e8edf4;border-radius:18px;padding:30px 32px;box-shadow:0 6px 24px rgba(11,31,58,.06);}
+.gc-panel h3{font-size:1.2rem;font-weight:700;color:#0B1F3A;margin-bottom:12px;}
+.gc-panel p{font-size:.9rem;color:#334155;line-height:1.7;}
+.gc-chips{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 26px;padding:0;list-style:none;}
+.gc-chips li{font-size:.76rem;font-weight:500;color:#0B1F3A;background:#F5F7FA;border:1px solid #e3e9f1;border-radius:20px;padding:5px 12px;}
+.gc-tarifs-title{font-size:1rem;font-weight:700;color:#0B1F3A;margin-bottom:4px;}
+.gc-tarifs-note{font-size:.8rem;color:#64748b;margin-bottom:14px;}
+.gc-table-wrap{overflow-x:auto;border-radius:12px;border:1px solid #e3e9f1;}
+.gc-table{width:100%;border-collapse:collapse;font-size:.86rem;min-width:430px;}
+.gc-table th,.gc-table td{padding:11px 8px;text-align:center;border-bottom:1px solid #eef1f6;}
+.gc-table thead tr:first-child th{background:#0B1F3A;color:#fff;font-weight:600;}
+.gc-table thead tr:nth-child(2) th{white-space:nowrap;background:#F5F7FA;color:#475569;font-weight:600;font-size:.76rem;}
+.gc-table thead th.gc-season{border-left:1px solid rgba(255,255,255,.18);}
+.gc-table tbody th{text-align:left;font-weight:600;color:#0B1F3A;background:#fff;}
+.gc-table td{color:#0B1F3A;font-variant-numeric:tabular-nums;}
+.gc-table td.gc-best{color:#1F5FAF;font-weight:700;}
+.gc-table tbody tr:last-child th,.gc-table tbody tr:last-child td{border-bottom:none;}
+.gc-resto{background:#0B1F3A;border-color:#0B1F3A;color:#fff;overflow:hidden;padding:0;}
+.gc-resto-img{height:190px;background:#1a3a6b;}
+.gc-resto-img img{width:100%;height:100%;object-fit:cover;object-position:center 60%;display:block;}
+.gc-resto-body{padding:26px 30px 30px;}
+.gc-resto h3{color:#fff;}
+.gc-resto p{color:rgba(255,255,255,.78);}
+.gc-menu{margin:20px 0 22px;border-top:1px solid rgba(255,255,255,.15);}
+.gc-menu-row{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.15);font-size:.86rem;color:rgba(255,255,255,.85);}
+.gc-menu-row strong{font-size:1.25rem;color:#fff;white-space:nowrap;}
+.gc-menu-label{font-size:.8rem;font-weight:600;color:#4A90E2;margin-top:18px;}
+.gc-contact{display:flex;flex-wrap:wrap;gap:12px 32px;align-items:center;margin-top:24px;padding:20px 28px;background:#F5F7FA;border-radius:14px;font-size:.86rem;color:#334155;}
+.gc-contact span{display:inline-flex;align-items:center;gap:8px;}
+.gc-contact svg{width:15px;height:15px;color:#1F5FAF;flex-shrink:0;}
+.gc-contact a{color:#1F5FAF;text-decoration:none;font-weight:600;}
+.gc-contact a:hover{text-decoration:underline;}
+.btn-section--light{background:#fff;color:#0B1F3A;}
+.btn-section--light:hover{background:#4A90E2;color:#fff;transform:translateY(-2px);}
+@media(max-width:900px){
+  .gc-cols{grid-template-columns:1fr;}
+  .gc-gallery{grid-template-columns:1fr 1fr;grid-template-rows:220px 140px 160px;}
+  .gc-gallery figure:first-child{grid-column:1 / span 2;grid-row:auto;}
+  .gc-gallery .gc-wide{grid-column:1 / span 2;}
+}
+@media(max-width:768px){
+  .gc{padding:0 6%;margin-top:40px;}
+  .gc-title{font-size:1.7rem;}
+  .gc-panel{padding:24px 22px;}
+  .gc-resto{padding:0;}
+  .gc-resto-body{padding:22px;}
+  .gc-contact{padding:18px 20px;}
+}
+
 /* ── Page Hébergement ── */
 .page-hero-heb{padding:140px 10% 80px;background:linear-gradient(135deg,#0B1F3A 0%,#1a3a6b 100%);color:white;position:relative;overflow:hidden;}
 .breadcrumb-heb{display:flex;align-items:center;gap:8px;font-size:12px;color:rgba(255,255,255,.5);margin-bottom:20px;}
@@ -819,6 +885,80 @@ document.addEventListener('DOMContentLoaded', function(){
   </div>
 </div>
 
+
+<!-- ═══ PARTENAIRE : GARDEN & CITY LUXEUIL-LES-BAINS ═══ -->
+<section class="gc" id="garden-city">
+  <div class="gc-head">
+    <div>
+      <div class="gc-kicker">Hébergement partenaire des stagiaires APH Drone</div>
+      <h2 class="gc-title">Garden &amp; City Luxeuil-les-Bains</h2>
+      <p class="gc-lead">Studios et appartements meublés au cœur d'un grand parc arboré, avec restaurant sur place. Des tarifs dégressifs sont réservés aux stagiaires selon la durée du séjour.</p>
+    </div>
+    <div class="gc-cta">
+      <a href="tel:+33384405707" class="btn-section btn-section--primary">Réserver au 03 84 40 57 07</a>
+      <a href="https://www.garden-city.fr/fr/luxeuil.html" target="_blank" rel="noopener" class="btn-section btn-section--outline">Site de la résidence</a>
+    </div>
+  </div>
+
+  <div class="gc-gallery">
+    <figure><img src="/assets/images/hébergement/gc-facade-parc.jpg" alt="Façade de la résidence Garden &amp; City dans son parc arboré" loading="lazy"><figcaption>La résidence dans son parc</figcaption></figure>
+    <figure><img src="/assets/images/hébergement/gc-studio-twin.jpg" alt="Studio avec lits jumeaux, coin repas et porte-fenêtre sur le parc" loading="lazy"><figcaption>Studio double ou twin</figcaption></figure>
+    <figure><img src="/assets/images/hébergement/gc-studio-kitchenette.jpg" alt="Studio avec lit double et kitchenette équipée" loading="lazy"><figcaption>Kitchenette équipée</figcaption></figure>
+    <figure class="gc-wide"><img src="/assets/images/hébergement/gc-facade-metropole.jpg" alt="Façades de la résidence et du Métropole avenue des Thermes" loading="lazy"><figcaption>La résidence et Le Métropole, avenue des Thermes</figcaption></figure>
+  </div>
+
+  <div class="gc-cols">
+    <div class="gc-panel">
+      <h3>La résidence</h3>
+      <p>La résidence Garden &amp; City vous accueille dans un cadre authentique, au sein d'un grand parc arboré. Elle propose 64 studios et appartements spacieux, meublés et équipés pour un séjour en toute autonomie. Chaque hébergement dispose d'une kitchenette complète, d'une télévision à écran plat et d'une salle de bains privative.</p>
+      <ul class="gc-chips">
+        <li>Kitchenette complète</li>
+        <li>Salle de bains privative</li>
+        <li>Petit-déjeuner buffet</li>
+        <li>Bar</li>
+        <li>Terrasse</li>
+        <li>Wi-Fi gratuit</li>
+        <li>Parking public gratuit en face</li>
+      </ul>
+
+      <div class="gc-tarifs-title">Tarifs préférentiels stagiaires</div>
+      <div class="gc-tarifs-note">Prix par nuit, dégressifs à partir de la 4<sup>e</sup> nuit. Précisez que vous suivez une formation APH Drone lors de la réservation.</div>
+      <div class="gc-table-wrap">
+        <table class="gc-table">
+          <thead>
+            <tr><th rowspan="2" style="text-align:left;">Studio supérieur</th><th colspan="2" class="gc-season">Novembre à mars</th><th colspan="2" class="gc-season">Avril à octobre</th></tr>
+            <tr><th>1 à 3 nuits</th><th>4 nuits et +</th><th>1 à 3 nuits</th><th>4 nuits et +</th></tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">Single</th><td>55&nbsp;€</td><td class="gc-best">50&nbsp;€</td><td>60&nbsp;€</td><td class="gc-best">55&nbsp;€</td></tr>
+            <tr><th scope="row">Double ou twin</th><td>63&nbsp;€</td><td class="gc-best">58&nbsp;€</td><td>68&nbsp;€</td><td class="gc-best">63&nbsp;€</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="gc-panel gc-resto">
+      <div class="gc-resto-img"><img src="/assets/images/hébergement/gc-restaurant-table.jpg" alt="Assiettes et vin servis au Métropole" loading="lazy"></div>
+      <div class="gc-resto-body">
+        <h3>Le Métropole</h3>
+        <p>Véritable institution à Luxeuil-les-Bains, la brasserie du Métropole cultive une atmosphère chaleureuse aux accents ensoleillés. Spécialiste de la cuisine du Sud-Ouest en Haute-Saône, sa cheffe travaille des produits de qualité pour une carte généreuse et de saison.</p>
+        <div class="gc-menu-label">Menu du jour, renouvelé selon le marché</div>
+        <div class="gc-menu">
+          <div class="gc-menu-row"><span>Entrée, plat et café<br>ou plat, dessert et café</span><strong>17&nbsp;€</strong></div>
+          <div class="gc-menu-row"><span>Entrée, plat, dessert et café</span><strong>21&nbsp;€</strong></div>
+        </div>
+        <a href="https://www.garden-city.fr/fr/restaurant-luxeuil.html" target="_blank" rel="noopener" class="btn-section btn-section--light">Voir le restaurant</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="gc-contact">
+    <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>4 avenue des Thermes, 70300 Luxeuil-les-Bains</span>
+    <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.5 19.79 19.79 0 0 1 1.61 5a2 2 0 0 1 1.95-2H6a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 10a16 16 0 0 0 6 6l.27-.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 18z"/></svg><a href="tel:+33384405707">03 84 40 57 07</a></span>
+    <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="22,6 12,13 2,6"/></svg><a href="mailto:luxeuil@garden-city.fr">luxeuil@garden-city.fr</a></span>
+  </div>
+</section>
+
 <div class="filtres-heb">
   <button class="filtre-btn active" data-cat="Tous">Tous</button>
   <button class="filtre-btn" data-cat="Hôtel">Hôtels</button>
@@ -830,13 +970,14 @@ document.addEventListener('DOMContentLoaded', function(){
   <div class="sep-label">Hôtels</div>
   <div class="annuaire-grid">
     <div class="fiche" data-cat="Hôtel">
-      <div class="fiche-img"><img src="/assets/image" alt="M"><span class="fiche-cat cat-hotel">Hôtel ★★★</span></div>
+      <div class="fiche-img" style="background:#e8edf4;"><img src="/assets/images/hébergement/gc-facade-parc.jpg" alt="Résidence Garden &amp; City Luxeuil-les-Bains" onerror="this.style.display='none'"><span class="fiche-cat cat-meuble">Résidence hôtelière</span></div>
       <div class="fiche-body">
-        <div class="fiche-nom">M</div>
-        <div class="fiche-desc">Hôtel 3 étoiles .</div>
-        <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>, 70300 Luxeuil-les-Bains</div>
-        <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.5 19.79 19.79 0 0 1 1.61 5a2 2 0 0 1 1.95-2H6a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 10a16 16 0 0 0 6 6l.27-.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 18z"/></svg>03 84 93 90 90</div>
-        <div class="fiche-actions"><a href="tel:0384" class="btn-fiche btn-fiche-primary">Réserver</a><a href="https://www/" target="_blank" class="btn-fiche btn-fiche-outline">Site web</a></div>
+        <div class="fiche-nom">Garden &amp; City Luxeuil-les-Bains</div>
+        <div class="fiche-desc">La résidence Garden &amp; City vous accueille dans un cadre authentique, au sein d'un grand parc arboré. Elle propose 64 studios et appartements spacieux, meublés et équipés pour un séjour en toute autonomie : kitchenette complète, télévision à écran plat et salle de bains privative. Petit-déjeuner buffet chaque matin, bar convivial et restaurant d'inspiration Sud-Ouest Le Métropole sur place. Parking public gratuit en face, Wi-Fi gratuit dans toute la résidence et terrasse au calme.</div>
+        <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>4 Av. des Thermes, 70300 Luxeuil-les-Bains</div>
+        <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.5 19.79 19.79 0 0 1 1.61 5a2 2 0 0 1 1.95-2H6a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 10a16 16 0 0 0 6 6l.27-.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 18z"/></svg>03 84 40 57 07</div>
+        <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="22,6 12,13 2,6"/></svg><a href="mailto:luxeuil@garden-city.fr" style="color:inherit;">luxeuil@garden-city.fr</a></div>
+        <div class="fiche-actions"><a href="tel:+33384405707" class="btn-fiche btn-fiche-primary">Réserver</a><a href="#garden-city" class="btn-fiche btn-fiche-outline">Tarifs stagiaires</a></div>
       </div>
     </div>
     <div class="fiche" data-cat="Hôtel">
@@ -865,15 +1006,17 @@ Le restaurant de l'hôtel propose une cuisine française traditionnelle et vous 
       </div>
     </div>
     <div class="fiche" data-cat="Restaurant">
-      <div class="fiche-img"><img src="/assets" alt="Le Métropole"><span class="fiche-cat cat-resto">Restaurant</span></div>
+      <div class="fiche-img" style="background:#e8edf4;"><img src="/assets/images/hébergement/gc-restaurant-table.jpg" alt="Brasserie Le Métropole, Luxeuil-les-Bains" onerror="this.style.display='none'"><span class="fiche-cat cat-resto">Restaurant</span></div>
       <div class="fiche-body">
         <div class="fiche-nom">Le Métropole</div>
-        <div class="fiche-desc">Ca.</div>
+        <div class="fiche-desc">La Brasserie du Métropole vous accueille dans une atmosphère chaleureuse aux accents ensoleillés. Véritable institution à Luxeuil-les-Bains, spécialiste de la cuisine du Sud-Ouest en Haute-Saône, sa cheffe travaille des produits de qualité pour une carte généreuse et de saison. Menu du jour renouvelé quotidiennement au gré du marché.</div>
+        <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/></svg><span>Menu du jour : entrée + plat + café ou plat + dessert + café 17&nbsp;€ &nbsp;|&nbsp; entrée + plat + dessert + café 21&nbsp;€</span></div>
         <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>4 Av. des Thermes, 70300 Luxeuil-les-Bains</div>
-        <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.5 19.79 19.79 0 0 1 1.61 5a2 2 0 0 1 1.95-2H6a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 10a16 16 0 0 0 6 6l.27-.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 18z"/></svg>06 09 25 61 89</div>
-        <div class="fiche-actions"><a href="tel:0609256189" class="btn-fiche btn-fiche-primary">Réserver</a><a href="https://www.garden-city.fr/fr/restaurant-luxeuil.html" target="_blank" class="btn-fiche btn-fiche-outline">Site web</a></div>
+        <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.5 19.79 19.79 0 0 1 1.61 5a2 2 0 0 1 1.95-2H6a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 10a16 16 0 0 0 6 6l.27-.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 18z"/></svg>03 84 40 57 07</div>
+        <div class="fiche-info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="22,6 12,13 2,6"/></svg><a href="mailto:luxeuil@garden-city.fr" style="color:inherit;">luxeuil@garden-city.fr</a></div>
+        <div class="fiche-actions"><a href="tel:+33384405707" class="btn-fiche btn-fiche-primary">Réserver</a><a href="https://www.garden-city.fr/fr/restaurant-luxeuil.html" target="_blank" rel="noopener" class="btn-fiche btn-fiche-outline">Site web</a></div>
       </div>
-      </div>
+    </div>
   </div>
 
   <div class="sep-label" style="margin-top:32px;">Restauration rapide</div>
