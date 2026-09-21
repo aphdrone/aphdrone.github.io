@@ -658,6 +658,8 @@ padding:60px 10% 0;
 /* ── Partenaire Garden & City ── */
 .gc{max-width:1100px;margin:56px auto 0;padding:0 10%;box-sizing:content-box;}
 .gc-head{display:flex;justify-content:space-between;align-items:flex-end;gap:32px;flex-wrap:wrap;margin-bottom:28px;}
+.gc-logo{height:92px;width:auto;display:block;margin-bottom:18px;}
+.gc-resto-logo{height:84px;width:auto;display:block;margin-bottom:14px;}
 .gc-kicker{font-size:.8rem;font-weight:600;color:#1F5FAF;margin-bottom:8px;}
 .gc-title{font-size:2.2rem;font-weight:700;color:#0B1F3A;line-height:1.15;margin-bottom:10px;}
 .gc-lead{font-size:1rem;color:#475569;line-height:1.65;max-width:560px;}
@@ -890,6 +892,7 @@ document.addEventListener('DOMContentLoaded', function(){
 <section class="gc" id="garden-city">
   <div class="gc-head">
     <div>
+      <img class="gc-logo" src="/assets/images/hébergement/gc-logo-luxeuil.png" alt="Garden &amp; City Luxeuil, résidence 3 étoiles">
       <div class="gc-kicker">Hébergement partenaire des stagiaires APH Drone</div>
       <h2 class="gc-title">Garden &amp; City Luxeuil-les-Bains</h2>
       <p class="gc-lead">Studios et appartements meublés au cœur d'un grand parc arboré, avec restaurant sur place. Des tarifs dégressifs sont réservés aux stagiaires selon la durée du séjour.</p>
@@ -922,7 +925,7 @@ document.addEventListener('DOMContentLoaded', function(){
       </ul>
 
       <div class="gc-tarifs-title">Tarifs préférentiels stagiaires</div>
-      <div class="gc-tarifs-note">Prix par nuit, dégressifs à partir de la 4<sup>e</sup> nuit. Précisez que vous suivez une formation APH Drone lors de la réservation.</div>
+      <div class="gc-tarifs-note">Prix par nuit, hébergement seul, hors taxe de séjour. De 1 à 3 nuits, le tarif standard s'applique à toutes les nuits ; à partir de 4 nuits, le tarif dégressif s'applique dès la première nuit.</div>
       <div class="gc-table-wrap">
         <table class="gc-table">
           <thead>
@@ -935,11 +938,13 @@ document.addEventListener('DOMContentLoaded', function(){
           </tbody>
         </table>
       </div>
+      <p class="gc-tarifs-note" style="margin:14px 0 0;">Petit-déjeuner buffet : 11&nbsp;€ par personne pour les stagiaires (au lieu de 12,90&nbsp;€). Pour bénéficier de ces conditions, présentez votre confirmation d'inscription ou votre convention de formation APH Drone lors de la réservation.</p>
     </div>
 
     <div class="gc-panel gc-resto">
       <div class="gc-resto-img"><img src="/assets/images/hébergement/gc-restaurant-table.jpg" alt="Assiettes et vin servis au Métropole" loading="lazy"></div>
       <div class="gc-resto-body">
+        <img class="gc-resto-logo" src="/assets/images/hébergement/metropole-logo-blanc.png" alt="Le Métropole">
         <h3>Le Métropole</h3>
         <p>La Brasserie du Métropole vous invite à découvrir son atmosphère chaleureuse aux accents ensoleillés. Véritable institution à Luxeuil-les-Bains, notre établissement place désormais la convivialité et le partage au cœur de votre expérience gastronomique. Spécialiste de la cuisine du Sud-Ouest en Haute-Saône, notre cheffe travaille des produits de qualité pour vous offrir une carte généreuse et de saison.</p>
         <div class="gc-menu-label">Menu du jour : une proposition renouvelée quotidiennement au gré du marché</div>
